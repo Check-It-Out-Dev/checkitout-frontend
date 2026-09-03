@@ -1,0 +1,263 @@
+<section class="mx-auto max-w-2xl p-4" data-testid="profile-view">
+  @switch (state()) {
+    @case ('loading') {
+      <div class="flex min-h-[40vh] items-center justify-center">
+        <mat-spinner diameter="40" data-testid="profile-loading"></mat-spinner>
+      </div>
+    }
+    @case ('error') {
+      <div
+        role="alert"
+        data-testid="profile-error"
+        class="flex flex-col items-center gap-3 rounded-2xl border border-red-200 bg-red-50 px-6 py-10 text-center text-red-700"
+      >
+        <mat-icon class="!h-10 !w-10 !text-4xl">error_outline</mat-icon>
+        <p>{{ 'profile.error.load_failed' | transloco }}</p>
+        <button mat-stroked-button (click)="load()" data-testid="profile-retry">
+          {{ 'profile.error.retry' | transloco }}
+        </button>
+      </div>
+    }
+    @case ('loaded') {
+      @if (user(); as u) {
+        <article
+          data-testid="profile-card"
+          class="flex flex-col gap-5 rounded-2xl border border-beige bg-white p-7"
+        >
+          @if (mode() === 'view') {
+            <div class="flex justify-end">
+              <button
+                mat-stroked-button
+                type="button"
+                (click)="startEdit()"
+                data-testid="profile-edit-button"
+              >
+                <mat-icon class="!mr-1">edit</mat-icon>
+                {{ 'profile.edit.start' | transloco }}
+              </button>
+            </div>
+          }
+          <header class="flex items-center gap-4">
+            <div
+              class="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl bg-coral-50"
+              data-testid="profile-avatar"
+            >
+              @if (u.profilePicture) {
+                <img
+                  [src]="u.profilePicture"
+                  alt=""
+                  class="h-full w-full object-cover"
+                  loading="lazy"
+                />
+              } @else {
+                <mat-icon class="!h-10 !w-10 !text-4xl text-coral-500">account_circle</mat-icon>
+              }
+            </div>
+            <div class="flex flex-col">
+              <h1 data-testid="profile-name" class="font-display text-3xl font-normal text-ink">
+                {{ u.name || ((u.firstName ?? '') + ' ' + (u.lastName ?? '')).trim() || u.email }}
+              </h1>
+              @if (u.userType?.value) {
+                <span
+                  data-testid="profile-role"
+                  class="mt-1 font-mono text-[10px] uppercase tracking-[0.18em] text-coral-600"
+                >
+                  {{ u.userType?.label || u.userType?.originalLabel || u.userType?.value }}
+                </span>
+              }
+            </div>
+            @if (u.profileComplete) {
+              <span
+                data-testid="profile-complete-badge"
+                class="ml-auto rounded-full bg-emerald-100 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-emerald-700"
+              >
+                {{ 'profile.complete_badge' | transloco }}
+              </span>
+            }
+          </header>
+
+          <dl class="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
+            <div>
+              <dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                {{ 'profile.fields.email' | transloco }}
+              </dt>
+              <dd data-testid="profile-email" class="mt-1 break-words font-medium text-ink">
+                {{ u.email }}
+                @if (u.emailVerified) {
+                  <mat-icon
+                    data-testid="profile-email-verified"
+                    class="!h-4 !w-4 !text-base align-middle text-emerald-600"
+                    [attr.aria-label]="'profile.fields.email_verified' | transloco"
+                  >
+                    verified
+                  </mat-icon>
+                }
+              </dd>
+            </div>
+            @if (u.phoneNumber) {
+              <div>
+                <dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                  {{ 'profile.fields.phone' | transloco }}
+                </dt>
+                <dd class="mt-1 font-medium text-ink">{{ u.phoneNumber }}</dd>
+              </div>
+            }
+            @if (u.nip) {
+              <div>
+                <dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                  {{ 'profile.fields.nip' | transloco }}
+                </dt>
+                <dd class="mt-1 font-medium text-ink">{{ u.nip }}</dd>
+              </div>
+            }
+            @if (u.accountStatus?.value) {
+              <div>
+                <dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                  {{ 'profile.fields.account_status' | transloco }}
+                </dt>
+                <dd data-testid="profile-status" class="mt-1 font-medium text-ink">
+                  {{
+                    u.accountStatus?.label ||
+                      u.accountStatus?.originalLabel ||
+                      u.accountStatus?.value
+                  }}
+                </dd>
+              </div>
+            }
+            @if (u.createdTime) {
+              <div>
+                <dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                  {{ 'profile.fields.member_since' | transloco }}
+                </dt>
+                <dd class="mt-1 font-medium text-ink">{{ u.createdTime | date }}</dd>
+              </div>
+            }
+          </dl>
+
+          @if (mode() === 'view') {
+            <app-profile-picture-upload
+              [user]="u"
+              (updated)="onUserUpdated($event)"
+              data-testid="profile-picture-upload-section"
+            />
+            <app-email-change [user]="u" data-testid="profile-email-change" />
+          }
+
+          @if (mode() === 'edit') {
+            <form
+              [formGroup]="editForm"
+              (ngSubmit)="saveEdit()"
+              class="flex flex-col gap-3 border-t border-beige pt-5"
+              data-testid="profile-edit-form"
+              novalidate
+            >
+              <h2 class="font-display text-2xl font-normal text-ink">
+                {{ 'profile.edit.title' | transloco }}
+              </h2>
+
+              <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <mat-form-field appearance="outline">
+                  <mat-label>{{ 'profile.edit.first_name' | transloco }}</mat-label>
+                  <input
+                    matInput
+                    formControlName="firstName"
+                    data-testid="profile-edit-first-name"
+                  />
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                  <mat-label>{{ 'profile.edit.last_name' | transloco }}</mat-label>
+                  <input matInput formControlName="lastName" data-testid="profile-edit-last-name" />
+                </mat-form-field>
+              </div>
+
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'profile.edit.display_name' | transloco }}</mat-label>
+                <input matInput formControlName="name" data-testid="profile-edit-name" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'profile.edit.phone' | transloco }}</mat-label>
+                <input
+                  matInput
+                  inputmode="tel"
+                  formControlName="phoneNumber"
+                  data-testid="profile-edit-phone"
+                />
+              </mat-form-field>
+
+              @if (saveErrorKey(); as key) {
+                <div
+                  role="alert"
+                  data-testid="profile-edit-error"
+                  class="rounded-2xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+                >
+                  {{ key | transloco }}
+                </div>
+              }
+
+              <div class="flex justify-end gap-2">
+                <button
+                  mat-stroked-button
+                  type="button"
+                  (click)="cancelEdit()"
+                  [disabled]="saving()"
+                  data-testid="profile-edit-cancel"
+                >
+                  {{ 'profile.edit.cancel' | transloco }}
+                </button>
+                <button
+                  mat-flat-button
+                  color="primary"
+                  type="submit"
+                  [disabled]="saving() || editForm.invalid"
+                  data-testid="profile-edit-save"
+                >
+                  @if (saving()) {
+                    <mat-spinner diameter="18" class="mx-auto"></mat-spinner>
+                  } @else {
+                    {{ 'profile.edit.save' | transloco }}
+                  }
+                </button>
+              </div>
+            </form>
+          }
+        </article>
+
+        <section
+          class="mt-6 rounded-2xl border border-red-200 bg-red-50 p-5"
+          data-testid="profile-danger-zone"
+        >
+          <h2 class="mb-1 font-mono text-[10px] uppercase tracking-[0.18em] text-red-800">
+            {{ 'profile.danger.title' | transloco }}
+          </h2>
+          <p class="mb-3 text-sm leading-relaxed text-red-900">
+            {{ 'profile.danger.description' | transloco }}
+          </p>
+          <button
+            mat-stroked-button
+            color="warn"
+            type="button"
+            [disabled]="deletionState() !== 'idle'"
+            (click)="deleteAccount()"
+            data-testid="profile-delete-account"
+          >
+            @if (deletionState() !== 'idle') {
+              <mat-spinner diameter="18" class="!inline-block"></mat-spinner>
+            } @else {
+              {{ 'profile.danger.button' | transloco }}
+            }
+          </button>
+          @if (deletionErrorKey(); as key) {
+            <div
+              role="alert"
+              data-testid="profile-danger-error"
+              class="mt-3 rounded-2xl border border-red-300 bg-white px-3 py-2 text-sm text-red-700"
+            >
+              {{ key | transloco }}
+            </div>
+          }
+        </section>
+      }
+    }
+  }
+</section>

@@ -1,0 +1,525 @@
+---
+# Frontend CI/CD — PRODUCTION deployment for the greenfield FE.
+#
+# Ported from the legacy frontend pipeline (prod deployment), adapted
+# for this repo's SSR-enabled Angular 22 build. The app is SERVED AS STATIC
+# FILES: `ng build` (production config) emits browser/ + server/ bundles and
+# prerenders "/" into browser/index.html — nginx serves browser/ with an
+# index.html fallback (the prerendered landing + the csr-deep-link guard in
+# it handle every deep link). The server/ bundle is deliberately NOT
+# deployed.
+#
+# Required repository secrets (same names as the legacy repo, so the
+# existing values carry over):
+#   INSTAGRAM_PROD_SSH_PRIVATE_KEY   deploy key for the production target
+#   INSTAGRAM_SERVER_HOST            server hostname/IP
+#   INSTAGRAM_PROD_USER              deploy user (sudoers rules provisioned
+#                                    server-side; see the ansible roles)
+#
+# Test tiers (jest / Playwright / BDD) are intentionally NOT wired here yet
+# — they need a live BE + browsers and land as a separate workflow
+# post-cutover. Local `check:full` remains the merge gate.
+name: Frontend CI/CD - Production Deployment (Self-Hosted)
+
+on:
+  push:
+    branches: ["prod"]
+  workflow_dispatch:
+
+# Environment variables optimized for the 8vCPU/24GB self-hosted runner
+env:
+  NODE_OPTIONS: "--max-old-space-size=16384"
+  NODE_COMPILE_CACHE: "1"
+  NPM_CONFIG_MAXSOCKETS: "50"
+  NPM_CONFIG_FETCH_RETRIES: "3"
+  NPM_CONFIG_FETCH_RETRY_MINTIMEOUT: "20000"
+  NPM_CONFIG_FETCH_RETRY_MAXTIMEOUT: "120000"
+  NG_CLI_ANALYTICS: "false"
+  NG_PERSISTENT_BUILD_CACHE: "1"
+  NG_BUILD_CACHE: ".angular/cache"
+  UV_THREADPOOL_SIZE: "8"
+  # Deployment topology — single place to re-point at cutover
+  DIST_DIR: "dist/check-it-out-fe-greenfield/browser"
+  TARGET_DIR: "/var/www/checkitout.app"
+  APP_URL: "https://checkitout.app"
+
+jobs:
+  build-and-deploy:
+    name: Build & Deploy (Production)
+    runs-on: [self-hosted, Linux, x64]
+    environment: production
+    timeout-minutes: 30
+
+    steps:
+      # =========================================================================
+      # WORKSPACE CLEANUP - Critical for self-hosted runners
+      # =========================================================================
+      - name: 🧹 Clean workspace
+        run: |
+          echo "==================================="
+          echo "Cleaning workspace for fresh build"
+          echo "==================================="
+
+          shopt -s dotglob
+          for item in *; do
+            if [[ "$item" != "_*" ]]; then
+              rm -rf "$item" 2>/dev/null || true
+            fi
+          done
+
+          find . -name '.git' -type d -exec rm -rf {} + 2>/dev/null || true
+
+          echo "✅ Workspace cleaned"
+
+      # =========================================================================
+      # CHECKOUT
+      # =========================================================================
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: prod
+          fetch-depth: 1
+          clean: true
+
+      # =========================================================================
+      # NODE.JS SETUP WITH CACHING (.nvmrc pins 24.15.0 — Node 23 breaks the
+      # Angular 22 dev-server; the build wants the same runtime family)
+      # =========================================================================
+      - name: ⚙️ Setup Node.js (from .nvmrc)
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      # =========================================================================
+      # ADVANCED CACHING - Angular build cache
+      # =========================================================================
+      - name: 📦 Cache Angular build artifacts
+        uses: actions/cache@v4
+        with:
+          path: .angular/cache
+          key: >-
+            ${{ runner.os }}-angular-prod-
+            ${{ hashFiles('package-lock.json') }}-
+            ${{ hashFiles('src/**/*.ts', 'src/**/*.html', 'src/**/*.scss') }}
+          restore-keys: |
+            ${{ runner.os }}-angular-prod-${{ hashFiles('package-lock.json') }}-
+            ${{ runner.os }}-angular-prod-
+
+      # =========================================================================
+      # SYSTEM INFORMATION
+      # =========================================================================
+      - name: 📊 System Information
+        run: |
+          echo "========================================="
+          echo "System Information - PRODUCTION BUILD"
+          echo "========================================="
+          echo "🖥️  Hostname: $(hostname)"
+          echo "👤 User: $(whoami)"
+          echo "📂 Working Directory: $(pwd)"
+          echo "🌿 Branch: prod"
+          echo ""
+          echo "--- Hardware Resources ---"
+          echo "CPU Cores: $(nproc)"
+          echo "Total Memory: $(free -h | grep Mem | awk '{print $2}')"
+          echo "Available Memory: $(free -h | grep Mem | awk '{print $7}')"
+          echo "Disk Space: $(df -h . | tail -1 | awk '{print $4}') available"
+          echo ""
+          echo "--- Software Versions ---"
+          echo "Node Version: $(node --version)"
+          echo "npm Version: $(npm --version)"
+          echo ""
+          echo "--- Build Configuration ---"
+          echo "NODE_OPTIONS: $NODE_OPTIONS"
+          echo "UV_THREADPOOL_SIZE: $UV_THREADPOOL_SIZE"
+          echo "DIST_DIR: $DIST_DIR"
+          echo "TARGET_DIR: $TARGET_DIR"
+
+      # =========================================================================
+      # INSTALL DEPENDENCIES
+      # =========================================================================
+      - name: 📦 Install dependencies
+        run: |
+          echo "========================================="
+          echo "Installing Dependencies (PRODUCTION)"
+          echo "========================================="
+          echo "⏰ Started at: $(date '+%Y-%m-%d %H:%M:%S')"
+          echo ""
+
+          npm config set maxsockets 50
+          npm config set fetch-retries 3
+          npm config set progress false
+
+          echo "📁 npm cache location: $(npm config get cache)"
+
+          START_TIME=$(date +%s)
+
+          npm ci \
+            --prefer-offline \
+            --no-audit \
+            --loglevel=error
+
+          END_TIME=$(date +%s)
+          DURATION=$((END_TIME - START_TIME))
+
+          echo ""
+          echo "✅ Dependencies installed in ${DURATION}s"
+
+      # =========================================================================
+      # BUILD ANGULAR APPLICATION (production config; esbuild — no webpack-era
+      # worker tuning needed). Emits browser/ + server/ and prerenders "/".
+      # =========================================================================
+      - name: 🔨 Build Angular Application (PRODUCTION)
+        run: |
+          echo "========================================="
+          echo "Building Angular for PRODUCTION"
+          echo "========================================="
+          echo "⚠️  PRODUCTION BUILD - Full optimization enabled"
+          echo "⏰ Build started at: $(date '+%Y-%m-%d %H:%M:%S')"
+          echo ""
+
+          START_TIME=$(date +%s)
+
+          npm run build -- --configuration production
+
+          END_TIME=$(date +%s)
+          DURATION=$((END_TIME - START_TIME))
+
+          echo ""
+          echo "✅ Production build completed in ${DURATION}s"
+          echo ""
+          echo "========================================="
+          echo "Production Build Output Analysis (static deployment)"
+          echo "========================================="
+
+          # The deployable is the BROWSER bundle only. The server/ bundle
+          # exists (SSR build) but is not deployed — nginx serves static
+          # files with the prerendered index.html as the SPA fallback.
+          if [ ! -d "$DIST_DIR" ]; then
+              echo "❌ Build output directory not found: $DIST_DIR"
+              exit 1
+          fi
+          if [ ! -f "$DIST_DIR/index.html" ]; then
+              echo "❌ Prerendered index.html missing — static serving needs it!"
+              exit 1
+          fi
+          INDEX_SIZE=$(stat -c%s "$DIST_DIR/index.html")
+          echo "✅ Prerendered index.html present (${INDEX_SIZE} bytes)"
+          echo "ℹ️  server/ bundle present but NOT deployed (static serving)"
+          echo ""
+          echo "--- Total Build Size (browser bundle) ---"
+          TOTAL_SIZE=$(du -sh "$DIST_DIR" | cut -f1)
+          FILE_COUNT=$(find "$DIST_DIR" -type f | wc -l)
+          echo "Total size: $TOTAL_SIZE"
+          echo "File count: $FILE_COUNT files"
+          echo ""
+          echo "--- Largest Files (Top 10) ---"
+          find "$DIST_DIR" -type f -exec du -h {} + | sort -rh | head -10
+          echo ""
+          echo "--- JavaScript Bundle Analysis ---"
+          find "$DIST_DIR" -name "*.js" -type f -exec du -h {} + | sort -rh | head -5
+
+      # =========================================================================
+      # SETUP SSH FOR DEPLOYMENT
+      # =========================================================================
+      - name: 🔐 Setup SSH
+        env:
+          INSTAGRAM_PROD_SSH_PRIVATE_KEY: ${{ secrets.INSTAGRAM_PROD_SSH_PRIVATE_KEY }}
+        run: |
+          echo "Setting up SSH for PRODUCTION deployment..."
+
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+          echo "$INSTAGRAM_PROD_SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          sed -i 's/\r$//' ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+          echo "🔍 Verifying SSH key format..."
+          if head -n 1 ~/.ssh/id_rsa | grep -q "BEGIN"; then
+              echo "✅ SSH key format validated"
+          else
+              echo "❌ ERROR: Invalid SSH key format"
+              echo "Please check the INSTAGRAM_PROD_SSH_PRIVATE_KEY secret"
+              exit 1
+          fi
+
+          echo "📝 Adding server to known hosts..."
+          ssh-keyscan -H "${{ secrets.INSTAGRAM_SERVER_HOST }}" \
+              >> ~/.ssh/known_hosts 2>/dev/null
+
+          if ssh-keygen -y -e -f ~/.ssh/id_rsa > /dev/null 2>&1; then
+              echo "✅ SSH key is valid and can be loaded"
+          else
+              echo "❌ ERROR: SSH key validation failed"
+              echo "Common issues:"
+              echo "  1. Key is not properly formatted"
+              echo "  2. Missing BEGIN/END headers"
+              echo "  3. Corrupt or truncated key"
+              exit 1
+          fi
+
+          echo "✅ SSH configuration completed"
+
+      # =========================================================================
+      # CLEAN REMOTE DIRECTORY
+      # =========================================================================
+      - name: 🧹 Clean remote directory
+        env:
+          INSTAGRAM_SERVER_HOST: ${{ secrets.INSTAGRAM_SERVER_HOST }}
+          INSTAGRAM_PROD_USER: ${{ secrets.INSTAGRAM_PROD_USER }}
+        run: |
+          echo "========================================="
+          echo "Cleaning Remote PRODUCTION Directory"
+          echo "========================================="
+          echo "⚠️  TARGET: $TARGET_DIR"
+          echo "User: $INSTAGRAM_PROD_USER"
+          echo ""
+
+          ssh -i ~/.ssh/id_rsa \
+              -o StrictHostKeyChecking=no \
+              -o UserKnownHostsFile=/dev/null \
+              "$INSTAGRAM_PROD_USER@$INSTAGRAM_SERVER_HOST" "
+            set -e
+
+            echo \"Current user: \$(whoami)\"
+
+            echo 'Creating directory...'
+            sudo mkdir -p $TARGET_DIR/
+
+            echo 'Removing old files...'
+            sudo rm -rf $TARGET_DIR/* 2>/dev/null || true
+            sudo rm -rf $TARGET_DIR/.??* 2>/dev/null || true
+
+            echo 'Setting ownership for deployment...'
+            CURRENT_USER=\$(whoami)
+            sudo chown -R \$CURRENT_USER:\$CURRENT_USER $TARGET_DIR/
+            sudo chmod -R 755 $TARGET_DIR/
+
+            if [ ! -w $TARGET_DIR/ ]; then
+              echo 'ERROR: Directory not writable!'
+              ls -ld $TARGET_DIR/
+              exit 1
+            fi
+
+            if ! touch $TARGET_DIR/.test_write 2>/dev/null; then
+              echo 'ERROR: Cannot write to directory!'
+              exit 1
+            fi
+            rm -f $TARGET_DIR/.test_write
+
+            echo ''
+            echo '✅ Directory ready for deployment'
+          "
+
+          echo ""
+          echo "✅ Remote PRODUCTION directory prepared for deployment"
+
+      # =========================================================================
+      # DEPLOY WITH RSYNC (browser bundle only — static serving)
+      # =========================================================================
+      - name: 🚀 Deploy with rsync (PRODUCTION)
+        env:
+          INSTAGRAM_SERVER_HOST: ${{ secrets.INSTAGRAM_SERVER_HOST }}
+          INSTAGRAM_PROD_USER: ${{ secrets.INSTAGRAM_PROD_USER }}
+        run: |
+          echo "========================================="
+          echo "Deploying to PRODUCTION Environment"
+          echo "========================================="
+          echo "🚨 TARGET: $APP_URL"
+          echo "⏰ Transfer started at: $(date '+%Y-%m-%d %H:%M:%S')"
+          echo ""
+
+          START_TIME=$(date +%s)
+
+          SOURCE_SIZE=$(du -sh "$DIST_DIR" | cut -f1)
+          echo "📦 Source size: $SOURCE_SIZE"
+          echo ""
+
+          rsync -rlDvz --progress \
+              --compress-level=6 \
+              --stats \
+              --chmod=D755,F644 \
+              -e "ssh -i ~/.ssh/id_rsa \
+                  -o StrictHostKeyChecking=no \
+                  -o UserKnownHostsFile=/dev/null \
+                  -o LogLevel=ERROR \
+                  -o Compression=yes" \
+              "$DIST_DIR/" \
+              "$INSTAGRAM_PROD_USER@$INSTAGRAM_SERVER_HOST:$TARGET_DIR/"
+
+          END_TIME=$(date +%s)
+          DURATION=$((END_TIME - START_TIME))
+
+          echo ""
+          echo "✅ PRODUCTION transfer completed in ${DURATION}s"
+
+      # =========================================================================
+      # FINALIZE DEPLOYMENT
+      # =========================================================================
+      - name: ✅ Finalize PRODUCTION deployment
+        env:
+          INSTAGRAM_SERVER_HOST: ${{ secrets.INSTAGRAM_SERVER_HOST }}
+          INSTAGRAM_PROD_USER: ${{ secrets.INSTAGRAM_PROD_USER }}
+        run: |
+          echo "========================================="
+          echo "Finalizing PRODUCTION Deployment"
+          echo "========================================="
+
+          ssh -i ~/.ssh/id_rsa \
+              -o StrictHostKeyChecking=no \
+              -o UserKnownHostsFile=/dev/null \
+              "$INSTAGRAM_PROD_USER@$INSTAGRAM_SERVER_HOST" "
+            set -e
+
+            echo '🔐 Setting final ownership and permissions...'
+            sudo chown -R www-data:www-data $TARGET_DIR/
+            sudo chmod -R 755 $TARGET_DIR/
+
+            echo ''
+            echo '--- Deployment Verification ---'
+            FILE_COUNT=\$(find $TARGET_DIR -type f | wc -l)
+            TOTAL_SIZE=\$(du -sh $TARGET_DIR | cut -f1)
+            echo \"📊 Files deployed: \$FILE_COUNT\"
+            echo \"📊 Total size: \$TOTAL_SIZE\"
+
+            if [ -f \"$TARGET_DIR/index.html\" ]; then
+                INDEX_SIZE=\$(stat -c%s \"$TARGET_DIR/index.html\")
+                echo \"✅ index.html present (\${INDEX_SIZE} bytes, prerendered landing)\"
+            else
+                echo '❌ WARNING: index.html not found!'
+                exit 1
+            fi
+
+            echo ''
+            echo '🔄 Reloading nginx...'
+            sudo systemctl reload nginx
+            echo '✅ nginx reloaded'
+
+            echo ''
+            echo '--- nginx Status ---'
+            sudo systemctl status nginx --no-pager --lines=5 || true
+          "
+
+          echo ""
+          echo "✅ PRODUCTION deployment finalized successfully"
+
+      # =========================================================================
+      # POST-DEPLOYMENT HEALTH CHECK
+      # =========================================================================
+      - name: 🏥 PRODUCTION Deployment Health Check
+        if: success()
+        run: |
+          echo "========================================="
+          echo "PRODUCTION Post-Deployment Health Check"
+          echo "========================================="
+
+          echo "⏳ Waiting for nginx to stabilize..."
+          sleep 5
+
+          echo "🔍 Testing PRODUCTION application availability..."
+          echo "🌐 URL: $APP_URL"
+          echo ""
+
+          HTTP_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" \
+              -L --max-time 10 \
+              "$APP_URL" 2>/dev/null || echo "000")
+
+          echo "📡 HTTP Response Code: $HTTP_RESPONSE"
+
+          if [ "$HTTP_RESPONSE" = "200" ]; then
+              echo "✅ PRODUCTION application is accessible and responding!"
+              echo ""
+              echo "--- Response Time Analysis ---"
+              curl -w "\
+              DNS Lookup:        %{time_namelookup}s\n\
+              TCP Connection:    %{time_connect}s\n\
+              TLS Handshake:     %{time_appconnect}s\n\
+              Server Processing: %{time_starttransfer}s\n\
+              Total Time:        %{time_total}s\n" \
+                  -o /dev/null -s --max-time 10 \
+                  "$APP_URL" 2>/dev/null || echo "Could not get timing info"
+
+              echo ""
+              echo "--- Content Verification ---"
+              if curl -s --max-time 10 "$APP_URL" | grep -qi "<!doctype html>"; then
+                  echo "✅ HTML content verified"
+              else
+                  echo "⚠️  Warning: Could not verify HTML content"
+              fi
+
+              echo ""
+              echo "--- SSL Certificate Check ---"
+              HOST_ONLY="${APP_URL#https://}"
+              CERT_INFO=$(echo | openssl s_client -connect "$HOST_ONLY:443" -servername "$HOST_ONLY" 2>/dev/null | \
+                  openssl x509 -noout -dates 2>/dev/null || echo "Could not check certificate")
+              echo "$CERT_INFO"
+
+          elif [ "$HTTP_RESPONSE" = "301" ] || [ "$HTTP_RESPONSE" = "302" ]; then
+              echo "⚠️  Redirect detected (HTTP $HTTP_RESPONSE)"
+              FINAL_RESPONSE=$(curl -sL -o /dev/null -w "%{http_code}" "$APP_URL" 2>/dev/null || echo "000")
+              echo "Final response: $FINAL_RESPONSE"
+          elif [ "$HTTP_RESPONSE" = "000" ]; then
+              echo "❌ WARNING: Could not connect to PRODUCTION application"
+              echo "Possible issues: SSL, DNS, firewall, nginx not running"
+              echo "Please check manually: $APP_URL"
+          else
+              echo "⚠️  Warning: PRODUCTION application returned HTTP $HTTP_RESPONSE"
+          fi
+
+          echo ""
+          echo "✅ Health check completed"
+
+      # =========================================================================
+      # CLEANUP
+      # =========================================================================
+      - name: 🧹 Cleanup sensitive data
+        if: always()
+        run: |
+          echo "Cleaning up sensitive data..."
+          rm -f ~/.ssh/id_rsa
+          rm -f ~/.npmrc 2>/dev/null || true
+          echo "✅ Cleanup completed"
+
+      # =========================================================================
+      # DEPLOYMENT STATUS SUMMARY
+      # =========================================================================
+      - name: 📋 PRODUCTION Deployment Summary
+        if: always()
+        run: |
+          echo ""
+          echo "========================================="
+          echo "PRODUCTION DEPLOYMENT SUMMARY"
+          echo "========================================="
+          echo "Environment: PRODUCTION"
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Run Number: ${{ github.run_number }}"
+          echo "Status: ${{ job.status }}"
+          echo "========================================="
+
+          if [ "${{ job.status }}" = "success" ]; then
+              echo "✅ PRODUCTION DEPLOYMENT SUCCESSFUL"
+              echo ""
+              echo "🌐 Application URL: $APP_URL"
+              echo ""
+              echo "🔍 Post-Deployment Checklist:"
+              echo "  □ Visit $APP_URL"
+              echo "  □ Verify application loads correctly"
+              echo "  □ Check browser console for errors"
+              echo "  □ Test critical user flows"
+              echo "  □ Monitor error logs"
+          else
+              echo "❌ PRODUCTION DEPLOYMENT FAILED"
+              echo ""
+              echo "🚨 CRITICAL: Production deployment failed!"
+              echo ""
+              echo "Common issues:"
+              echo "  1. SSH key configuration"
+              echo "  2. Insufficient permissions (check the server's sudoers rules)"
+              echo "  3. Build failures (memory/disk space)"
+              echo "  4. nginx configuration errors"
+              echo ""
+              echo "⚠️  DO NOT proceed until this is resolved!"
+          fi

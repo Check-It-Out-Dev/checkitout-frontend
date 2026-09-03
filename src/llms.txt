@@ -1,0 +1,27 @@
+# Check It Out — influencer-marketing platform & CodeMap AI navigator
+
+> Check It Out connects local businesses with influencers (campaigns,
+> applications, cooperations, subscriptions). The same team ships CodeMap:
+> a graph-navigator AI that answers questions about this 430k-LOC codebase
+> with a 4B local model on a plain CPU — grounded, honest, offline — and a
+> consent-gated Claude API escalation tier.
+
+## Pages
+
+- [Landing](https://checkitout.app/): product overview, pricing, FAQ, team
+- [CodeMap & AI](https://checkitout.app/codemap): the AI application — replay
+  real recorded navigation sessions, the training journey (0/20 closed-book
+  to 0.9752 with abstention 1.0), architectural decisions, install guide
+- [Technical survey](https://checkitout.app/technical-survey): the platform's
+  README written to be read — five chapters with real code and honest numbers
+
+## Source & research
+
+- [graph-theory-system-modeling](https://github.com/Check-It-Out-Dev/graph-theory-system-modeling):
+  the NavigationMaster mathematics + CodeMap application (MIT, end to end)
+- [checkitout-frontend](https://github.com/Check-It-Out-Dev/checkitout-frontend): this frontend
+- [checkitout-backend](https://github.com/Check-It-Out-Dev/checkitout-backend): the Spring Boot backend
+
+## Contact
+
+- Email: norbert_marchewka@checkitout.app

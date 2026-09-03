@@ -1,0 +1,222 @@
+<section class="mx-auto max-w-2xl p-4" data-testid="addresses">
+  @switch (state()) {
+    @case ('loading') {
+      <div class="flex min-h-[40vh] items-center justify-center">
+        <mat-spinner diameter="40" data-testid="addresses-loading"></mat-spinner>
+      </div>
+    }
+    @case ('error') {
+      <div
+        role="alert"
+        data-testid="addresses-error"
+        class="flex flex-col items-center gap-3 rounded-2xl border border-red-200 bg-red-50 px-6 py-10 text-center text-red-700"
+      >
+        <mat-icon class="!h-10 !w-10 !text-4xl">error_outline</mat-icon>
+        <p>{{ 'addresses.error.load_failed' | transloco }}</p>
+        <button mat-stroked-button (click)="load()" data-testid="addresses-retry">
+          {{ 'profile.error.retry' | transloco }}
+        </button>
+      </div>
+    }
+    @case ('loaded') {
+      <div class="flex flex-col gap-5">
+        <header class="flex items-center justify-between">
+          <h1 class="font-display text-3xl font-normal text-ink">
+            {{ 'addresses.title' | transloco }}
+          </h1>
+          @if (!addingMode() && editingId() === null) {
+            <button
+              mat-stroked-button
+              type="button"
+              (click)="startAdd()"
+              data-testid="addresses-add-button"
+            >
+              <mat-icon class="!mr-1">add</mat-icon>
+              {{ 'addresses.add' | transloco }}
+            </button>
+          }
+        </header>
+
+        @if (addresses().length === 0) {
+          <p data-testid="addresses-empty" class="text-sm text-slate2">
+            {{ 'addresses.empty' | transloco }}
+          </p>
+        } @else {
+          <ul role="list" data-testid="addresses-list" class="flex flex-col gap-3">
+            @for (a of addresses(); track a.id) {
+              <li
+                class="flex flex-col gap-1.5 rounded-2xl border border-beige bg-white p-5 transition hover:border-coral-400"
+                [attr.data-testid]="'address-item-' + a.id"
+              >
+                <div class="flex items-start justify-between">
+                  <span class="font-mono text-[10px] uppercase tracking-[0.18em] text-coral-600">
+                    {{ a.addressType || '—' }}
+                  </span>
+                  @if (a.primary) {
+                    <span
+                      class="rounded-full bg-emerald-100 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.18em] text-emerald-700"
+                    >
+                      {{ 'addresses.primary' | transloco }}
+                    </span>
+                  }
+                </div>
+                <div class="text-sm font-medium text-ink">{{ a.street }}</div>
+                <div class="text-sm text-slate2">
+                  {{ a.postalCode }} {{ a.city }}
+                  @if (a.country) {
+                    · {{ a.country }}
+                  }
+                </div>
+                @if (a.additionalInfo) {
+                  <div class="text-xs text-slate2">{{ a.additionalInfo }}</div>
+                }
+                <div class="mt-1 flex justify-end gap-1">
+                  <button
+                    mat-icon-button
+                    type="button"
+                    class="!h-8 !w-8"
+                    (click)="startEdit(a)"
+                    [attr.aria-label]="'addresses.edit' | transloco"
+                    [attr.data-testid]="'address-edit-' + a.id"
+                  >
+                    <mat-icon class="!text-lg">edit</mat-icon>
+                  </button>
+                  <button
+                    mat-icon-button
+                    type="button"
+                    class="!h-8 !w-8"
+                    (click)="armDelete(a)"
+                    [attr.aria-label]="'addresses.delete' | transloco"
+                    [attr.data-testid]="'address-delete-' + a.id"
+                  >
+                    <mat-icon class="!text-lg">delete_outline</mat-icon>
+                  </button>
+                </div>
+                @if (deleteArmedId() === a.id) {
+                  <div
+                    class="flex items-center justify-between gap-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2"
+                    [attr.data-testid]="'address-delete-confirm-' + a.id"
+                  >
+                    <span class="text-xs text-red-800">
+                      {{ 'addresses.delete_confirm_question' | transloco }}
+                    </span>
+                    <span class="flex gap-1">
+                      <button
+                        mat-button
+                        type="button"
+                        (click)="cancelDelete()"
+                        [attr.data-testid]="'address-delete-cancel-' + a.id"
+                      >
+                        {{ 'addresses.delete_cancel' | transloco }}
+                      </button>
+                      <button
+                        mat-flat-button
+                        color="warn"
+                        type="button"
+                        [disabled]="saving()"
+                        (click)="confirmDelete(a)"
+                        [attr.data-testid]="'address-delete-do-' + a.id"
+                      >
+                        {{ 'addresses.delete_do' | transloco }}
+                      </button>
+                    </span>
+                  </div>
+                }
+              </li>
+            }
+          </ul>
+        }
+
+        @if (addingMode() || editingId() !== null) {
+          <form
+            [formGroup]="form"
+            (ngSubmit)="save()"
+            data-testid="addresses-form"
+            class="flex flex-col gap-3 rounded-2xl border border-beige bg-white p-6"
+            novalidate
+          >
+            <h2 class="font-display text-2xl font-normal text-ink">
+              {{ (editingId() !== null ? 'addresses.edit_title' : 'addresses.add') | transloco }}
+            </h2>
+
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'addresses.fields.street' | transloco }}</mat-label>
+              <input matInput formControlName="street" data-testid="addresses-field-street" />
+            </mat-form-field>
+
+            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'addresses.fields.postal_code' | transloco }}</mat-label>
+                <input matInput formControlName="postalCode" data-testid="addresses-field-postal" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'addresses.fields.city' | transloco }}</mat-label>
+                <input matInput formControlName="city" data-testid="addresses-field-city" />
+              </mat-form-field>
+            </div>
+
+            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'addresses.fields.state' | transloco }}</mat-label>
+                <input matInput formControlName="state" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'addresses.fields.country' | transloco }}</mat-label>
+                <input matInput formControlName="country" data-testid="addresses-field-country" />
+              </mat-form-field>
+            </div>
+
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'addresses.fields.type' | transloco }}</mat-label>
+              <mat-select formControlName="addressType" data-testid="addresses-field-type">
+                @for (t of addressTypes; track t) {
+                  <mat-option [value]="t">{{ t }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'addresses.fields.additional' | transloco }}</mat-label>
+              <input matInput formControlName="additionalInfo" />
+            </mat-form-field>
+
+            @if (saveErrorKey(); as key) {
+              <div
+                role="alert"
+                data-testid="addresses-save-error"
+                class="rounded-2xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+              >
+                {{ key | transloco }}
+              </div>
+            }
+
+            <div class="flex justify-end gap-2">
+              <button
+                mat-stroked-button
+                type="button"
+                (click)="cancelAdd()"
+                [disabled]="saving()"
+                data-testid="addresses-cancel"
+              >
+                {{ 'profile.edit.cancel' | transloco }}
+              </button>
+              <button
+                mat-flat-button
+                color="primary"
+                type="submit"
+                [disabled]="saving() || form.invalid"
+                data-testid="addresses-save"
+              >
+                @if (saving()) {
+                  <mat-spinner diameter="18" class="mx-auto"></mat-spinner>
+                } @else {
+                  {{ 'addresses.save' | transloco }}
+                }
+              </button>
+            </div>
+          </form>
+        }
+      </div>
+    }
+  }
+</section>

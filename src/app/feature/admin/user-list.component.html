@@ -1,0 +1,126 @@
+<section class="mx-auto max-w-5xl p-4" data-testid="admin-user-list">
+  <header class="mb-6">
+    <h1 class="font-display text-4xl font-normal text-ink">
+      {{ 'admin_users.title' | transloco }}
+    </h1>
+    <p class="mt-2 text-slate2">{{ 'admin_users.subtitle' | transloco }}</p>
+  </header>
+
+  <!-- Filters -->
+  <div class="mb-4 flex flex-wrap items-end gap-3">
+    <mat-form-field appearance="outline" class="min-w-[220px] flex-1">
+      <mat-label>{{ 'admin_users.filters.search' | transloco }}</mat-label>
+      <input
+        matInput
+        [formControl]="search"
+        (keyup.enter)="applyFilters()"
+        data-testid="admin-user-list-search"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-44">
+      <mat-label>{{ 'admin_users.filters.type' | transloco }}</mat-label>
+      <mat-select [formControl]="userType" data-testid="admin-user-list-type">
+        @for (option of typeOptions; track option) {
+          <mat-option [value]="option">
+            {{ option || ('admin_users.filters.all' | transloco) }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-44">
+      <mat-label>{{ 'admin_users.filters.status' | transloco }}</mat-label>
+      <mat-select [formControl]="accountStatus" data-testid="admin-user-list-status">
+        @for (option of statusOptions; track option) {
+          <mat-option [value]="option">
+            {{ option || ('admin_users.filters.all' | transloco) }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <button
+      mat-flat-button
+      class="mb-[22px]"
+      color="primary"
+      (click)="applyFilters()"
+      data-testid="admin-user-list-apply"
+    >
+      {{ 'admin_users.filters.apply' | transloco }}
+    </button>
+  </div>
+
+  @switch (state()) {
+    @case ('loading') {
+      <div class="flex min-h-[40vh] items-center justify-center">
+        <mat-spinner diameter="40" data-testid="admin-user-list-loading" />
+      </div>
+    }
+    @case ('error') {
+      <div
+        role="alert"
+        data-testid="admin-user-list-error"
+        class="flex flex-col items-center gap-3 rounded-2xl border border-red-200 bg-red-50 px-6 py-10 text-center text-red-700"
+      >
+        <mat-icon class="!h-10 !w-10 !text-4xl">error_outline</mat-icon>
+        <p>{{ 'admin_users.error.load_failed' | transloco }}</p>
+        <button mat-stroked-button (click)="load()" data-testid="admin-user-list-retry">
+          {{ 'admin_users.error.retry' | transloco }}
+        </button>
+      </div>
+    }
+    @case ('empty') {
+      <div
+        class="flex flex-col items-center gap-4 rounded-2xl border border-beige bg-cream px-6 py-14 text-center"
+        data-testid="admin-user-list-empty"
+      >
+        <span class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-coral-50">
+          <mat-icon class="!h-8 !w-8 !text-3xl text-coral-500">group_off</mat-icon>
+        </span>
+        <p class="font-display text-xl text-ink">{{ 'admin_users.empty' | transloco }}</p>
+      </div>
+    }
+    @case ('loaded') {
+      <ul class="flex list-none flex-col gap-3 pl-0" data-testid="admin-user-list-rows">
+        @for (user of users(); track user.id) {
+          <li
+            class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-beige bg-white p-4"
+            data-testid="admin-user-list-row"
+          >
+            <div class="min-w-0">
+              <p class="truncate font-display text-lg text-ink">{{ displayName(user) }}</p>
+              <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                {{ user.email }} · #{{ user.id }}
+              </p>
+            </div>
+            <div class="flex items-center gap-2">
+              <span
+                class="rounded-full px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em]"
+                [ngClass]="typeChipClass($safeNavigationMigration(user.userType?.value))"
+                data-testid="admin-user-list-type-chip"
+              >
+                {{ user.userType?.label || user.userType?.value }}
+              </span>
+              <span
+                class="rounded-full px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em]"
+                [ngClass]="statusChipClass($safeNavigationMigration(user.accountStatus?.value))"
+                data-testid="admin-user-list-status-chip"
+              >
+                {{ user.accountStatus?.label || user.accountStatus?.value }}
+              </span>
+            </div>
+          </li>
+        }
+      </ul>
+
+      <mat-paginator
+        class="mt-4"
+        [length]="totalElements()"
+        [pageIndex]="pageIndex()"
+        [pageSize]="pageSize"
+        [hidePageSize]="true"
+        [showFirstLastButtons]="true"
+        (page)="onPage($event)"
+        data-testid="admin-user-list-paginator"
+      />
+    }
+  }
+</section>

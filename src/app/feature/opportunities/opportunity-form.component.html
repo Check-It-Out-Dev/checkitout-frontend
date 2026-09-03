@@ -1,0 +1,419 @@
+<section class="mx-auto w-full max-w-3xl p-4 md:p-6">
+  @if (state() === 'loading') {
+    <div class="flex items-center justify-center py-16" data-testid="opp-form-loading">
+      <mat-spinner diameter="32"></mat-spinner>
+    </div>
+  } @else if (state() === 'not-found') {
+    <div
+      data-testid="opp-form-not-found"
+      class="flex flex-col items-center gap-3 rounded-2xl border border-beige bg-cream p-10 text-center"
+    >
+      <span class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-coral-50">
+        <mat-icon class="!h-8 !w-8 !text-3xl text-coral-500">search_off</mat-icon>
+      </span>
+      <h1 class="font-display text-3xl font-normal text-ink">
+        {{ 'opportunities.form.not_found_title' | transloco }}
+      </h1>
+      <a mat-stroked-button routerLink="/collaborations/list" class="!mt-2">
+        {{ 'opportunities.form.back_to_list' | transloco }}
+      </a>
+    </div>
+  } @else {
+    <header class="mb-5 flex flex-col gap-3">
+      <a
+        mat-stroked-button
+        routerLink="/collaborations/list"
+        class="!w-fit"
+        data-testid="opp-form-back"
+      >
+        <mat-icon>arrow_back</mat-icon>
+        {{ 'opportunities.form.back_to_list' | transloco }}
+      </a>
+      <h1 class="font-display text-4xl font-normal text-ink" data-testid="opp-form-title">
+        {{
+          (isEdit() ? 'opportunities.form.title_edit' : 'opportunities.form.title_create')
+            | transloco
+        }}
+      </h1>
+    </header>
+
+    <form
+      [formGroup]="form"
+      (ngSubmit)="submit()"
+      class="flex flex-col gap-4"
+      novalidate
+      data-testid="opp-form"
+    >
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'opportunities.form.field.name' | transloco }}</mat-label>
+        <input matInput formControlName="name" maxlength="255" data-testid="opp-form-name" />
+        @if (form.controls.name.touched && form.controls.name.hasError('required')) {
+          <mat-error>{{ 'opportunities.form.error.name_required' | transloco }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'opportunities.form.field.title' | transloco }}</mat-label>
+        <input
+          matInput
+          formControlName="title"
+          maxlength="255"
+          data-testid="opp-form-title-input"
+        />
+        @if (form.controls.title.touched && form.controls.title.hasError('required')) {
+          <mat-error>{{ 'opportunities.form.error.title_required' | transloco }}</mat-error>
+        }
+      </mat-form-field>
+
+      <fieldset class="rounded-2xl border border-beige bg-cream p-5">
+        <legend class="px-2 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+          {{ 'opportunities.form.address.legend' | transloco }}
+        </legend>
+
+        <mat-form-field appearance="outline" class="!w-full">
+          <mat-label>{{ 'opportunities.form.field.street' | transloco }}</mat-label>
+          <input matInput formControlName="street" maxlength="255" data-testid="opp-form-street" />
+          @if (form.controls.street.touched && form.controls.street.hasError('required')) {
+            <mat-error>{{ 'opportunities.form.error.street_required' | transloco }}</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="flex flex-col gap-3 sm:flex-row">
+          <mat-form-field appearance="outline" class="flex-1">
+            <mat-label>{{ 'opportunities.form.field.city' | transloco }}</mat-label>
+            <input matInput formControlName="city" maxlength="120" data-testid="opp-form-city" />
+            @if (form.controls.city.touched && form.controls.city.hasError('required')) {
+              <mat-error>{{ 'opportunities.form.error.city_required' | transloco }}</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="flex-1">
+            <mat-label>{{ 'opportunities.form.field.postal_code' | transloco }}</mat-label>
+            <input
+              matInput
+              formControlName="postalCode"
+              maxlength="20"
+              data-testid="opp-form-postal-code"
+            />
+            @if (
+              form.controls.postalCode.touched && form.controls.postalCode.hasError('required')
+            ) {
+              <mat-error>
+                {{ 'opportunities.form.error.postal_code_required' | transloco }}
+              </mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="flex-1">
+            <mat-label>{{ 'opportunities.form.field.country' | transloco }}</mat-label>
+            <input
+              matInput
+              formControlName="country"
+              maxlength="100"
+              data-testid="opp-form-country"
+            />
+            @if (form.controls.country.touched && form.controls.country.hasError('required')) {
+              <mat-error>{{ 'opportunities.form.error.country_required' | transloco }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </fieldset>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'opportunities.form.field.details' | transloco }}</mat-label>
+        <textarea
+          matInput
+          rows="4"
+          formControlName="details"
+          maxlength="2000"
+          data-testid="opp-form-details"
+        ></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'opportunities.form.field.requirements' | transloco }}</mat-label>
+        <textarea
+          matInput
+          rows="3"
+          formControlName="requirements"
+          maxlength="2000"
+          data-testid="opp-form-requirements"
+        ></textarea>
+      </mat-form-field>
+
+      <fieldset class="rounded-2xl border border-beige bg-cream p-5">
+        <legend class="px-2 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+          {{ 'opportunities.form.compensation.legend' | transloco }}
+        </legend>
+
+        <mat-radio-group
+          formControlName="compensationType"
+          class="!flex !flex-row !gap-6"
+          data-testid="opp-form-comp-type"
+        >
+          @for (type of compensationTypes; track type) {
+            <mat-radio-button [value]="type">
+              {{ 'opportunities.form.compensation.' + type | transloco }}
+            </mat-radio-button>
+          }
+        </mat-radio-group>
+
+        <div class="mt-4 flex flex-col gap-3 sm:flex-row">
+          <mat-form-field appearance="outline" class="flex-1">
+            <mat-label>{{ 'opportunities.form.field.amount_min' | transloco }}</mat-label>
+            <input
+              matInput
+              type="number"
+              min="0"
+              formControlName="compensationAmountMin"
+              data-testid="opp-form-amount-min"
+            />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="flex-1">
+            <mat-label>{{ 'opportunities.form.field.amount_max' | transloco }}</mat-label>
+            <input
+              matInput
+              type="number"
+              min="0"
+              formControlName="compensationAmountMax"
+              data-testid="opp-form-amount-max"
+            />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="flex-1">
+            <mat-label>{{ 'opportunities.form.field.currency' | transloco }}</mat-label>
+            <mat-select formControlName="currency" data-testid="opp-form-currency">
+              <mat-option [value]="null">—</mat-option>
+              @for (c of currencies(); track c.id) {
+                <mat-option [value]="c.id">{{ c.isoCode || c.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="!w-full">
+          <mat-label>
+            {{ 'opportunities.form.field.compensation_description' | transloco }}
+          </mat-label>
+          <textarea
+            matInput
+            rows="2"
+            formControlName="compensationDescription"
+            maxlength="1000"
+            data-testid="opp-form-comp-description"
+          ></textarea>
+        </mat-form-field>
+      </fieldset>
+
+      <fieldset class="rounded-2xl border border-beige bg-cream p-5">
+        <legend class="px-2 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+          {{ 'opportunities.form.classification.legend' | transloco }}
+        </legend>
+        <div class="flex flex-col gap-3 sm:flex-row">
+          <mat-form-field appearance="outline" class="flex-1">
+            <mat-label>{{ 'opportunities.form.field.service_type' | transloco }}</mat-label>
+            <mat-select formControlName="serviceType" data-testid="opp-form-service-type">
+              <mat-option [value]="null">—</mat-option>
+              @for (s of serviceTypes(); track s.id) {
+                <mat-option [value]="s.id">{{ s.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="flex-1">
+            <mat-label>{{ 'opportunities.form.field.platforms' | transloco }}</mat-label>
+            <mat-select formControlName="platforms" multiple data-testid="opp-form-platforms">
+              @for (p of platforms(); track p.id) {
+                <mat-option [value]="p.id">{{ p.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="flex-1">
+            <mat-label>{{ 'opportunities.form.field.content_types' | transloco }}</mat-label>
+            <mat-select
+              formControlName="contentTypes"
+              multiple
+              data-testid="opp-form-content-types"
+            >
+              @for (ct of contentTypes(); track ct.id) {
+                <mat-option [value]="ct.id">{{ ct.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </fieldset>
+
+      <fieldset class="rounded-2xl border border-beige bg-cream p-5">
+        <legend class="px-2 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+          {{ 'opportunities.form.audience.legend' | transloco }}
+        </legend>
+        <div class="flex flex-col gap-3 sm:flex-row">
+          <mat-form-field appearance="outline" class="flex-1">
+            <mat-label>{{ 'opportunities.form.field.followers_min' | transloco }}</mat-label>
+            <input
+              matInput
+              type="number"
+              min="0"
+              formControlName="followersMin"
+              data-testid="opp-form-followers-min"
+            />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="flex-1">
+            <mat-label>{{ 'opportunities.form.field.followers_max' | transloco }}</mat-label>
+            <input
+              matInput
+              type="number"
+              min="0"
+              formControlName="followersMax"
+              data-testid="opp-form-followers-max"
+            />
+          </mat-form-field>
+        </div>
+        @if (form.hasError('followersRange')) {
+          <p role="alert" class="mt-1 text-sm text-red-600" data-testid="opp-form-followers-error">
+            {{ 'opportunities.form.error.followers_range' | transloco }}
+          </p>
+        }
+      </fieldset>
+
+      <fieldset class="rounded-2xl border border-beige bg-cream p-5">
+        <legend class="px-2 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+          {{ 'opportunities.form.schedule.legend' | transloco }}
+        </legend>
+        <div class="flex flex-col gap-3 sm:flex-row">
+          <mat-form-field appearance="outline" class="flex-1">
+            <mat-label>{{ 'opportunities.form.field.start_date' | transloco }}</mat-label>
+            <input
+              matInput
+              [matDatepicker]="startPicker"
+              formControlName="startDate"
+              data-testid="opp-form-start-date"
+            />
+            <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
+            <mat-datepicker #startPicker></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="flex-1">
+            <mat-label>{{ 'opportunities.form.field.end_date' | transloco }}</mat-label>
+            <input
+              matInput
+              [matDatepicker]="endPicker"
+              formControlName="endDate"
+              data-testid="opp-form-end-date"
+            />
+            <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
+            <mat-datepicker #endPicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        @if (form.hasError('dateOrder')) {
+          <p role="alert" class="mt-1 text-sm text-red-600" data-testid="opp-form-date-error">
+            {{ 'opportunities.form.error.date_order' | transloco }}
+          </p>
+        }
+      </fieldset>
+
+      <fieldset class="rounded-2xl border border-beige bg-cream p-5">
+        <legend class="px-2 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+          {{ 'opportunities.form.photos.legend' | transloco }}
+        </legend>
+        @if (photos().length > 0) {
+          <ul role="list" class="flex flex-wrap gap-3" data-testid="opp-form-photos">
+            @for (photo of photos(); track photo.previewUrl; let i = $index) {
+              <li class="relative">
+                <img
+                  [src]="photo.previewUrl"
+                  [alt]="'opportunities.form.photos.alt' | transloco: { index: i + 1 }"
+                  class="h-24 w-24 rounded-xl border border-beige object-cover"
+                  [attr.data-testid]="'opp-form-photo-' + i"
+                />
+                @if (i === 0) {
+                  <span
+                    class="absolute bottom-1 left-1 rounded-full bg-navy-900/80 px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.14em] text-cream"
+                  >
+                    {{ 'opportunities.form.photos.cover' | transloco }}
+                  </span>
+                }
+                <button
+                  mat-icon-button
+                  type="button"
+                  class="!absolute -right-2 -top-2 !h-7 !w-7 !bg-white !shadow"
+                  (click)="removePhoto(i)"
+                  [attr.aria-label]="'opportunities.form.photos.remove' | transloco"
+                  [attr.data-testid]="'opp-form-photo-remove-' + i"
+                >
+                  <mat-icon class="!h-4 !w-4 !text-base">close</mat-icon>
+                </button>
+              </li>
+            }
+          </ul>
+        }
+        <div class="mt-3 flex items-center gap-3">
+          <button
+            mat-stroked-button
+            type="button"
+            [disabled]="uploadingPhoto() || photos().length >= MAX_PHOTOS"
+            (click)="photoInput.click()"
+            data-testid="opp-form-photo-add"
+          >
+            @if (uploadingPhoto()) {
+              <mat-spinner diameter="18" class="!inline-block" />
+            } @else {
+              {{ 'opportunities.form.photos.add' | transloco }}
+            }
+          </button>
+          <input
+            #photoInput
+            type="file"
+            accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+            class="hidden"
+            (change)="onPhotoSelected($event)"
+            data-testid="opp-form-photo-input"
+          />
+          <span class="text-xs text-slate2">
+            {{ 'opportunities.form.photos.hint' | transloco }}
+          </span>
+        </div>
+        @if (photoErrorKey(); as ek) {
+          <p role="alert" class="mt-2 text-sm text-red-600" data-testid="opp-form-photo-error">
+            {{ ek | transloco }}
+          </p>
+        }
+      </fieldset>
+
+      <div class="flex items-center justify-between">
+        <mat-slide-toggle formControlName="active" data-testid="opp-form-active">
+          {{ 'opportunities.form.field.active' | transloco }}
+        </mat-slide-toggle>
+      </div>
+
+      @if (errorKey(); as key) {
+        <div
+          role="alert"
+          data-testid="opp-form-error"
+          class="rounded-2xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+        >
+          {{ key | transloco }}
+        </div>
+      }
+
+      <div class="flex justify-end gap-2">
+        <a mat-stroked-button routerLink="/collaborations/list" data-testid="opp-form-cancel">
+          {{ 'opportunities.form.cancel' | transloco }}
+        </a>
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          [disabled]="isSubmitting() || form.invalid"
+          data-testid="opp-form-submit"
+        >
+          @if (isSubmitting()) {
+            <mat-spinner diameter="18" class="mx-auto"></mat-spinner>
+          } @else {
+            {{
+              (isEdit() ? 'opportunities.form.submit_edit' : 'opportunities.form.submit_create')
+                | transloco
+            }}
+          }
+        </button>
+      </div>
+    </form>
+  }
+</section>

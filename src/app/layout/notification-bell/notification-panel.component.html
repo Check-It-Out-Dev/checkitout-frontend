@@ -1,0 +1,112 @@
+<div class="flex w-[380px] max-w-[92vw] flex-col" data-testid="notification-panel">
+  <div class="flex items-center justify-between border-b border-beige px-4 py-3">
+    <h2 class="font-display text-xl font-normal text-ink">
+      {{ 'notifications.title' | transloco }}
+    </h2>
+    <button
+      mat-icon-button
+      type="button"
+      (click)="markAll($event)"
+      [disabled]="center.unreadCount() === 0"
+      [attr.aria-label]="'notifications.mark_all_read' | transloco"
+      [title]="'notifications.mark_all_read' | transloco"
+      data-testid="notifications-mark-all"
+    >
+      <mat-icon>done_all</mat-icon>
+    </button>
+  </div>
+
+  @if (center.loadError()) {
+    <p
+      role="alert"
+      class="px-4 py-6 text-center text-sm text-red-700"
+      data-testid="notifications-error"
+    >
+      {{ 'notifications.load_failed' | transloco }}
+    </p>
+  } @else if (center.items().length === 0 && !center.loading()) {
+    <div
+      class="flex flex-col items-center gap-2 px-4 py-8 text-center"
+      data-testid="notifications-empty"
+    >
+      <mat-icon class="!h-8 !w-8 !text-3xl text-slate-300">notifications_none</mat-icon>
+      <p class="text-sm text-slate2">{{ 'notifications.empty' | transloco }}</p>
+    </div>
+  } @else {
+    <ul class="max-h-[420px] overflow-y-auto" role="list" data-testid="notifications-list">
+      @for (n of center.items(); track n.id) {
+        <li
+          class="group flex cursor-pointer gap-3 border-b border-beige/60 px-4 py-3 transition hover:bg-cream focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-coral-500"
+          [class.bg-coral-50]="!n.isRead"
+          tabindex="0"
+          [attr.data-testid]="'notification-' + n.id"
+          (click)="open(n, $event)"
+          (keydown.enter)="$event.target === $event.currentTarget && open(n, $event)"
+        >
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center gap-2">
+              @if (!n.isRead) {
+                <span
+                  class="h-2 w-2 shrink-0 rounded-full bg-coral-500"
+                  data-testid="unread-dot"
+                ></span>
+              }
+              <span class="truncate text-sm font-medium text-ink">{{ n.title }}</span>
+            </div>
+            @if (n.message) {
+              <p class="mt-0.5 line-clamp-2 text-xs text-slate2">{{ n.message }}</p>
+            }
+            <p class="mt-1 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+              <span class="mr-1 rounded-full px-1.5 py-0.5" [class]="categoryChipClass(n.category)">
+                {{ n.category }}
+              </span>
+              {{ n.createdAt | date: 'short' }}
+            </p>
+          </div>
+          <div
+            class="flex shrink-0 items-start gap-0.5 opacity-0 transition group-hover:opacity-100"
+          >
+            @if (!n.isRead) {
+              <button
+                mat-icon-button
+                type="button"
+                class="!h-8 !w-8"
+                (click)="markRead(n, $event)"
+                [attr.aria-label]="'notifications.mark_read' | transloco"
+                [attr.data-testid]="'notification-read-' + n.id"
+              >
+                <mat-icon class="!text-lg">done</mat-icon>
+              </button>
+            }
+            <button
+              mat-icon-button
+              type="button"
+              class="!h-8 !w-8"
+              (click)="archive(n, $event)"
+              [attr.aria-label]="'notifications.archive' | transloco"
+              [attr.data-testid]="'notification-archive-' + n.id"
+            >
+              <mat-icon class="!text-lg">close</mat-icon>
+            </button>
+          </div>
+        </li>
+      }
+    </ul>
+
+    @if (center.loading()) {
+      <div class="flex justify-center py-3" data-testid="notifications-loading">
+        <mat-spinner diameter="22"></mat-spinner>
+      </div>
+    } @else if (center.hasMore()) {
+      <button
+        mat-button
+        type="button"
+        class="!m-2 !text-coral-600"
+        (click)="loadMore($event)"
+        data-testid="notifications-load-more"
+      >
+        {{ 'notifications.load_more' | transloco }}
+      </button>
+    }
+  }
+</div>

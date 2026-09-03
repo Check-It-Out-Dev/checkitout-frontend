@@ -1,0 +1,51 @@
+{
+  "$schema": "https://raw.githubusercontent.com/OpenAPITools/openapi-generator-cli/master/apps/generator-cli/src/config.schema.json",
+  "$comment": [
+    "Greenfield FE OpenAPI codegen config.",
+    "Drop at checkitout-fe-greenfield/openapitools.json.",
+    "Run via npm script: { \"openapi:gen\": \"openapi-generator-cli generate\" }.",
+    "Generates a typed Angular HttpClient against the SOTA spec at",
+    "../checkitout-backend/docs/openapi/openapi.json (BE repo sibling).",
+    "",
+    "Why these config choices:",
+    " - typescript-angular: matches the framework chosen in 01-ARCHITECTURE.md",
+    " - ngVersion 17.2.4: matches legacy FE; Material 17+ stack",
+    " - providedIn=root: services are tree-shakable",
+    " - stringEnums=true: TS string-literal enums, not numeric — matches BE",
+    " - serviceFileSuffix=.api: avoids collision with Material's .service files",
+    " - useSingleRequestParameter=true: each operation accepts one param object,",
+    "   typesafe and stable across BE-side optional-param additions",
+    " - basePath=/api: matches the production base URL",
+    " - withInterfaces=true: emits Service interfaces for unit-test mocking"
+  ],
+  "spaces": 2,
+  "generator-cli": {
+    "version": "7.10.0"
+  },
+  "generators": {
+    "checkitout-api": {
+      "generatorName": "typescript-angular",
+      "inputSpec": "../checkitout-backend/docs/openapi/openapi.json",
+      "output": "src/app/api",
+      "additionalProperties": {
+        "ngVersion": "17.2.4",
+        "providedIn": "root",
+        "stringEnums": true,
+        "serviceFileSuffix": ".api",
+        "useSingleRequestParameter": true,
+        "withInterfaces": true,
+        "modelPropertyNaming": "original",
+        "supportsES6": true,
+        "fileNaming": "kebab-case",
+        "enumPropertyNaming": "UPPERCASE"
+      },
+      "globalProperty": {
+        "models": "",
+        "modelDocs": "false",
+        "apis": "",
+        "apiDocs": "false",
+        "supportingFiles": "true"
+      }
+    }
+  }
+}

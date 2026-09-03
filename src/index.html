@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>checkItOut — influencer marketing for local businesses</title>
+    <base href="/" />
+    <!--
+      Single viewport meta tag (ported from legacy CIO-310).
+      - No maximum-scale: pinch-to-zoom is unbounded, so low-vision users
+        can enlarge content (WCAG 1.4.4 Resize Text; Lighthouse
+        meta-viewport, the heaviest a11y audit). The legacy
+        maximum-scale=1.0 zoom cap was dropped — it failed that audit.
+      - iOS Safari auto-zoom on input focus is prevented the correct way,
+        via ≥16px input text (Angular Material's default body typography —
+        material-theme.scss overrides only the serif headline levels),
+        NOT by capping the whole page's zoom.
+      - height=device-height keeps position:fixed elements sized correctly.
+      Do NOT add another viewport meta tag — it will override this one.
+    -->
+    <meta
+      name="viewport"
+      content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=yes"
+    />
+    <meta
+      name="description"
+      content="checkItOut connects local businesses with influencers — campaign marketplace, content review, payout coordination."
+    />
+    <meta name="author" content="checkItOut" />
+    <meta name="robots" content="index, follow" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <!-- ?v= is the i18n content-hash cache-buster — must match the loader's
+         URL (i18n-version.ts) or the preload never pairs with the fetch.
+         Stamped by tools/i18n-cache-buster.mjs; gate-enforced. -->
+    <link
+      rel="preload"
+      href="assets/i18n/pl.json?v=de6eeb15f155"
+      as="fetch"
+      crossorigin="anonymous"
+    />
+    <!-- ALL EIGHT above-the-fold fonts are preloaded (iter-107): serif
+         roman+italic (h1 + highlight), Albert Sans latin+latin-ext (body,
+         PL diacritics: ź/ę/…), JetBrains Mono latin+latin-ext (eyebrows,
+         lang button), Material Icons subset. A font NOT preloaded here is
+         layout-triggered — Chrome requests it only after CSS parse +
+         first layout, which measured ~450 ms of simulated slow-4G FCP
+         (ssr13 vs ssr14 in docs/parity-review/lighthouse-2026-09-02).
+         font-display: optional keeps them non-blocking; preloading just
+         guarantees they win the optional first-render window. -->
+    <link
+      rel="preload"
+      href="assets/fonts/instrumentserif_v5_jizBRFtNs2ka5fXjeivQ4LroWlx-6zsTjmbI.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="preload"
+      href="assets/fonts/instrumentserif_v5_jizBRFtNs2ka5fXjeivQ4LroWlx-6zUTjg.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="preload"
+      href="assets/fonts/albertsans_v4_i7dOIFdwYjGaAMFtZd_QA1ZVYFeCGg.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="preload"
+      href="assets/fonts/albertsans_v4_i7dOIFdwYjGaAMFtZd_QA1ZbYFc.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="preload"
+      href="assets/fonts/instrumentserif_v5_jizHRFtNs2ka5fXjeivQ4LroWlx-6zAjjH7M.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="preload"
+      href="assets/fonts/jetbrainsmono_v24_tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwg.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="preload"
+      href="assets/fonts/jetbrainsmono_v24_tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx7cwhsk.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin="anonymous"
+    />
+    <!-- Material Icons is a ~6 KB SUBSET (tools/subset-material-icons.mjs)
+         cut to the ligature names the app uses — the full 129 KB font cost
+         ~1 s of simulated slow-4G LCP whether preloaded or discovered from
+         the inlined critical CSS. At 6 KB the preload is a free guarantee
+         against icon pop-in. -->
+    <!-- href carries the same ?v=<font-hash> cache-buster as the @font-face
+         url() in styles.scss; without it the preloaded URL never matches the
+         CSS request → "preloaded but not used" console warning + a wasted
+         double-fetch. tools/subset-material-icons.mjs stamps + gates both. -->
+    <link
+      rel="preload"
+      href="assets/fonts/materialicons_v145_subset.woff2?v=06533991790b"
+      as="font"
+      type="font/woff2"
+      crossorigin="anonymous"
+    />
+    <!-- Deep-link guard (iter-107): the static host serves the prerendered
+         landing HTML for EVERY path; on a non-"/" deep link this hides the
+         prerendered landing until the client router renders the real page.
+         AppComponent removes the class after the first render. -->
+    <script>
+      if (location.pathname !== '/') document.documentElement.classList.add('csr-deep-link');
+    </script>
+    <style>
+      .csr-deep-link app-root > * {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <app-root></app-root>
+  </body>
+</html>

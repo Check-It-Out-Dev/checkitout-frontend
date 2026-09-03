@@ -1,0 +1,153 @@
+<section class="mx-auto max-w-4xl p-4" data-testid="applied-opportunities-list">
+  <header class="mb-6 flex items-center justify-between">
+    <h1 class="font-display text-4xl font-normal text-ink">
+      {{ 'applied_opportunities.list.title' | transloco }}
+    </h1>
+  </header>
+
+  <mat-tab-group
+    ngSkipHydration
+    class="mb-4"
+    [selectedIndex]="activeTabIndex()"
+    (selectedIndexChange)="setTabFromIndex($event)"
+    data-testid="applied-opportunities-tabs"
+  >
+    <mat-tab>
+      <ng-template mat-tab-label>
+        {{ 'applied_opportunities.list.tabs.in_progress' | transloco }}
+        ({{ inProgressCount() }})
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        {{ 'applied_opportunities.list.tabs.applications' | transloco }}
+        ({{ applicationsCount() }})
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        {{ 'applied_opportunities.list.tabs.completed' | transloco }}
+        ({{ completedCount() }})
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+
+  @switch (state()) {
+    @case ('loading') {
+      <div class="flex min-h-[40vh] items-center justify-center">
+        <mat-spinner diameter="40" data-testid="applied-opportunities-list-loading" />
+      </div>
+    }
+    @case ('error') {
+      <div
+        role="alert"
+        data-testid="applied-opportunities-list-error"
+        class="flex flex-col items-center gap-3 rounded-2xl border border-red-200 bg-red-50 px-6 py-10 text-center text-red-700"
+      >
+        <mat-icon class="!h-10 !w-10 !text-4xl">error_outline</mat-icon>
+        <p>{{ 'applied_opportunities.list.error.load_failed' | transloco }}</p>
+        <button mat-stroked-button (click)="load()" data-testid="applied-opportunities-list-retry">
+          {{ 'applied_opportunities.list.error.retry' | transloco }}
+        </button>
+      </div>
+    }
+    @case ('empty') {
+      <div
+        class="flex flex-col items-center gap-4 rounded-2xl border border-beige bg-cream px-6 py-14 text-center"
+        data-testid="applied-opportunities-list-empty"
+      >
+        <span class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-coral-50">
+          <mat-icon class="!h-8 !w-8 !text-3xl text-coral-500">inbox</mat-icon>
+        </span>
+        <p class="font-display text-2xl font-normal text-ink">
+          {{ 'applied_opportunities.list.empty' | transloco }}
+        </p>
+        <a
+          class="cta-primary inline-flex"
+          routerLink="/collaborations/list"
+          data-testid="applied-opportunities-list-browse"
+        >
+          {{ 'applied_opportunities.list.browse' | transloco }}
+        </a>
+      </div>
+    }
+    @case ('loaded') {
+      @if (visibleItems().length === 0) {
+        <div
+          class="flex flex-col items-center gap-3 rounded-2xl border border-beige bg-cream px-6 py-14 text-center text-slate2"
+          data-testid="applied-opportunities-tab-empty"
+        >
+          <mat-icon class="!h-10 !w-10 !text-4xl text-slate2">inbox</mat-icon>
+          <p>{{ 'applied_opportunities.list.tab_empty' | transloco }}</p>
+        </div>
+      } @else {
+        <ul
+          class="flex flex-col divide-y divide-beige rounded-2xl border border-beige bg-white"
+          role="list"
+          data-testid="applied-opportunities-list-items"
+        >
+          @for (a of visibleItems(); track a.id) {
+            <li>
+              <a
+                [routerLink]="['/collaborations/registrations', a.id]"
+                [attr.data-testid]="'applied-opportunity-row-' + a.id"
+                class="flex items-start justify-between gap-3 p-5 transition hover:bg-cream focus:outline-none focus:ring-2 focus:ring-coral-500"
+              >
+                <div class="flex flex-col">
+                  <h2 class="font-display text-xl font-normal text-ink">
+                    {{
+                      a.partnershipOpportunity?.title ||
+                        a.partnershipOpportunity?.name ||
+                        ('applied_opportunities.list.untitled' | transloco)
+                    }}
+                  </h2>
+                  <p class="mt-1 font-mono text-[11px] uppercase tracking-[0.18em] text-slate2">
+                    {{ 'applied_opportunities.list.applied_on' | transloco }}
+                    {{ a.createdTime | date: 'mediumDate' }}
+                    @if (a.executionDate) {
+                      <span class="ml-2">
+                        ·
+                        {{ 'applied_opportunities.list.execution_date' | transloco }}
+                        {{ a.executionDate | date: 'mediumDate' }}
+                      </span>
+                    }
+                  </p>
+                  @if (a.note) {
+                    <p
+                      class="mt-2 line-clamp-1 max-w-prose text-xs text-slate2"
+                      [attr.data-testid]="'applied-opportunity-note-' + a.id"
+                    >
+                      {{ a.note }}
+                    </p>
+                  }
+                </div>
+
+                @if (a.opportunityStatus?.value) {
+                  <span
+                    [class]="
+                      statusBadgeClass($safeNavigationMigration(a.opportunityStatus?.value)) +
+                      ' shrink-0 rounded-full px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em]'
+                    "
+                    [attr.data-testid]="'applied-opportunity-status-' + a.id"
+                  >
+                    {{ a.opportunityStatus?.label || a.opportunityStatus?.value }}
+                  </span>
+                }
+              </a>
+            </li>
+          }
+        </ul>
+
+        <mat-paginator
+          class="mt-4 !bg-transparent"
+          [length]="totalElements()"
+          [pageIndex]="pageIndex()"
+          [pageSize]="pageSize()"
+          [pageSizeOptions]="[10, 20, 50]"
+          (page)="onPage($event)"
+          data-testid="applied-opportunities-list-paginator"
+        />
+      }
+    }
+  }
+</section>

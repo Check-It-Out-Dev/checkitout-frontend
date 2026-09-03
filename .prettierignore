@@ -1,0 +1,20 @@
+# Generated artifacts — never reformat
+/dist
+/coverage
+/test-results
+/playwright-report
+/.angular
+/out-tsc
+/src/app/api
+/src/mockServiceWorker.js
+# BE-generated contract copy — byte-lockstep with checkitout-backend/docs/openapi
+/docs/openapi/openapi.json
+
+# Dependency tree
+/node_modules
+
+# Lockfiles
+package-lock.json
+
+# Translations — match legacy line-by-line for diffability
+/src/assets/i18n

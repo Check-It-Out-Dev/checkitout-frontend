@@ -1,0 +1,14 @@
+/* Strict typecheck for the e2e test service layer (Layer 1) + BDD steps (Layer 2).
+ * Inherits the app's strict flags so a BE contract change (regenerated DTOs) or a
+ * drift between the typed service layer and its use in the oracle steps fails at
+ * compile time — the "extend in strict mode" half of the confidence pyramid. Run
+ * via `npm run typecheck:e2e`; wired into check:full. The generated client
+ * (src/app/api) carries @ts-nocheck, so only OUR test code is checked. */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["node"]
+  },
+  "include": ["e2e-tests/_framework/api/**/*.ts", "e2e-tests/bdd/steps/**/*.ts"]
+}

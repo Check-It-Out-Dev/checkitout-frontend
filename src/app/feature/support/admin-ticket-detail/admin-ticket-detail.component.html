@@ -1,0 +1,278 @@
+<section class="mx-auto max-w-4xl p-4 md:p-6" data-testid="admin-ticket-detail-page">
+  <button
+    type="button"
+    (click)="goBack()"
+    class="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-slate2 transition hover:text-coral-600"
+    data-testid="admin-ticket-back"
+  >
+    <mat-icon class="!h-4 !w-4 !text-base">arrow_back</mat-icon>
+    {{ 'support.admin.ticket_detail.back' | transloco }}
+  </button>
+
+  @if (errorKey(); as key) {
+    <div
+      role="alert"
+      class="mt-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+      data-testid="admin-ticket-error"
+    >
+      {{ key | transloco }}
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="flex min-h-[40vh] items-center justify-center" data-testid="admin-ticket-loading">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  } @else {
+    @if (ticket(); as t) {
+      <div
+        class="mt-4 rounded-2xl border border-beige bg-white p-6 md:p-8"
+        data-testid="admin-ticket-detail"
+      >
+        <!-- Header -->
+        <div>
+          <h1 class="font-display text-2xl font-normal text-ink md:text-3xl">{{ t.subject }}</h1>
+          <div class="mt-2 flex flex-wrap items-center gap-3">
+            <span
+              class="rounded-full px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em]"
+              [ngClass]="statusChipClass(t.status)"
+              data-testid="admin-ticket-status-chip"
+            >
+              {{ statusLabelKey(t.status) | transloco }}
+            </span>
+            <span class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+              {{ categoryLabelKey(t.category) | transloco }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Meta grid -->
+        <div class="mt-6 grid grid-cols-1 gap-4 border-t border-beige pt-6 md:grid-cols-2">
+          <div>
+            <div class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+              {{ 'support.admin.ticket_detail.reference' | transloco }}
+            </div>
+            <div class="mt-0.5 font-mono font-semibold text-ink">{{ t.ticketReference }}</div>
+          </div>
+          <div>
+            <div class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+              {{ 'support.admin.ticket_detail.email' | transloco }}
+            </div>
+            <div class="mt-0.5 text-sm text-ink">{{ t.contactEmail }}</div>
+          </div>
+          <div>
+            <div class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+              {{ 'support.admin.ticket_detail.created' | transloco }}
+            </div>
+            <div class="mt-0.5 text-sm text-ink">{{ t.createdTime | date: 'medium' }}</div>
+          </div>
+          <div>
+            <div class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+              {{ 'support.admin.ticket_detail.updated' | transloco }}
+            </div>
+            <div class="mt-0.5 text-sm text-ink">{{ t.lastUpdateTime | date: 'medium' }}</div>
+          </div>
+          @if (t.resolvedTime) {
+            <div>
+              <div class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                {{ 'support.admin.ticket_detail.resolved' | transloco }}
+              </div>
+              <div class="mt-0.5 text-sm text-ink">{{ t.resolvedTime | date: 'medium' }}</div>
+            </div>
+          }
+          @if (t.adminAssignee) {
+            <div>
+              <div class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                {{ 'support.admin.ticket_detail.assigned' | transloco }}
+              </div>
+              <div class="mt-0.5 text-sm text-ink">{{ t.adminAssignee }}</div>
+            </div>
+          }
+        </div>
+
+        <!-- Description -->
+        <div class="mt-6">
+          <div class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+            {{ 'support.admin.ticket_detail.description' | transloco }}
+          </div>
+          <div
+            class="mt-2 whitespace-pre-wrap rounded-xl border border-beige bg-cream p-4 text-sm leading-relaxed text-ink"
+          >
+            {{ t.description }}
+          </div>
+        </div>
+
+        <!-- Technical dump (admin eyes only — BE only sends it to admins) -->
+        @if (t.technicalDescription) {
+          <div class="mt-6" data-testid="admin-ticket-technical">
+            <div class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+              {{ 'support.admin.ticket_detail.technical_description' | transloco }}
+            </div>
+            <div class="mt-2 rounded-xl border border-blue-200 bg-blue-50 p-4">
+              <div class="flex items-start gap-2">
+                <mat-icon class="!h-5 !w-5 !text-xl text-blue-600">engineering</mat-icon>
+                <div class="min-w-0 flex-1">
+                  <p class="text-xs font-medium text-blue-700">
+                    {{ 'support.admin.ticket_detail.technical_description_note' | transloco }}
+                  </p>
+                  <pre
+                    class="mt-2 max-h-96 overflow-auto whitespace-pre-wrap rounded-lg border border-blue-200 bg-white p-3 font-mono text-xs leading-relaxed text-ink"
+                    >{{ t.technicalDescription }}</pre
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Ticket attachments -->
+        @if (t.attachments && t.attachments.length > 0) {
+          <div class="mt-6">
+            <div class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+              {{ 'support.admin.ticket_detail.attachments' | transloco }}
+            </div>
+            <div class="mt-2 grid grid-cols-1 gap-3 md:grid-cols-2">
+              @for (a of t.attachments; track a.id) {
+                <a
+                  [href]="a.downloadUrl"
+                  target="_blank"
+                  rel="noopener"
+                  class="flex items-center gap-3 rounded-xl border border-beige p-3 transition hover:border-coral-300 hover:bg-coral-50"
+                >
+                  <mat-icon class="!h-5 !w-5 !text-xl text-slate2">
+                    {{ fileIcon(a.contentType) }}
+                  </mat-icon>
+                  <span class="min-w-0 flex-1">
+                    <span class="block truncate text-sm font-medium text-ink">
+                      {{ a.fileName }}
+                    </span>
+                    <span class="block text-xs text-slate2">
+                      {{ formattedFileSize(a.fileSize) }}
+                    </span>
+                  </span>
+                  <mat-icon class="!h-5 !w-5 !text-xl text-coral-500">download</mat-icon>
+                </a>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Conversation -->
+        <div class="mt-8">
+          <h2 class="font-display text-xl font-normal text-ink">
+            {{ 'support.admin.ticket_detail.conversation.title' | transloco }}
+          </h2>
+
+          @if (!t.responses || t.responses.length === 0) {
+            <p class="mt-4 text-center text-sm text-slate2" data-testid="admin-ticket-no-responses">
+              {{ 'support.tickets.status.conversation.no_responses' | transloco }}
+            </p>
+          } @else {
+            <div class="mt-4 flex flex-col gap-5">
+              @for (r of t.responses; track r.id) {
+                <div [attr.data-testid]="'admin-ticket-response-' + r.id">
+                  <div class="mb-1.5 flex items-center justify-between gap-3">
+                    <div>
+                      <span class="text-sm font-semibold text-ink">
+                        @if (r.fromAdmin) {
+                          {{
+                            r.adminName ||
+                              ('support.tickets.status.conversation.support_agent' | transloco)
+                          }}
+                        } @else {
+                          {{ t.contactEmail }}
+                        }
+                      </span>
+                      <span class="ml-2 text-xs text-slate2">
+                        {{ r.createdTime | date: 'medium' }}
+                      </span>
+                    </div>
+                    <span
+                      class="inline-flex h-7 w-7 items-center justify-center rounded-full"
+                      [ngClass]="r.fromAdmin ? 'bg-coral-500 text-cream' : 'bg-beige text-ink'"
+                      aria-hidden="true"
+                    >
+                      <mat-icon class="!h-4 !w-4 !text-base">
+                        {{ r.fromAdmin ? 'support_agent' : 'person' }}
+                      </mat-icon>
+                    </span>
+                  </div>
+                  <div
+                    class="whitespace-pre-wrap rounded-xl p-4 text-sm leading-relaxed text-ink"
+                    [ngClass]="r.fromAdmin ? 'bg-coral-50' : 'bg-cream border border-beige'"
+                  >
+                    {{ r.content }}
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Admin reply form -->
+        <form
+          #responseFormDir="ngForm"
+          [formGroup]="responseForm"
+          (ngSubmit)="submitResponse()"
+          class="mt-8 border-t border-beige pt-6"
+          data-testid="admin-response-form"
+          novalidate
+        >
+          <h2 class="font-display text-xl font-normal text-ink">
+            {{ 'support.admin.ticket_detail.response.title' | transloco }}
+          </h2>
+
+          <mat-form-field appearance="outline" class="mt-4 w-full">
+            <mat-label>{{ 'support.admin.ticket_detail.response.content' | transloco }}</mat-label>
+            <textarea
+              matInput
+              formControlName="content"
+              rows="5"
+              maxlength="5000"
+              [placeholder]="'support.admin.ticket_detail.response.placeholder' | transloco"
+              data-testid="admin-response-content"
+            ></textarea>
+            <mat-hint>{{ 'support.admin.ticket_detail.response.hint' | transloco }}</mat-hint>
+          </mat-form-field>
+
+          <div class="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <mat-form-field appearance="outline" class="sm:w-64" subscriptSizing="dynamic">
+              <mat-label>
+                {{ 'support.admin.ticket_detail.response.update_status' | transloco }}
+              </mat-label>
+              <mat-select formControlName="newStatus" data-testid="admin-response-status">
+                <mat-option [value]="null">—</mat-option>
+                @for (option of statusOptions; track option.value) {
+                  <mat-option [value]="option.value">{{ option.labelKey | transloco }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <mat-checkbox formControlName="sendEmail" data-testid="admin-response-send-email">
+              <span class="text-sm text-slate2">
+                {{ 'support.admin.ticket_detail.response.send_email' | transloco }}
+              </span>
+            </mat-checkbox>
+          </div>
+
+          <div class="mt-4 flex justify-end">
+            <button
+              mat-flat-button
+              color="primary"
+              type="submit"
+              [disabled]="submitting() || responseForm.invalid"
+              data-testid="admin-response-submit"
+            >
+              @if (submitting()) {
+                <mat-spinner diameter="20" class="!mr-2 inline-block align-middle"></mat-spinner>
+              } @else {
+                <mat-icon class="!mr-1">send</mat-icon>
+              }
+              {{ 'support.admin.ticket_detail.response.submit' | transloco }}
+            </button>
+          </div>
+        </form>
+      </div>
+    }
+  }
+</section>

@@ -1,0 +1,126 @@
+<section class="mx-auto w-full max-w-4xl p-4 md:p-6">
+  <header class="mb-5 flex flex-col gap-3">
+    <a
+      mat-stroked-button
+      routerLink="/collaborations/my-campaigns"
+      class="!w-fit"
+      data-testid="applicants-back"
+    >
+      <mat-icon>arrow_back</mat-icon>
+      {{ 'opportunities.applicants.back' | transloco }}
+    </a>
+    <h1 class="font-display text-4xl font-normal text-ink" data-testid="applicants-title">
+      {{ 'opportunities.applicants.title' | transloco }}
+    </h1>
+  </header>
+
+  @if (state() === 'loading') {
+    <div class="flex items-center justify-center py-16" data-testid="applicants-loading">
+      <mat-spinner diameter="32"></mat-spinner>
+    </div>
+  } @else if (state() === 'not-found') {
+    <div
+      data-testid="applicants-not-found"
+      class="rounded-2xl border border-beige bg-cream p-8 text-center text-slate2"
+    >
+      {{ 'opportunities.applicants.not_found' | transloco }}
+    </div>
+  } @else if (state() === 'error') {
+    <div
+      role="alert"
+      data-testid="applicants-error"
+      class="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700"
+    >
+      {{ 'opportunities.applicants.error.load_failed' | transloco }}
+      <button
+        mat-button
+        (click)="campaignId() && load(campaignId()!)"
+        class="!ml-2 !text-coral-600"
+      >
+        {{ 'opportunities.applicants.error.retry' | transloco }}
+      </button>
+    </div>
+  } @else if (state() === 'empty') {
+    <div
+      data-testid="applicants-empty"
+      class="flex flex-col items-center gap-3 rounded-2xl border border-beige bg-cream p-10 text-center"
+    >
+      <span class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-coral-50">
+        <mat-icon class="!h-8 !w-8 !text-3xl text-coral-500">people</mat-icon>
+      </span>
+      <p class="font-display text-2xl font-normal text-ink">
+        {{ 'opportunities.applicants.empty' | transloco }}
+      </p>
+    </div>
+  } @else {
+    <ul role="list" data-testid="applicants-list" class="flex flex-col gap-3">
+      @for (row of items(); track row.id) {
+        <li
+          [attr.data-testid]="'applicant-' + row.id"
+          class="flex flex-col gap-3 rounded-2xl border border-beige bg-white p-5 transition hover:border-coral-400 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <div class="flex-1">
+            <div class="flex items-center gap-2">
+              <span class="font-display text-xl font-normal text-ink">
+                {{
+                  influencerDisplayName(row) ||
+                    ('opportunities.applicants.unknown_user' | transloco)
+                }}
+              </span>
+              <span
+                class="rounded-full px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.18em]"
+                [class]="statusBadgeClass($safeNavigationMigration(row.opportunityStatus?.value))"
+                [attr.data-testid]="'applicant-status-' + row.id"
+              >
+                {{
+                  'applied_opportunities.status.' + (row.opportunityStatus?.value || 'unknown')
+                    | transloco
+                }}
+              </span>
+            </div>
+            @if (row.note) {
+              <p class="mt-1 whitespace-pre-line text-sm text-slate2">{{ row.note }}</p>
+            }
+            <p class="mt-1 font-mono text-[11px] uppercase tracking-[0.18em] text-slate2">
+              {{ 'opportunities.applicants.applied_at' | transloco }}
+              {{ row.createdTime ? (row.createdTime | date: 'mediumDate') : '—' }}
+            </p>
+          </div>
+          @if (isAwaitingDecision(row)) {
+            <div class="flex flex-row gap-2">
+              <button
+                mat-flat-button
+                color="primary"
+                [disabled]="row.id == null || pendingDecisions().has(row.id)"
+                (click)="row.id != null && decide(row.id, true)"
+                [attr.data-testid]="'applicant-accept-' + row.id"
+              >
+                <mat-icon>check</mat-icon>
+                {{ 'opportunities.applicants.accept' | transloco }}
+              </button>
+              <button
+                mat-stroked-button
+                color="warn"
+                [disabled]="row.id == null || pendingDecisions().has(row.id)"
+                (click)="row.id != null && decide(row.id, false)"
+                [attr.data-testid]="'applicant-reject-' + row.id"
+              >
+                <mat-icon>close</mat-icon>
+                {{ 'opportunities.applicants.reject' | transloco }}
+              </button>
+            </div>
+          } @else {
+            <a
+              mat-stroked-button
+              [routerLink]="['/collaborations/applications', row.id, 'review']"
+              [attr.data-testid]="'applicant-review-' + row.id"
+            >
+              <mat-icon>fact_check</mat-icon>
+              {{ 'opportunities.applicants.review_content' | transloco }}
+            </a>
+          }
+        </li>
+      }
+    </ul>
+  }
+</section>

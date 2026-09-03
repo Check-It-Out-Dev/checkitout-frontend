@@ -1,0 +1,67 @@
+<div
+  class="flex items-center gap-4 rounded-2xl border border-beige bg-cream p-5"
+  data-testid="profile-picture-upload"
+>
+  <div
+    class="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl bg-coral-50"
+    data-testid="profile-picture-preview"
+  >
+    @if (currentUrl() || user.profilePicture; as url) {
+      <img [src]="url" alt="" class="h-full w-full object-cover" loading="lazy" />
+    } @else {
+      <mat-icon class="!h-10 !w-10 !text-4xl text-coral-500">account_circle</mat-icon>
+    }
+  </div>
+
+  <div class="flex flex-1 flex-col gap-2">
+    <div>
+      <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+        {{ 'profile.picture.title' | transloco }}
+      </p>
+      <p class="mt-1 text-xs text-slate2">
+        {{ 'profile.picture.hint' | transloco }}
+      </p>
+    </div>
+
+    @if (errorKey(); as ek) {
+      <p role="alert" class="text-sm text-red-600" data-testid="profile-picture-error">
+        {{ ek | transloco }}
+      </p>
+    }
+
+    @if (phase() === 'success') {
+      <p role="status" class="text-sm text-emerald-700" data-testid="profile-picture-success">
+        {{ 'profile.picture.success' | transloco }}
+      </p>
+    }
+  </div>
+
+  <div class="flex shrink-0 items-center gap-2">
+    @if (phase() === 'uploading' || phase() === 'patching') {
+      <mat-spinner diameter="24" />
+    }
+    <label
+      class="cursor-pointer"
+      [class.pointer-events-none]="phase() === 'uploading' || phase() === 'patching'"
+    >
+      <input
+        type="file"
+        accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+        class="sr-only"
+        (change)="onFile($event)"
+        data-testid="profile-picture-input"
+      />
+      <span
+        class="inline-flex items-center gap-1 rounded-full border border-beige bg-white px-3.5 py-1.5 text-sm text-ink transition hover:border-coral-400 hover:text-coral-600"
+      >
+        <mat-icon class="!h-4 !w-4 !text-base">photo_camera</mat-icon>
+        {{
+          (currentUrl() || user.profilePicture
+            ? 'profile.picture.replace'
+            : 'profile.picture.upload'
+          ) | transloco
+        }}
+      </span>
+    </label>
+  </div>
+</div>

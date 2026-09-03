@@ -1,0 +1,92 @@
+---
+# Frontend CI — the quality-gate wall on every PR and mainline push.
+#
+# This is the SAME wall the pre-commit hook runs locally (`check:full`,
+# G1..G14 in README → Gates): eleven static gates, strict typecheck for the
+# app + e2e configs, the `ng build` template type-check (strictTemplates
+# only fires there), and the full jest suite. Hermetic by design — no
+# backend, no browsers, no Docker — so it runs identically on GitHub-hosted
+# runners and on fork PRs (which is also why this workflow does NOT use the
+# self-hosted deploy runner: fork PR code must never execute on our infra).
+#
+# Two gates degrade gracefully in a single-repo checkout:
+#   - G7 bdd-corpus self-skips (loudly) when the sibling checkitout-backend
+#     checkout is absent — it measures completeness against the BE Cucumber
+#     corpus, which only exists on a dev machine.
+#   - G5 baseline-freshness compares file mtimes, which a fresh checkout
+#     resets wholesale; the tag is touched first so the gate measures real
+#     staleness only where mtimes are real (locally, at pre-commit).
+#
+# Deliberately NOT here (documented deferrals):
+#   - visual / visual-parity tiers: byte-stable PNG baselines are captured
+#     on the dev platform; a Linux runner rasterizes different pixels.
+#   - integration / scenarios / BDD tiers: need the live BE + Postgres +
+#     Redis + GreenMail — they land in a separate full-stack workflow.
+name: Frontend CI - Quality Gates
+
+on:
+  pull_request:
+  push:
+    branches: ["main", "master"]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NG_CLI_ANALYTICS: "false"
+  NODE_OPTIONS: "--max-old-space-size=4096"
+
+jobs:
+  quality-gates:
+    name: Gate wall (G1..G14)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js (from .nvmrc)
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: 📦 Install dependencies
+        run: npm ci --prefer-offline --no-audit --loglevel=error
+
+      - name: 🕐 Reset the G5 mtime tag (fresh checkout has no real mtimes)
+        run: touch e2e-tests/visual/sandbox-snapshots.spec.ts-snapshots/.last-regen.txt
+
+      - name: 🛡️ Static gates (G1..G11)
+        run: npm run check:static
+
+      - name: 🔎 Strict typecheck — app + e2e (G12)
+        run: |
+          npm run typecheck
+          npm run typecheck:e2e
+
+      - name: 🏗️ Template type-check build (G13)
+        run: npm run build:check
+
+      - name: 🧪 Unit tests (G14)
+        run: npm test -- --bail --ci
+
+      - name: 📋 Summary
+        if: always()
+        run: |
+          echo "========================================="
+          echo "QUALITY GATES SUMMARY"
+          echo "========================================="
+          echo "Ref: ${{ github.ref_name }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Status: ${{ job.status }}"
+          if [ "${{ job.status }}" = "success" ]; then
+              echo "✅ Gate wall green — same bar as the local pre-commit hook."
+          else
+              echo "❌ Gate wall failed — run 'npm run check:full' locally;"
+              echo "   every gate prints its own fix hint."
+          fi

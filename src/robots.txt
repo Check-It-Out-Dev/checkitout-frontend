@@ -1,0 +1,40 @@
+# Check It Out - Robots.txt
+# https://checkitout.app
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /auth/sign-out
+Disallow: /settings/
+Disallow: /user/*/edit
+Disallow: /*.json$
+Disallow: /*?*
+Allow: /assets/
+Allow: /*.css$
+Allow: /*.js$
+
+# Sitemap location
+Sitemap: https://checkitout.app/sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1
+
+# Specific bot rules
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Block bad bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: SemrushBot
+Crawl-delay: 10

@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../out-tsc/e2e-tests",
+    "types": ["node"],
+    "module": "esnext",
+    "moduleResolution": "node",
+    "isolatedModules": false
+  },
+  "include": ["**/*.ts"]
+}

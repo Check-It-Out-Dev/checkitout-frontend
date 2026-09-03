@@ -1,0 +1,104 @@
+<div
+  class="flex min-h-screen w-full flex-col items-center overflow-x-hidden sm:flex-row sm:justify-center md:items-start md:justify-start"
+  data-testid="auth-layout"
+>
+  <!-- Form panel (full width on mobile, half on lg+) -->
+  <div
+    class="relative flex h-full max-h-screen w-full justify-center overflow-y-auto bg-cream px-4 py-8 sm:p-12 md:flex md:justify-end md:p-16 lg:w-1/2"
+  >
+    <div class="absolute right-5 top-5">
+      <button
+        type="button"
+        mat-button
+        [matMenuTriggerFor]="langMenu"
+        class="!min-w-0 !px-3 !font-mono !text-xs !uppercase !tracking-widest !text-slate2"
+        [attr.aria-label]="'header.lang.toggle' | transloco"
+      >
+        {{ activeLang() }}
+        <mat-icon class="!ml-1 !h-4 !w-4 !text-base">expand_more</mat-icon>
+      </button>
+      <mat-menu #langMenu="matMenu">
+        <button mat-menu-item type="button" (click)="setLang('en')">
+          <span>English</span>
+        </button>
+        <button mat-menu-item type="button" (click)="setLang('pl')">
+          <span>Polski</span>
+        </button>
+      </mat-menu>
+    </div>
+
+    <div class="w-full max-w-md md:max-w-none md:w-auto">
+      <router-outlet />
+    </div>
+  </div>
+
+  <!-- Banner panel (lg+ only) — editorial dark ink with coral accent -->
+  <div
+    class="relative hidden h-full min-h-screen w-1/2 flex-auto items-center justify-center overflow-hidden bg-ink lg:flex"
+    aria-hidden="true"
+  >
+    <!-- Decorative coral glow -->
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute -bottom-32 -right-32 h-[480px] w-[480px] rounded-full bg-coral-500/20 blur-3xl"
+    ></div>
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute -top-40 -left-40 h-[420px] w-[420px] rounded-full bg-navy-500/30 blur-3xl"
+    ></div>
+
+    <div class="relative flex max-w-md flex-col items-start gap-5 px-8">
+      <!-- Dedicated welcome eyebrow — this panel recycled the nav's
+           "Jak to działa" label, which read as a stray section header
+           over the welcome message (iter-110 Chrome sweep). -->
+      <span class="eyebrow !text-coral-400">
+        {{ 'auth.banner.eyebrow' | transloco }}
+      </span>
+      <h2 class="font-display text-6xl font-normal leading-[1.05] text-cream">
+        {{ 'layout.banner.messages.welcome.title_prefix' | transloco }}
+        <span class="italic text-coral-400">
+          {{ 'layout.banner.messages.welcome.title_highlight' | transloco }}
+        </span>
+      </h2>
+      <p class="text-base leading-relaxed text-cream/70">
+        {{ 'layout.banner.messages.welcome.text' | transloco }}
+      </p>
+      <div class="mt-4 flex items-center gap-3 border-t border-cream/15 pt-6">
+        <img
+          src="assets/brand/c-mark.svg"
+          alt=""
+          class="h-10 w-10 rounded-lg"
+          data-testid="auth-banner-brand-mark"
+        />
+        <div class="text-sm tracking-tight text-cream/80">
+          {{ 'layout.banner.join_count' | transloco }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Subtle decorative dots in bottom-right -->
+    <svg
+      class="pointer-events-none absolute -bottom-12 -right-12 text-cream/8"
+      viewBox="0 0 220 192"
+      width="220"
+      height="192"
+      fill="none"
+    >
+      <defs>
+        <pattern
+          id="auth-layout-dots"
+          x="0"
+          y="0"
+          width="20"
+          height="20"
+          patternUnits="userSpaceOnUse"
+        >
+          <rect x="0" y="0" width="3" height="3" fill="currentColor" />
+        </pattern>
+      </defs>
+      <rect width="220" height="192" fill="url(#auth-layout-dots)" />
+    </svg>
+  </div>
+</div>
+
+<app-cookie-banner ngSkipHydration />

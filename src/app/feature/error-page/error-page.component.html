@@ -1,0 +1,61 @@
+<main
+  class="flex min-h-screen flex-col items-center justify-center bg-cream p-6 text-center"
+  data-testid="error-page"
+>
+  <div
+    class="flex items-center justify-center font-display text-8xl font-normal leading-none text-ink md:text-9xl"
+    data-testid="error-page-code"
+    aria-hidden="true"
+  >
+    <span class="text-coral-500">{{ errorType()[0] }}</span>
+    <span class="mx-3 text-slate2">{{ errorType()[1] }}</span>
+    <span class="text-coral-500">{{ errorType()[2] }}</span>
+  </div>
+
+  <div class="relative mt-10">
+    <span class="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-sm">
+      <img src="assets/brand/c-mark.svg" alt="Check It Out" class="h-10 w-10" />
+    </span>
+    <span
+      class="absolute -right-2 -top-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-red-50"
+    >
+      <mat-icon class="!h-5 !w-5 !text-lg text-red-500">warning</mat-icon>
+    </span>
+  </div>
+
+  <h1
+    class="mt-8 font-display text-4xl font-normal text-ink md:text-5xl"
+    data-testid="error-page-title"
+  >
+    {{ 'errors.' + errorType() + '_title' | transloco }}
+  </h1>
+  <p
+    class="mt-2 max-w-xl text-sm leading-relaxed text-slate2 md:text-base"
+    data-testid="error-page-description"
+  >
+    {{ 'errors.' + errorType() + '_description' | transloco }}
+  </p>
+
+  <div class="mt-10 flex flex-col gap-3 sm:flex-row">
+    @if (errorType() === '503') {
+      <button
+        mat-flat-button
+        color="primary"
+        type="button"
+        [disabled]="isRefreshing()"
+        (click)="refreshStatus()"
+        data-testid="error-page-refresh"
+      >
+        @if (isRefreshing()) {
+          <mat-spinner diameter="18" class="!inline-block"></mat-spinner>
+        } @else {
+          <mat-icon>refresh</mat-icon>
+          {{ 'errors.refresh_status' | transloco }}
+        }
+      </button>
+    }
+    <button mat-stroked-button type="button" (click)="goHome()" data-testid="error-page-home">
+      {{ 'common.back_to_home' | transloco }}
+    </button>
+  </div>
+</main>

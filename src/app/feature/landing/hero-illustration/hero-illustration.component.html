@@ -1,0 +1,96 @@
+<div
+  class="relative isolate flex h-[420px] w-full max-w-xl items-center justify-center"
+  data-testid="hero-illustration"
+  aria-hidden="true"
+>
+  <!-- Main soft card: influencer ↔ company connection diagram -->
+  <div
+    class="relative h-72 w-full overflow-hidden rounded-3xl bg-gradient-to-br from-coral-50 via-cream to-navy-50 ring-1 ring-beige"
+  >
+    <div class="flex h-full items-center justify-center gap-12 px-10">
+      <!-- Influencer side: round avatar mark -->
+      <div
+        class="flex h-28 w-20 flex-col items-center justify-center"
+        data-testid="hero-illustration-influencer"
+      >
+        <div
+          class="flex h-14 w-14 items-center justify-center rounded-full bg-coral-500 text-cream shadow"
+        >
+          <mat-icon class="!text-3xl !leading-none">person</mat-icon>
+        </div>
+        <div class="mt-2 h-10 w-12 rounded-b-full bg-coral-500/90"></div>
+      </div>
+
+      <!-- Connection — dotted line with two dots -->
+      <div
+        class="flex flex-1 items-center justify-center gap-2"
+        data-testid="hero-illustration-connection"
+      >
+        <span class="h-3 w-3 rounded-full bg-coral-500"></span>
+        <span class="block h-px flex-1 border-t-2 border-dashed border-ink/30"></span>
+        <span class="h-3 w-3 rounded-full border-2 border-navy-500 bg-cream"></span>
+      </div>
+
+      <!-- Company side: building mark -->
+      <div
+        class="flex h-28 w-24 items-center justify-center"
+        data-testid="hero-illustration-company"
+      >
+        <div
+          class="flex h-20 w-20 items-center justify-center rounded-2xl bg-ink text-cream shadow"
+        >
+          <mat-icon class="!text-4xl !leading-none">apartment</mat-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating analytics card (top-right) -->
+  <div
+    class="absolute -top-2 right-2 flex items-center gap-3 rounded-2xl bg-cream px-4 py-3 shadow-lg ring-1 ring-beige"
+    data-testid="hero-illustration-analytics"
+  >
+    <div class="flex h-9 w-9 items-center justify-center rounded-2xl bg-coral-50">
+      <mat-icon class="!text-xl !text-coral-500">trending_up</mat-icon>
+    </div>
+    <div class="flex flex-col">
+      <span class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+        {{ 'landing.hero.illustration.platforms' | transloco }}
+      </span>
+      <span class="text-sm font-semibold text-ink">
+        {{ 'landing.hero.floating_card.views' | transloco }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Floating campaign-progress card (bottom-center, overlapping main card) -->
+  <div
+    class="absolute -bottom-4 left-1/2 w-64 -translate-x-1/2 rounded-2xl bg-cream p-4 shadow-lg ring-1 ring-beige"
+    data-testid="hero-illustration-progress"
+  >
+    <div class="mb-2 flex items-center gap-2">
+      <span
+        class="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-coral-400 to-coral-600 text-cream"
+      >
+        <mat-icon class="!text-lg">face</mat-icon>
+      </span>
+      <div class="flex flex-col">
+        <span class="text-sm font-semibold text-ink">
+          {{ 'landing.hero.illustration.creator_name' | transloco }}
+        </span>
+        <span class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+          {{ 'landing.hero.illustration.followers_count' | transloco }}
+        </span>
+      </div>
+    </div>
+    <div class="mb-1 flex items-center justify-between">
+      <span class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+        {{ 'landing.hero.floating_card.campaign_progress' | transloco }}
+      </span>
+      <span class="text-xs font-semibold text-coral-600">75%</span>
+    </div>
+    <div class="h-1.5 w-full overflow-hidden rounded-full bg-beige">
+      <div class="h-full w-3/4 rounded-full bg-gradient-to-r from-coral-500 to-coral-400"></div>
+    </div>
+  </div>
+</div>

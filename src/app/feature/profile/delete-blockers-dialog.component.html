@@ -1,0 +1,60 @@
+<div class="flex items-start gap-3 p-6 pb-0">
+  <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-amber-50">
+    <mat-icon class="!h-7 !w-7 !text-2xl text-amber-600">lock</mat-icon>
+  </span>
+  <div>
+    <h2 class="!m-0 font-display text-3xl font-normal text-ink" data-testid="delete-blockers-title">
+      {{ 'deleteBlockers.title' | transloco }}
+    </h2>
+    <p class="mt-1 font-mono text-[10px] uppercase tracking-[0.18em] text-amber-700">
+      {{ 'deleteBlockers.subtitle' | transloco }}
+    </p>
+  </div>
+</div>
+
+<mat-dialog-content class="!pt-4">
+  <p class="mb-3 text-sm leading-relaxed text-ink">
+    {{ 'deleteBlockers.instructions' | transloco }}
+  </p>
+  <ul class="flex list-none flex-col gap-2 !p-0" data-testid="delete-blockers-list">
+    @for (blocker of data.blockers; track $index) {
+      <li
+        class="rounded-2xl border border-beige bg-cream p-4"
+        [attr.data-testid]="'delete-blocker-' + $index"
+      >
+        <div class="text-sm font-medium text-ink">{{ blocker.reason }}</div>
+        @if (blocker.description) {
+          <div class="mt-1 text-sm leading-snug text-slate2">{{ blocker.description }}</div>
+        }
+        <div class="mt-2 flex flex-wrap gap-2">
+          @if (blocker.count != null) {
+            <span
+              class="rounded-full bg-amber-100 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.18em] text-amber-800"
+            >
+              {{ 'deleteBlockers.count' | transloco }}: {{ blocker.count }}
+            </span>
+          }
+          @if (blocker.entityDescription) {
+            <span
+              class="rounded-full bg-slate-100 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-700"
+            >
+              {{ blocker.entityDescription }}
+            </span>
+          }
+        </div>
+      </li>
+    }
+  </ul>
+</mat-dialog-content>
+
+<mat-dialog-actions class="!justify-end">
+  <button
+    mat-flat-button
+    color="primary"
+    type="button"
+    (click)="close()"
+    data-testid="delete-blockers-understand"
+  >
+    {{ 'deleteBlockers.understand' | transloco }}
+  </button>
+</mat-dialog-actions>

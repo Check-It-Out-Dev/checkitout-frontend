@@ -1,0 +1,192 @@
+<section
+  class="mx-auto flex w-full max-w-md flex-col items-stretch gap-4 p-4"
+  data-testid="two-factor-setup"
+>
+  <header class="flex items-center gap-3">
+    <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-coral-50">
+      <mat-icon class="!h-7 !w-7 !text-3xl text-coral-500">security</mat-icon>
+    </span>
+    <h1 class="font-display text-3xl font-normal text-ink" data-testid="two-factor-setup-title">
+      {{ 'auth.two_factor_setup.title' | transloco }}
+    </h1>
+  </header>
+
+  @if (step() === 'loading') {
+    <div
+      class="flex flex-col items-center gap-3 py-8 text-center"
+      data-testid="two-factor-setup-loading"
+    >
+      <mat-spinner diameter="32"></mat-spinner>
+      <p class="text-sm text-slate2">
+        {{ 'auth.two_factor_setup.loading' | transloco }}
+      </p>
+    </div>
+  } @else if (step() === 'error') {
+    <div
+      role="alert"
+      class="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700"
+      data-testid="two-factor-setup-error"
+    >
+      {{ errorKey() ?? 'auth.two_factor_setup.errors.failed' | transloco }}
+    </div>
+    <a
+      mat-stroked-button
+      routerLink="/auth/sign-in"
+      data-testid="two-factor-setup-back"
+      class="self-center"
+    >
+      {{ 'auth.two_factor_setup.back_to_sign_in' | transloco }}
+    </a>
+  } @else if (step() === 'setup') {
+    <p class="text-sm text-slate2">
+      {{ 'auth.two_factor_setup.subtitle' | transloco }}
+    </p>
+
+    <div class="flex flex-col items-center gap-3 rounded-2xl border border-beige bg-cream p-5">
+      @if (qrCodeImage()) {
+        <img
+          [src]="qrCodeImage()"
+          [alt]="'auth.two_factor_setup.qr_alt' | transloco"
+          class="h-48 w-48"
+          data-testid="two-factor-setup-qr"
+        />
+      }
+      <div class="w-full space-y-1 text-xs text-slate2">
+        <div class="flex items-center justify-between">
+          <span>{{ 'auth.two_factor_setup.account_label' | transloco }}</span>
+          <span data-testid="two-factor-setup-email">{{ emailLabel() }}</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span>{{ 'auth.two_factor_setup.issuer_label' | transloco }}</span>
+          <span>{{ issuer() }}</span>
+        </div>
+        <div class="flex items-center justify-between gap-2">
+          <span>{{ 'auth.two_factor_setup.secret_label' | transloco }}</span>
+          <code
+            class="select-all rounded bg-slate-100 px-2 py-1 font-mono text-[11px] text-slate-800"
+            data-testid="two-factor-setup-secret"
+          >
+            {{ secretFormatted() }}
+          </code>
+          <button
+            mat-icon-button
+            type="button"
+            (click)="copyToClipboard(secret())"
+            data-testid="two-factor-setup-copy-secret"
+            [attr.aria-label]="'auth.two_factor_setup.copy_secret' | transloco"
+          >
+            <mat-icon class="!h-4 !w-4 text-slate2">content_copy</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <p class="text-sm text-slate2">
+      {{ 'auth.two_factor_setup.verify_instruction' | transloco }}
+    </p>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'auth.two_factor_setup.code_label' | transloco }}</mat-label>
+      <input
+        matInput
+        type="text"
+        inputmode="numeric"
+        autocomplete="one-time-code"
+        maxlength="6"
+        [formControl]="code"
+        data-testid="two-factor-setup-code"
+        (keyup.enter)="verify()"
+      />
+    </mat-form-field>
+
+    @if (errorKey(); as key) {
+      <div
+        role="alert"
+        data-testid="two-factor-setup-verify-error"
+        class="rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+      >
+        {{ key | transloco }}
+      </div>
+    }
+
+    <button
+      mat-flat-button
+      color="primary"
+      type="button"
+      [disabled]="verifying() || code.invalid"
+      (click)="verify()"
+      data-testid="two-factor-setup-verify"
+    >
+      @if (verifying()) {
+        <mat-spinner diameter="20" class="mx-auto"></mat-spinner>
+      } @else {
+        {{ 'auth.two_factor_setup.verify_button' | transloco }}
+      }
+    </button>
+  } @else if (step() === 'backup') {
+    <div
+      class="rounded border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900"
+      role="alert"
+      data-testid="two-factor-setup-backup-warning"
+    >
+      <strong>{{ 'auth.two_factor_setup.backup_warning_title' | transloco }}</strong>
+      <p class="mt-1">{{ 'auth.two_factor_setup.backup_warning_text' | transloco }}</p>
+    </div>
+
+    <ul class="grid list-none grid-cols-2 gap-2" data-testid="two-factor-setup-backup-codes">
+      @for (code of backupCodes(); track code) {
+        <li class="rounded bg-slate-100 px-2 py-1 text-center font-mono text-sm text-slate-800">
+          {{ code }}
+        </li>
+      }
+    </ul>
+
+    <button
+      mat-stroked-button
+      type="button"
+      (click)="copyToClipboard(backupCodes().join('\n'))"
+      data-testid="two-factor-setup-copy-codes"
+      class="!flex !items-center !justify-center !gap-2"
+    >
+      <mat-icon>content_copy</mat-icon>
+      {{ 'auth.two_factor_setup.copy_codes' | transloco }}
+    </button>
+
+    <mat-checkbox
+      [checked]="codesConfirmed()"
+      (change)="toggleConfirm($event.checked)"
+      data-testid="two-factor-setup-confirm"
+    >
+      {{ 'auth.two_factor_setup.confirm_saved' | transloco }}
+    </mat-checkbox>
+
+    <button
+      mat-flat-button
+      color="primary"
+      type="button"
+      [disabled]="!codesConfirmed() || finalizing()"
+      (click)="complete()"
+      data-testid="two-factor-setup-complete"
+    >
+      @if (finalizing()) {
+        <mat-spinner diameter="20" class="mx-auto"></mat-spinner>
+      } @else {
+        {{ 'auth.two_factor_setup.complete_button' | transloco }}
+      }
+    </button>
+  } @else if (step() === 'complete') {
+    <div
+      class="flex flex-col items-center gap-3 py-8 text-center"
+      data-testid="two-factor-setup-complete"
+    >
+      <mat-icon class="!h-12 !w-12 text-emerald-600">check_circle</mat-icon>
+      <h2 class="text-lg font-semibold">
+        {{ 'auth.two_factor_setup.complete_title' | transloco }}
+      </h2>
+      <p class="text-sm text-slate2">
+        {{ 'auth.two_factor_setup.complete_message' | transloco }}
+      </p>
+      <mat-spinner diameter="24"></mat-spinner>
+    </div>
+  }
+</section>
