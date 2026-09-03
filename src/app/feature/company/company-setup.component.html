@@ -1,0 +1,233 @@
+<section class="mx-auto max-w-2xl p-4" data-testid="company-setup">
+  <header class="mb-6">
+    <h1 class="font-display text-4xl font-normal text-ink">
+      {{ 'company_setup.title' | transloco }}
+    </h1>
+    <p class="mt-2 text-slate2">{{ 'company_setup.subtitle' | transloco }}</p>
+  </header>
+
+  @switch (phase()) {
+    @case ('checking') {
+      <div class="flex min-h-[30vh] items-center justify-center">
+        <mat-spinner diameter="40" data-testid="company-setup-checking" />
+      </div>
+    }
+
+    @case ('confirmed') {
+      <div
+        class="rounded-2xl border border-beige bg-cream p-6"
+        data-testid="company-setup-confirmed"
+      >
+        <div class="flex items-center gap-3">
+          <span
+            class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100"
+          >
+            <mat-icon class="!text-emerald-700">verified</mat-icon>
+          </span>
+          <div>
+            <p class="font-display text-xl text-ink">
+              {{ 'company_setup.confirmed.title' | transloco }}
+            </p>
+            <p
+              class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2"
+              data-testid="company-setup-confirmed-nip"
+            >
+              NIP · {{ existing()?.['nip'] }}
+            </p>
+          </div>
+        </div>
+        <p class="mt-4 text-slate2">{{ 'company_setup.confirmed.body' | transloco }}</p>
+        <a
+          class="mt-4"
+          color="primary"
+          mat-flat-button
+          routerLink="/collaborations/my-campaigns"
+          data-testid="company-setup-confirmed-cta"
+        >
+          {{ 'company_setup.confirmed.cta' | transloco }}
+        </a>
+      </div>
+    }
+
+    @case ('done') {
+      <div class="rounded-2xl border border-beige bg-cream p-6" data-testid="company-setup-done">
+        <div class="flex items-center gap-3">
+          <span
+            class="inline-flex h-12 w-12 items-center justify-center rounded-2xl"
+            [ngClass]="activated() ? 'bg-emerald-100' : 'bg-amber-100'"
+          >
+            <mat-icon [ngClass]="activated() ? '!text-emerald-700' : '!text-amber-700'">
+              {{ activated() ? 'celebration' : 'mark_email_unread' }}
+            </mat-icon>
+          </span>
+          <div>
+            <p class="font-display text-xl text-ink" data-testid="company-setup-done-title">
+              {{
+                (activated() ? 'company_setup.done.activated' : 'company_setup.done.pending_email')
+                  | transloco
+              }}
+            </p>
+            <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+              {{ confirmResult()?.companyName }} · NIP {{ confirmResult()?.nip }}
+            </p>
+          </div>
+        </div>
+        <p class="mt-4 text-slate2">
+          {{
+            (activated() ? 'company_setup.done.activated_body' : 'company_setup.done.pending_body')
+              | transloco
+          }}
+        </p>
+        <a
+          class="mt-4"
+          color="primary"
+          mat-flat-button
+          [routerLink]="activated() ? '/collaborations/my-campaigns' : '/user/settings/account'"
+          data-testid="company-setup-done-cta"
+        >
+          {{
+            (activated() ? 'company_setup.done.cta_campaigns' : 'company_setup.done.cta_verify')
+              | transloco
+          }}
+        </a>
+      </div>
+    }
+
+    @default {
+      <!-- NIP entry -->
+      <div class="rounded-2xl border border-beige bg-white p-6">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>{{ 'company_setup.nip_label' | transloco }}</mat-label>
+          <input
+            matInput
+            [formControl]="nip"
+            maxlength="10"
+            inputmode="numeric"
+            placeholder="5261040828"
+            data-testid="company-setup-nip"
+          />
+          @if (nip.touched && nip.invalid) {
+            <mat-error data-testid="company-setup-nip-error">
+              {{ 'company_setup.nip_invalid' | transloco }}
+            </mat-error>
+          }
+        </mat-form-field>
+
+        @if (errorMessage(); as message) {
+          <div
+            role="alert"
+            class="mb-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+            data-testid="company-setup-error"
+          >
+            {{ message }}
+          </div>
+        }
+
+        <button
+          mat-flat-button
+          color="primary"
+          [disabled]="phase() === 'looking'"
+          (click)="verify()"
+          data-testid="company-setup-verify"
+        >
+          @if (phase() === 'looking') {
+            <mat-spinner diameter="18" class="mr-2 inline-block" />
+          }
+          {{ 'company_setup.verify' | transloco }}
+        </button>
+      </div>
+
+      <!-- Lookup preview -->
+      @if (phase() === 'preview' || phase() === 'confirming') {
+        @if (lookup(); as data) {
+          <div
+            class="mt-6 rounded-2xl border border-beige bg-cream p-6"
+            data-testid="company-setup-preview"
+          >
+            <div class="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <p class="font-display text-xl text-ink" data-testid="company-setup-company-name">
+                  {{ data.companyName }}
+                </p>
+                @if (data.ownerName) {
+                  <p class="text-sm text-slate2" data-testid="company-setup-owner">
+                    {{ data.ownerName }}
+                  </p>
+                }
+              </div>
+              <span
+                class="rounded-full bg-slate-100 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-700"
+                data-testid="company-setup-company-type"
+              >
+                {{ data.legalFormName || data.companyType }}
+              </span>
+            </div>
+
+            <dl class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div class="rounded-xl bg-white p-3">
+                <dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">NIP</dt>
+                <dd class="text-ink">{{ data.nip }}</dd>
+              </div>
+              @if (data.regon) {
+                <div class="rounded-xl bg-white p-3">
+                  <dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                    REGON
+                  </dt>
+                  <dd class="text-ink">{{ data.regon }}</dd>
+                </div>
+              }
+              @if (addressLine()) {
+                <div class="rounded-xl bg-white p-3 sm:col-span-2">
+                  <dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                    {{ 'company_setup.address' | transloco }}
+                  </dt>
+                  <dd class="text-ink" data-testid="company-setup-address">{{ addressLine() }}</dd>
+                </div>
+              }
+              @if (data.pkdMainDescription) {
+                <div class="rounded-xl bg-white p-3 sm:col-span-2">
+                  <dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">PKD</dt>
+                  <dd class="text-ink">{{ data.pkdMainCode }} · {{ data.pkdMainDescription }}</dd>
+                </div>
+              }
+              @if (data.vatStatus) {
+                <div class="rounded-xl bg-white p-3">
+                  <dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">VAT</dt>
+                  <dd class="text-ink">{{ data.vatStatus }}</dd>
+                </div>
+              }
+              @if (data.bankAccounts?.length) {
+                <div class="rounded-xl bg-white p-3 sm:col-span-2">
+                  <dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                    {{ 'company_setup.bank_account' | transloco }}
+                  </dt>
+                  <dd class="text-ink" data-testid="company-setup-bank">
+                    {{ data.bankAccounts![0] }}
+                  </dd>
+                </div>
+              }
+            </dl>
+
+            <div class="mt-5 flex items-center gap-3">
+              <button
+                mat-flat-button
+                color="primary"
+                [disabled]="phase() === 'confirming'"
+                (click)="confirm()"
+                data-testid="company-setup-confirm"
+              >
+                @if (phase() === 'confirming') {
+                  <mat-spinner diameter="18" class="mr-2 inline-block" />
+                }
+                {{ 'company_setup.confirm' | transloco }}
+              </button>
+              <button mat-stroked-button (click)="startOver()" data-testid="company-setup-back">
+                {{ 'company_setup.back' | transloco }}
+              </button>
+            </div>
+          </div>
+        }
+      }
+    }
+  }
+</section>

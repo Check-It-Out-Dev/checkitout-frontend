@@ -1,0 +1,9 @@
+// Layout shell styles. Tailwind handles most of the layout via utility
+// classes in the template; this file is for component-scoped overrides
+// only (and to satisfy the bundle-budget rule that every component has
+// its own .scss file).
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}

@@ -1,0 +1,178 @@
+<section class="mx-auto max-w-4xl p-4" data-testid="collaboration-dashboard">
+  <header class="mb-6 flex items-center justify-between">
+    <h1 class="font-display text-4xl font-normal text-ink">
+      {{ 'collaborations.dashboard.title' | transloco }}
+    </h1>
+  </header>
+
+  <mat-tab-group
+    ngSkipHydration
+    class="mb-4"
+    [selectedIndex]="activeTabIndex()"
+    (selectedIndexChange)="onTabIndexChange($event)"
+    data-testid="collaboration-dashboard-tabs"
+  >
+    <mat-tab>
+      <ng-template mat-tab-label>
+        {{ 'collaborations.dashboard.tabs.in_progress' | transloco }}
+        @if (inProgressCount() !== null) {
+          ({{ inProgressCount() }})
+        }
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        {{ 'collaborations.dashboard.tabs.registrations' | transloco }}
+        @if (registrationsCount() !== null) {
+          ({{ registrationsCount() }})
+        }
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        {{ 'collaborations.dashboard.tabs.finished' | transloco }}
+        @if (finishedCount() !== null) {
+          ({{ finishedCount() }})
+        }
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+
+  @switch (state()) {
+    @case ('loading') {
+      <div class="flex min-h-[40vh] items-center justify-center">
+        <mat-spinner diameter="40" data-testid="collaboration-dashboard-loading" />
+      </div>
+    }
+    @case ('error') {
+      <div
+        role="alert"
+        data-testid="collaboration-dashboard-error"
+        class="flex flex-col items-center gap-3 rounded-2xl border border-red-200 bg-red-50 px-6 py-10 text-center text-red-700"
+      >
+        <mat-icon class="!h-10 !w-10 !text-4xl">error_outline</mat-icon>
+        <p>{{ 'collaborations.dashboard.error.load_failed' | transloco }}</p>
+        <button mat-stroked-button (click)="load()" data-testid="collaboration-dashboard-retry">
+          {{ 'collaborations.dashboard.error.retry' | transloco }}
+        </button>
+      </div>
+    }
+    @case ('empty') {
+      <div
+        class="flex flex-col items-center gap-4 rounded-2xl border border-beige bg-cream px-6 py-14 text-center"
+        data-testid="collaboration-dashboard-empty"
+      >
+        <span class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-coral-50">
+          <mat-icon class="!h-8 !w-8 !text-3xl text-coral-500">handshake</mat-icon>
+        </span>
+        <p class="font-display text-xl text-ink">
+          {{
+            (activeTab() === 'in-progress'
+              ? 'collaborations.dashboard.empty.in_progress'
+              : 'collaborations.dashboard.empty.finished'
+            ) | transloco
+          }}
+        </p>
+        <a
+          mat-flat-button
+          color="primary"
+          routerLink="/collaborations/list"
+          data-testid="collaboration-dashboard-empty-browse"
+        >
+          {{ 'collaborations.dashboard.empty.browse' | transloco }}
+        </a>
+      </div>
+    }
+    @case ('loaded') {
+      <ul class="flex list-none flex-col gap-4 pl-0" data-testid="collaboration-dashboard-rows">
+        @for (row of items(); track row.id) {
+          <li
+            class="rounded-2xl border border-beige bg-white p-5 transition-shadow hover:shadow-md"
+            data-testid="collaboration-dashboard-row"
+          >
+            <div class="flex flex-wrap items-start justify-between gap-3">
+              <div class="min-w-0">
+                <p class="truncate font-display text-lg text-ink">
+                  {{ row.partnershipOpportunity?.title || row.partnershipOpportunity?.name }}
+                </p>
+                <p
+                  class="mt-0.5 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500"
+                  data-testid="collaboration-dashboard-counterparty"
+                >
+                  {{
+                    (isCompany()
+                      ? 'collaborations.dashboard.row.influencer'
+                      : 'collaborations.dashboard.row.company'
+                    ) | transloco
+                  }}
+                  · {{ counterpartyName(row) }}
+                </p>
+              </div>
+              <span
+                class="rounded-full px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em]"
+                [ngClass]="statusBadgeClass($safeNavigationMigration(row.opportunityStatus?.value))"
+                data-testid="collaboration-dashboard-status"
+              >
+                {{ row.opportunityStatus?.label || row.opportunityStatus?.value }}
+              </span>
+            </div>
+
+            <!-- 8-step workflow position (legacy n/8 progress-bar parity) -->
+            <div class="mt-4 flex items-center gap-3">
+              <div class="h-1.5 flex-1 overflow-hidden rounded-full bg-beige">
+                <div
+                  class="h-full rounded-full bg-coral-500"
+                  [style.width.%]="
+                    progressPercent($safeNavigationMigration(row.opportunityStatus?.value))
+                  "
+                  data-testid="collaboration-dashboard-progress"
+                ></div>
+              </div>
+              <span class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+                {{
+                  'collaborations.dashboard.row.step'
+                    | transloco
+                      : {
+                          step: step($safeNavigationMigration(row.opportunityStatus?.value)),
+                          total: 8,
+                        }
+                }}
+              </span>
+            </div>
+
+            <div class="mt-4 flex items-center justify-between gap-3">
+              <span class="text-sm text-slate-500">
+                {{ row.lastUpdateTime || row.createdTime | date: 'mediumDate' }}
+              </span>
+              @if (cta(row); as action) {
+                <a
+                  mat-flat-button
+                  [routerLink]="action.link"
+                  [ngClass]="
+                    action.tone === 'act'
+                      ? '!bg-amber-500 !text-amber-950'
+                      : '!bg-coral-700 !text-white'
+                  "
+                  data-testid="collaboration-dashboard-cta"
+                >
+                  {{ 'collaborations.dashboard.cta.' + action.labelKey | transloco }}
+                </a>
+              }
+            </div>
+          </li>
+        }
+      </ul>
+
+      <mat-paginator
+        class="mt-4"
+        [length]="totalElements()"
+        [pageIndex]="pageIndex()"
+        [pageSize]="pageSize"
+        [hidePageSize]="true"
+        [showFirstLastButtons]="true"
+        (page)="onPage($event)"
+        data-testid="collaboration-dashboard-paginator"
+      />
+    }
+  }
+</section>

@@ -1,0 +1,124 @@
+<section class="mx-auto w-full max-w-5xl p-4 md:p-6">
+  <header class="mb-6 flex items-center justify-between gap-3">
+    <h1 class="font-display text-4xl font-normal text-ink" data-testid="my-campaigns-title">
+      {{ 'opportunities.dashboard.title' | transloco }}
+    </h1>
+    <a
+      mat-flat-button
+      color="primary"
+      routerLink="/collaborations/create"
+      data-testid="my-campaigns-new"
+    >
+      <mat-icon>add</mat-icon>
+      {{ 'opportunities.dashboard.new_campaign' | transloco }}
+    </a>
+  </header>
+
+  @if (state() === 'loading') {
+    <div class="flex items-center justify-center py-16" data-testid="my-campaigns-loading">
+      <mat-spinner diameter="32"></mat-spinner>
+    </div>
+  } @else if (state() === 'error') {
+    <div
+      role="alert"
+      data-testid="my-campaigns-error"
+      class="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700"
+    >
+      {{ 'opportunities.dashboard.error.load_failed' | transloco }}
+      <button mat-button (click)="load()" class="!ml-2 !text-coral-600">
+        {{ 'opportunities.dashboard.error.retry' | transloco }}
+      </button>
+    </div>
+  } @else if (state() === 'empty') {
+    <div
+      data-testid="my-campaigns-empty"
+      class="rounded-2xl border border-beige bg-cream p-10 text-center"
+    >
+      <span class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-coral-50">
+        <mat-icon class="!h-8 !w-8 !text-3xl text-coral-500">campaign</mat-icon>
+      </span>
+      <h2 class="mt-3 font-display text-3xl font-normal text-ink">
+        {{ 'opportunities.dashboard.empty.title' | transloco }}
+      </h2>
+      <p class="mt-1 text-sm text-slate2">
+        {{ 'opportunities.dashboard.empty.body' | transloco }}
+      </p>
+      <a class="cta-primary !mt-5 inline-flex" routerLink="/collaborations/create">
+        {{ 'opportunities.dashboard.empty.cta' | transloco }}
+      </a>
+    </div>
+  } @else {
+    <ul role="list" data-testid="my-campaigns-list" class="flex flex-col gap-3">
+      @for (campaign of items(); track campaign.id) {
+        <li
+          [attr.data-testid]="'my-campaign-' + campaign.id"
+          class="flex flex-col gap-3 rounded-2xl border border-beige bg-white p-5 transition hover:border-coral-400 hover:shadow-sm sm:flex-row sm:items-start sm:justify-between"
+        >
+          <div class="flex-1">
+            <div class="flex items-center gap-2">
+              <a
+                [routerLink]="['/collaborations', campaign.id]"
+                class="font-display text-2xl font-normal text-ink transition hover:text-coral-600"
+              >
+                {{ campaign.title || ('opportunities.dashboard.untitled' | transloco) }}
+              </a>
+              <span
+                class="rounded-full px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.18em]"
+                [class]="statusBadgeClass(campaign.active)"
+              >
+                {{
+                  (campaign.active
+                    ? 'opportunities.dashboard.status.active'
+                    : 'opportunities.dashboard.status.inactive'
+                  ) | transloco
+                }}
+              </span>
+            </div>
+            <p class="mt-1 font-mono text-[11px] uppercase tracking-[0.18em] text-slate2">
+              {{ 'opportunities.dashboard.created' | transloco }}
+              {{ campaign.createdTime ? (campaign.createdTime | date: 'mediumDate') : '—' }}
+            </p>
+            @if (campaign.compensationAmountMin || campaign.compensationAmountMax) {
+              <p class="mt-2 text-sm text-ink">
+                {{ 'opportunities.dashboard.compensation' | transloco }}:
+                <span class="font-medium">
+                  {{ campaign.compensationAmountMin ?? '—' }}
+                  –
+                  {{ campaign.compensationAmountMax ?? '—' }}
+                </span>
+              </p>
+            }
+          </div>
+          <div class="flex flex-row gap-2">
+            <a
+              mat-stroked-button
+              [routerLink]="['/collaborations', campaign.id, 'applicants']"
+              [attr.data-testid]="'my-campaign-applicants-' + campaign.id"
+            >
+              <mat-icon>people</mat-icon>
+              {{ 'opportunities.dashboard.view_applicants' | transloco }}
+            </a>
+            <a
+              mat-stroked-button
+              [routerLink]="['/collaborations/edit', campaign.id]"
+              [attr.data-testid]="'my-campaign-edit-' + campaign.id"
+            >
+              <mat-icon>edit</mat-icon>
+              {{ 'opportunities.dashboard.edit' | transloco }}
+            </a>
+          </div>
+        </li>
+      }
+    </ul>
+
+    <mat-paginator
+      [length]="totalElements()"
+      [pageIndex]="pageIndex()"
+      [pageSize]="pageSize()"
+      [pageSizeOptions]="[10, 20, 50]"
+      (page)="onPage($event)"
+      class="!mt-4"
+      data-testid="my-campaigns-paginator"
+    ></mat-paginator>
+  }
+</section>

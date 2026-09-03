@@ -1,0 +1,258 @@
+<section class="mx-auto w-full max-w-4xl p-4 md:p-6">
+  <header class="mb-5 flex flex-col gap-3">
+    <a
+      mat-stroked-button
+      routerLink="/collaborations/my-campaigns"
+      class="!w-fit"
+      data-testid="review-back"
+    >
+      <mat-icon>arrow_back</mat-icon>
+      {{ 'opportunities.review.back' | transloco }}
+    </a>
+    <h1 class="font-display text-4xl font-normal text-ink" data-testid="review-title">
+      {{ 'opportunities.review.title' | transloco }}
+    </h1>
+  </header>
+
+  @if (state() === 'loading') {
+    <div class="flex items-center justify-center py-16" data-testid="review-loading">
+      <mat-spinner diameter="32"></mat-spinner>
+    </div>
+  } @else if (state() === 'not-found') {
+    <div
+      data-testid="review-not-found"
+      class="rounded-2xl border border-beige bg-cream p-8 text-center text-slate2"
+    >
+      {{ 'opportunities.review.not_found' | transloco }}
+    </div>
+  } @else if (state() === 'error') {
+    <div
+      role="alert"
+      data-testid="review-error"
+      class="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700"
+    >
+      {{ 'opportunities.review.error.load_failed' | transloco }}
+      <button
+        mat-button
+        (click)="appliedOpportunityId() && load(appliedOpportunityId()!)"
+        class="!ml-2 !text-coral-600"
+      >
+        {{ 'opportunities.review.error.retry' | transloco }}
+      </button>
+    </div>
+  } @else if (state() === 'empty') {
+    <div
+      data-testid="review-empty"
+      class="flex flex-col items-center gap-3 rounded-2xl border border-beige bg-cream p-10 text-center"
+    >
+      <span class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-coral-50">
+        <mat-icon class="!h-8 !w-8 !text-3xl text-coral-500">photo_library</mat-icon>
+      </span>
+      <p class="font-display text-2xl font-normal text-ink">
+        {{ 'opportunities.review.empty' | transloco }}
+      </p>
+    </div>
+  } @else {
+    @if (canRateInfluencer()) {
+      <section
+        class="mb-4 rounded-2xl border border-beige bg-white p-5"
+        data-testid="review-rating"
+      >
+        <h2 class="mb-3 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+          {{ 'applied_opportunities.rating_company.title' | transloco }}
+        </h2>
+        @if (hasRatedInfluencer()) {
+          <p class="text-sm text-ink" data-testid="review-rating-done">
+            {{
+              'applied_opportunities.rating_company.done.' + influencerRatingFromCompany()
+                | transloco
+            }}
+          </p>
+        } @else {
+          <div class="flex flex-row gap-2">
+            <button
+              mat-flat-button
+              color="primary"
+              [disabled]="ratingSubmitting()"
+              (click)="rateInfluencer('POSITIVE')"
+              data-testid="review-rate-positive"
+            >
+              <mat-icon>thumb_up</mat-icon>
+              {{ 'applied_opportunities.rating_company.positive' | transloco }}
+            </button>
+            <button
+              mat-stroked-button
+              color="warn"
+              [disabled]="ratingSubmitting()"
+              (click)="rateInfluencer('NEGATIVE')"
+              data-testid="review-rate-negative"
+            >
+              <mat-icon>thumb_down</mat-icon>
+              {{ 'applied_opportunities.rating_company.negative' | transloco }}
+            </button>
+          </div>
+          @if (ratingErrorKey(); as key) {
+            <div
+              role="alert"
+              data-testid="review-rating-error"
+              class="mt-2 rounded-2xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+            >
+              {{ key | transloco }}
+            </div>
+          }
+        }
+      </section>
+    }
+    <ul role="list" data-testid="review-list" class="flex flex-col gap-3">
+      @for (row of items(); track row.id) {
+        <li
+          [attr.data-testid]="'review-row-' + row.id"
+          class="flex flex-col gap-3 rounded-2xl border border-beige bg-white p-5 transition hover:border-coral-400 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between"
+        >
+          <div class="flex-1">
+            <div class="flex items-center gap-2">
+              <p class="text-sm font-medium text-ink">
+                {{ row.contentTypeName || '—' }}
+                @if (row.contentCount) {
+                  <span class="ml-1 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                    ×{{ row.contentCount }}
+                  </span>
+                }
+              </p>
+              <span
+                class="rounded-full px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.18em]"
+                [class]="badgeClass(row.approvalStatus)"
+                [attr.data-testid]="'review-status-' + row.id"
+              >
+                {{
+                  'applied_opportunities.content.status.' + (row.approvalStatus || 'PENDING')
+                    | transloco
+                }}
+              </span>
+            </div>
+            @if (row.socialMediaLink) {
+              <a
+                [href]="row.socialMediaLink"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="block text-sm text-coral-600 transition hover:text-coral-700 hover:underline"
+              >
+                {{ row.socialMediaLink }}
+              </a>
+            }
+            @if (row.description) {
+              <p class="mt-1 whitespace-pre-line text-sm text-slate2">{{ row.description }}</p>
+            }
+            <p class="mt-1 font-mono text-[11px] uppercase tracking-[0.18em] text-slate2">
+              {{ row.contentCreationDate ? (row.contentCreationDate | date: 'mediumDate') : '—' }}
+            </p>
+            @if (hasMetrics(row)) {
+              <dl
+                class="mt-2 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[11px] tabular-nums text-slate2"
+                [attr.data-testid]="'review-metrics-' + row.id"
+              >
+                @if (row.likesCount != null) {
+                  <div class="flex gap-1">
+                    <dt>{{ 'applied_opportunities.content.engagement.likes' | transloco }}:</dt>
+                    <dd class="font-semibold text-ink">{{ row.likesCount }}</dd>
+                  </div>
+                }
+                @if (row.commentsCount != null) {
+                  <div class="flex gap-1">
+                    <dt>{{ 'applied_opportunities.content.engagement.comments' | transloco }}:</dt>
+                    <dd class="font-semibold text-ink">{{ row.commentsCount }}</dd>
+                  </div>
+                }
+                @if (row.viewsCount != null) {
+                  <div class="flex gap-1">
+                    <dt>{{ 'applied_opportunities.content.engagement.views' | transloco }}:</dt>
+                    <dd class="font-semibold text-ink">{{ row.viewsCount }}</dd>
+                  </div>
+                }
+                @if (row.sharesCount != null) {
+                  <div class="flex gap-1">
+                    <dt>{{ 'applied_opportunities.content.engagement.shares' | transloco }}:</dt>
+                    <dd class="font-semibold text-ink">{{ row.sharesCount }}</dd>
+                  </div>
+                }
+              </dl>
+            }
+            @if (row.approvalStatus === 'REJECTED' && row.approvalNotes) {
+              <p
+                class="mt-2 rounded-lg border border-red-100 bg-red-50 px-3 py-2 text-xs text-red-800"
+                [attr.data-testid]="'review-notes-' + row.id"
+              >
+                <strong>{{ 'opportunities.review.reject_notes_shown' | transloco }}:</strong>
+                {{ row.approvalNotes }}
+              </p>
+            }
+          </div>
+          @if (isAwaiting(row)) {
+            <div class="flex flex-row gap-2">
+              <button
+                mat-flat-button
+                color="primary"
+                [disabled]="row.id == null || pendingDecisions().has(row.id)"
+                (click)="row.id != null && approve(row.id)"
+                [attr.data-testid]="'review-approve-' + row.id"
+              >
+                <mat-icon>check</mat-icon>
+                {{ 'opportunities.review.approve' | transloco }}
+              </button>
+              <button
+                mat-stroked-button
+                color="warn"
+                [disabled]="row.id == null || pendingDecisions().has(row.id)"
+                (click)="row.id != null && armReject(row.id)"
+                [attr.data-testid]="'review-reject-' + row.id"
+              >
+                <mat-icon>close</mat-icon>
+                {{ 'opportunities.review.reject' | transloco }}
+              </button>
+            </div>
+          }
+          @if (rejectArmedId() === row.id) {
+            <div
+              class="w-full rounded-xl border border-red-200 bg-red-50 p-3"
+              [attr.data-testid]="'review-reject-form-' + row.id"
+            >
+              <mat-form-field class="w-full" subscriptSizing="dynamic">
+                <mat-label>{{ 'opportunities.review.reject_notes_label' | transloco }}</mat-label>
+                <textarea
+                  matInput
+                  rows="2"
+                  maxlength="500"
+                  [formControl]="rejectNotes"
+                  [attr.data-testid]="'review-reject-notes-' + row.id"
+                ></textarea>
+                <mat-hint align="end">{{ rejectNotes.value.length }}/500</mat-hint>
+              </mat-form-field>
+              <div class="mt-2 flex justify-end gap-2">
+                <button
+                  mat-button
+                  type="button"
+                  (click)="cancelReject()"
+                  [attr.data-testid]="'review-reject-cancel-' + row.id"
+                >
+                  {{ 'opportunities.review.reject_cancel' | transloco }}
+                </button>
+                <button
+                  mat-flat-button
+                  color="warn"
+                  type="button"
+                  [disabled]="
+                    rejectNotes.invalid || (row.id != null && pendingDecisions().has(row.id))
+                  "
+                  (click)="row.id != null && confirmReject(row.id)"
+                  [attr.data-testid]="'review-reject-confirm-' + row.id"
+                >
+                  {{ 'opportunities.review.reject_confirm' | transloco }}
+                </button>
+              </div>
+            </div>
+          }
+        </li>
+      }
+    </ul>
+  }
+</section>

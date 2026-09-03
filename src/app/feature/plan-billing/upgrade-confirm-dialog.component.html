@@ -1,0 +1,61 @@
+<h2 mat-dialog-title data-testid="upgrade-confirm-title">
+  {{
+    'plan_billing.upgrade.confirm.title'
+      | transloco: { plan: data.targetPlan, price: data.priceDisplay }
+  }}
+</h2>
+
+<mat-dialog-content class="!pt-2">
+  <p class="mb-3 text-sm text-ink">
+    {{ 'plan_billing.upgrade.confirm.summary' | transloco }}
+  </p>
+
+  <div
+    class="mb-3 max-h-40 overflow-y-auto rounded-2xl border border-beige bg-cream p-3 text-xs leading-relaxed text-slate2"
+  >
+    {{ 'plan_billing.upgrade.confirm.terms_excerpt' | transloco }}
+  </div>
+
+  <mat-checkbox
+    id="upgrade-consent-checkbox"
+    [formControl]="accepted"
+    color="primary"
+    data-testid="upgrade-consent-checkbox"
+  >
+    {{
+      'plan_billing.upgrade.confirm.accept_label' | transloco: { documentName: data.documentName }
+    }}
+  </mat-checkbox>
+
+  @if (errorKey(); as ek) {
+    <p role="alert" class="mt-3 text-sm text-red-600" data-testid="upgrade-confirm-error">
+      {{ ek | transloco }}
+    </p>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions class="!justify-end">
+  <button
+    mat-button
+    type="button"
+    (click)="cancel()"
+    [disabled]="phase() === 'submitting'"
+    data-testid="upgrade-confirm-cancel"
+  >
+    {{ 'plan_billing.upgrade.confirm.cancel' | transloco }}
+  </button>
+  <button
+    mat-flat-button
+    color="primary"
+    type="button"
+    (click)="confirm($event)"
+    [disabled]="accepted.invalid || phase() === 'submitting'"
+    data-testid="upgrade-confirm-submit"
+  >
+    @if (phase() === 'submitting') {
+      <mat-spinner diameter="18" class="!inline-block" />
+    } @else {
+      {{ 'plan_billing.upgrade.confirm.submit' | transloco }}
+    }
+  </button>
+</mat-dialog-actions>

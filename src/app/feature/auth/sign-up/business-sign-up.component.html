@@ -1,0 +1,147 @@
+<section class="flex w-full items-start justify-center px-4">
+  <form
+    [formGroup]="form"
+    (ngSubmit)="submit()"
+    class="flex w-full max-w-md flex-col gap-3"
+    novalidate
+  >
+    <a routerLink="/" class="mb-2 inline-block" aria-label="Check It Out home">
+      <img src="assets/brand/c-mark.svg" class="h-10 w-10" alt="" />
+    </a>
+    <span class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-coral-500">
+      {{ 'auth.sign_up.sign_up_business' | transloco }}
+    </span>
+    <h1 class="mb-2 text-left font-display text-4xl font-normal text-ink">
+      {{ 'auth.sign_up.title' | transloco }}
+    </h1>
+
+    <!-- Step 1: NIP + verify -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-end gap-2">
+        <mat-form-field appearance="outline" class="flex-1">
+          <mat-label>{{ 'auth.sign_up.nip' | transloco }}</mat-label>
+          <input
+            matInput
+            inputmode="numeric"
+            maxlength="10"
+            formControlName="nip"
+            data-testid="business-sign-up-nip"
+          />
+          @if (form.controls.nip.touched && form.controls.nip.hasError('required')) {
+            <mat-error>{{ 'auth.sign_up.nip_required' | transloco }}</mat-error>
+          } @else if (form.controls.nip.touched && form.controls.nip.hasError('pattern')) {
+            <mat-error>{{ 'auth.sign_up.nip_invalid' | transloco }}</mat-error>
+          }
+        </mat-form-field>
+        <button
+          mat-stroked-button
+          type="button"
+          (click)="verifyNip()"
+          [disabled]="looking() || form.controls.nip.invalid"
+          data-testid="business-sign-up-verify"
+          class="!mb-[18px]"
+        >
+          @if (looking()) {
+            <mat-spinner diameter="18"></mat-spinner>
+          } @else {
+            {{ 'auth.sign_up.verify_nip' | transloco }}
+          }
+        </button>
+      </div>
+
+      @if (company(); as c) {
+        <div
+          data-testid="business-sign-up-company"
+          class="rounded border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm"
+        >
+          <div class="flex items-start gap-2">
+            <mat-icon class="!h-5 !w-5 !text-base text-emerald-600">verified</mat-icon>
+            <div>
+              <strong class="block">{{ c.companyName }}</strong>
+              <span class="text-slate2">
+                {{ c.city }}
+                @if (c.vatStatus) {
+                  · VAT: {{ c.vatStatus }}
+                }
+              </span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Step 2: account -->
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'auth.sign_in.email' | transloco }}</mat-label>
+      <input
+        matInput
+        type="email"
+        autocomplete="email"
+        formControlName="email"
+        data-testid="business-sign-up-email"
+      />
+      @if (form.controls.email.touched && form.controls.email.hasError('required')) {
+        <mat-error>{{ 'auth.sign_in.email_required' | transloco }}</mat-error>
+      } @else if (form.controls.email.touched && form.controls.email.hasError('email')) {
+        <mat-error>{{ 'auth.sign_in.email_invalid' | transloco }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'auth.sign_in.password' | transloco }}</mat-label>
+      <input
+        matInput
+        type="password"
+        autocomplete="new-password"
+        formControlName="password"
+        data-testid="business-sign-up-password"
+      />
+      @if (form.controls.password.touched && form.controls.password.hasError('required')) {
+        <mat-error>{{ 'auth.sign_in.password_required' | transloco }}</mat-error>
+      } @else if (form.controls.password.touched && form.controls.password.hasError('minlength')) {
+        <mat-error>{{ 'auth.reset_password.error_weak_password' | transloco }}</mat-error>
+      }
+    </mat-form-field>
+
+    <app-legal-clickwrap
+      (allAccepted)="onConsentChange($event)"
+      data-testid="business-sign-up-clickwrap"
+      class="!my-2"
+    ></app-legal-clickwrap>
+
+    @if (errorKey(); as key) {
+      <div
+        role="alert"
+        data-testid="business-sign-up-error"
+        class="rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+      >
+        {{ key | transloco }}
+      </div>
+    }
+
+    <button
+      mat-flat-button
+      color="primary"
+      type="submit"
+      [disabled]="registering() || form.invalid || !company() || !consentValid()"
+      data-testid="business-sign-up-submit"
+      class="!mt-2"
+    >
+      @if (registering()) {
+        <mat-spinner diameter="20" class="mx-auto"></mat-spinner>
+      } @else {
+        {{ 'auth.sign_up.submit' | transloco }}
+      }
+    </button>
+
+    <p class="mt-2 text-center text-sm text-slate2">
+      {{ 'auth.sign_up.already_have_account' | transloco }}
+      <a
+        routerLink="/auth/sign-in"
+        class="text-coral-600 transition hover:text-coral-700 hover:underline"
+      >
+        {{ 'auth.sign_in.submit' | transloco }}
+      </a>
+    </p>
+  </form>
+</section>

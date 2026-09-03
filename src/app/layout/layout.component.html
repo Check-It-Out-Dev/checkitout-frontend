@@ -1,0 +1,121 @@
+<mat-sidenav-container class="h-screen bg-cream">
+  <mat-sidenav
+    #sidenav
+    [mode]="isMobile() ? 'over' : 'side'"
+    [opened]="sidenavOpen()"
+    (closedStart)="sidenavOpen.set(false)"
+    class="!w-64 !border-r !border-beige !bg-cream"
+  >
+    <div class="flex items-center gap-2 border-b border-beige px-5 py-5">
+      <img src="assets/brand/c-mark.svg" alt="" class="h-7 w-7" data-testid="brand-mark" />
+      <span class="font-display text-xl tracking-tight text-ink">Check It Out</span>
+    </div>
+
+    <mat-nav-list class="!px-2 !pt-3">
+      @for (entry of navEntries(); track entry.route) {
+        <a
+          mat-list-item
+          [routerLink]="entry.route"
+          routerLinkActive="!bg-coral-50 !text-coral-600"
+          [routerLinkActiveOptions]="{ exact: false }"
+          (click)="isMobile() && toggleSidenav()"
+          class="!rounded-lg"
+        >
+          <mat-icon matListItemIcon>{{ entry.icon }}</mat-icon>
+          <span matListItemTitle class="!text-sm !font-medium">
+            {{ entry.label | transloco }}
+          </span>
+        </a>
+      }
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="flex flex-col bg-cream">
+    <header
+      class="sticky top-0 z-30 flex items-center gap-2 border-b border-beige bg-cream/85 px-4 py-3 backdrop-blur md:px-6"
+    >
+      @if (isMobile()) {
+        <button
+          type="button"
+          mat-icon-button
+          [attr.aria-label]="'layout.a11y.toggle_navigation' | transloco"
+          (click)="toggleSidenav()"
+          class="!text-ink"
+        >
+          <mat-icon>menu</mat-icon>
+        </button>
+        <img
+          src="assets/brand/c-mark.svg"
+          alt=""
+          class="h-6 w-6"
+          data-testid="brand-mark-toolbar"
+        />
+        <span class="font-display text-lg tracking-tight text-ink">Check It Out</span>
+      }
+
+      <span class="flex-1"></span>
+
+      <button
+        type="button"
+        mat-icon-button
+        [attr.aria-label]="'layout.a11y.toggle_theme' | transloco"
+        (click)="toggleTheme()"
+        class="!text-slate2 hover:!text-ink"
+      >
+        <mat-icon>{{ themeMode() === 'dark' ? 'light_mode' : 'dark_mode' }}</mat-icon>
+      </button>
+
+      <button
+        type="button"
+        mat-button
+        [matMenuTriggerFor]="langMenu"
+        class="!min-w-0 !px-3 !font-mono !text-xs !uppercase !tracking-widest !text-slate2"
+        [attr.aria-label]="'header.lang.toggle' | transloco"
+      >
+        {{ activeLang() }}
+        <mat-icon class="!ml-1 !h-4 !w-4 !text-base">expand_more</mat-icon>
+      </button>
+      <mat-menu #langMenu="matMenu">
+        <button mat-menu-item type="button" (click)="setLang('en')">
+          <mat-icon>{{ activeLang() === 'en' ? 'check' : '' }}</mat-icon>
+          <span>English</span>
+        </button>
+        <button mat-menu-item type="button" (click)="setLang('pl')">
+          <mat-icon>{{ activeLang() === 'pl' ? 'check' : '' }}</mat-icon>
+          <span>Polski</span>
+        </button>
+      </mat-menu>
+
+      <app-notification-bell class="!text-slate2"></app-notification-bell>
+
+      <button
+        type="button"
+        mat-icon-button
+        [matMenuTriggerFor]="userMenu"
+        [attr.aria-label]="'layout.a11y.open_user_menu' | transloco"
+        class="!text-slate2 hover:!text-ink"
+        data-testid="user-menu-trigger"
+      >
+        <mat-icon>account_circle</mat-icon>
+      </button>
+      <mat-menu #userMenu="matMenu">
+        <a mat-menu-item routerLink="/user/settings/account" data-testid="user-menu-profile">
+          <mat-icon>person</mat-icon>
+          <span>{{ 'nav.profile' | transloco }}</span>
+        </a>
+        <mat-divider />
+        <a mat-menu-item routerLink="/auth/sign-out" data-testid="user-menu-sign-out">
+          <mat-icon>logout</mat-icon>
+          <span>{{ 'nav.sign_out' | transloco }}</span>
+        </a>
+      </mat-menu>
+    </header>
+
+    <app-shell-banners />
+    <main class="flex-1 overflow-auto px-4 py-6 md:px-8 md:py-10">
+      <router-outlet />
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+<app-cookie-banner ngSkipHydration />

@@ -1,0 +1,354 @@
+<section class="mx-auto w-full max-w-3xl p-4 md:p-6">
+  <header class="mb-5 flex flex-col gap-3">
+    <a
+      mat-stroked-button
+      [routerLink]="['/collaborations/registrations', appliedOpportunityId()]"
+      class="!w-fit"
+      data-testid="content-back"
+    >
+      <mat-icon>arrow_back</mat-icon>
+      {{ 'applied_opportunities.content.back' | transloco }}
+    </a>
+    <h1 class="font-display text-4xl font-normal text-ink" data-testid="content-title">
+      {{ 'applied_opportunities.content.title' | transloco }}
+    </h1>
+  </header>
+
+  @if (state() === 'loading') {
+    <div class="flex items-center justify-center py-16" data-testid="content-loading">
+      <mat-spinner diameter="32"></mat-spinner>
+    </div>
+  } @else if (state() === 'not-found') {
+    <div
+      data-testid="content-not-found"
+      class="rounded-2xl border border-beige bg-cream p-8 text-center text-slate2"
+    >
+      {{ 'applied_opportunities.content.not_found' | transloco }}
+    </div>
+  } @else if (state() === 'error') {
+    <div
+      role="alert"
+      data-testid="content-load-error"
+      class="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700"
+    >
+      {{ 'applied_opportunities.content.error.load_failed' | transloco }}
+      <button
+        mat-button
+        (click)="appliedOpportunityId() && load(appliedOpportunityId()!)"
+        class="!ml-2 !text-coral-600"
+      >
+        {{ 'applied_opportunities.content.error.retry' | transloco }}
+      </button>
+    </div>
+  } @else {
+    <form
+      [formGroup]="form"
+      (ngSubmit)="submit()"
+      class="mb-6 flex flex-col gap-3 rounded-2xl border border-beige bg-white p-6"
+      novalidate
+      data-testid="content-form"
+    >
+      <h2 class="font-display text-2xl font-normal text-ink">
+        {{ 'applied_opportunities.content.form.title' | transloco }}
+      </h2>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'applied_opportunities.content.form.type' | transloco }}</mat-label>
+        <mat-select formControlName="contentTypeId" data-testid="content-form-type">
+          @for (ct of contentTypes(); track ct.id) {
+            <mat-option [value]="ct.id">{{ ct.name || ct.originalName || '—' }}</mat-option>
+          }
+        </mat-select>
+        @if (
+          form.controls.contentTypeId.touched && form.controls.contentTypeId.hasError('required')
+        ) {
+          <mat-error>
+            {{ 'applied_opportunities.content.error.type_required' | transloco }}
+          </mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'applied_opportunities.content.form.count' | transloco }}</mat-label>
+        <input
+          matInput
+          type="number"
+          min="1"
+          formControlName="contentCount"
+          data-testid="content-form-count"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'applied_opportunities.content.form.link' | transloco }}</mat-label>
+        <input
+          matInput
+          type="url"
+          formControlName="socialMediaLink"
+          placeholder="https://instagram.com/p/…"
+          data-testid="content-form-link"
+        />
+        @if (
+          form.controls.socialMediaLink.touched &&
+          (form.controls.socialMediaLink.hasError('unsafeScheme') ||
+            form.controls.socialMediaLink.hasError('invalidUrl'))
+        ) {
+          <mat-error data-testid="content-form-link-error">
+            {{ 'applied_opportunities.content.error.link_invalid_scheme' | transloco }}
+          </mat-error>
+        } @else if (
+          form.controls.socialMediaLink.touched &&
+          form.controls.socialMediaLink.hasError('notSocialPost')
+        ) {
+          <mat-error data-testid="content-form-link-error">
+            {{ 'applied_opportunities.content.error.link_not_social' | transloco }}
+          </mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'applied_opportunities.content.form.description' | transloco }}</mat-label>
+        <textarea
+          matInput
+          rows="3"
+          formControlName="description"
+          maxlength="1000"
+          data-testid="content-form-description"
+        ></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'applied_opportunities.content.form.tags' | transloco }}</mat-label>
+        <input matInput formControlName="tags" maxlength="500" data-testid="content-form-tags" />
+      </mat-form-field>
+
+      @if (errorKey(); as key) {
+        <div
+          role="alert"
+          data-testid="content-form-error"
+          class="rounded-2xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+        >
+          {{ key | transloco }}
+        </div>
+      }
+
+      <div class="flex justify-end">
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          [disabled]="submitting() || form.invalid"
+          data-testid="content-form-submit"
+        >
+          @if (submitting()) {
+            <mat-spinner diameter="18" class="mx-auto"></mat-spinner>
+          } @else {
+            {{ 'applied_opportunities.content.form.submit' | transloco }}
+          }
+        </button>
+      </div>
+    </form>
+
+    <section data-testid="content-submissions" class="flex flex-col gap-3">
+      <h2 class="font-display text-2xl font-normal text-ink">
+        {{ 'applied_opportunities.content.submitted_title' | transloco }}
+      </h2>
+      @if (hasSubmissions()) {
+        <ul role="list" class="flex flex-col gap-3">
+          @for (row of submissions(); track row.id) {
+            <li
+              [attr.data-testid]="'content-submission-' + row.id"
+              class="rounded-2xl border border-beige bg-white p-5 transition hover:border-coral-400"
+            >
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex-1">
+                  <p class="text-sm font-medium text-ink">
+                    {{ row.contentTypeName || '—' }}
+                    @if (row.contentCount) {
+                      <span
+                        class="ml-1 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2"
+                      >
+                        ×{{ row.contentCount }}
+                      </span>
+                    }
+                  </p>
+                  @if (row.socialMediaLink) {
+                    <a
+                      [href]="row.socialMediaLink"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="block text-sm text-coral-600 transition hover:text-coral-700 hover:underline"
+                    >
+                      {{ row.socialMediaLink }}
+                    </a>
+                  }
+                  @if (row.description) {
+                    <p class="mt-1 whitespace-pre-line text-sm text-slate2">
+                      {{ row.description }}
+                    </p>
+                  }
+                  <p class="mt-1 font-mono text-[11px] uppercase tracking-[0.18em] text-slate2">
+                    {{
+                      row.contentCreationDate ? (row.contentCreationDate | date: 'mediumDate') : '—'
+                    }}
+                  </p>
+                  @if (row.approvalStatus === 'REJECTED' && row.approvalNotes) {
+                    <p
+                      class="mt-2 rounded-lg border border-red-100 bg-red-50 px-3 py-2 text-xs text-red-800"
+                      [attr.data-testid]="'content-notes-' + row.id"
+                    >
+                      <strong>
+                        {{ 'applied_opportunities.content.revision_reason' | transloco }}
+                      </strong>
+                      : {{ row.approvalNotes }}
+                    </p>
+                  }
+                </div>
+                <span
+                  class="rounded-full px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.18em]"
+                  [class]="
+                    row.approvalStatus === 'APPROVED'
+                      ? 'bg-emerald-100 text-emerald-800'
+                      : row.approvalStatus === 'REJECTED'
+                        ? 'bg-red-100 text-red-800'
+                        : 'bg-slate-100 text-slate-700'
+                  "
+                >
+                  {{
+                    'applied_opportunities.content.status.' + (row.approvalStatus || 'PENDING')
+                      | transloco
+                  }}
+                </span>
+              </div>
+
+              @if (hasMetrics(row)) {
+                <dl
+                  class="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[11px] tabular-nums text-slate2"
+                  [attr.data-testid]="'content-metrics-' + row.id"
+                >
+                  @if (row.likesCount != null) {
+                    <div class="flex gap-1">
+                      <dt>{{ 'applied_opportunities.content.engagement.likes' | transloco }}:</dt>
+                      <dd class="font-semibold text-ink">{{ row.likesCount }}</dd>
+                    </div>
+                  }
+                  @if (row.commentsCount != null) {
+                    <div class="flex gap-1">
+                      <dt>
+                        {{ 'applied_opportunities.content.engagement.comments' | transloco }}:
+                      </dt>
+                      <dd class="font-semibold text-ink">{{ row.commentsCount }}</dd>
+                    </div>
+                  }
+                  @if (row.viewsCount != null) {
+                    <div class="flex gap-1">
+                      <dt>{{ 'applied_opportunities.content.engagement.views' | transloco }}:</dt>
+                      <dd class="font-semibold text-ink">{{ row.viewsCount }}</dd>
+                    </div>
+                  }
+                  @if (row.sharesCount != null) {
+                    <div class="flex gap-1">
+                      <dt>{{ 'applied_opportunities.content.engagement.shares' | transloco }}:</dt>
+                      <dd class="font-semibold text-ink">{{ row.sharesCount }}</dd>
+                    </div>
+                  }
+                </dl>
+              }
+
+              @if (engagementEditId() === row.id) {
+                <form
+                  [formGroup]="engagementForm"
+                  (ngSubmit)="saveEngagement()"
+                  class="mt-3 flex flex-col gap-3 rounded-xl border border-beige bg-cream p-4"
+                  [attr.data-testid]="'engagement-editor-' + row.id"
+                >
+                  <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                    {{ 'applied_opportunities.content.engagement.title' | transloco }}
+                  </p>
+                  <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                      <mat-label>
+                        {{ 'applied_opportunities.content.engagement.likes' | transloco }}
+                      </mat-label>
+                      <input matInput type="number" min="0" formControlName="likes" />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                      <mat-label>
+                        {{ 'applied_opportunities.content.engagement.comments' | transloco }}
+                      </mat-label>
+                      <input matInput type="number" min="0" formControlName="comments" />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                      <mat-label>
+                        {{ 'applied_opportunities.content.engagement.views' | transloco }}
+                      </mat-label>
+                      <input matInput type="number" min="0" formControlName="views" />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                      <mat-label>
+                        {{ 'applied_opportunities.content.engagement.shares' | transloco }}
+                      </mat-label>
+                      <input matInput type="number" min="0" formControlName="shares" />
+                    </mat-form-field>
+                  </div>
+                  @if (engagementErrorKey(); as ek) {
+                    <p
+                      role="alert"
+                      class="text-sm text-red-600"
+                      [attr.data-testid]="'engagement-error-' + row.id"
+                    >
+                      {{ ek | transloco }}
+                    </p>
+                  }
+                  <div class="flex justify-end gap-2">
+                    <button
+                      mat-button
+                      type="button"
+                      (click)="closeEngagement()"
+                      [disabled]="engagementSaving()"
+                    >
+                      {{ 'applied_opportunities.content.engagement.cancel' | transloco }}
+                    </button>
+                    <button
+                      mat-flat-button
+                      color="primary"
+                      type="submit"
+                      [disabled]="engagementSaving() || engagementForm.invalid"
+                      [attr.data-testid]="'engagement-save-' + row.id"
+                    >
+                      @if (engagementSaving()) {
+                        <mat-spinner diameter="18" class="!inline-block" />
+                      } @else {
+                        {{ 'applied_opportunities.content.engagement.save' | transloco }}
+                      }
+                    </button>
+                  </div>
+                </form>
+              } @else {
+                <div class="mt-3">
+                  <button
+                    mat-stroked-button
+                    type="button"
+                    (click)="openEngagement(row)"
+                    [attr.data-testid]="'engagement-edit-' + row.id"
+                  >
+                    {{
+                      (hasMetrics(row)
+                        ? 'applied_opportunities.content.engagement.update'
+                        : 'applied_opportunities.content.engagement.add'
+                      ) | transloco
+                    }}
+                  </button>
+                </div>
+              }
+            </li>
+          }
+        </ul>
+      } @else {
+        <p data-testid="content-empty" class="text-sm text-slate2">
+          {{ 'applied_opportunities.content.empty' | transloco }}
+        </p>
+      }
+    </section>
+  }
+</section>

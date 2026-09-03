@@ -1,0 +1,134 @@
+<section class="mx-auto max-w-5xl p-4" data-testid="admin-dictionary">
+  <header class="mb-6">
+    <h1 class="font-display text-4xl font-normal text-ink">
+      {{ 'admin_dictionary.title' | transloco }}
+    </h1>
+    <p class="mt-2 text-slate2">{{ 'admin_dictionary.subtitle' | transloco }}</p>
+  </header>
+
+  <!-- Add entry -->
+  <form
+    class="mb-6 grid grid-cols-1 gap-3 rounded-2xl border border-beige bg-white p-5 sm:grid-cols-2 lg:grid-cols-5"
+    [formGroup]="form"
+    (ngSubmit)="submit()"
+    data-testid="admin-dictionary-form"
+  >
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'admin_dictionary.fields.category' | transloco }}</mat-label>
+      <input matInput formControlName="category" data-testid="admin-dictionary-category" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'admin_dictionary.fields.key' | transloco }}</mat-label>
+      <input matInput formControlName="key" data-testid="admin-dictionary-key" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'admin_dictionary.fields.language' | transloco }}</mat-label>
+      <mat-select formControlName="languageCode" data-testid="admin-dictionary-language">
+        <mat-option value="pl">pl</mat-option>
+        <mat-option value="en">en</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'admin_dictionary.fields.value' | transloco }}</mat-label>
+      <input matInput formControlName="value" data-testid="admin-dictionary-value" />
+    </mat-form-field>
+    <button
+      mat-flat-button
+      type="submit"
+      class="mt-1 h-14"
+      color="primary"
+      data-testid="admin-dictionary-submit"
+    >
+      {{ 'admin_dictionary.add' | transloco }}
+    </button>
+    @if (saveError()) {
+      <p
+        role="alert"
+        class="text-sm text-red-700 sm:col-span-2 lg:col-span-5"
+        data-testid="admin-dictionary-save-error"
+      >
+        {{ 'admin_dictionary.save_error' | transloco }}
+      </p>
+    }
+  </form>
+
+  <!-- Category filter -->
+  <div class="mb-4 flex items-center gap-3">
+    <mat-form-field appearance="outline" class="w-64">
+      <mat-label>{{ 'admin_dictionary.filter' | transloco }}</mat-label>
+      <mat-select
+        [value]="category()"
+        (valueChange)="category.set($event)"
+        data-testid="admin-dictionary-filter"
+      >
+        <mat-option value="all">{{ 'admin_dictionary.all' | transloco }}</mat-option>
+        @for (option of categories(); track option) {
+          <mat-option [value]="option">{{ option }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <span class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+      {{ filtered().length }} {{ 'admin_dictionary.entries' | transloco }}
+    </span>
+  </div>
+
+  @switch (state()) {
+    @case ('loading') {
+      <div class="flex min-h-[30vh] items-center justify-center">
+        <mat-spinner diameter="40" data-testid="admin-dictionary-loading" />
+      </div>
+    }
+    @case ('error') {
+      <div
+        role="alert"
+        data-testid="admin-dictionary-error"
+        class="flex flex-col items-center gap-3 rounded-2xl border border-red-200 bg-red-50 px-6 py-10 text-center text-red-700"
+      >
+        <mat-icon class="!h-10 !w-10 !text-4xl">error_outline</mat-icon>
+        <p>{{ 'admin_dictionary.error.load_failed' | transloco }}</p>
+        <button mat-stroked-button (click)="load()" data-testid="admin-dictionary-retry">
+          {{ 'admin_dictionary.error.retry' | transloco }}
+        </button>
+      </div>
+    }
+    @case ('empty') {
+      <div
+        class="flex flex-col items-center gap-4 rounded-2xl border border-beige bg-cream px-6 py-14 text-center"
+        data-testid="admin-dictionary-empty"
+      >
+        <span class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-coral-50">
+          <mat-icon class="!h-8 !w-8 !text-3xl text-coral-500">menu_book</mat-icon>
+        </span>
+        <p class="font-display text-xl text-ink">{{ 'admin_dictionary.empty' | transloco }}</p>
+      </div>
+    }
+    @case ('loaded') {
+      <ul class="flex list-none flex-col gap-2 pl-0" data-testid="admin-dictionary-rows">
+        @for (entry of filtered(); track entry.id) {
+          <li
+            class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-beige bg-white px-4 py-3"
+            data-testid="admin-dictionary-row"
+          >
+            <div class="min-w-0">
+              <p class="truncate text-ink">
+                <span class="font-mono text-xs text-slate2">{{ entry.key }}</span>
+                · {{ entry.value }}
+              </p>
+              <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                {{ entry.category }} · {{ entry.languageCode }}
+              </p>
+            </div>
+            <button
+              mat-icon-button
+              (click)="remove(entry)"
+              [attr.aria-label]="'admin_dictionary.delete' | transloco"
+              data-testid="admin-dictionary-delete"
+            >
+              <mat-icon class="!text-slate-400">delete_outline</mat-icon>
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  }
+</section>

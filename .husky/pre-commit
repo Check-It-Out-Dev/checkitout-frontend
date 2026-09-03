@@ -1,0 +1,96 @@
+# Greenfield FE pre-commit gate.
+# Order: cheapest checks first → fail fast on the obvious issues, save the
+# expensive ones for last.
+
+# 1. Hard rule — zero @fuse/* imports anywhere.
+npm run check:no-legacy-ui || exit 1
+
+# 1b. Hard rule — feature/layout/shared code only accesses the BE through
+#     wrappers in src/app/core/**. No direct imports from src/app/api/api/*
+#     (the openapi-generator output emits Observable<any> on the
+#     implementation overload, which leaks through casts at call sites).
+npm run check:api-wrappers || exit 1
+
+# 1c. Hard rule — en.json and pl.json must have identical key sets.
+#     Catches typos (anddWarning vs addWarning) and missed ports.
+npm run check:i18n-parity || exit 1
+
+# 1d. Hard rule — every sandbox-registry fixture must have a visual
+#     baseline (or be explicitly EXCLUDED). The visual spec hardcodes
+#     its FIXTURES list intentionally, so this gate prevents silent
+#     coverage loss when new fixtures land.
+npm run check:visual-fixture-coverage || exit 1
+
+# 1d2. Hard rule (G10) — sandbox-snapshot baselines must be at least as
+#      fresh as the component sources whose UI they capture. The gate
+#      compares the freshest source mtime (HTML/TS/SCSS imported by any
+#      *.fixture.ts) against the `.last-regen.txt` tag written by
+#      `npm run test:visual:update`. Caught the editorial-sweep arc
+#      (2026-05-09..10) which touched 27 templates without regenerating
+#      baselines, silently eroding visual coverage. Fix when this fires:
+#      `npm run test:visual:update`.
+npm run check:visual-baseline-freshness || exit 1
+
+# 1e. Hard rule — every integration spec must cite the BE Cucumber feature
+#     it ports (or use the documented FE-only escape hatch). The
+#     integration tier is a PORT of BE Cucumber, NOT a separate FE
+#     coverage suite — see memory feedback_fe_integration_must_mirror_be_cucumber_1_to_1.
+npm run check:integration-cucumber-citation || exit 1
+
+# 1e2. L3 completeness — every BE Cucumber feature is ported (cited) or
+#      explicitly waived in e2e-tests/bdd/CORPUS-WAIVERS.md. The enforcement
+#      keystone of the layered test architecture: the BE corpus can't grow a
+#      feature that silently goes uncovered. Self-skips if the BE sibling
+#      checkout is absent.
+npm run check:bdd-corpus || exit 1
+
+# 1f. Hard rule (G12) — every COMPONENT_PAIRS entry in
+#     e2e-tests/visual-parity/component-pairs.ts must point at a sandbox
+#     fixture that actually exists. Catches typos / renames between the
+#     verdict registry and the sandbox registry (e.g. fixture renamed in
+#     sandbox-registry but pair entry still references the old slug).
+#     Stage 6g sweeps would 404 silently on those pairs otherwise.
+npm run check:component-pair-sync || exit 1
+
+# 1f2. Hard rule — L0 type-contract COVERAGE. Every core wrapper service
+#      must have a matching src/testing/contract/*.contract.ts (compile-time
+#      Expect<Equal> assertion vs the generated OpenAPI models) OR an explicit
+#      waiver (client-side / contract-pending backlog). Without this, a new
+#      wrapper ships with zero L0 coverage and nothing fails. (audit
+#      wf_dfde554b, FE-pyramid P1)
+npm run check:contract-coverage || exit 1
+
+# 1g. Hard rule (G13) — the shipped Material Icons font is a SUBSET cut to
+#     the ligature names used in src/. A new <mat-icon>name</mat-icon>
+#     without a subset regen would render as raw ligature TEXT (the glyph
+#     is not in the 6 KB subset). Fix when this fires:
+#     `node tools/subset-material-icons.mjs --write` and commit the
+#     regenerated font + manifest.
+npm run check:icon-subset || exit 1
+
+# 2. Run prettier on the staged files (auto-formats + re-stages).
+npx lint-staged || exit 1
+
+# 3. Strict TypeScript check across the entire app.
+npm run typecheck || exit 1
+
+# 3b. Strict TypeScript check across the e2e layer — the ONLY thing that
+#     type-checks the typed e2e transport (e2e-tests/_framework/api/**) and
+#     the L3 BDD steps (e2e-tests/bdd/steps/**). jest.config testMatch does
+#     NOT include those, and build:check compiles only the app tree — so a
+#     regenerated-DTO drift that breaks a typed cucumber payload or the e2e
+#     service layer would otherwise pass the commit gate and only surface in
+#     a manual `check:full`. `--noEmit`, cheap. (audit wf_dfde554b P1)
+npm run typecheck:e2e || exit 1
+
+# 4. Angular template type-checker — `ng build` runs `strictTemplates`,
+#    which `tsc --noEmit` does NOT. Without this gate, a template like
+#    `{{ row.influencer.lastName }}` against a union type that lacks
+#    `lastName` on one branch passes typecheck and silently breaks
+#    `ng serve` (the dev server keeps the last good build, so the bug
+#    looks like "my edit isn't reaching the browser").
+#    See memory feedback_typecheck_vs_ng_build.md.
+npm run build:check || exit 1
+
+# 5. Unit tests — fast (Jest, ~2s).
+npm test -- --bail || exit 1

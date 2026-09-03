@@ -1,0 +1,110 @@
+<section class="flex w-full items-start justify-center px-4">
+  <form
+    [formGroup]="form"
+    (ngSubmit)="submit()"
+    class="flex w-full max-w-sm flex-col gap-3"
+    novalidate
+  >
+    <a routerLink="/" class="mb-2 inline-block" aria-label="Check It Out home">
+      <img src="assets/brand/c-mark.svg" class="h-10 w-10" alt="" />
+    </a>
+    <span class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-coral-500">
+      {{ 'auth.sign_up.sign_up_influencer' | transloco }}
+    </span>
+    <h1 class="mb-2 text-left font-display text-4xl font-normal text-ink">
+      {{ 'auth.sign_up.title' | transloco }}
+    </h1>
+
+    <button
+      mat-flat-button
+      color="primary"
+      type="button"
+      [disabled]="loading() || socialStarting()"
+      (click)="signUpWithInstagram()"
+      data-testid="influencer-sign-up-instagram"
+      class="!flex !items-center !justify-center !gap-2"
+    >
+      <mat-icon>photo_camera</mat-icon>
+      {{ 'auth.sign_up.continue_with_instagram' | transloco }}
+    </button>
+
+    <div class="my-2 flex items-center gap-3 text-xs uppercase tracking-wide text-slate2">
+      <span class="h-px flex-1 bg-slate-200"></span>
+      <span>{{ 'auth.sign_up.or_with_email' | transloco }}</span>
+      <span class="h-px flex-1 bg-slate-200"></span>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'auth.sign_in.email' | transloco }}</mat-label>
+      <input
+        matInput
+        type="email"
+        autocomplete="email"
+        formControlName="email"
+        data-testid="influencer-sign-up-email"
+      />
+      @if (form.controls.email.touched && form.controls.email.hasError('required')) {
+        <mat-error>{{ 'auth.sign_in.email_required' | transloco }}</mat-error>
+      } @else if (form.controls.email.touched && form.controls.email.hasError('email')) {
+        <mat-error>{{ 'auth.sign_in.email_invalid' | transloco }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'auth.sign_in.password' | transloco }}</mat-label>
+      <input
+        matInput
+        type="password"
+        autocomplete="new-password"
+        formControlName="password"
+        data-testid="influencer-sign-up-password"
+      />
+      @if (form.controls.password.touched && form.controls.password.hasError('required')) {
+        <mat-error>{{ 'auth.sign_in.password_required' | transloco }}</mat-error>
+      } @else if (form.controls.password.touched && form.controls.password.hasError('minlength')) {
+        <mat-error>{{ 'auth.reset_password.error_weak_password' | transloco }}</mat-error>
+      }
+    </mat-form-field>
+
+    <app-legal-clickwrap
+      (allAccepted)="onConsentChange($event)"
+      data-testid="influencer-sign-up-clickwrap"
+      class="!my-2"
+    ></app-legal-clickwrap>
+
+    @if (errorKey(); as key) {
+      <div
+        role="alert"
+        data-testid="influencer-sign-up-error"
+        class="rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+      >
+        {{ key | transloco }}
+      </div>
+    }
+
+    <button
+      mat-flat-button
+      color="primary"
+      type="submit"
+      [disabled]="loading() || form.invalid || !consentValid()"
+      data-testid="influencer-sign-up-submit"
+      class="!mt-2"
+    >
+      @if (loading()) {
+        <mat-spinner diameter="20" class="mx-auto"></mat-spinner>
+      } @else {
+        {{ 'auth.sign_up.submit' | transloco }}
+      }
+    </button>
+
+    <p class="mt-2 text-center text-sm text-slate2">
+      {{ 'auth.sign_up.already_have_account' | transloco }}
+      <a
+        routerLink="/auth/sign-in"
+        class="text-coral-600 transition hover:text-coral-700 hover:underline"
+      >
+        {{ 'auth.sign_in.submit' | transloco }}
+      </a>
+    </p>
+  </form>
+</section>

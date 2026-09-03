@@ -1,0 +1,168 @@
+<div
+  class="overflow-hidden rounded-2xl border border-beige bg-white shadow-sm"
+  data-testid="codemap-player"
+>
+  <!-- question chips — each one replays a recorded session -->
+  <div
+    class="flex flex-wrap gap-2 border-b border-beige/70 px-5 py-4"
+    role="group"
+    [attr.aria-label]="'landing.codemap.player.chips_label' | transloco"
+  >
+    @for (run of runs; track run.id) {
+      <button
+        type="button"
+        (click)="play(run)"
+        class="rounded-full border px-4 py-1.5 text-left font-mono text-xs transition"
+        [class.border-coral-500]="active().id === run.id"
+        [class.bg-coral-50]="active().id === run.id"
+        [class.text-coral-700]="active().id === run.id"
+        [class.border-beige]="active().id !== run.id"
+        [class.text-slate2]="active().id !== run.id"
+        [class.hover:border-coral-300]="active().id !== run.id"
+        [attr.aria-pressed]="active().id === run.id"
+        [attr.data-testid]="'codemap-player-chip-' + run.id"
+      >
+        {{ run.question }}
+      </button>
+    }
+  </div>
+
+  <!-- the dark inset — CodeMap's own UI palette, replaying the capture -->
+  <div
+    class="bg-ink px-5 py-6 font-mono text-[13px] leading-relaxed sm:px-7"
+    aria-live="polite"
+    data-testid="codemap-player-screen"
+  >
+    @if (stage() === 'idle') {
+      <p class="text-white/50">{{ 'landing.codemap.player.idle_hint' | transloco }}</p>
+    } @else {
+      <!-- question echo — types itself in -->
+      <p class="break-words text-cream/90">
+        <span class="select-none text-white/35">›&nbsp;</span>
+        {{ stage() === 'typing' ? typedQ() : active().question }}
+        @if (stage() === 'typing') {
+          <span
+            class="ml-0.5 inline-block h-[1.05em] w-[0.55em] translate-y-[2px] animate-pulse bg-cream/80"
+          ></span>
+        }
+      </p>
+
+      <!-- local tier -->
+      @if (stage() !== 'typing') {
+        <p
+          class="anim-step mt-4 text-[10px] uppercase tracking-[0.2em]"
+          [class.text-emerald-300/90]="active().tierTag !== 'big'"
+          [class.text-teal-300/90]="active().tierTag === 'big'"
+        >
+          {{
+            (active().tierTag === 'big'
+              ? 'landing.codemap.player.big_tag'
+              : 'landing.codemap.player.local_tag'
+            ) | transloco
+          }}
+        </p>
+        <div class="mt-1.5 space-y-1 border-l-2 border-white/10 pl-3">
+          @for (step of active().localSteps.slice(0, localShown()); track $index) {
+            <p class="anim-step break-words text-amber-200/95">{{ step.dsl }}</p>
+          }
+        </div>
+      }
+      @if (
+        stage() === 'local-done' ||
+        stage() === 'consent' ||
+        stage() === 'api-steps' ||
+        stage() === 'done'
+      ) {
+        @if (active().terminal === 'answer') {
+          <p
+            class="anim-step mt-3 max-w-prose break-words text-cream/85"
+            data-testid="codemap-player-local-answer"
+          >
+            {{ active().localText }}
+          </p>
+        } @else {
+          <p
+            class="anim-step mt-3 max-w-prose break-words italic text-white/60"
+            data-testid="codemap-player-pass"
+          >
+            {{ 'landing.codemap.player.pass_prefix' | transloco }} {{ active().localText }}
+          </p>
+        }
+      }
+
+      <!-- consent card (only the honest run reaches it) -->
+      @if (
+        active().api && (stage() === 'consent' || stage() === 'api-steps' || stage() === 'done')
+      ) {
+        <div
+          class="anim-step mt-4 max-w-md rounded-xl border border-violet-300/30 bg-violet-400/10 px-4 py-3"
+          data-testid="codemap-player-consent"
+        >
+          <p class="text-[10px] uppercase tracking-[0.2em] text-violet-300">
+            {{ 'landing.codemap.player.consent_tag' | transloco }}
+          </p>
+          <p class="mt-1 text-xs text-cream/75">
+            {{ 'landing.codemap.player.consent_body' | transloco }}
+          </p>
+        </div>
+      }
+
+      <!-- API tier -->
+      @if (active().api && (stage() === 'api-steps' || stage() === 'done')) {
+        <p class="anim-step mt-4 text-[10px] uppercase tracking-[0.2em] text-violet-300/90">
+          {{ 'landing.codemap.player.api_tag' | transloco }} · {{ active().api!.model }}
+        </p>
+        <div class="mt-1.5 space-y-1 border-l-2 border-violet-300/20 pl-3">
+          @for (step of active().api!.steps.slice(0, apiShown()); track $index) {
+            <p class="anim-step break-words text-amber-200/95">{{ step.dsl }}</p>
+          }
+        </div>
+      }
+      @if (active().api && stage() === 'done') {
+        <p
+          class="anim-step mt-3 max-w-prose break-words text-cream/85"
+          data-testid="codemap-player-api-answer"
+        >
+          {{ active().api!.answer }}
+        </p>
+        <p class="anim-step mt-2 text-[11px] text-white/40">
+          {{
+            'landing.codemap.player.tokens'
+              | transloco: { in: active().api!.tokensIn, out: active().api!.tokensOut }
+          }}
+        </p>
+      }
+    }
+  </div>
+
+  <!-- honesty register + controls -->
+  <div class="flex flex-wrap items-center justify-between gap-3 border-t border-beige/70 px-5 py-3">
+    <p class="text-xs text-slate2">
+      <mat-icon class="!mr-1 !h-3.5 !w-3.5 !align-[-2px] !text-sm text-emerald-600">
+        verified
+      </mat-icon>
+      {{ 'landing.codemap.player.recorded_note' | transloco }}
+    </p>
+    @if (stage() !== 'idle' && stage() !== 'done') {
+      <button
+        type="button"
+        (click)="skip()"
+        class="font-mono text-xs text-slate2 underline-offset-2 transition hover:text-coral-600 hover:underline"
+        data-testid="codemap-player-skip"
+      >
+        {{ 'landing.codemap.player.skip' | transloco }}
+      </button>
+    }
+    @if (stage() === 'done') {
+      <button
+        type="button"
+        (click)="replay()"
+        class="inline-flex items-center gap-1 font-mono text-xs text-slate2 underline-offset-2 transition hover:text-coral-600 hover:underline"
+        data-testid="codemap-player-replay"
+      >
+        <mat-icon class="!h-3.5 !w-3.5 !text-sm">replay</mat-icon>
+        {{ 'landing.codemap.player.replay' | transloco }}
+      </button>
+    }
+  </div>
+</div>

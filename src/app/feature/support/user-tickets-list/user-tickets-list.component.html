@@ -1,0 +1,161 @@
+<section class="mx-auto max-w-5xl p-4 md:p-6" data-testid="my-tickets-page">
+  <header class="flex flex-wrap items-center justify-between gap-3">
+    <div>
+      <h1 class="font-display text-3xl font-normal text-ink">
+        {{ 'support.tickets.my.title' | transloco }}
+      </h1>
+      <p class="mt-1 text-sm text-slate2">
+        {{ 'support.tickets.my.description' | transloco }}
+      </p>
+    </div>
+    <button
+      mat-flat-button
+      color="primary"
+      type="button"
+      (click)="createNewTicket()"
+      data-testid="my-tickets-create"
+    >
+      <mat-icon class="!mr-1">add</mat-icon>
+      {{ 'support.tickets.my.create_new' | transloco }}
+    </button>
+  </header>
+
+  <!-- Filters -->
+  <div
+    class="mt-6 flex flex-col gap-3 rounded-2xl border border-beige bg-white p-4 sm:flex-row sm:items-center"
+    [formGroup]="filterForm"
+    data-testid="my-tickets-filters"
+  >
+    <mat-form-field appearance="outline" class="flex-1" subscriptSizing="dynamic">
+      <mat-label>{{ 'support.tickets.my.filters.search' | transloco }}</mat-label>
+      <mat-icon matPrefix class="!text-xl text-slate2">search</mat-icon>
+      <input
+        matInput
+        type="text"
+        formControlName="searchQuery"
+        [placeholder]="'support.tickets.my.filters.search_placeholder' | transloco"
+        data-testid="my-tickets-search"
+      />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="sm:w-56" subscriptSizing="dynamic">
+      <mat-label>{{ 'support.tickets.my.filters.status' | transloco }}</mat-label>
+      <mat-select formControlName="status" data-testid="my-tickets-status-filter">
+        <mat-option [value]="null">
+          {{ 'support.tickets.my.filters.allStatuses' | transloco }}
+        </mat-option>
+        @for (option of statusOptions; track option.value) {
+          <mat-option [value]="option.value">{{ option.labelKey | transloco }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <button
+      mat-stroked-button
+      type="button"
+      (click)="clearFilters()"
+      data-testid="my-tickets-clear-filters"
+    >
+      {{ 'support.tickets.my.filters.clear' | transloco }}
+    </button>
+  </div>
+
+  @if (errorKey(); as key) {
+    <div
+      role="alert"
+      class="mt-6 flex flex-col items-center gap-3 rounded-2xl border border-red-200 bg-red-50 px-6 py-10 text-center text-red-700"
+      data-testid="my-tickets-error"
+    >
+      <mat-icon class="!h-10 !w-10 !text-4xl">error_outline</mat-icon>
+      <p>{{ key | transloco }}</p>
+      <button mat-stroked-button type="button" (click)="loadTickets()">
+        {{ 'profile.error.retry' | transloco }}
+      </button>
+    </div>
+  } @else if (loading()) {
+    <div class="flex min-h-[30vh] items-center justify-center" data-testid="my-tickets-loading">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  } @else {
+    @if (filteredTickets().length === 0) {
+      <div class="mt-10 text-center" data-testid="my-tickets-empty">
+        <p class="font-display text-xl text-ink">
+          {{ 'support.tickets.my.empty.title' | transloco }}
+        </p>
+        <p class="mt-1 text-sm text-slate2">
+          {{ 'support.tickets.my.empty.description' | transloco }}
+        </p>
+      </div>
+    } @else {
+      <div class="mt-6 overflow-hidden rounded-2xl border border-beige bg-white">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead>
+              <tr class="border-b border-beige">
+                <th class="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                  {{ 'support.tickets.my.table.reference' | transloco }}
+                </th>
+                <th class="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                  {{ 'support.tickets.my.table.subject' | transloco }}
+                </th>
+                <th class="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                  {{ 'support.tickets.my.table.status' | transloco }}
+                </th>
+                <th class="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                  {{ 'support.tickets.my.table.created' | transloco }}
+                </th>
+                <th class="px-4 py-3"></th>
+              </tr>
+            </thead>
+            <tbody data-testid="my-tickets-rows">
+              @for (ticket of filteredTickets(); track ticket.id) {
+                <tr
+                  class="cursor-pointer border-b border-beige/60 transition last:border-b-0 hover:bg-coral-50/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-coral-500"
+                  tabindex="0"
+                  (click)="viewTicket(ticket)"
+                  (keydown.enter)="viewTicket(ticket)"
+                  [attr.data-testid]="'my-ticket-row-' + ticket.id"
+                >
+                  <td class="px-4 py-3 font-mono text-xs font-semibold text-ink">
+                    {{ ticket.ticketReference }}
+                  </td>
+                  <td class="max-w-[24rem] truncate px-4 py-3 font-medium text-ink">
+                    {{ ticket.subject }}
+                  </td>
+                  <td class="px-4 py-3">
+                    <span
+                      class="whitespace-nowrap rounded-full px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em]"
+                      [ngClass]="statusChipClass(ticket.status)"
+                    >
+                      {{ statusLabelKey(ticket.status) | transloco }}
+                    </span>
+                  </td>
+                  <td class="whitespace-nowrap px-4 py-3 text-slate2">
+                    {{ ticket.createdTime | date: 'mediumDate' }}
+                  </td>
+                  <td class="px-4 py-3 text-right">
+                    <mat-icon
+                      class="!h-5 !w-5 !text-xl text-slate2"
+                      [attr.aria-label]="'support.tickets.my.table.view_tooltip' | transloco"
+                    >
+                      chevron_right
+                    </mat-icon>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <mat-paginator
+          [length]="totalElements()"
+          [pageIndex]="pageIndex()"
+          [pageSize]="pageSize()"
+          [pageSizeOptions]="pageSizeOptions"
+          (page)="onPageChange($event)"
+          data-testid="my-tickets-paginator"
+        ></mat-paginator>
+      </div>
+    }
+  }
+</section>

@@ -1,0 +1,7 @@
+# Icon names the scanner regexes cannot see (helper-function returns,
+# names that may arrive from data). One name per line; # comments.
+# fileIcon() in attachment rendering:
+description
+image
+insert_drive_file
+picture_as_pdf

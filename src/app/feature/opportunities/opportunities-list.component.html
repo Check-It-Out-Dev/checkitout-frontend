@@ -1,0 +1,176 @@
+<section class="mx-auto max-w-6xl p-4" data-testid="opportunities-list">
+  <header
+    class="relative isolate mb-6 overflow-hidden rounded-2xl border border-beige bg-ink p-7 text-cream"
+    data-testid="opportunities-list-hero"
+  >
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute -bottom-24 -right-24 -z-10 h-[280px] w-[280px] rounded-full bg-coral-500/20 blur-3xl"
+    ></div>
+    <span class="eyebrow !text-coral-400">
+      {{ 'opportunities.list.hero_subtitle' | transloco }}
+    </span>
+    <h1 class="mt-2 font-display text-4xl font-normal text-cream sm:text-5xl">
+      {{ 'opportunities.list.title' | transloco }}
+    </h1>
+  </header>
+
+  <div class="flex flex-col gap-4 lg:flex-row">
+    <aside
+      class="flex flex-col gap-3 rounded-2xl border border-beige bg-cream p-5 lg:w-64 lg:shrink-0"
+      data-testid="opportunities-list-filters"
+    >
+      <h2 class="font-display text-2xl font-normal text-ink">
+        {{ 'opportunities.list.filters.title' | transloco }}
+      </h2>
+      <form [formGroup]="filterForm" (ngSubmit)="applyFilters()" class="flex flex-col gap-3">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'opportunities.list.filters.compensation' | transloco }}</mat-label>
+          <mat-select formControlName="compensationType" data-testid="opp-filter-comp-type">
+            <mat-option value="ALL">
+              {{ 'opportunities.list.filters.compensation_all' | transloco }}
+            </mat-option>
+            <mat-option value="CASH">
+              {{ 'opportunities.form.compensation.CASH' | transloco }}
+            </mat-option>
+            <mat-option value="BARTER">
+              {{ 'opportunities.form.compensation.BARTER' | transloco }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'opportunities.list.filters.city' | transloco }}</mat-label>
+          <input matInput formControlName="city" data-testid="opp-filter-city" />
+        </mat-form-field>
+
+        <button mat-flat-button color="primary" type="submit" data-testid="opp-filter-apply">
+          {{ 'opportunities.list.filters.apply' | transloco }}
+        </button>
+        <button
+          mat-stroked-button
+          type="button"
+          (click)="resetFilters()"
+          data-testid="opp-filter-reset"
+        >
+          {{ 'opportunities.list.filters.reset' | transloco }}
+        </button>
+      </form>
+    </aside>
+
+    <div class="flex-1">
+      @switch (state()) {
+        @case ('loading') {
+          <div class="flex min-h-[40vh] items-center justify-center">
+            <mat-spinner diameter="40" data-testid="opportunities-list-loading" />
+          </div>
+        }
+        @case ('error') {
+          <div
+            role="alert"
+            data-testid="opportunities-list-error"
+            class="flex flex-col items-center gap-3 rounded-2xl border border-red-200 bg-red-50 px-6 py-10 text-center text-red-700"
+          >
+            <mat-icon class="!h-10 !w-10 !text-4xl">error_outline</mat-icon>
+            <p>{{ 'opportunities.list.error.load_failed' | transloco }}</p>
+            <button mat-stroked-button (click)="load()" data-testid="opportunities-list-retry">
+              {{ 'opportunities.list.error.retry' | transloco }}
+            </button>
+          </div>
+        }
+        @case ('empty') {
+          <div
+            class="flex flex-col items-center gap-4 rounded-2xl border border-beige bg-cream px-6 py-14 text-center"
+            data-testid="opportunities-list-empty"
+          >
+            <span class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-coral-50">
+              <mat-icon class="!h-8 !w-8 !text-3xl text-coral-500">search_off</mat-icon>
+            </span>
+            <p class="font-display text-2xl font-normal text-ink">
+              {{ 'opportunities.list.empty' | transloco }}
+            </p>
+          </div>
+        }
+        @case ('loaded') {
+          <ul
+            class="grid list-none grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+            role="list"
+            data-testid="opportunities-list-items"
+          >
+            @for (o of items(); track o.id) {
+              <li>
+                <a
+                  [routerLink]="['/collaborations', o.id]"
+                  [attr.data-testid]="'opportunity-card-' + o.id"
+                  class="lift block h-full rounded-2xl border border-beige bg-white p-5 transition hover:border-coral-400 focus:outline-none focus:ring-2 focus:ring-coral-500"
+                >
+                  <header class="mb-3 flex items-start justify-between gap-2">
+                    <h2 class="font-display text-2xl font-normal text-ink">
+                      {{ o.title || o.name || ('opportunities.list.untitled' | transloco) }}
+                    </h2>
+                    @if (o.compensationType?.value) {
+                      <span
+                        class="rounded-full px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.18em]"
+                        [class.bg-emerald-100]="o.compensationType?.value === 'CASH'"
+                        [class.text-emerald-800]="o.compensationType?.value === 'CASH'"
+                        [class.bg-amber-100]="o.compensationType?.value !== 'CASH'"
+                        [class.text-amber-800]="o.compensationType?.value !== 'CASH'"
+                      >
+                        {{ o.compensationType?.label || o.compensationType?.value }}
+                      </span>
+                    }
+                  </header>
+
+                  @if (o.company?.name) {
+                    <p
+                      class="mb-3 font-mono text-[11px] uppercase tracking-[0.18em] text-slate2"
+                      [attr.data-testid]="'opportunity-company-' + o.id"
+                    >
+                      {{ o.company?.name }}
+                    </p>
+                  }
+
+                  <dl class="mt-2 flex flex-col gap-1.5 text-sm text-ink">
+                    <div class="flex items-center gap-2">
+                      <mat-icon class="!h-4 !w-4 !text-base text-coral-500">payments</mat-icon>
+                      <dd>{{ compensationDisplay(o) }}</dd>
+                    </div>
+                    @if (o.city) {
+                      <div class="flex items-center gap-2">
+                        <mat-icon class="!h-4 !w-4 !text-base text-coral-500">place</mat-icon>
+                        <dd>{{ o.city }}</dd>
+                      </div>
+                    }
+                    @if (contentTypeArray(o); as cts) {
+                      @if (cts.length > 0) {
+                        <div class="mt-2 flex flex-wrap gap-1.5">
+                          @for (ct of cts; track ct.id) {
+                            <span
+                              class="rounded-full bg-beige px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.18em] text-ink"
+                            >
+                              {{ ct.name || ct.originalName }}
+                            </span>
+                          }
+                        </div>
+                      }
+                    }
+                  </dl>
+                </a>
+              </li>
+            }
+          </ul>
+
+          <mat-paginator
+            class="mt-4 !bg-transparent"
+            [length]="totalElements()"
+            [pageIndex]="pageIndex()"
+            [pageSize]="pageSize()"
+            [pageSizeOptions]="[12, 24, 48]"
+            (page)="onPage($event)"
+            data-testid="opportunities-list-paginator"
+          />
+        }
+      }
+    </div>
+  </div>
+</section>

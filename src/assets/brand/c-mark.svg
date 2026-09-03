@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="checkItOut">
+  <defs>
+    <linearGradient id="cmarkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7c3aed" />
+      <stop offset="60%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#06b6d4" />
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#cmarkGrad)" />
+  <path
+    d="M 44 22 C 41 19 37 17 32 17 C 23 17 17 23 17 32 C 17 41 23 47 32 47 C 37 47 41 45 44 42"
+    fill="none"
+    stroke="white"
+    stroke-width="6"
+    stroke-linecap="round"
+  />
+</svg>

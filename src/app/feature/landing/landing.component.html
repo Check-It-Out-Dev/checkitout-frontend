@@ -1,0 +1,1057 @@
+<!-- overflow-x-clip: the hero's decorative blur blobs bleed past the viewport
+     (right-[-10%] extended scrollWidth to 1502px on a 1411px client) and put a
+     horizontal scrollbar under the whole landing. Clip horizontally at the
+     full-bleed root — identical visible pixels, no scrollbar; vertical bleed
+     (blur into neighbouring sections) intentionally preserved. -->
+<main data-testid="landing" class="overflow-x-clip bg-cream text-ink">
+  <app-marketing-toolbar />
+  <app-cookie-banner ngSkipHydration />
+
+  <!-- Hero — editorial 12-col with display serif headline + warm palette.
+       min-h reserves the settled hero space BEFORE the async Transloco
+       strings arrive: without it the section grows on i18n resolve and
+       the bottom-anchored blur circle rides the growth — the 0.238 CLS
+       shift measured in the iter-103 Lighthouse baseline.
+       NO entry animations here (iter-107): the route is prerendered, and
+       animate-fade-up's opacity:0 start excluded the h1 from LCP
+       candidacy — the cookie-banner body span became the page's LCP and
+       dragged it to 3.6 s. Server-rendered above-fold content must be
+       visible at first paint; entry animation belongs to client-side
+       transitions only. -->
+  <section
+    class="relative isolate mx-auto grid min-h-[540px] max-w-7xl grid-cols-1 items-start gap-12 px-6 pb-12 pt-16 md:min-h-[560px] md:grid-cols-12 md:items-center md:gap-10 md:py-28"
+  >
+    <!-- Decorative coral splash, sits behind hero -->
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute -top-32 right-[-10%] -z-10 h-[480px] w-[480px] rounded-full bg-coral-100/60 blur-3xl"
+    ></div>
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute -bottom-40 left-[-8%] -z-10 h-[420px] w-[420px] rounded-full bg-navy-50/70 blur-3xl"
+    ></div>
+
+    <!-- Left: typography stack — eyebrow / display headline / lede / CTAs -->
+    <div class="flex flex-col items-start md:col-span-7">
+      <span class="eyebrow mb-5" data-testid="landing-badge">
+        {{ 'landing.hero.badge' | transloco }}
+      </span>
+      <h1
+        data-testid="landing-title"
+        class="font-display mb-6 text-[2.75rem] font-normal leading-[1.05] text-ink sm:text-6xl md:text-[4.5rem]"
+      >
+        {{ 'landing.hero.title_prefix' | transloco }}
+        <span class="italic text-coral-600 ink-underline" data-testid="landing-title-highlight">
+          {{ 'landing.hero.title_highlight' | transloco }}
+        </span>
+        <span class="block">{{ 'landing.hero.title_suffix' | transloco }}</span>
+      </h1>
+      <p class="mb-8 max-w-xl text-base leading-relaxed text-slate2 sm:text-lg">
+        {{ 'landing.hero.description' | transloco }}
+      </p>
+      <div class="flex flex-col gap-3 sm:flex-row">
+        <a
+          routerLink="/auth/sign-up/business"
+          class="cta-primary"
+          data-testid="landing-cta-primary"
+        >
+          {{ 'landing.hero.cta.primary' | transloco }}
+          <mat-icon class="!h-5 !w-5 !text-lg">arrow_forward</mat-icon>
+        </a>
+        <a
+          routerLink="/auth/sign-up/influencer"
+          class="cta-secondary"
+          data-testid="landing-cta-secondary"
+        >
+          <!-- nowrap per phrase: the pill may break only at the separator, never
+               mid-phrase ("Aplikuj do naszych / kampanii" read ragged). -->
+          <span class="whitespace-nowrap">{{ 'landing.hero.cta.secondary1' | transloco }}</span>
+          <span class="opacity-70">·</span>
+          <span class="whitespace-nowrap">{{ 'landing.hero.cta.secondary2' | transloco }}</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Right: illustration (md+) -->
+    <div class="hidden md:col-span-5 md:flex md:justify-center">
+      <app-hero-illustration />
+    </div>
+  </section>
+
+  <!-- Credibility stats strip -->
+  <section
+    aria-label="Platform stats"
+    class="mx-auto max-w-7xl border-y border-beige/80 px-6"
+    data-testid="landing-stats"
+  >
+    <dl class="grid grid-cols-2 gap-y-6 py-10 md:grid-cols-4 md:gap-y-0">
+      <div class="flex flex-col items-center text-center md:border-r md:border-beige/80">
+        <dt class="eyebrow mb-2">{{ 'landing.hero_stats.campaigns_label' | transloco }}</dt>
+        <dd class="font-display text-4xl text-ink">500+</dd>
+      </div>
+      <div class="flex flex-col items-center text-center md:border-r md:border-beige/80">
+        <dt class="eyebrow mb-2">{{ 'landing.hero_stats.reach_label' | transloco }}</dt>
+        <dd class="font-display text-4xl text-ink">2M+</dd>
+      </div>
+      <div class="flex flex-col items-center text-center md:border-r md:border-beige/80">
+        <dt class="eyebrow mb-2">{{ 'landing.hero_stats.creators_label' | transloco }}</dt>
+        <dd class="font-display text-4xl text-ink">1.2k</dd>
+      </div>
+      <div class="flex flex-col items-center text-center">
+        <dt class="eyebrow mb-2">{{ 'landing.hero_stats.rating_label' | transloco }}</dt>
+        <dd class="font-display text-4xl text-ink">
+          4.9
+          <span class="text-coral-500">★</span>
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  <!-- OSS story — GitHub/MIT announcement + the two guided journeys (survey,
+       demo) + the team. Legacy position: directly under the hero; here it
+       follows the stats strip so the credibility beat lands first. -->
+  <app-oss-story-section />
+
+  <!-- Features -->
+  <section class="mx-auto max-w-6xl px-6 pb-16 md:pb-24 md:pt-8">
+    <h2 class="sr-only">{{ 'landing.features.a11y_heading' | transloco }}</h2>
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+      @for (f of features; track f.titleKey) {
+        <article
+          class="lift flex flex-col items-start gap-4 rounded-2xl border border-beige bg-white p-7"
+        >
+          <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-coral-50">
+            <mat-icon class="!h-7 !w-7 !text-3xl text-coral-500">{{ f.icon }}</mat-icon>
+          </span>
+          <h3 class="font-display text-2xl text-ink">{{ f.titleKey | transloco }}</h3>
+          <p class="text-sm leading-relaxed text-slate2">{{ f.bodyKey | transloco }}</p>
+        </article>
+      }
+    </div>
+  </section>
+
+  <!-- Campaign examples — three sample campaigns card grid -->
+  <section
+    id="campaign-examples"
+    class="mx-auto max-w-6xl px-6 py-16 md:py-24"
+    data-testid="landing-campaign-examples"
+  >
+    <div class="mb-10 text-center">
+      <span class="eyebrow">
+        {{ 'landing.campaign_examples.subtitle' | transloco }}
+      </span>
+      <h2 class="mt-3 font-display text-4xl font-normal text-ink sm:text-5xl">
+        {{ 'landing.campaign_examples.title' | transloco }}
+      </h2>
+      <p class="mx-auto mt-4 max-w-2xl text-slate2">
+        {{ 'landing.campaign_examples.description' | transloco }}
+      </p>
+    </div>
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+      @for (c of campaignExamples; track c.id) {
+        <article
+          class="lift flex flex-col gap-4 rounded-2xl border border-beige bg-white p-7"
+          [attr.data-testid]="'landing-campaign-' + c.id"
+        >
+          <span
+            class="flex h-12 w-12 items-center justify-center self-start rounded-xl"
+            [class.bg-rose-50]="c.accent === 'rose'"
+            [class.bg-emerald-50]="c.accent === 'emerald'"
+            [class.bg-sky-50]="c.accent === 'sky'"
+          >
+            <mat-icon
+              class="!h-7 !w-7 !text-3xl"
+              [class.text-rose-600]="c.accent === 'rose'"
+              [class.text-emerald-600]="c.accent === 'emerald'"
+              [class.text-sky-600]="c.accent === 'sky'"
+            >
+              {{ c.icon }}
+            </mat-icon>
+          </span>
+          <span class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-slate2">
+            {{ c.categoryKey | transloco }}
+          </span>
+          <h3 class="font-display text-2xl text-ink">
+            {{ c.titleKey | transloco }}
+          </h3>
+          <dl class="grid grid-cols-1 gap-2 text-sm text-slate2">
+            <div class="flex justify-between">
+              <dt>
+                {{ 'landing.campaign_examples.cards.compensation_label' | transloco }}
+              </dt>
+              <dd class="font-semibold text-ink">{{ c.compensationKey | transloco }}</dd>
+            </div>
+            <div class="flex justify-between">
+              <dt>
+                {{ 'landing.campaign_examples.cards.followers_label' | transloco }}
+              </dt>
+              <dd class="font-semibold text-ink">{{ c.followersKey | transloco }}</dd>
+            </div>
+            <div class="flex justify-between">
+              <dt>
+                {{ 'landing.campaign_examples.cards.location_label' | transloco }}
+              </dt>
+              <dd class="font-semibold text-ink">{{ c.locationKey | transloco }}</dd>
+            </div>
+          </dl>
+          <p class="text-sm leading-relaxed text-slate2">
+            {{ c.descriptionKey | transloco }}
+          </p>
+          <a
+            routerLink="/auth/sign-up/influencer"
+            class="mt-auto inline-flex items-center justify-center gap-1 rounded-full border border-ink/15 px-4 py-2 text-sm font-semibold text-ink transition hover:border-coral-500 hover:bg-coral-50 hover:text-coral-600"
+            [attr.data-testid]="'landing-campaign-cta-' + c.id"
+          >
+            {{ 'landing.campaign_examples.cards.apply_now' | transloco }}
+            <mat-icon class="!h-4 !w-4 !text-base">arrow_forward</mat-icon>
+          </a>
+        </article>
+      }
+    </div>
+    <div class="mt-12 text-center">
+      <p class="mb-5 text-slate2">
+        {{ 'landing.campaign_examples.cta.text' | transloco }}
+      </p>
+      <a routerLink="/auth/sign-in" class="cta-primary" data-testid="landing-campaign-cta-all">
+        {{ 'landing.campaign_examples.cta.button' | transloco }}
+        <mat-icon class="!h-5 !w-5 !text-lg">arrow_forward</mat-icon>
+      </a>
+    </div>
+  </section>
+
+  <!-- Benefits — three column cards with bullet lists -->
+  <section class="mx-auto max-w-6xl px-6 py-16 md:py-24" data-testid="landing-benefits">
+    <div class="mb-10 text-center">
+      <span class="eyebrow">
+        {{ 'landing.benefits.subtitle' | transloco }}
+      </span>
+      <h2 class="mt-3 font-display text-4xl font-normal text-ink sm:text-5xl">
+        {{ 'landing.benefits.title' | transloco }}
+      </h2>
+      <p class="mx-auto mt-4 max-w-2xl text-slate2">
+        {{ 'landing.benefits.description' | transloco }}
+      </p>
+    </div>
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+      @for (b of benefits; track b.titleKey) {
+        <article
+          class="lift flex flex-col gap-4 rounded-2xl border border-beige bg-white p-7"
+          [attr.data-testid]="'landing-benefit-' + b.titleKey"
+        >
+          <span class="flex h-12 w-12 items-center justify-center self-start rounded-xl bg-navy-50">
+            <mat-icon class="!h-7 !w-7 !text-3xl text-navy-500">{{ b.icon }}</mat-icon>
+          </span>
+          <h3 class="font-display text-2xl text-ink">
+            {{ b.titleKey | transloco }}
+          </h3>
+          <ul class="flex flex-col gap-2.5 text-sm text-slate2">
+            @for (item of $any(b.itemsKeyBase | transloco); track $index) {
+              <li class="flex items-start gap-2">
+                <mat-icon class="!h-5 !w-5 !text-lg text-coral-500">check</mat-icon>
+                <span class="leading-relaxed">{{ item }}</span>
+              </li>
+            }
+          </ul>
+        </article>
+      }
+    </div>
+  </section>
+
+  <!-- How it works — four-step process -->
+  <section
+    id="how-it-works"
+    class="bg-white/60 px-4 py-16 md:py-24"
+    data-testid="landing-how-it-works"
+  >
+    <div class="mx-auto max-w-6xl">
+      <div class="mb-12 text-center">
+        <span class="eyebrow">
+          {{ 'landing.how_it_works.badge' | transloco }}
+        </span>
+        <h2 class="mt-3 font-display text-4xl font-normal text-ink sm:text-5xl">
+          {{ 'landing.how_it_works.title' | transloco }}
+        </h2>
+        <p class="mx-auto mt-4 max-w-2xl text-slate2">
+          {{ 'landing.how_it_works.subtitle' | transloco }}
+        </p>
+      </div>
+      <!-- Alternating rows: narrative on one side, a mini UI mockup on the
+           other (legacy layout). Each mockup is pure CSS — a vignette of the
+           real screen the step describes, never a screenshot to go stale. -->
+      <ol class="flex flex-col gap-12 md:gap-16">
+        @for (s of steps; track s.stepNumber) {
+          <li
+            class="grid grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-12"
+            [attr.data-testid]="'landing-step-' + s.stepNumber"
+          >
+            <!-- narrative -->
+            <div [class.md:order-2]="s.stepNumber % 2 === 0">
+              <div class="flex items-center gap-3">
+                <span
+                  class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-coral-500 font-display text-2xl text-white shadow-lg"
+                >
+                  {{ s.stepNumber }}
+                </span>
+                <span
+                  class="inline-flex items-center gap-1.5 rounded-full border border-beige bg-white px-3 py-1 font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-slate2"
+                >
+                  <mat-icon class="!h-3.5 !w-3.5 !text-sm text-coral-500">schedule</mat-icon>
+                  {{ 'landing.how_it_works.step' | transloco }} {{ s.stepNumber }} · ~{{
+                    s.timeEstimate
+                  }}
+                  {{ 'landing.how_it_works.min' | transloco }}
+                </span>
+              </div>
+              <h3 class="font-display mt-4 text-2xl text-ink md:text-3xl">
+                {{ s.titleKey | transloco }}
+              </h3>
+              <p class="mt-3 max-w-md leading-relaxed text-slate2">
+                {{ s.descriptionKey | transloco }}
+              </p>
+            </div>
+
+            <!-- mockup vignette -->
+            <div [class.md:order-1]="s.stepNumber % 2 === 0">
+              @switch (s.stepNumber) {
+                @case (1) {
+                  <!-- the campaign form, skeletal -->
+                  <div class="rounded-2xl border border-beige bg-white p-6 shadow-sm">
+                    <div class="h-3 w-24 rounded bg-cream"></div>
+                    <div class="mt-3 h-9 rounded-lg border border-beige bg-cream/70"></div>
+                    <div class="mt-2.5 h-9 rounded-lg border border-beige bg-cream/70"></div>
+                    <div class="mt-2.5 h-16 rounded-lg border border-beige bg-cream/70"></div>
+                    <div class="mt-4 flex justify-end">
+                      <span
+                        class="inline-flex items-center gap-1.5 rounded-full bg-coral-700 px-4 py-1.5 text-xs font-semibold text-white"
+                      >
+                        {{ 'landing.how_it_works.buttons.launch' | transloco }}
+                        <mat-icon class="!h-3.5 !w-3.5 !text-sm">arrow_forward</mat-icon>
+                      </span>
+                    </div>
+                  </div>
+                }
+                @case (2) {
+                  <!-- applications flowing in -->
+                  <div class="rounded-2xl border border-beige bg-white p-6 shadow-sm">
+                    <div class="flex items-center justify-between">
+                      <span
+                        class="inline-flex items-center gap-1.5 rounded-full bg-coral-50 px-2.5 py-1 font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-coral-700"
+                      >
+                        <span
+                          class="h-1.5 w-1.5 rounded-full bg-coral-500"
+                          aria-hidden="true"
+                        ></span>
+                        {{ 'landing.how_it_works.notifications.new_applications' | transloco }}
+                      </span>
+                    </div>
+                    <ul class="mt-4 flex flex-col divide-y divide-beige/70">
+                      @for (a of mockApplications; track a.handle) {
+                        <li class="flex items-center gap-3 py-2.5">
+                          <span
+                            class="flex h-9 w-9 items-center justify-center rounded-full bg-navy-50 text-xs font-bold uppercase text-navy-500"
+                          >
+                            {{ a.handle.charAt(1) }}
+                          </span>
+                          <span class="min-w-0 flex-grow">
+                            <span class="block truncate text-sm font-semibold text-ink">
+                              {{ a.handle }}
+                            </span>
+                            <span class="block text-xs text-slate2">
+                              {{ a.followers }} {{ 'landing.how_it_works.followers' | transloco }}
+                            </span>
+                          </span>
+                          <mat-icon class="!h-4 !w-4 !text-base text-beige">chevron_right</mat-icon>
+                        </li>
+                      }
+                    </ul>
+                    <div class="mt-3 text-center">
+                      <span
+                        class="inline-flex items-center rounded-full border border-beige bg-cream px-4 py-1.5 text-xs font-semibold text-ink"
+                      >
+                        {{ 'landing.how_it_works.buttons.review' | transloco }}
+                      </span>
+                    </div>
+                  </div>
+                }
+                @case (3) {
+                  <!-- the collaboration timeline -->
+                  <div class="rounded-2xl border border-beige bg-white p-6 shadow-sm">
+                    <ol class="flex flex-col gap-4">
+                      @for (k of timelineKeys; track k; let i = $index) {
+                        <li class="flex items-start gap-3">
+                          @if (i < 2) {
+                            <mat-icon class="!h-4 !w-4 shrink-0 !text-base text-emerald-500">
+                              check_circle
+                            </mat-icon>
+                          } @else if (i === 2) {
+                            <span
+                              class="relative mt-0.5 flex h-3.5 w-3.5 shrink-0"
+                              aria-hidden="true"
+                            >
+                              <span
+                                class="absolute inline-flex h-full w-full animate-ping rounded-full bg-coral-400 opacity-60"
+                              ></span>
+                              <span
+                                class="relative inline-flex h-3.5 w-3.5 rounded-full bg-coral-500"
+                              ></span>
+                            </span>
+                          } @else {
+                            <span
+                              class="mt-0.5 h-3.5 w-3.5 shrink-0 rounded-full border-2 border-beige"
+                              aria-hidden="true"
+                            ></span>
+                          }
+                          <div>
+                            <p class="text-sm font-semibold leading-tight text-ink">
+                              {{ 'landing.how_it_works.timeline.' + k + '.title' | transloco }}
+                            </p>
+                            <p class="text-xs leading-relaxed text-slate2">
+                              {{
+                                'landing.how_it_works.timeline.' + k + '.description' | transloco
+                              }}
+                            </p>
+                          </div>
+                        </li>
+                      }
+                    </ol>
+                  </div>
+                }
+                @case (4) {
+                  <!-- the results panel -->
+                  <div class="rounded-2xl border border-beige bg-white p-6 shadow-sm">
+                    <div class="flex items-center gap-2">
+                      <span class="relative flex h-2 w-2" aria-hidden="true">
+                        <span
+                          class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60"
+                        ></span>
+                        <span
+                          class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"
+                        ></span>
+                      </span>
+                      <span class="text-xs font-semibold text-ink">
+                        {{ 'landing.how_it_works.analytics.post_published' | transloco }}
+                      </span>
+                      <span class="ml-auto text-[10px] text-slate2">
+                        {{ 'landing.how_it_works.analytics.live_status' | transloco }}
+                      </span>
+                    </div>
+                    <dl class="mt-4 grid grid-cols-4 gap-2">
+                      @for (m of mockMetrics; track m.labelKey) {
+                        <div class="rounded-lg border border-beige bg-cream/60 p-2 text-center">
+                          <dd class="font-display text-lg text-ink">{{ m.value }}</dd>
+                          <dt class="font-mono text-[8px] uppercase tracking-[0.14em] text-slate2">
+                            {{ m.labelKey | transloco }}
+                          </dt>
+                        </div>
+                      }
+                    </dl>
+                    <p class="mt-4 font-mono text-[9px] uppercase tracking-[0.16em] text-slate2">
+                      {{ 'landing.how_it_works.analytics.engagement_chart' | transloco }}
+                    </p>
+                    <div class="mt-2 flex h-12 items-end gap-1.5" aria-hidden="true">
+                      <span class="h-4 w-full rounded-t bg-coral-200"></span>
+                      <span class="h-6 w-full rounded-t bg-coral-200"></span>
+                      <span class="h-5 w-full rounded-t bg-coral-300"></span>
+                      <span class="h-8 w-full rounded-t bg-coral-300"></span>
+                      <span class="h-7 w-full rounded-t bg-coral-400"></span>
+                      <span class="h-10 w-full rounded-t bg-coral-400"></span>
+                      <span class="h-9 w-full rounded-t bg-coral-500"></span>
+                    </div>
+                    <div class="mt-4 text-center">
+                      <span
+                        class="inline-flex items-center gap-1.5 rounded-full border border-beige bg-cream px-4 py-1.5 text-xs font-semibold text-ink"
+                      >
+                        <mat-icon class="!h-3.5 !w-3.5 !text-sm">download</mat-icon>
+                        {{ 'landing.how_it_works.buttons.download_report' | transloco }}
+                      </span>
+                    </div>
+                  </div>
+                }
+              }
+            </div>
+          </li>
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- Pricing — three tier cards -->
+  <!-- Interactive dashboard preview — the "watch a collaboration happen"
+       widget (overview tableau / guided simulation with success finale). -->
+  <app-interactive-dashboard-preview />
+
+  <section id="pricing" class="mx-auto max-w-6xl px-6 py-16 md:py-24" data-testid="landing-pricing">
+    <div class="mb-12 text-center">
+      <span class="eyebrow">
+        {{ 'landing.pricing.badge' | transloco }}
+      </span>
+      <h2 class="mt-3 font-display text-4xl font-normal text-ink sm:text-5xl">
+        {{ 'landing.pricing.title' | transloco }}
+      </h2>
+      <p class="mx-auto mt-4 max-w-2xl text-slate2">
+        {{ 'landing.pricing.description' | transloco }}
+      </p>
+      <!-- persona quote — the voice these three plans answer -->
+      <p class="mx-auto mt-6 max-w-xl font-display text-xl italic text-ink">
+        <span class="text-coral-500">„</span>
+        {{ 'landing.pricing.quote' | transloco }}
+        <span class="text-coral-500">"</span>
+      </p>
+    </div>
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+      @for (p of pricingPlans; track p.id) {
+        <article
+          class="lift relative flex flex-col gap-4 rounded-2xl border bg-white p-8"
+          [class.border-beige]="!p.highlight"
+          [class.border-coral-500]="p.highlight"
+          [class.shadow-lg]="p.highlight"
+          [class.shadow-coral-100]="p.highlight"
+          [attr.data-testid]="'landing-pricing-' + p.id"
+        >
+          @if (p.badgeKey) {
+            <span
+              class="absolute -top-3 left-8 rounded-full bg-coral-700 px-3 py-1 font-mono text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-white shadow-md"
+            >
+              {{ p.badgeKey | transloco }}
+            </span>
+          }
+          <h3 class="font-display text-3xl text-ink">
+            {{ p.nameKey | transloco }}
+          </h3>
+          <p class="text-sm leading-relaxed text-slate2">
+            {{ p.descriptionKey | transloco }}
+          </p>
+          <!-- the price — legacy truth: 0 / 29 / 99 PLN a month -->
+          <div class="mt-2 border-t border-beige pt-5">
+            <p class="font-display text-5xl text-ink" [attr.data-testid]="'landing-price-' + p.id">
+              {{ p.price }}
+              <span class="text-2xl text-slate2">{{ 'landing.pricing.currency' | transloco }}</span>
+            </p>
+            <p class="mt-1 text-xs text-slate2">
+              /{{ 'landing.pricing.billing.month' | transloco }}
+              @if (p.perDay) {
+                <span class="text-slate2">
+                  · ~{{ p.perDay }} {{ 'landing.pricing.currency' | transloco }}
+                  {{ 'landing.pricing.plans.' + p.id + '.per_day' | transloco }}
+                </span>
+              }
+            </p>
+          </div>
+          <div class="border-t border-beige pt-4">
+            <p class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-slate2">
+              {{ p.campaignsKey | transloco }}
+            </p>
+            <p class="mt-2 font-display text-3xl text-ink">
+              {{ p.campaignsCountKey | transloco }}
+            </p>
+          </div>
+          @if (p.benefitBoxes; as boxes) {
+            @for (b of boxes; track b.titleKey) {
+              <div class="rounded-xl border border-beige bg-cream/60 p-4">
+                <p
+                  class="font-mono text-[0.6rem] font-medium uppercase tracking-[0.18em] text-coral-700"
+                >
+                  {{ b.titleKey | transloco }}
+                </p>
+                <p class="mt-1.5 text-sm font-semibold text-ink">{{ b.nameKey | transloco }}</p>
+                <p class="mt-0.5 text-xs leading-relaxed text-slate2">
+                  {{ b.descKey | transloco }}
+                </p>
+              </div>
+            }
+          }
+          @if (p.highlight) {
+            <a
+              routerLink="/auth/sign-up/business"
+              class="cta-primary !mt-auto"
+              [attr.data-testid]="'landing-pricing-cta-' + p.id"
+            >
+              {{ p.ctaKey | transloco }}
+              <mat-icon class="!h-5 !w-5 !text-lg">arrow_forward</mat-icon>
+            </a>
+          } @else {
+            <a
+              routerLink="/auth/sign-up/business"
+              class="cta-secondary !mt-auto"
+              [attr.data-testid]="'landing-pricing-cta-' + p.id"
+            >
+              {{ p.ctaKey | transloco }}
+            </a>
+          }
+        </article>
+      }
+    </div>
+
+    <!-- Managed tiers — the two "someone else does the work" offers. Same
+         cards as legacy (1599 zł/campaign hands-free, white-label Enterprise
+         from 3999 zł/month); the contact CTA routes to the public support
+         form (legacy scrolled to a contact anchor the greenfield FAQ does
+         not carry). -->
+    <div class="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-2">
+      <article
+        class="lift flex flex-col gap-4 rounded-2xl border border-beige bg-white p-8"
+        data-testid="landing-pricing-hands-free"
+      >
+        <p class="font-display text-lg italic text-slate2">
+          <span class="text-coral-500">„</span>
+          {{ 'landing.pricing.hands_free.quote' | transloco }}
+          <span class="text-coral-500">"</span>
+        </p>
+        <h3 class="font-display text-3xl text-ink">
+          {{ 'landing.pricing.hands_free.title' | transloco }}
+        </h3>
+        <p class="font-display text-4xl text-ink">
+          {{ 'landing.pricing.hands_free.price' | transloco }}
+          <span class="text-xl text-slate2">
+            {{ 'landing.pricing.hands_free.currency' | transloco
+            }}{{ 'landing.pricing.hands_free.per' | transloco }}
+          </span>
+        </p>
+        <p class="text-sm leading-relaxed text-slate2">
+          {{ 'landing.pricing.hands_free.description' | transloco }}
+        </p>
+        <ul class="flex flex-col gap-2">
+          @for (f of $any('landing.pricing.hands_free.features' | transloco); track f) {
+            <li class="flex items-start gap-2 text-sm text-slate2">
+              <mat-icon class="mt-0.5 !h-4 !w-4 shrink-0 !text-base text-emerald-500">
+                check_circle
+              </mat-icon>
+              {{ f }}
+            </li>
+          }
+        </ul>
+        <a routerLink="/support" class="cta-secondary !mt-auto self-start">
+          {{ 'landing.pricing.hands_free.cta' | transloco }}
+        </a>
+      </article>
+
+      <article
+        class="lift flex flex-col gap-4 rounded-2xl border border-beige bg-white p-8"
+        data-testid="landing-pricing-enterprise"
+      >
+        <p class="font-display text-lg italic text-slate2">
+          <span class="text-coral-500">„</span>
+          {{ 'landing.pricing.enterprise.quote' | transloco }}
+          <span class="text-coral-500">"</span>
+        </p>
+        <h3 class="font-display text-3xl text-ink">
+          {{ 'landing.pricing.enterprise.title' | transloco }}
+        </h3>
+        <p class="font-display text-4xl text-ink">
+          <span class="text-xl text-slate2">
+            {{ 'landing.pricing.enterprise.price_from' | transloco }}
+          </span>
+          {{ 'landing.pricing.enterprise.price' | transloco }}
+          <span class="text-xl text-slate2">
+            {{ 'landing.pricing.enterprise.currency' | transloco
+            }}{{ 'landing.pricing.enterprise.per' | transloco }}
+          </span>
+        </p>
+        <p class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-slate2">
+          {{ 'landing.pricing.enterprise.subtitle' | transloco }}
+        </p>
+        <p class="text-sm leading-relaxed text-slate2">
+          {{ 'landing.pricing.enterprise.description' | transloco }}
+        </p>
+        <ul class="flex flex-col gap-2">
+          @for (f of $any('landing.pricing.enterprise.features' | transloco); track f) {
+            <li class="flex items-start gap-2 text-sm text-slate2">
+              <mat-icon class="mt-0.5 !h-4 !w-4 shrink-0 !text-base text-emerald-500">
+                check_circle
+              </mat-icon>
+              {{ f }}
+            </li>
+          }
+        </ul>
+        <a routerLink="/support" class="cta-secondary !mt-auto self-start">
+          {{ 'landing.pricing.enterprise.cta' | transloco }}
+        </a>
+      </article>
+    </div>
+
+    <!-- Editorial split-card replacing the emoji "Hey Influencers!" banner -->
+    <aside
+      class="mt-14 grid grid-cols-1 overflow-hidden rounded-3xl border border-beige bg-white md:grid-cols-[1.2fr_1fr]"
+      data-testid="landing-influencer-strip"
+    >
+      <div class="flex flex-col justify-center gap-3 p-10 md:p-12">
+        <span class="eyebrow">
+          {{ 'landing.pricing.influencers.subtitle' | transloco }}
+        </span>
+        <h3 class="font-display text-3xl text-ink sm:text-4xl">
+          {{ 'landing.pricing.influencers.title' | transloco }}
+        </h3>
+        <p class="text-base leading-relaxed text-slate2">
+          {{ 'landing.pricing.influencers.body' | transloco }}
+        </p>
+        <a routerLink="/auth/sign-up/influencer" class="cta-primary mt-3 self-start">
+          {{ 'landing.pricing.influencers.cta' | transloco }}
+          <mat-icon class="!h-5 !w-5 !text-lg">arrow_forward</mat-icon>
+        </a>
+      </div>
+      <div
+        class="relative flex items-center justify-center overflow-hidden bg-gradient-to-br from-coral-500 via-coral-400 to-coral-50"
+      >
+        <span
+          aria-hidden="true"
+          class="font-display text-[10rem] font-normal italic leading-none text-white/20"
+        >
+          ★
+        </span>
+        <span
+          class="absolute font-display text-4xl italic text-white"
+          style="text-shadow: 0 2px 12px rgba(0, 0, 0, 0.2)"
+        >
+          {{ 'landing.pricing.influencers.card_label' | transloco }}
+        </span>
+      </div>
+    </aside>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="mx-auto max-w-6xl px-6 py-16 md:py-24" data-testid="landing-testimonials">
+    <div class="mb-10 text-center">
+      <span class="eyebrow">
+        {{ 'landing.testimonials.subtitle' | transloco }}
+      </span>
+      <h2 class="mt-3 font-display text-4xl font-normal text-ink sm:text-5xl">
+        {{ 'landing.testimonials.title' | transloco }}
+      </h2>
+      <p class="mx-auto mt-4 max-w-2xl text-slate2">
+        {{ 'landing.testimonials.description' | transloco }}
+      </p>
+    </div>
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+      @for (q of $any('landing.testimonials.quotes' | transloco); track $index) {
+        <article
+          class="lift flex flex-col gap-4 rounded-2xl border border-beige bg-white p-7"
+          [attr.data-testid]="'landing-testimonial-' + $index"
+        >
+          <mat-icon class="!h-8 !w-8 !text-3xl text-coral-400">format_quote</mat-icon>
+          <p class="font-display text-xl leading-snug text-ink">
+            {{ q.text }}
+          </p>
+          <div class="mt-auto border-t border-beige pt-4">
+            <p class="text-sm font-semibold text-ink">
+              {{ q.author }}
+            </p>
+            <p class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-slate2">
+              {{ q.position }}
+            </p>
+          </div>
+        </article>
+      }
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="bg-white/60 px-4 py-16 md:py-24" data-testid="landing-faq">
+    <div class="mx-auto max-w-3xl">
+      <div class="mb-12 text-center">
+        <span class="eyebrow">
+          {{ 'landing.faq.subtitle' | transloco }}
+        </span>
+        <h2 class="mt-3 font-display text-4xl font-normal text-ink sm:text-5xl">
+          {{ 'landing.faq.title' | transloco }}
+        </h2>
+        <p class="mx-auto mt-4 text-slate2">
+          {{ 'landing.faq.description' | transloco }}
+        </p>
+      </div>
+      <div class="flex flex-col gap-3">
+        @for (q of $any('landing.faq.questions' | transloco); track $index) {
+          <details
+            class="group rounded-2xl border border-beige bg-white p-5 transition-all hover:border-coral-200 [&[open]]:border-coral-300 [&[open]]:shadow-sm"
+            [attr.data-testid]="'landing-faq-' + $index"
+          >
+            <summary
+              class="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-xl text-ink"
+            >
+              <span>{{ q.question }}</span>
+              <span
+                class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-coral-50 text-coral-500 transition-transform group-[[open]]:rotate-45"
+                aria-hidden="true"
+              >
+                <mat-icon class="!h-5 !w-5 !text-lg">add</mat-icon>
+              </span>
+            </summary>
+            <p class="mt-3 text-sm leading-relaxed text-slate2">
+              {{ q.answer }}
+            </p>
+          </details>
+        }
+      </div>
+
+      <!-- still-have-questions contact row (legacy `contact` anchor) -->
+      <div id="contact" class="mt-10 text-center" data-testid="landing-faq-contact">
+        <p class="text-slate2">{{ 'landing.faq.cta.text' | transloco }}</p>
+        <div class="mt-4 flex flex-wrap items-center justify-center gap-3">
+          <a
+            href="tel:+48451176506"
+            class="inline-flex items-center gap-2 rounded-full border border-beige bg-white px-5 py-2.5 text-sm font-semibold text-ink shadow-sm transition-all hover:border-coral-300 hover:text-coral-600"
+          >
+            <mat-icon class="!h-4 !w-4 !text-base text-coral-500">call</mat-icon>
+            +48 451 176 506
+          </a>
+          <a
+            href="https://www.instagram.com/checkitout.official"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 rounded-full border border-beige bg-white px-5 py-2.5 text-sm font-semibold text-ink shadow-sm transition-all hover:border-coral-300 hover:text-coral-600"
+          >
+            <mat-icon class="!h-4 !w-4 !text-base text-coral-500">photo_camera</mat-icon>
+            &#64;checkitout.official
+          </a>
+          <a routerLink="/support" class="cta-secondary">
+            {{ 'landing.faq.cta.seeMore' | transloco }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA strip -->
+  <section
+    class="relative isolate overflow-hidden bg-ink px-4 py-16 text-center text-cream md:py-20"
+    data-testid="landing-cta-strip"
+  >
+    <div
+      aria-hidden="true"
+      class="absolute -top-32 left-1/2 -z-10 h-[420px] w-[420px] -translate-x-1/2 rounded-full bg-coral-500/20 blur-3xl"
+    ></div>
+    <h2 class="mx-auto max-w-2xl font-display text-4xl text-cream sm:text-5xl">
+      {{ 'landing.cta.title' | transloco }}
+    </h2>
+    <p class="mx-auto mt-4 max-w-2xl text-cream/70">
+      {{ 'landing.cta.description' | transloco }}
+    </p>
+
+    <!-- PL walkthrough video — click-to-load facade so the third-party
+         Vimeo iframe never touches first paint (Lighthouse arc). -->
+    @if (lang() === 'pl') {
+      <div class="mx-auto mt-8 max-w-2xl" data-testid="landing-cta-video">
+        <div
+          class="relative aspect-video overflow-hidden rounded-2xl border border-cream/15 bg-navy-900"
+        >
+          @if (!showVideo()) {
+            <button
+              type="button"
+              (click)="showVideo.set(true)"
+              class="group absolute inset-0 flex flex-col items-center justify-center gap-3"
+              data-testid="landing-video-facade"
+            >
+              <span
+                class="flex h-16 w-16 items-center justify-center rounded-full bg-coral-500 text-white shadow-2xl transition-transform duration-300 group-hover:scale-110"
+              >
+                <mat-icon class="!h-8 !w-8 !text-3xl">play_arrow</mat-icon>
+              </span>
+              <!-- own navy scrim: legible over any thumbnail frame AND gives the
+                   contrast checker a real background to compute against -->
+              <span
+                class="rounded-full bg-navy-900/80 px-3 py-1 font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-cream"
+              >
+                {{ 'landing.cta.video_label' | transloco }}
+              </span>
+            </button>
+          } @else {
+            <iframe
+              src="https://player.vimeo.com/video/1081601628?autoplay=1"
+              class="absolute inset-0 h-full w-full"
+              [title]="'landing.cta.video_label' | transloco"
+              allow="autoplay; fullscreen; picture-in-picture"
+              allowfullscreen
+              loading="lazy"
+            ></iframe>
+          }
+        </div>
+      </div>
+    }
+
+    <div class="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+      <a routerLink="/auth/sign-up/business" class="cta-primary">
+        {{ 'landing.hero.cta.primary' | transloco }}
+        <mat-icon class="!h-5 !w-5 !text-lg">arrow_forward</mat-icon>
+      </a>
+      <a
+        routerLink="/auth/sign-up/influencer"
+        class="inline-flex items-center justify-center gap-2 rounded-full border border-cream/30 px-6 py-2.5 text-sm font-semibold text-cream transition hover:bg-cream/10"
+      >
+        {{ 'landing.hero.cta.secondary1' | transloco }}
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer
+    id="contact"
+    class="border-t border-ink/10 bg-ink px-4 py-14 text-cream/70"
+    data-testid="landing-footer"
+  >
+    <div class="mx-auto max-w-6xl">
+      <!-- Top row: brand + 3 link columns -->
+      <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-4">
+        <!-- Brand + tagline -->
+        <div class="md:col-span-1">
+          <a routerLink="/" class="mb-3 flex items-center gap-2" data-testid="landing-footer-brand">
+            <img src="assets/brand/c-mark.svg" alt="" class="h-7 w-7" />
+            <span class="text-lg font-semibold text-white">Check It Out</span>
+          </a>
+          <p class="text-sm text-cream/60">
+            {{ 'footer.tagline' | transloco }}
+          </p>
+        </div>
+
+        <!-- Nav column -->
+        <div>
+          <h3 class="mb-3 text-sm font-semibold uppercase tracking-wider text-white">
+            {{ 'footer.headings.company' | transloco }}
+          </h3>
+          <ul class="space-y-2 text-sm">
+            <li>
+              <a
+                routerLink="/support"
+                class="text-cream/60 transition hover:text-white"
+                data-testid="landing-footer-about"
+              >
+                {{ 'footer.nav.about' | transloco }}
+              </a>
+            </li>
+            <li>
+              <a
+                href="#faq"
+                class="text-cream/60 transition hover:text-white"
+                data-testid="landing-footer-faq"
+              >
+                {{ 'footer.nav.faq' | transloco }}
+              </a>
+            </li>
+            <li>
+              <a
+                routerLink="/grants"
+                class="text-cream/60 transition hover:text-white"
+                data-testid="landing-footer-grants"
+              >
+                {{ 'footer.nav.grants' | transloco }}
+              </a>
+            </li>
+            <li>
+              <a
+                routerLink="/support"
+                class="text-cream/60 transition hover:text-white"
+                data-testid="landing-footer-contact"
+              >
+                {{ 'footer.nav.contact' | transloco }}
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Legal column -->
+        <div>
+          <h3 class="mb-3 text-sm font-semibold uppercase tracking-wider text-white">
+            {{ 'footer.headings.legal' | transloco }}
+          </h3>
+          <ul class="space-y-2 text-sm">
+            <li>
+              <a
+                href="/assets/docs/privacy_policy_v2_EN.pdf"
+                target="_blank"
+                rel="noopener"
+                class="text-cream/60 transition hover:text-white"
+                data-testid="landing-footer-privacy"
+              >
+                {{ 'footer.links.privacy' | transloco }}
+              </a>
+            </li>
+            <li>
+              <a
+                href="/assets/docs/terms_conditions_v2_EN.pdf"
+                target="_blank"
+                rel="noopener"
+                class="text-cream/60 transition hover:text-white"
+                data-testid="landing-footer-terms"
+              >
+                {{ 'footer.links.terms' | transloco }}
+              </a>
+            </li>
+            <li>
+              <a
+                href="/assets/docs/cookie_policy_v2_EN.pdf"
+                target="_blank"
+                rel="noopener"
+                class="text-cream/60 transition hover:text-white"
+                data-testid="landing-footer-cookies"
+              >
+                {{ 'footer.links.cookies' | transloco }}
+              </a>
+            </li>
+            <li>
+              <a
+                href="/assets/docs/data_retention_policy_v2_EN.pdf"
+                target="_blank"
+                rel="noopener"
+                class="text-cream/60 transition hover:text-white"
+                data-testid="landing-footer-data-retention"
+              >
+                {{ 'footer.links.data_retention' | transloco }}
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Account column -->
+        <div>
+          <h3 class="mb-3 text-sm font-semibold uppercase tracking-wider text-white">
+            {{ 'footer.headings.account' | transloco }}
+          </h3>
+          <ul class="space-y-2 text-sm">
+            <li>
+              <a
+                routerLink="/auth/sign-in"
+                class="text-cream/60 transition hover:text-white"
+                data-testid="landing-sign-in"
+              >
+                {{ 'header.auth.sign_in' | transloco }}
+              </a>
+            </li>
+            <li>
+              <a
+                routerLink="/auth/sign-up"
+                class="text-cream/60 transition hover:text-white"
+                data-testid="landing-footer-sign-up"
+              >
+                {{ 'header.auth.sign_up' | transloco }}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Company legal disclosure (Art. 206 KSH) — a sp. z o.o. must show
+           name, registered seat, KRS, NIP and REGON on commercial pages.
+           Values are hardcoded and language-neutral, mirroring legacy
+           (audit iter-45 P0 #7). -->
+      <div
+        class="mt-10 border-t border-cream/10 pt-6 text-center font-mono text-[11px] leading-relaxed tracking-wide text-cream/60"
+        data-testid="landing-footer-legal"
+      >
+        <span class="sr-only">CHECK IT OUT SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ</span>
+        <p aria-hidden="true" class="font-medium text-cream/60">Check It Out Sp. z o.o.</p>
+        <p>Białowieska 89/24 · 54-234 Wrocław · Polska</p>
+        <p class="mt-1">KRS: 0001181981 | REGON: 542155013 | NIP: 8943264018</p>
+      </div>
+
+      <!-- Bottom row: copyright -->
+      <div
+        class="mt-6 flex flex-col items-center justify-between gap-3 border-t border-cream/10 pt-6 text-sm text-cream/60 sm:flex-row"
+      >
+        <span data-testid="landing-footer-copyright">
+          {{ 'footer.copyright' | transloco: { year: currentYear } }}
+        </span>
+        <span class="text-cream/60">
+          {{ 'landing.hero.badge' | transloco }}
+        </span>
+      </div>
+    </div>
+  </footer>
+</main>

@@ -1,0 +1,115 @@
+<main class="min-h-screen bg-cream" data-testid="grants-page">
+  <app-marketing-toolbar />
+
+  <!-- Hero -->
+  <section class="mx-auto max-w-5xl px-6 pb-16 pt-16 text-center md:px-8">
+    <span
+      class="inline-block rounded-full bg-coral-50 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.18em] text-coral-600"
+    >
+      {{ 'landing.grants.hero.badge' | transloco }}
+    </span>
+    <h1
+      class="mt-4 font-display text-4xl font-normal leading-tight text-ink md:text-5xl"
+      data-testid="grants-title"
+    >
+      {{ 'landing.grants.hero.title' | transloco }}
+      <span class="italic text-coral-600 ink-underline">
+        {{ 'landing.grants.hero.title_highlight' | transloco }}
+      </span>
+    </h1>
+    <p class="mx-auto mt-4 max-w-3xl text-base leading-relaxed text-slate2 md:text-lg">
+      {{ 'landing.grants.hero.description' | transloco }}
+    </p>
+  </section>
+
+  <!-- WRO4digITal partnership -->
+  <section class="mx-auto max-w-xl px-6 pb-16 text-center md:px-8">
+    <div class="rounded-2xl border border-beige bg-white p-8">
+      <img
+        src="assets/images/euGraphics/wro4digital_logo.png"
+        alt="WRO4digITal - European Digital Innovation Hub Wrocław"
+        class="mx-auto h-auto w-full max-w-md"
+      />
+      <p class="mt-6 text-sm leading-relaxed text-slate2">
+        {{ 'landing.grants.wro_logo.partnership_text' | transloco }}
+      </p>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section class="mx-auto max-w-6xl px-6 pb-16 md:px-8">
+    <div class="mb-12 text-center">
+      <span
+        class="inline-block rounded-full bg-coral-50 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.18em] text-coral-600"
+      >
+        {{ 'landing.grants.services.badge' | transloco }}
+      </span>
+      <h2 class="mt-4 font-display text-3xl font-normal text-ink md:text-4xl">
+        {{ 'landing.grants.services.title' | transloco }}
+      </h2>
+      <p class="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-slate2 md:text-base">
+        {{ 'landing.grants.services.description' | transloco }}
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-3 lg:gap-8">
+      @for (card of serviceCards; track card.id) {
+        <article
+          class="flex flex-col rounded-2xl border border-beige bg-white p-6 transition hover:-translate-y-1 hover:shadow-md"
+          [attr.data-testid]="'grants-service-' + card.id"
+        >
+          <span
+            class="inline-flex h-14 w-14 items-center justify-center rounded-full bg-coral-50 text-coral-600"
+            aria-hidden="true"
+          >
+            <svg
+              width="28"
+              height="28"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="card.svgPath"></path>
+            </svg>
+          </span>
+          <p class="mt-5 font-mono text-[10px] uppercase tracking-[0.18em] text-coral-600">
+            {{ 'landing.grants.services.' + card.id + '.category' | transloco }}
+          </p>
+          <h3 class="mt-2 font-display text-xl font-normal text-ink">
+            {{ 'landing.grants.services.' + card.id + '.title' | transloco }}
+          </h3>
+          <p class="mt-3 text-sm leading-relaxed text-slate2">
+            {{ 'landing.grants.services.' + card.id + '.description' | transloco }}
+          </p>
+        </article>
+      }
+    </div>
+  </section>
+
+  <!-- EU banner + funding legal text -->
+  <section class="mx-auto max-w-4xl px-6 pb-24 md:px-8">
+    <div class="overflow-hidden rounded-2xl border border-beige bg-white">
+      <!-- Official EU-visibility artwork — rendered unmodified on white per EU guidelines. -->
+      <div class="border-b border-beige bg-white p-6 md:p-8">
+        <img
+          src="assets/images/euGraphics/eu_banner.webp"
+          alt="Fundusze Europejskie - Dofinansowane przez Unię Europejską"
+          class="h-auto w-full"
+        />
+      </div>
+      <div class="p-6 md:p-8">
+        <h3 class="font-display text-xl font-normal text-ink">
+          {{ 'landing.grants.eu_banner.title' | transloco }}
+        </h3>
+        <p
+          class="mt-4 text-justify text-xs leading-relaxed text-slate2 md:text-sm"
+          data-testid="grants-legal-text"
+        >
+          {{ 'landing.grants.eu_banner.legal_text' | transloco }}
+        </p>
+      </div>
+    </div>
+  </section>
+</main>

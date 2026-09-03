@@ -1,0 +1,155 @@
+<main class="min-h-screen bg-cream" data-testid="support-page">
+  <app-marketing-toolbar />
+
+  <!-- Hero -->
+  <section class="mx-auto max-w-5xl px-6 pb-12 pt-16 text-center md:px-8">
+    <span
+      class="inline-block rounded-full bg-coral-50 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.18em] text-coral-600"
+    >
+      {{ 'support.title' | transloco }}
+    </span>
+    <h1
+      class="mt-4 font-display text-4xl font-normal leading-tight text-ink md:text-5xl"
+      data-testid="support-title"
+    >
+      {{ 'support.hero.title' | transloco }}
+    </h1>
+    <p class="mx-auto mt-4 max-w-3xl text-base leading-relaxed text-slate2 md:text-lg">
+      {{ 'support.hero.description' | transloco }}
+    </p>
+  </section>
+
+  <!-- Contact card -->
+  <section class="mx-auto max-w-4xl px-6 pb-16 md:px-8">
+    <div class="overflow-hidden rounded-2xl border border-beige bg-white">
+      <div class="flex flex-col items-center border-b border-beige p-8 pb-6 text-center">
+        <span
+          class="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-coral-50 text-coral-500"
+          aria-hidden="true"
+        >
+          <mat-icon class="!h-8 !w-8 !text-3xl">forum</mat-icon>
+        </span>
+        <h2 class="font-display text-2xl font-normal text-ink md:text-3xl">
+          {{ 'support.contact.title' | transloco }}
+        </h2>
+        <p class="mt-2 max-w-lg text-sm leading-relaxed text-slate2">
+          {{ 'support.contact.description' | transloco }}
+        </p>
+      </div>
+
+      <div class="p-8">
+        <!-- Primary CTA: ticket form -->
+        <div class="mb-8 flex justify-center">
+          <a
+            [routerLink]="['/support/tickets']"
+            class="inline-flex items-center justify-center gap-2 rounded-full bg-coral-500 px-8 py-3.5 font-semibold text-cream transition hover:-translate-y-0.5 hover:bg-coral-600 hover:shadow-lg"
+            data-testid="support-ticket-cta"
+          >
+            <mat-icon class="!h-5 !w-5 !text-xl">send</mat-icon>
+            {{ 'support.contact.form_button' | transloco }}
+          </a>
+        </div>
+
+        <!-- Divider -->
+        <div class="mb-8 flex items-center gap-4">
+          <div class="h-px flex-1 bg-beige"></div>
+          <span class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+            {{ 'support.contact.or' | transloco }}
+          </span>
+          <div class="h-px flex-1 bg-beige"></div>
+        </div>
+
+        <!-- Phone + email -->
+        <div class="flex flex-col items-center justify-center gap-6 sm:flex-row sm:gap-12">
+          <a
+            [href]="supportPhoneHref"
+            class="group flex items-center gap-3 text-ink transition hover:text-coral-600"
+            data-testid="support-phone"
+          >
+            <span
+              class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-coral-50 text-coral-500 transition group-hover:bg-coral-500 group-hover:text-cream"
+              aria-hidden="true"
+            >
+              <mat-icon class="!h-5 !w-5 !text-xl">call</mat-icon>
+            </span>
+            <span class="flex flex-col text-left">
+              <span class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                {{ 'support.contact.phone_label' | transloco }}
+              </span>
+              <span class="font-semibold">{{ supportPhoneDisplay }}</span>
+            </span>
+          </a>
+
+          <button
+            type="button"
+            (click)="copyEmail()"
+            class="group flex items-center gap-3 text-ink transition hover:text-coral-600"
+            [attr.title]="'common.clipboard.click_to_copy' | transloco"
+            data-testid="support-email"
+          >
+            <span
+              class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-coral-50 text-coral-500 transition group-hover:bg-coral-500 group-hover:text-cream"
+              aria-hidden="true"
+            >
+              <mat-icon class="!h-5 !w-5 !text-xl">mail</mat-icon>
+            </span>
+            <span class="flex flex-col text-left">
+              <span class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                {{ 'support.contact.email_label' | transloco }}
+              </span>
+              <span class="font-semibold">{{ supportEmail }}</span>
+              @if (copyState() === 'copied') {
+                <span
+                  class="font-mono text-[10px] uppercase tracking-[0.18em] text-coral-600"
+                  data-testid="support-email-copied"
+                >
+                  {{ 'common.clipboard.email_copied' | transloco }}
+                </span>
+              } @else if (copyState() === 'failed') {
+                <span class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                  {{ 'common.clipboard.copy_failed' | transloco }}
+                </span>
+              }
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Popular FAQs -->
+  <section class="mx-auto max-w-4xl px-6 pb-24 md:px-8">
+    <div class="mb-10 text-center">
+      <h2 class="font-display text-3xl font-normal text-ink md:text-4xl">
+        {{ 'support.popular_faqs.title' | transloco }}
+      </h2>
+      <p class="mt-3 text-sm leading-relaxed text-slate2 md:text-base">
+        {{ 'support.popular_faqs.description' | transloco }}
+      </p>
+    </div>
+
+    <dl class="flex flex-col gap-4">
+      @for (q of $any('landing.faq.questions' | transloco); track $index) {
+        <details
+          class="group rounded-2xl border border-beige bg-white p-5 transition-all hover:border-coral-200 [&[open]]:border-coral-300 [&[open]]:shadow-sm"
+          [attr.data-testid]="'support-faq-' + $index"
+        >
+          <summary
+            class="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-xl text-ink"
+          >
+            <span>{{ q.question }}</span>
+            <span
+              class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-coral-50 text-coral-500 transition-transform group-[[open]]:rotate-45"
+              aria-hidden="true"
+            >
+              <mat-icon class="!h-5 !w-5 !text-lg">add</mat-icon>
+            </span>
+          </summary>
+          <p class="mt-3 text-sm leading-relaxed text-slate2">
+            {{ q.answer }}
+          </p>
+        </details>
+      }
+    </dl>
+  </section>
+</main>

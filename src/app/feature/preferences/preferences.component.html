@@ -1,0 +1,189 @@
+<section class="mx-auto max-w-2xl p-4" data-testid="preferences">
+  @switch (state()) {
+    @case ('loading') {
+      <div class="flex min-h-[40vh] items-center justify-center">
+        <mat-spinner diameter="40" data-testid="preferences-loading"></mat-spinner>
+      </div>
+    }
+    @case ('error') {
+      <div
+        role="alert"
+        data-testid="preferences-error"
+        class="flex flex-col items-center gap-3 rounded-2xl border border-red-200 bg-red-50 px-6 py-10 text-center text-red-700"
+      >
+        <mat-icon class="!h-10 !w-10 !text-4xl">error_outline</mat-icon>
+        <p>{{ 'preferences.error.load_failed' | transloco }}</p>
+        <button mat-stroked-button (click)="load()" data-testid="preferences-retry">
+          {{ 'profile.error.retry' | transloco }}
+        </button>
+      </div>
+    }
+    @case ('loaded') {
+      <form
+        [formGroup]="form"
+        (ngSubmit)="save()"
+        class="flex flex-col gap-5 rounded-2xl border border-beige bg-white p-7"
+        data-testid="preferences-form"
+        novalidate
+      >
+        <header>
+          <h1 class="font-display text-3xl font-normal text-ink">
+            {{ 'preferences.title' | transloco }}
+          </h1>
+          <!-- The PL subtitle (~46ch) sits exactly on the mobile wrap
+               boundary and flips 1↔2 lines nondeterministically under
+               rendering load. max-w-[38ch] forces the wrap far from the
+               threshold on phones (text-balance keeps the two lines even);
+               sm:max-w-none leaves wider viewports untouched. -->
+          <p class="mt-1 max-w-[38ch] text-balance text-sm text-slate2 sm:max-w-none">
+            {{ 'preferences.subtitle' | transloco }}
+          </p>
+        </header>
+
+        <fieldset class="flex flex-col gap-2">
+          <legend class="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+            {{ 'preferences.channels.title' | transloco }}
+          </legend>
+          <mat-slide-toggle
+            formControlName="notificationEmailEnabled"
+            data-testid="preferences-channel-email"
+          >
+            {{ 'preferences.channels.email' | transloco }}
+          </mat-slide-toggle>
+          <mat-slide-toggle
+            formControlName="notificationPushEnabled"
+            data-testid="preferences-channel-push"
+          >
+            {{ 'preferences.channels.push' | transloco }}
+          </mat-slide-toggle>
+          <mat-slide-toggle
+            formControlName="notificationSmsEnabled"
+            data-testid="preferences-channel-sms"
+          >
+            {{ 'preferences.channels.sms' | transloco }}
+          </mat-slide-toggle>
+          @if (!form.controls.sharePhoneForPayments.value) {
+            <p class="ml-1 text-xs text-slate2" data-testid="preferences-sms-hint">
+              {{ 'preferences.channels.sms_needs_phone' | transloco }}
+            </p>
+          }
+        </fieldset>
+
+        <mat-divider class="!border-beige" />
+
+        <fieldset class="flex flex-col gap-2">
+          <legend class="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+            {{ 'preferences.categories.title' | transloco }}
+          </legend>
+          <mat-slide-toggle
+            formControlName="notificationPartnershipEnabled"
+            data-testid="preferences-category-partnership"
+          >
+            {{ 'preferences.categories.partnership' | transloco }}
+          </mat-slide-toggle>
+          <mat-slide-toggle
+            formControlName="notificationSupportEnabled"
+            data-testid="preferences-category-support"
+          >
+            {{ 'preferences.categories.support' | transloco }}
+          </mat-slide-toggle>
+          <mat-slide-toggle
+            formControlName="notificationSystemEnabled"
+            data-testid="preferences-category-system"
+          >
+            {{ 'preferences.categories.system' | transloco }}
+          </mat-slide-toggle>
+        </fieldset>
+
+        <mat-divider class="!border-beige" />
+
+        <fieldset class="flex flex-col gap-2">
+          <legend class="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+            {{ 'preferences.delivery.title' | transloco }}
+          </legend>
+          <mat-slide-toggle
+            formControlName="notificationEmailPartnershipEnabled"
+            data-testid="preferences-email-partnership"
+          >
+            {{ 'preferences.delivery.email_partnership' | transloco }}
+          </mat-slide-toggle>
+          <mat-slide-toggle
+            formControlName="notificationEmailSupportEnabled"
+            data-testid="preferences-email-support"
+          >
+            {{ 'preferences.delivery.email_support' | transloco }}
+          </mat-slide-toggle>
+          <div class="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>{{ 'preferences.delivery.frequency' | transloco }}</mat-label>
+              <mat-select
+                formControlName="communicationFrequency"
+                data-testid="preferences-frequency"
+              >
+                @for (f of frequencies; track f) {
+                  <mat-option [value]="f">
+                    {{ 'preferences.delivery.freq.' + f | transloco }}
+                  </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>{{ 'preferences.delivery.timezone' | transloco }}</mat-label>
+              <mat-select formControlName="timezone" data-testid="preferences-timezone">
+                @for (tz of timezones(); track tz) {
+                  <mat-option [value]="tz">{{ tz }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </fieldset>
+
+        <mat-divider class="!border-beige" />
+
+        <fieldset class="flex flex-col gap-2">
+          <legend class="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+            {{ 'preferences.gdpr.title' | transloco }}
+          </legend>
+          <mat-slide-toggle
+            formControlName="gdprMarketingConsent"
+            data-testid="preferences-gdpr-marketing"
+          >
+            {{ 'preferences.gdpr.marketing' | transloco }}
+          </mat-slide-toggle>
+          <mat-slide-toggle
+            formControlName="sharePhoneForPayments"
+            data-testid="preferences-share-phone"
+          >
+            {{ 'preferences.gdpr.share_phone' | transloco }}
+          </mat-slide-toggle>
+        </fieldset>
+
+        @if (saveErrorKey(); as key) {
+          <div
+            role="alert"
+            data-testid="preferences-save-error"
+            class="rounded-2xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+          >
+            {{ key | transloco }}
+          </div>
+        }
+
+        <div class="flex justify-end">
+          <button
+            mat-flat-button
+            color="primary"
+            type="submit"
+            [disabled]="saving() || form.pristine"
+            data-testid="preferences-save"
+          >
+            @if (saving()) {
+              <mat-spinner diameter="18" class="mx-auto"></mat-spinner>
+            } @else {
+              {{ 'preferences.save' | transloco }}
+            }
+          </button>
+        </div>
+      </form>
+    }
+  }
+</section>

@@ -1,0 +1,79 @@
+<h2 mat-dialog-title data-testid="step-up-title">
+  {{ 'step_up.dialog.title' | transloco }}
+</h2>
+
+<mat-dialog-content class="!pt-2">
+  <p class="mb-4 text-sm text-slate2">
+    @if (challengeType() === 'EMAIL_CODE') {
+      @if (data.email) {
+        {{ 'step_up.dialog.email_instruction_with_email' | transloco: { email: data.email } }}
+      } @else {
+        {{ 'step_up.dialog.email_instruction' | transloco }}
+      }
+    } @else {
+      {{ 'step_up.dialog.totp_instruction' | transloco }}
+    }
+  </p>
+
+  @if (phase() === 'requesting') {
+    <div
+      class="flex items-center justify-center py-6"
+      data-testid="step-up-sending-state"
+      role="status"
+      aria-live="polite"
+    >
+      <mat-spinner diameter="28" />
+      <span class="ml-3 text-sm text-slate2">
+        {{ 'step_up.dialog.sending_code' | transloco }}
+      </span>
+    </div>
+  } @else {
+    <form (ngSubmit)="verify()" class="flex flex-col gap-3">
+      <mat-form-field appearance="outline" class="!w-full">
+        <mat-label>{{ 'step_up.dialog.code_label' | transloco }}</mat-label>
+        <input
+          matInput
+          type="text"
+          inputmode="numeric"
+          autocomplete="one-time-code"
+          maxlength="6"
+          [formControl]="codeControl"
+          data-testid="step-up-code-input"
+          aria-describedby="step-up-error"
+        />
+      </mat-form-field>
+
+      @if (errorKey(); as ek) {
+        <p id="step-up-error" role="alert" class="text-sm text-red-600" data-testid="step-up-error">
+          {{ ek | transloco }}
+        </p>
+      }
+    </form>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions class="!justify-end">
+  <button
+    mat-button
+    type="button"
+    (click)="cancel()"
+    [disabled]="phase() === 'verifying'"
+    data-testid="step-up-cancel"
+  >
+    {{ 'step_up.dialog.cancel' | transloco }}
+  </button>
+  <button
+    mat-flat-button
+    color="primary"
+    type="button"
+    (click)="verify()"
+    [disabled]="phase() !== 'awaiting_code' || codeControl.invalid"
+    data-testid="step-up-verify"
+  >
+    @if (phase() === 'verifying') {
+      <mat-spinner diameter="18" class="!inline-block" />
+    } @else {
+      {{ 'step_up.dialog.verify' | transloco }}
+    }
+  </button>
+</mat-dialog-actions>

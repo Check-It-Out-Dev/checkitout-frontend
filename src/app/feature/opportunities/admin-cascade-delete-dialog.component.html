@@ -1,0 +1,118 @@
+<div class="max-w-lg p-1" data-testid="cascade-dialog">
+  <h2 mat-dialog-title class="!font-display !text-2xl !font-normal !text-ink">
+    {{ 'opportunities.cascade.title' | transloco }}
+  </h2>
+  <mat-dialog-content>
+    @if (data.title) {
+      <p class="text-sm font-medium text-ink">{{ data.title }}</p>
+    }
+    @if (data.companyName) {
+      <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+        {{ data.companyName }} · #{{ data.partnershipOpportunityId }}
+      </p>
+    }
+
+    @switch (state()) {
+      @case ('loading') {
+        <div class="flex flex-col items-center gap-2 py-8" data-testid="cascade-loading">
+          <mat-spinner diameter="28"></mat-spinner>
+          <p class="text-sm text-slate2">{{ 'opportunities.cascade.loading' | transloco }}</p>
+        </div>
+      }
+      @case ('preview') {
+        @if (preview(); as p) {
+          <div class="mt-3" data-testid="cascade-preview">
+            <p class="text-sm text-slate2">
+              {{ 'opportunities.cascade.preview_intro' | transloco }}
+            </p>
+            <ul class="mt-2 flex flex-col gap-1 rounded-xl border border-beige bg-cream p-3">
+              @for (row of p.entityBreakdown; track row.entityType) {
+                <li class="flex items-center justify-between text-sm">
+                  <span class="text-ink">{{ row.description || row.entityType }}</span>
+                  <span class="font-mono text-xs text-slate2">{{ row.count }}</span>
+                </li>
+              }
+              <li
+                class="mt-1 flex items-center justify-between border-t border-beige pt-2 text-sm font-medium"
+              >
+                <span>{{ 'opportunities.cascade.total' | transloco }}</span>
+                <span class="font-mono" data-testid="cascade-total">{{ p.totalEntityCount }}</span>
+              </li>
+            </ul>
+            @for (w of p.warnings; track w) {
+              <p
+                class="mt-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800"
+              >
+                {{ w }}
+              </p>
+            }
+            <p class="mt-3 text-xs font-medium text-red-700">
+              {{ 'opportunities.cascade.irreversible' | transloco }}
+            </p>
+          </div>
+        }
+      }
+      @case ('deleting') {
+        <div class="flex flex-col items-center gap-2 py-8" data-testid="cascade-deleting">
+          <mat-spinner diameter="28"></mat-spinner>
+          <p class="text-sm text-slate2">{{ 'opportunities.cascade.deleting' | transloco }}</p>
+        </div>
+      }
+      @case ('success') {
+        <div
+          class="flex flex-col items-center gap-2 py-6 text-center"
+          data-testid="cascade-success"
+        >
+          <mat-icon class="!h-9 !w-9 !text-4xl text-emerald-600">check_circle</mat-icon>
+          <p class="text-sm text-ink">
+            {{
+              'opportunities.cascade.success' | transloco: { count: result()?.totalDeleted ?? 0 }
+            }}
+          </p>
+        </div>
+      }
+      @case ('partial') {
+        <div class="flex flex-col gap-2 py-4" data-testid="cascade-partial">
+          <p class="text-sm font-medium text-amber-800">
+            {{ 'opportunities.cascade.partial' | transloco }}
+          </p>
+          @for (w of result()?.warnings; track w) {
+            <p class="text-xs text-slate2">{{ w }}</p>
+          }
+          @if (result()?.canRetry) {
+            <p class="text-xs text-slate2">{{ 'opportunities.cascade.retry_hint' | transloco }}</p>
+          }
+        </div>
+      }
+      @case ('error') {
+        <p
+          role="alert"
+          class="rounded-2xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+          data-testid="cascade-error"
+        >
+          {{ 'opportunities.cascade.error' | transloco }}
+        </p>
+      }
+    }
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    @if (state() === 'preview') {
+      <button mat-button type="button" (click)="close()" data-testid="cascade-cancel">
+        {{ 'opportunities.cascade.cancel' | transloco }}
+      </button>
+      <button
+        mat-flat-button
+        color="warn"
+        type="button"
+        (click)="confirmDelete()"
+        data-testid="cascade-confirm"
+      >
+        {{ 'opportunities.cascade.confirm' | transloco }}
+      </button>
+    } @else if (state() === 'success' || state() === 'partial' || state() === 'error') {
+      <button mat-flat-button type="button" (click)="close()" data-testid="cascade-close">
+        {{ 'opportunities.cascade.close' | transloco }}
+      </button>
+    }
+  </mat-dialog-actions>
+</div>

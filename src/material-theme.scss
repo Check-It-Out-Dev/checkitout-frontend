@@ -1,0 +1,126 @@
+/*
+ * Angular Material 17 (M2) theme — editorial coral primary + ink accent.
+ * Replaces the indigo-pink prebuilt so mat-flat-button color="primary",
+ * mat-icon color tokens, mat-form-field outline, mat-checkbox accent, etc.
+ * all inherit the brand coral instead of Material default indigo.
+ */
+@use '@angular/material' as mat;
+
+@include mat.elevation-classes();
+@include mat.app-background();
+
+$cio-coral-palette: (
+  50: #fff1ed,
+  100: #ffdbcc,
+  200: #ffc4a8,
+  300: #ffa07b,
+  400: #ff7b5c,
+  500: #ff5a36,
+  600: #e04a28,
+  700: #b83a1f,
+  800: #8c2d18,
+  900: #5e1f11,
+  contrast: (
+    50: rgba(0, 0, 0, 0.87),
+    100: rgba(0, 0, 0, 0.87),
+    200: rgba(0, 0, 0, 0.87),
+    300: rgba(0, 0, 0, 0.87),
+    400: rgba(0, 0, 0, 0.87),
+    500: #fff,
+    600: #fff,
+    700: #fff,
+    800: #fff,
+    900: #fff,
+  ),
+);
+
+$cio-ink-palette: (
+  50: #f0f2f8,
+  100: #dde2eb,
+  200: #b8c1d4,
+  300: #93a0bc,
+  400: #6f7fa5,
+  500: #1e3a8a,
+  600: #1a3479,
+  700: #15295e,
+  800: #0f1f44,
+  900: #0e1116,
+  contrast: (
+    50: rgba(0, 0, 0, 0.87),
+    100: rgba(0, 0, 0, 0.87),
+    200: rgba(0, 0, 0, 0.87),
+    300: rgba(0, 0, 0, 0.87),
+    400: #fff,
+    500: #fff,
+    600: #fff,
+    700: #fff,
+    800: #fff,
+    900: #fff,
+  ),
+);
+
+$cio-primary: mat.m2-define-palette($cio-coral-palette, 500);
+$cio-accent: mat.m2-define-palette($cio-ink-palette, 900);
+$cio-warn: mat.m2-define-palette(mat.$m2-red-palette);
+
+$cio-typography: mat.m2-define-typography-config(
+  $font-family:
+    '"Albert Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+  $headline-1: mat.m2-define-typography-level(96px, 96px, 300, '"Instrument Serif", serif', -0.015em),
+  $headline-2: mat.m2-define-typography-level(60px, 60px, 300, '"Instrument Serif", serif', -0.005em),
+  $headline-3: mat.m2-define-typography-level(48px, 50px, 400, '"Instrument Serif", serif', 0),
+  $headline-4: mat.m2-define-typography-level(34px, 40px, 400, '"Instrument Serif", serif', 0.0025em),
+);
+
+$cio-theme: mat.m2-define-light-theme(
+  (
+    color: (
+      primary: $cio-primary,
+      accent: $cio-accent,
+      warn: $cio-warn,
+    ),
+    typography: $cio-typography,
+    density: 0,
+  )
+);
+
+/* Per-component theme emission (iter-107): all-component-themes emitted
+ * CSS for ~35 Material components while the app imports 20 — the excess
+ * rode the render-blocking styles.css into every Lantern FCP/LCP
+ * estimate. This list mirrors the actual `@angular/material/<pkg>`
+ * imports across src/app (grep `from '@angular/material/'` to re-derive
+ * when adding a component — a missing entry shows up as an unthemed
+ * (indigo-default) component in the visual baselines). core-theme
+ * carries the shared tokens/typography that all-component-themes
+ * bundled implicitly.
+ */
+@include mat.elevation-classes();
+@include mat.app-background();
+@include mat.badge-theme($cio-theme);
+@include mat.button-theme($cio-theme);
+@include mat.icon-button-theme($cio-theme);
+@include mat.fab-theme($cio-theme);
+@include mat.card-theme($cio-theme);
+@include mat.checkbox-theme($cio-theme);
+@include mat.chips-theme($cio-theme);
+@include mat.dialog-theme($cio-theme);
+@include mat.divider-theme($cio-theme);
+@include mat.form-field-theme($cio-theme);
+@include mat.icon-theme($cio-theme);
+@include mat.input-theme($cio-theme);
+@include mat.list-theme($cio-theme);
+@include mat.menu-theme($cio-theme);
+@include mat.paginator-theme($cio-theme);
+@include mat.progress-spinner-theme($cio-theme);
+@include mat.radio-theme($cio-theme);
+@include mat.select-theme($cio-theme);
+@include mat.sidenav-theme($cio-theme);
+@include mat.slide-toggle-theme($cio-theme);
+@include mat.tabs-theme($cio-theme);
+@include mat.toolbar-theme($cio-theme);
+/* mat-core() already included above; snack-bar/tooltip/autocomplete/
+ * option are pulled in transitively where needed: select needs
+ * option/optgroup + autocomplete-adjacent overlay styles. */
+@include mat.option-theme($cio-theme);
+@include mat.optgroup-theme($cio-theme);
+@include mat.pseudo-checkbox-theme($cio-theme);

@@ -1,0 +1,26 @@
+/* Jest spec config — replaces Karma/Jasmine. Includes the Stage-5b
+ * trace-library unit tests under e2e-tests/integration/_trace/. */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/spec",
+    "types": ["jest", "node"],
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
+    "module": "esnext"
+  },
+  "include": [
+    "src/**/*.spec.ts",
+    "src/**/*.d.ts",
+    "setup-jest.ts",
+    "e2e-tests/integration/_trace/**/*.ts"
+  ],
+  "angularCompilerOptions": {
+    "extendedDiagnostics": {
+      "checks": {
+        "nullishCoalescingNotNullable": "suppress",
+        "optionalChainNotNullable": "suppress"
+      }
+    }
+  }
+}

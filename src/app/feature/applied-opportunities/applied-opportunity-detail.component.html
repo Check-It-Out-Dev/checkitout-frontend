@@ -1,0 +1,459 @@
+<section class="mx-auto w-full max-w-4xl p-4 md:p-6">
+  @if (state() === 'loading') {
+    <div class="flex items-center justify-center py-16" data-testid="appop-detail-loading">
+      <mat-spinner diameter="32"></mat-spinner>
+    </div>
+  } @else if (state() === 'not-found') {
+    <div
+      data-testid="appop-detail-not-found"
+      class="rounded-2xl border border-beige bg-cream p-8 text-center"
+    >
+      <span class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-coral-50">
+        <mat-icon class="!h-8 !w-8 !text-3xl text-coral-500">search_off</mat-icon>
+      </span>
+      <h1 class="mt-3 font-display text-3xl font-normal text-ink">
+        {{ 'applied_opportunities.detail.not_found_title' | transloco }}
+      </h1>
+      <p class="mt-1 text-sm text-slate2">
+        {{ 'applied_opportunities.detail.not_found_body' | transloco }}
+      </p>
+      <a mat-stroked-button routerLink="/collaborations/registrations" class="!mt-4">
+        {{ 'applied_opportunities.detail.back_to_list' | transloco }}
+      </a>
+    </div>
+  } @else if (state() === 'error') {
+    <div
+      data-testid="appop-detail-error"
+      class="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
+    >
+      {{ 'applied_opportunities.detail.load_error' | transloco }}
+    </div>
+  } @else if (application()) {
+    <header class="mb-5 flex flex-col gap-3">
+      <a
+        mat-stroked-button
+        routerLink="/collaborations/registrations"
+        class="!w-fit"
+        data-testid="appop-detail-back"
+      >
+        <mat-icon>arrow_back</mat-icon>
+        {{ 'applied_opportunities.detail.back_to_list' | transloco }}
+      </a>
+      <div class="flex flex-wrap items-center gap-3">
+        <h1 class="font-display text-4xl font-normal text-ink" data-testid="appop-detail-title">
+          {{ campaignTitle() }}
+        </h1>
+        <span
+          class="rounded-full px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em]"
+          [class]="statusBadgeClass(currentStatus())"
+          data-testid="appop-detail-status"
+        >
+          {{ 'applied_opportunities.status.' + (currentStatus() || 'unknown') | transloco }}
+        </span>
+      </div>
+      <p
+        class="font-mono text-[11px] uppercase tracking-[0.18em] text-slate2"
+        data-testid="appop-detail-applied-at"
+      >
+        {{ 'applied_opportunities.detail.applied_at' | transloco }}
+        {{
+          application()?.createdTime
+            ? ($safeNavigationMigration(application()?.createdTime) | date: 'mediumDate')
+            : '—'
+        }}
+      </p>
+      <a
+        mat-flat-button
+        color="primary"
+        [routerLink]="[
+          '/collaborations/registrations',
+          $safeNavigationMigration(application()?.id),
+          'content',
+        ]"
+        class="!w-fit"
+        data-testid="appop-detail-content-link"
+      >
+        <mat-icon>upload</mat-icon>
+        {{ 'applied_opportunities.detail.submit_content' | transloco }}
+      </a>
+    </header>
+
+    @if (application()?.note; as note) {
+      <section
+        class="mb-4 rounded-2xl border border-beige bg-white p-5"
+        data-testid="appop-detail-note"
+      >
+        <h2 class="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+          {{ 'applied_opportunities.detail.your_note' | transloco }}
+        </h2>
+        <p class="whitespace-pre-line text-sm leading-relaxed text-ink">{{ note }}</p>
+      </section>
+    }
+
+    <section class="mb-4 rounded-2xl border border-beige bg-white p-5">
+      <h2 class="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+        {{ 'applied_opportunities.detail.campaign' | transloco }}
+      </h2>
+      @if (campaignId(); as cid) {
+        <a
+          [routerLink]="['/collaborations', cid]"
+          class="font-display text-2xl font-normal text-ink transition hover:text-coral-600"
+          data-testid="appop-detail-campaign-link"
+        >
+          {{ campaignTitle() }}
+        </a>
+      } @else {
+        <span class="text-sm text-slate2">{{ campaignTitle() }}</span>
+      }
+    </section>
+
+    @if (canDecide()) {
+      <section
+        class="mb-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-5"
+        data-testid="appop-detail-decision"
+      >
+        <h2 class="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-emerald-900">
+          {{ 'applied_opportunities.decision.title' | transloco }}
+        </h2>
+        @if (!pendingDecision()) {
+          <p class="mb-3 text-sm text-emerald-900">
+            {{ 'applied_opportunities.decision.prompt' | transloco }}
+          </p>
+          <div class="flex flex-row gap-2">
+            <button
+              mat-flat-button
+              color="primary"
+              [disabled]="decisionSubmitting()"
+              (click)="armDecision('accept')"
+              data-testid="appop-detail-accept"
+            >
+              <mat-icon>check</mat-icon>
+              {{ 'applied_opportunities.decision.accept' | transloco }}
+            </button>
+            <button
+              mat-stroked-button
+              color="warn"
+              [disabled]="decisionSubmitting()"
+              (click)="armDecision('decline')"
+              data-testid="appop-detail-decline"
+            >
+              <mat-icon>close</mat-icon>
+              {{ 'applied_opportunities.decision.decline' | transloco }}
+            </button>
+          </div>
+        } @else {
+          <p class="mb-1 text-sm font-medium text-ink" data-testid="appop-detail-decision-question">
+            {{
+              'applied_opportunities.decision.confirm_' + pendingDecision() + '_question'
+                | transloco
+            }}
+          </p>
+          <p class="mb-3 text-sm text-emerald-900">
+            {{ 'applied_opportunities.decision.irreversible' | transloco }}
+          </p>
+          <div class="flex flex-row gap-2">
+            <button
+              mat-flat-button
+              [color]="pendingDecision() === 'accept' ? 'primary' : 'warn'"
+              [disabled]="decisionSubmitting()"
+              (click)="confirmDecision()"
+              data-testid="appop-detail-decision-confirm"
+            >
+              {{ 'applied_opportunities.decision.confirm_' + pendingDecision() | transloco }}
+            </button>
+            <button
+              mat-stroked-button
+              [disabled]="decisionSubmitting()"
+              (click)="cancelDecision()"
+              data-testid="appop-detail-decision-back"
+            >
+              {{ 'applied_opportunities.decision.back' | transloco }}
+            </button>
+          </div>
+        }
+        @if (decisionErrorKey(); as key) {
+          <div
+            role="alert"
+            data-testid="appop-detail-decision-error"
+            class="mt-2 rounded-2xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+          >
+            {{ key | transloco }}
+          </div>
+        }
+      </section>
+    }
+
+    @if (canCancelFromRejected()) {
+      <section
+        class="mb-4 rounded-2xl border border-red-200 bg-red-50 p-5"
+        data-testid="appop-detail-cancel-rejected"
+      >
+        <h2 class="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-red-900">
+          {{ 'applied_opportunities.cancel_rejected.title' | transloco }}
+        </h2>
+        @if (pendingDecision() !== 'decline') {
+          <p class="mb-3 text-sm text-red-900">
+            {{ 'applied_opportunities.cancel_rejected.prompt' | transloco }}
+          </p>
+          <button
+            mat-stroked-button
+            color="warn"
+            [disabled]="decisionSubmitting()"
+            (click)="armDecision('decline')"
+            data-testid="appop-detail-cancel-rejected-arm"
+          >
+            <mat-icon>close</mat-icon>
+            {{ 'applied_opportunities.cancel_rejected.cta' | transloco }}
+          </button>
+        } @else {
+          <p class="mb-3 text-sm text-red-900">
+            {{ 'applied_opportunities.decision.irreversible' | transloco }}
+          </p>
+          <div class="flex flex-row gap-2">
+            <button
+              mat-flat-button
+              color="warn"
+              [disabled]="decisionSubmitting()"
+              (click)="confirmDecision()"
+              data-testid="appop-detail-cancel-rejected-confirm"
+            >
+              {{ 'applied_opportunities.cancel_rejected.confirm' | transloco }}
+            </button>
+            <button
+              mat-stroked-button
+              [disabled]="decisionSubmitting()"
+              (click)="cancelDecision()"
+              data-testid="appop-detail-cancel-rejected-back"
+            >
+              {{ 'applied_opportunities.decision.back' | transloco }}
+            </button>
+          </div>
+        }
+        @if (decisionErrorKey(); as key) {
+          <div
+            role="alert"
+            class="mt-2 rounded-2xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+          >
+            {{ key | transloco }}
+          </div>
+        }
+      </section>
+    }
+
+    @if (canMarkPosted()) {
+      <section
+        class="mb-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-5"
+        data-testid="appop-detail-posted"
+      >
+        <h2 class="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-emerald-900">
+          {{ postedKey() + '.title' | transloco }}
+        </h2>
+        @if (pendingDecision() !== 'posted') {
+          <p class="mb-3 text-sm text-emerald-900">
+            {{ postedKey() + '.prompt' | transloco }}
+          </p>
+          <button
+            mat-flat-button
+            color="primary"
+            [disabled]="decisionSubmitting()"
+            (click)="armDecision('posted')"
+            data-testid="appop-detail-posted-arm"
+          >
+            <mat-icon>share</mat-icon>
+            {{ postedKey() + '.cta' | transloco }}
+          </button>
+        } @else {
+          <p class="mb-1 text-sm font-medium text-ink" data-testid="appop-detail-posted-question">
+            {{ postedKey() + '.confirm_question' | transloco }}
+          </p>
+          <p class="mb-3 text-sm text-emerald-900">
+            {{ 'applied_opportunities.decision.irreversible' | transloco }}
+          </p>
+          <div class="flex flex-row gap-2">
+            <button
+              mat-flat-button
+              color="primary"
+              [disabled]="decisionSubmitting()"
+              (click)="confirmDecision()"
+              data-testid="appop-detail-posted-confirm"
+            >
+              {{ postedKey() + '.confirm' | transloco }}
+            </button>
+            <button
+              mat-stroked-button
+              [disabled]="decisionSubmitting()"
+              (click)="cancelDecision()"
+              data-testid="appop-detail-posted-back"
+            >
+              {{ 'applied_opportunities.decision.back' | transloco }}
+            </button>
+          </div>
+        }
+        @if (decisionErrorKey(); as key) {
+          <div
+            role="alert"
+            data-testid="appop-detail-posted-error"
+            class="mt-2 rounded-2xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+          >
+            {{ key | transloco }}
+          </div>
+        }
+      </section>
+    }
+
+    @if (canShowPaymentContact()) {
+      <section
+        class="mb-4 rounded-2xl border border-amber-200 bg-amber-50 p-5"
+        data-testid="appop-detail-payment-contact"
+      >
+        <h2 class="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-amber-900">
+          {{ 'applied_opportunities.payment_contact.title' | transloco }}
+        </h2>
+        <p class="mb-3 text-sm text-amber-900">
+          {{ 'applied_opportunities.payment_contact.instructions' | transloco }}
+        </p>
+        @if (paymentContactLoading()) {
+          <div class="flex items-center gap-2 text-sm text-amber-900">
+            <mat-spinner diameter="16"></mat-spinner>
+            {{ 'applied_opportunities.payment_contact.loading' | transloco }}
+          </div>
+        } @else {
+          @if (paymentContact(); as pc) {
+            <dl class="grid grid-cols-1 gap-2 text-sm md:grid-cols-2">
+              @if (pc.name) {
+                <div data-testid="appop-payment-name">
+                  <dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-amber-700">
+                    {{ 'applied_opportunities.payment_contact.name' | transloco }}
+                  </dt>
+                  <dd class="text-ink">{{ pc.name }}</dd>
+                </div>
+              }
+              @if (pc.email) {
+                <div data-testid="appop-payment-email">
+                  <dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-amber-700">
+                    {{ 'applied_opportunities.payment_contact.email' | transloco }}
+                  </dt>
+                  <dd class="text-ink">
+                    <a
+                      [href]="'mailto:' + pc.email"
+                      class="text-coral-600 transition hover:text-coral-700 hover:underline"
+                    >
+                      {{ pc.email }}
+                    </a>
+                  </dd>
+                </div>
+              }
+              @if (pc.phone) {
+                <div data-testid="appop-payment-phone">
+                  <dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-amber-700">
+                    {{ 'applied_opportunities.payment_contact.phone' | transloco }}
+                  </dt>
+                  <dd class="text-ink">
+                    <a
+                      [href]="'tel:' + pc.phone"
+                      class="text-coral-600 transition hover:text-coral-700 hover:underline"
+                    >
+                      {{ pc.phone }}
+                    </a>
+                  </dd>
+                </div>
+              }
+            </dl>
+          } @else {
+            <p data-testid="appop-payment-unavailable" class="text-sm text-amber-900">
+              {{ 'applied_opportunities.payment_contact.unavailable' | transloco }}
+            </p>
+          }
+        }
+      </section>
+    }
+
+    @if (canRateCompany()) {
+      <section
+        class="mb-4 rounded-2xl border border-beige bg-white p-5"
+        data-testid="appop-detail-rating"
+      >
+        <h2 class="mb-3 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+          {{ 'applied_opportunities.rating.title' | transloco }}
+        </h2>
+        @if (hasRatedCompany()) {
+          <p class="text-sm text-ink" data-testid="appop-detail-rating-done">
+            {{ 'applied_opportunities.rating.done.' + companyRatingFromInfluencer() | transloco }}
+          </p>
+        } @else {
+          <div class="flex flex-row gap-2">
+            <button
+              mat-flat-button
+              color="primary"
+              [disabled]="ratingSubmitting()"
+              (click)="rateCompany('POSITIVE')"
+              data-testid="appop-detail-rate-positive"
+            >
+              <mat-icon>thumb_up</mat-icon>
+              {{ 'applied_opportunities.rating.positive' | transloco }}
+            </button>
+            <button
+              mat-stroked-button
+              color="warn"
+              [disabled]="ratingSubmitting()"
+              (click)="rateCompany('NEGATIVE')"
+              data-testid="appop-detail-rate-negative"
+            >
+              <mat-icon>thumb_down</mat-icon>
+              {{ 'applied_opportunities.rating.negative' | transloco }}
+            </button>
+          </div>
+          @if (ratingErrorKey(); as key) {
+            <div
+              role="alert"
+              data-testid="appop-detail-rating-error"
+              class="mt-2 rounded-2xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+            >
+              {{ key | transloco }}
+            </div>
+          }
+        }
+      </section>
+    }
+
+    <section
+      class="rounded-2xl border border-beige bg-white p-5"
+      data-testid="appop-detail-history"
+    >
+      <h2 class="mb-4 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+        {{ 'applied_opportunities.detail.status_history' | transloco }}
+      </h2>
+      @if (hasHistory()) {
+        <ol role="list" class="flex flex-col gap-3">
+          @for (entry of history(); track entry.id) {
+            <li class="flex items-start gap-3" [attr.data-testid]="'appop-history-' + entry.id">
+              <span
+                class="mt-0.5 inline-block rounded-full px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.18em]"
+                [class]="statusBadgeClass(entry.newStatus)"
+              >
+                {{ 'applied_opportunities.status.' + (entry.newStatus || 'unknown') | transloco }}
+              </span>
+              <div class="flex-1 text-sm">
+                <div class="text-ink">
+                  {{
+                    entry.changedByUserName || ('applied_opportunities.detail.system' | transloco)
+                  }}
+                </div>
+                <div class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                  {{ entry.changedAt ? (entry.changedAt | date: 'medium') : '—' }}
+                </div>
+                @if (entry.changeReason) {
+                  <div class="mt-1 text-xs text-slate2">{{ entry.changeReason }}</div>
+                }
+              </div>
+            </li>
+          }
+        </ol>
+      } @else {
+        <p class="text-sm text-slate2">
+          {{ 'applied_opportunities.detail.no_history' | transloco }}
+        </p>
+      }
+    </section>
+  }
+</section>
