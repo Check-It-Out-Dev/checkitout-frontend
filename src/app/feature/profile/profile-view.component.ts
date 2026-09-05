@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { LocalizedDatePipe } from '../../core/i18n/localized-date.pipe';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -50,22 +51,23 @@ interface ProfileEditForm {
  * step-up auth (C6) and BE-side update-email flow (C7).
  */
 @Component({
-    selector: 'app-profile-view',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatButtonModule,
-        MatDialogModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        MatProgressSpinnerModule,
-        TranslocoModule,
-        EmailChangeComponent,
-        ProfilePictureUploadComponent,
-    ],
-    templateUrl: './profile-view.component.html'
+  selector: 'app-profile-view',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    LocalizedDatePipe,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+    TranslocoModule,
+    EmailChangeComponent,
+    ProfilePictureUploadComponent,
+  ],
+  templateUrl: './profile-view.component.html',
 })
 export class ProfileViewComponent implements OnInit {
   private readonly userApi = inject(UserApiService);

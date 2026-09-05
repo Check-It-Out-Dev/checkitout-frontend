@@ -1,4 +1,5 @@
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { LocalizedDatePipe } from '../../core/i18n/localized-date.pipe';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -174,7 +175,7 @@ export function socialPostUrl(): ValidatorFn {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
-    DatePipe,
+    LocalizedDatePipe,
     ReactiveFormsModule,
     RouterLink,
     MatButtonModule,

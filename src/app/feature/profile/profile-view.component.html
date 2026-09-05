@@ -37,7 +37,7 @@
               </button>
             </div>
           }
-          <header class="flex items-center gap-4">
+          <header class="flex flex-wrap items-center gap-4">
             <div
               class="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl bg-coral-50"
               data-testid="profile-avatar"
@@ -53,8 +53,11 @@
                 <mat-icon class="!h-10 !w-10 !text-4xl text-coral-500">account_circle</mat-icon>
               }
             </div>
-            <div class="flex flex-col">
-              <h1 data-testid="profile-name" class="font-display text-3xl font-normal text-ink">
+            <div class="flex min-w-0 flex-1 flex-col">
+              <h1
+                data-testid="profile-name"
+                class="break-words font-display text-2xl font-normal text-ink sm:text-3xl"
+              >
                 {{ u.name || ((u.firstName ?? '') + ' ' + (u.lastName ?? '')).trim() || u.email }}
               </h1>
               @if (u.userType?.value) {
@@ -69,7 +72,7 @@
             @if (u.profileComplete) {
               <span
                 data-testid="profile-complete-badge"
-                class="ml-auto rounded-full bg-emerald-100 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-emerald-700"
+                class="ml-auto shrink-0 whitespace-nowrap rounded-full bg-emerald-100 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-emerald-700"
               >
                 {{ 'profile.complete_badge' | transloco }}
               </span>
@@ -129,7 +132,7 @@
                 <dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
                   {{ 'profile.fields.member_since' | transloco }}
                 </dt>
-                <dd class="mt-1 font-medium text-ink">{{ u.createdTime | date }}</dd>
+                <dd class="mt-1 font-medium text-ink">{{ u.createdTime | localizedDate }}</dd>
               </div>
             }
           </dl>

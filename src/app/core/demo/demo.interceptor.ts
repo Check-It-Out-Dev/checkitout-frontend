@@ -1,7 +1,7 @@
-import { HttpInterceptorFn, HttpResponse } from '@angular/common/http';
-import { of } from 'rxjs';
+import { HttpErrorResponse, HttpInterceptorFn, HttpResponse } from '@angular/common/http';
+import { of, throwError } from 'rxjs';
 import { isDemoMode } from './demo-mode';
-import { matchDemoFixture } from './demo-fixtures';
+import { DEMO_NOT_FOUND, matchDemoFixture } from './demo-fixtures';
 
 /**
  * Demo-mode interceptor (ported from the legacy demo build).
@@ -24,6 +24,15 @@ export const demoInterceptor: HttpInterceptorFn = (req, next) => {
   }
 
   const body = matchDemoFixture(req.method, req.url, req.body, req.params);
+  // A GET-by-id that misses answers a real 404, so the detail screens show
+  // their not-found state instead of somebody else's record. This
+  // interceptor runs first in the chain, so the error interceptor never
+  // sees it — the component owns the error.
+  if (body === DEMO_NOT_FOUND) {
+    return throwError(
+      () => new HttpErrorResponse({ status: 404, statusText: 'Not Found', url: req.url }),
+    );
+  }
   // Unmapped calls resolve to a benign empty 200 so nothing errors; a rule
   // that deliberately returns null KEEPS null ("no data yet" semantics).
   return of(new HttpResponse({ status: 200, body: body === undefined ? {} : body }));

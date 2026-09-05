@@ -21,6 +21,7 @@ class StubConsentOk {
 
 const DATA: TrialConsentDialogData = {
   documentName: 'Subscription Activation Consent',
+  documentLabel: 'Zgoda na aktywację subskrypcji',
   documentHash: 'fixture-hash',
 };
 
@@ -29,6 +30,7 @@ export const TRIAL_CONSENT_FIXTURES: readonly SandboxFixture[] = [
     id: 'trial-consent-dialog',
     label: 'Trial consent · Art 16(m) clickwrap before activateTrial (iter-50 P0 #3)',
     component: TrialConsentDialogComponent,
+    frame: 'dialog',
     viewport: { width: 520, height: 480 },
     providers: [
       { provide: MatDialogRef, useValue: DIALOG_REF_STUB },

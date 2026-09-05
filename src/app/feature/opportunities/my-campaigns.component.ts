@@ -1,4 +1,5 @@
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { LocalizedDatePipe } from '../../core/i18n/localized-date.pipe';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -12,7 +13,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterLink } from '@angular/router';
-import { TranslocoModule } from '@ngneat/transloco';
+import { TranslocoModule, TranslocoService } from '@ngneat/transloco';
+import { groupedNumber } from '../../core/i18n/number-format';
 import type { PartnershipOpportunityDtoOut } from '../../api/model/partnership-opportunity-dto-out';
 import { OpportunityApiService } from '../../core/opportunities/opportunity.service';
 
@@ -34,22 +36,28 @@ const DEFAULT_PAGE_SIZE = 20;
  * next step on first visit.
  */
 @Component({
-    selector: 'app-my-campaigns',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        CommonModule,
-        DatePipe,
-        RouterLink,
-        MatButtonModule,
-        MatIconModule,
-        MatPaginatorModule,
-        MatProgressSpinnerModule,
-        TranslocoModule,
-    ],
-    templateUrl: './my-campaigns.component.html'
+  selector: 'app-my-campaigns',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    LocalizedDatePipe,
+    RouterLink,
+    MatButtonModule,
+    MatIconModule,
+    MatPaginatorModule,
+    MatProgressSpinnerModule,
+    TranslocoModule,
+  ],
+  templateUrl: './my-campaigns.component.html',
 })
 export class MyCampaignsComponent implements OnInit {
   private readonly api = inject(OpportunityApiService);
+  private readonly transloco = inject(TranslocoService);
+
+  /** "1 500" in Polish, "1,500" in English — the same grouping the plan page uses. */
+  amount(n: number): string {
+    return groupedNumber(this.transloco.getActiveLang(), n);
+  }
 
   readonly state = signal<LoadState>('loading');
   readonly items = signal<PartnershipOpportunityDtoOut[]>([]);

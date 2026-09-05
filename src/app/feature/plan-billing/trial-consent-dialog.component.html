@@ -1,12 +1,13 @@
-<h2
-  mat-dialog-title
-  class="!font-display !text-3xl !font-normal !text-ink"
-  data-testid="trial-consent-title"
+<app-dialog-header
+  icon="verified"
+  tone="coral"
+  [eyebrow]="'plan_billing.trial.consent.eyebrow' | transloco"
+  titleTestId="trial-consent-title"
 >
   {{ 'plan_billing.trial.consent.title' | transloco }}
-</h2>
+</app-dialog-header>
 
-<mat-dialog-content class="!pt-2">
+<mat-dialog-content class="!pt-4">
   <p class="mb-3 text-sm leading-relaxed text-ink">
     {{ 'plan_billing.trial.consent.summary' | transloco }}
   </p>
@@ -27,7 +28,8 @@
   >
     <span class="text-sm leading-snug text-ink">
       {{
-        'plan_billing.trial.consent.accept_label' | transloco: { documentName: data.documentName }
+        'plan_billing.trial.consent.accept_label'
+          | transloco: { documentName: data.documentLabel ?? data.documentName }
       }}
     </span>
   </mat-checkbox>

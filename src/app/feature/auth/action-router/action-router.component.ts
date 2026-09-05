@@ -1,4 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
 
@@ -18,22 +20,31 @@ import { TranslocoModule } from '@ngneat/transloco';
 @Component({
   selector: 'app-action-router',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, TranslocoModule],
+  imports: [RouterLink, MatButtonModule, MatIconModule, TranslocoModule],
+  // Same card as /auth/error: the two "this link is no good" screens should
+  // read as one family, not as a skinned page next to a bare one.
   template: `
     <section
-      class="flex min-h-[60vh] w-full items-start justify-center p-4"
+      class="flex min-h-[60vh] w-full items-center justify-center p-4"
       data-testid="action-router"
     >
       @if (showError()) {
-        <div class="max-w-md">
-          <h1 class="text-2xl font-semibold tracking-tight" data-testid="action-router-error-title">
+        <div class="w-full max-w-md rounded-2xl border border-beige bg-cream p-8 text-center">
+          <span
+            class="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-100"
+          >
+            <mat-icon class="!h-8 !w-8 !text-3xl !text-amber-700">error_outline</mat-icon>
+          </span>
+          <h1 class="font-display text-3xl text-ink" data-testid="action-router-error-title">
             {{ 'auth.action.unknown_mode_title' | transloco }}
           </h1>
-          <p class="mt-3 text-sm text-slate-700">
+          <p class="mt-3 text-slate2">
             {{ 'auth.action.unknown_mode_message' | transloco }}
           </p>
           <a
-            class="mt-6 inline-block text-sm text-blue-600 hover:underline"
+            mat-flat-button
+            class="mt-6 w-full"
+            color="primary"
             routerLink="/auth/sign-in"
             data-testid="action-router-sign-in"
           >

@@ -47,6 +47,7 @@ const CLIENT_SIDE = {
   'auth/social-platform-config.service': 'static social-platform config map; no generated-API surface',
   'consent/consent.service': 'reads consent signals routed through other wrappers; imports no generated model',
   'demo/sandbox-director.service': 'demo/sandbox harness infra, not a production API wrapper',
+  'demo/guide-runner.service': 'demo/sandbox harness infra: runs a tour step recipe against the DOM; no generated-API surface',
   'rate-limit/rate-limit-state.service': 'client-side 429 banner state (signal-backed, auto-dismiss timer); no generated-API surface',
   'shell/shell-status.service': 'derives shell banner state from signals; imports no generated model',
   'theme/theme.service': 'client-side light/dark theme store; no generated-API surface',

@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { LocalizedDatePipe } from '../../core/i18n/localized-date.pipe';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
@@ -17,6 +18,7 @@ import {
   DowngradeRequestDtoInTargetPlanEnum,
   SubscriptionWriteApi,
 } from '../../core/subscription/subscription.service';
+import { DialogHeaderComponent } from '../../shared/components/dialog-header/dialog-header.component';
 
 export interface DowngradeConfirmDialogData {
   readonly targetPlan: DowngradeRequestDtoInTargetPlanEnum;
@@ -44,16 +46,18 @@ type Phase = 'idle' | 'submitting' | 'error';
  * downgrade).
  */
 @Component({
-    selector: 'app-downgrade-confirm-dialog',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        CommonModule,
-        MatButtonModule,
-        MatDialogModule,
-        MatProgressSpinnerModule,
-        TranslocoModule,
-    ],
-    templateUrl: './downgrade-confirm-dialog.component.html'
+  selector: 'app-downgrade-confirm-dialog',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    DialogHeaderComponent,
+    CommonModule,
+    LocalizedDatePipe,
+    MatButtonModule,
+    MatDialogModule,
+    MatProgressSpinnerModule,
+    TranslocoModule,
+  ],
+  templateUrl: './downgrade-confirm-dialog.component.html',
 })
 export class DowngradeConfirmDialogComponent {
   private readonly write = inject(SubscriptionWriteApi);

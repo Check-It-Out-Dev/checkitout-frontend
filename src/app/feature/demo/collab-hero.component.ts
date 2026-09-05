@@ -31,10 +31,10 @@ const MAX_REQUESTS = 20;
  * here and on the landing never drift apart.
  */
 @Component({
-    selector: 'app-collab-hero',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatIconModule, RouterLink, TranslocoPipe],
-    template: `
+  selector: 'app-collab-hero',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatIconModule, RouterLink, TranslocoPipe],
+  template: `
     <div class="min-h-screen bg-navy-900 px-4 py-10 text-cream antialiased md:px-8">
       <div class="mx-auto max-w-5xl">
         <!-- top bar: back + persona chip -->
@@ -210,7 +210,7 @@ const MAX_REQUESTS = 20;
         </div>
       </div>
     </div>
-  `
+  `,
 })
 export class CollabHeroComponent {
   /** Same three campaigns the landing showcases — one corpus, two surfaces. */

@@ -20,11 +20,11 @@ built from the lower layer's artifacts.
 | L1  | **Service**                 | `src/app/core/**/*.spec.ts` (jest + HttpTestingController)                                        | each wrapper serializes the right URL/verb/body and types the response — services read as executable API documentation                         | ms                              |
 | L2  | **Component logic**         | `src/app/**/*.component.spec.ts` (jest, core services mocked with builder data)                   | UI logic against the service interfaces                                                                                                        | ms                              |
 | L3  | **BDD oracle**              | `e2e-tests/bdd/` (playwright-bdd, live BE)                                                        | the BE Cucumber corpus, re-proven through the FE-visible surface; steps are thin orchestration over the typed `e2e-tests/_framework/api` layer | minutes, needs stack            |
-| L4  | **Visual**                  | `e2e-tests/visual/` + `visual-parity/` (119 sandbox fixtures × 2 projects, 14 phantom pairs)      | pixels; fixtures render builder-shaped data                                                                                                    | minutes                         |
+| L4  | **Visual**                  | `e2e-tests/visual/` + `visual-parity/` (140 sandbox fixtures × 2 projects, 14 phantom pairs)      | pixels; fixtures render builder-shaped data                                                                                                    | minutes                         |
 
-Existing tiers unchanged by this design: `e2e-tests/integration/` (50
-specs, each citing its BE feature — gate G-cucumber-citation) and
-`e2e-tests/scenarios/`.
+Existing tiers unchanged by this design: `e2e-tests/integration/` (40
+spec files carrying 195 test declarations as of 2026-09-18, each citing its
+BE feature — gate G-cucumber-citation) and `e2e-tests/scenarios/`.
 
 ## The two new pieces
 

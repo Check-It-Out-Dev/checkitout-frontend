@@ -58,9 +58,9 @@
             }
             <p class="mt-1 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
               <span class="mr-1 rounded-full px-1.5 py-0.5" [class]="categoryChipClass(n.category)">
-                {{ n.category }}
+                {{ n.category ? ('notifications.category.' + n.category | transloco) : '' }}
               </span>
-              {{ n.createdAt | date: 'short' }}
+              {{ n.createdAt | localizedDate: 'short' }}
             </p>
           </div>
           <div

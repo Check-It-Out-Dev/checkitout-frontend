@@ -1,5 +1,7 @@
 import { provideHttpClient, withXhr } from '@angular/common/http';
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { SessionStateService } from '../../../core/auth/session-state.service';
 import { provideRouter } from '@angular/router';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideTransloco, TranslocoService } from '@ngneat/transloco';
@@ -11,6 +13,33 @@ class FakeTranslocoLoader {
     return of({});
   }
 }
+
+describe('MarketingToolbarComponent (signed-in session cache)', () => {
+  it('swaps "Zaloguj się / Dołącz za darmo" for "Przejdź do aplikacji" in the bar and the mobile menu', async () => {
+    await TestBed.configureTestingModule({
+      imports: [MarketingToolbarComponent],
+      providers: [
+        provideRouter([]),
+        provideNoopAnimations(),
+        provideTransloco({
+          config: { availableLangs: ['en', 'pl'], defaultLang: 'en' },
+          loader: FakeTranslocoLoader,
+        }),
+        {
+          provide: SessionStateService,
+          useValue: { probed: signal(true), isAuthenticated: signal(true) },
+        },
+      ],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(MarketingToolbarComponent);
+    fixture.detectChanges();
+    const el: HTMLElement = fixture.nativeElement;
+    const openApp = el.querySelector('[data-testid="marketing-toolbar-open-app"]');
+    expect(openApp?.getAttribute('href')).toBe('/collaborations/list');
+    expect(el.querySelector('[data-testid="marketing-toolbar-sign-in"]')).toBeNull();
+    expect(el.querySelector('[data-testid="marketing-toolbar-join"]')).toBeNull();
+  });
+});
 
 describe('MarketingToolbarComponent', () => {
   let fixture: ComponentFixture<MarketingToolbarComponent>;
@@ -60,12 +89,36 @@ describe('MarketingToolbarComponent', () => {
     expect(join.getAttribute('href')).toBe('/auth/sign-up');
   });
 
-  it('renders six desktop nav items — three landing anchors + CodeMap, Grants routes + contact', () => {
+  it('renders six desktop nav items, in the order the bar argues in', () => {
     const nav = fixture.nativeElement.querySelectorAll('nav a');
     expect(nav.length).toBe(6);
     const hrefs = Array.from(nav).map((a) => (a as HTMLAnchorElement).getAttribute('href'));
-    // CodeMap (/codemap) and Grants (/grants) are real routes, not in-page anchors.
-    expect(hrefs).toEqual(['#how-it-works', '#pricing', '#faq', '/codemap', '/grants', '#contact']);
+    // The order is the argument: what the product does, what it costs, how it
+    // was built, the tooling that built it, then the answers and the way to
+    // ask. `/technical-survey` and `/codemap` are real routes, as is `/grants`
+    // — which now sits in the menu and the footer rather than the bar. Section
+    // links carry the landing route + fragment so they work from every
+    // marketing page, not only from "/".
+    expect(hrefs).toEqual([
+      '/#how-it-works',
+      '/#pricing',
+      '/technical-survey',
+      '/codemap',
+      '/#faq',
+      '/#contact',
+    ]);
+  });
+
+  it('keeps the demoted pages in the menu — the bar is a subset, never a filter', () => {
+    const menu = fixture.nativeElement.querySelectorAll('.mat-mdc-menu-content a, nav a');
+    // The menu is rendered lazily by MatMenu, so assert on the source of truth
+    // the template iterates: everything in the bar, plus grants and team.
+    expect(component.menuItems.map((i) => i.id)).toEqual([
+      ...component.navItems.map((i) => i.id),
+      'grants',
+      'team',
+    ]);
+    expect(menu.length).toBeGreaterThanOrEqual(component.navItems.length);
   });
 
   it('renders the language switcher trigger with active locale code', () => {
@@ -88,8 +141,10 @@ describe('MarketingToolbarComponent', () => {
     expect(trigger.getAttribute('aria-label')).toContain('PL');
   });
 
-  it('flag(lang) returns 🇬🇧 for en and 🇵🇱 for pl', () => {
-    expect(component.flag('en')).toBe('🇬🇧');
-    expect(component.flag('pl')).toBe('🇵🇱');
+  it('draws the language flags as inline SVGs (emoji flags render as "GB"/"PL" letters on Windows)', () => {
+    fixture.nativeElement.querySelector('[data-testid="marketing-toolbar-lang"]').click();
+    fixture.detectChanges();
+    const items = document.querySelectorAll('.cdk-overlay-container [mat-menu-item] svg');
+    expect(items.length).toBe(2);
   });
 });

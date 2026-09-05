@@ -187,11 +187,11 @@
                       {{ row.description }}
                     </p>
                   }
-                  <p class="mt-1 font-mono text-[11px] uppercase tracking-[0.18em] text-slate2">
-                    {{
-                      row.contentCreationDate ? (row.contentCreationDate | date: 'mediumDate') : '—'
-                    }}
-                  </p>
+                  @if (row.contentCreationDate) {
+                    <p class="mt-1 font-mono text-[11px] uppercase tracking-[0.18em] text-slate2">
+                      {{ row.contentCreationDate | localizedDate: 'mediumDate' }}
+                    </p>
+                  }
                   @if (row.approvalStatus === 'REJECTED' && row.approvalNotes) {
                     <p
                       class="mt-2 rounded-lg border border-red-100 bg-red-50 px-3 py-2 text-xs text-red-800"

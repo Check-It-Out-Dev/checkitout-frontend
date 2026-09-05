@@ -56,6 +56,26 @@ const ADMIN_NAV: readonly NavEntry[] = [
 ];
 
 /**
+ * Role-shaped surfaces. A brand runs campaigns and pays for a plan; a
+ * creator applies to campaigns and never sees billing. Both share the
+ * marketplace and the collaboration board ("Współprace").
+ */
+const COMPANY_NAV: readonly NavEntry[] = [
+  { label: 'nav.discover', route: '/collaborations/list', icon: 'explore' },
+  { label: 'nav.my_campaigns', route: '/collaborations/my-campaigns', icon: 'campaign' },
+  { label: 'nav.cooperations', route: '/collaborations/in-progress', icon: 'handshake' },
+  { label: 'nav.profile', route: '/user/settings/account', icon: 'person' },
+  { label: 'nav.plan_billing', route: '/user/settings/plan-billing', icon: 'credit_card' },
+];
+
+const INFLUENCER_NAV: readonly NavEntry[] = [
+  { label: 'nav.discover', route: '/collaborations/list', icon: 'explore' },
+  { label: 'nav.applications', route: '/collaborations/registrations', icon: 'send' },
+  { label: 'nav.cooperations', route: '/collaborations/in-progress', icon: 'handshake' },
+  { label: 'nav.profile', route: '/user/settings/account', icon: 'person' },
+];
+
+/**
  * Top-level shell — Material sidenav + toolbar. Built from scratch using only
  * Angular Material primitives (no @fuse/* anywhere; the whole point of this
  * rewrite is to eliminate the legacy commercial UI).
@@ -109,6 +129,14 @@ export class LayoutComponent {
 
   readonly themeMode = this.theme.mode;
 
+  /**
+   * The toolbar's sun/moon button flipped a `dark-theme` class that no
+   * stylesheet styles (material-theme.scss has no dark palette yet), so it
+   * did nothing visible. Hidden until a dark palette ships; ThemeService and
+   * the stored `cio.theme` choice stay so nothing is lost when it does.
+   */
+  readonly themeToggleEnabled = false;
+
   /** Currently active language; mirrors Transloco state into a signal so the
    * template can show a check-mark next to the active locale. */
   readonly activeLang = signal<Locale>('pl');
@@ -116,13 +144,22 @@ export class LayoutComponent {
   /** Role from `/users/me` — drives the nav surface below. */
   private readonly userType = signal<string | null>(null);
 
-  // ADMIN gets the legacy admin surface; everyone else (company,
-  // influencer, and pre-resolution null) the standard one. Finer
-  // company-vs-influencer filtering stays Stage 5 polish — routes the
-  // actor can't access are BE-authorized anyway.
-  readonly navEntries = computed<readonly NavEntry[]>(() =>
-    this.userType() === 'ADMIN' ? ADMIN_NAV : STANDARD_NAV,
-  );
+  // ADMIN gets the legacy admin surface, a brand the campaign-owner one, a
+  // creator the applicant one; pre-resolution null keeps the standard
+  // union so the rail never blanks while /users/me is in flight. Routes
+  // the actor can't access are BE-authorized anyway.
+  readonly navEntries = computed<readonly NavEntry[]>(() => {
+    switch (this.userType()) {
+      case 'ADMIN':
+        return ADMIN_NAV;
+      case 'COMPANY':
+        return COMPANY_NAV;
+      case 'INFLUENCER':
+        return INFLUENCER_NAV;
+      default:
+        return STANDARD_NAV;
+    }
+  });
 
   constructor() {
     this.breakpointObserver

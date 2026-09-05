@@ -62,16 +62,16 @@ import { HubOverviewMapComponent } from './ui/hub-overview-map.component';
           <div
             class="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-medium text-slate2"
           >
-            <span class="inline-flex items-center gap-2 tabular-nums">
-              <span class="h-1.5 w-1.5 rounded-full bg-coral-500"></span>
+            <span class="inline-flex max-w-full items-start gap-2 text-left tabular-nums">
+              <span class="mt-[0.45em] h-1.5 w-1.5 shrink-0 rounded-full bg-coral-500"></span>
               {{ 'landing.survey.trust.tests' | transloco }}
             </span>
-            <span class="inline-flex items-center gap-2 tabular-nums">
-              <span class="h-1.5 w-1.5 rounded-full bg-coral-500"></span>
+            <span class="inline-flex max-w-full items-start gap-2 text-left tabular-nums">
+              <span class="mt-[0.45em] h-1.5 w-1.5 shrink-0 rounded-full bg-coral-500"></span>
               {{ 'landing.survey.trust.staging' | transloco }}
             </span>
-            <span class="inline-flex items-center gap-2 tabular-nums">
-              <span class="h-1.5 w-1.5 rounded-full bg-coral-500"></span>
+            <span class="inline-flex max-w-full items-start gap-2 text-left tabular-nums">
+              <span class="mt-[0.45em] h-1.5 w-1.5 shrink-0 rounded-full bg-coral-500"></span>
               {{ 'landing.survey.trust.provider' | transloco }}
             </span>
           </div>
@@ -199,6 +199,32 @@ import { HubOverviewMapComponent } from './ui/hub-overview-map.component';
         </div>
       </section>
 
+      <!-- the way out of the site and into the code. A survey that argues about
+           engineering and never links the engineering is asking to be taken on
+           faith; each link says what the reader would find, not just its name. -->
+      <section class="px-6 pb-14">
+        <div class="mx-auto max-w-3xl">
+          <p class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-slate2">
+            {{ 'landing.survey.hub.code.label' | transloco }}
+          </p>
+          <p class="mt-1 text-sm text-slate2">{{ 'landing.survey.hub.code.hint' | transloco }}</p>
+          <div class="mt-4 flex flex-col gap-2">
+            @for (r of repos; track r.k) {
+              <a
+                [href]="r.href"
+                target="_blank"
+                rel="noopener"
+                class="flex items-center justify-between gap-4 rounded-xl border border-beige bg-white px-4 py-3 text-sm text-ink transition-all hover:border-coral-300 hover:text-coral-600"
+                [attr.data-testid]="'survey-repo-' + r.k"
+              >
+                <span>{{ 'landing.survey.hub.code.' + r.k | transloco }}</span>
+                <span class="font-mono text-[11px] text-slate2">{{ r.name }}</span>
+              </a>
+            }
+          </div>
+        </div>
+      </section>
+
       <!-- cross-journey CTAs: the survey's sibling is the interactive demo —
            the two journeys tease each other (the demo hub links back here). -->
       <section class="px-6 pb-16 text-center">
@@ -301,6 +327,25 @@ export class SurveyHubComponent {
 
   // "Cool stuff" — deep links straight to the strongest cards. `frag` must match
   // a card wrapper id in the target chapter (the shell scrolls to it on load).
+  /** The three public repositories, in the order a reader's questions arrive. */
+  readonly repos: ReadonlyArray<{ k: string; name: string; href: string }> = [
+    {
+      k: 'frontend',
+      name: 'checkitout-frontend',
+      href: 'https://github.com/Check-It-Out-Dev/checkitout-frontend',
+    },
+    {
+      k: 'backend',
+      name: 'checkitout-backend',
+      href: 'https://github.com/Check-It-Out-Dev/checkitout-backend',
+    },
+    {
+      k: 'method',
+      name: 'graph-theory-system-modeling',
+      href: 'https://github.com/Check-It-Out-Dev/graph-theory-system-modeling',
+    },
+  ];
+
   readonly coolStuff: Array<{ k: string; icon: string; chapter: string; frag: string }> = [
     { k: 'geoip', icon: 'place', chapter: 'security', frag: 'geoip' },
     { k: 'tamper', icon: 'lock', chapter: 'operations', frag: 'immutability' },

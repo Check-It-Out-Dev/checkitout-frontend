@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { LocalizedDatePipe } from '../../core/i18n/localized-date.pipe';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -65,19 +66,20 @@ const DEFAULT_PAGE_SIZE = 50;
  *   DONE → slate-strong (terminal-good, but quiet)
  */
 @Component({
-    selector: 'app-applied-opportunities-list',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        CommonModule,
-        RouterLink,
-        MatButtonModule,
-        MatIconModule,
-        MatPaginatorModule,
-        MatProgressSpinnerModule,
-        MatTabsModule,
-        TranslocoModule,
-    ],
-    templateUrl: './applied-opportunities-list.component.html'
+  selector: 'app-applied-opportunities-list',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    LocalizedDatePipe,
+    RouterLink,
+    MatButtonModule,
+    MatIconModule,
+    MatPaginatorModule,
+    MatProgressSpinnerModule,
+    MatTabsModule,
+    TranslocoModule,
+  ],
+  templateUrl: './applied-opportunities-list.component.html',
 })
 export class AppliedOpportunitiesListComponent implements OnInit {
   private readonly api = inject(AppliedOpportunityApiService);

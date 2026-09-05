@@ -50,7 +50,7 @@
               >
                 <div class="flex items-start justify-between">
                   <span class="font-mono text-[10px] uppercase tracking-[0.18em] text-coral-600">
-                    {{ a.addressType || '—' }}
+                    {{ a.addressType ? ('address.types.' + a.addressType | transloco) : '—' }}
                   </span>
                   @if (a.primary) {
                     <span
@@ -170,7 +170,7 @@
               <mat-label>{{ 'addresses.fields.type' | transloco }}</mat-label>
               <mat-select formControlName="addressType" data-testid="addresses-field-type">
                 @for (t of addressTypes; track t) {
-                  <mat-option [value]="t">{{ t }}</mat-option>
+                  <mat-option [value]="t">{{ 'address.types.' + t | transloco }}</mat-option>
                 }
               </mat-select>
             </mat-form-field>

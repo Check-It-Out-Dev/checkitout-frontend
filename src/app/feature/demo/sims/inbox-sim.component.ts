@@ -1,8 +1,8 @@
-import { Component, Input, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, input, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslocoPipe } from '@ngneat/transloco';
 import { WorldSimShellComponent } from './world-sim-shell.component';
-import { DEMO_STEP_UP_KEY } from '../../../core/demo/demo-fixtures';
+import { DEMO_STEP_UP_KEY, markCompanyMailVerified } from '../../../core/demo/demo-fixtures';
 import { SandboxDirectorService } from '../../../core/demo/sandbox-director.service';
 
 /**
@@ -22,15 +22,15 @@ import { SandboxDirectorService } from '../../../core/demo/sandbox-director.serv
 @Component({
   selector: 'app-inbox-sim',
   imports: [MatIconModule, TranslocoPipe, WorldSimShellComponent],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <app-world-sim-shell
-      [position]="variant === 'code' ? 'dock' : 'center'"
+      [position]="variant() === 'code' ? 'dock' : 'center'"
       [caption]="'demo.sims.inbox.caption' | transloco"
     >
       <div
         class="overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-beige"
-        [class]="variant === 'code' ? 'w-[20rem]' : 'w-[28rem] max-w-[calc(100vw-3rem)]'"
+        [class]="variant() === 'code' ? 'w-[20rem]' : 'w-[28rem] max-w-[calc(100vw-3rem)]'"
       >
         <!-- mail client chrome -->
         <div class="flex items-center gap-2 border-b border-beige bg-cream px-4 py-2.5">
@@ -60,7 +60,7 @@ import { SandboxDirectorService } from '../../../core/demo/sandbox-director.serv
           </div>
           <div class="mt-3 text-sm font-semibold text-ink">
             {{
-              (variant === 'verify'
+              (variant() === 'verify'
                 ? 'demo.sims.inbox.subjectVerify'
                 : 'demo.sims.inbox.subjectCode'
               ) | transloco
@@ -69,15 +69,16 @@ import { SandboxDirectorService } from '../../../core/demo/sandbox-director.serv
           <div class="mt-3 rounded-xl border border-beige bg-cream p-4">
             <p class="text-xs leading-relaxed text-slate2">
               {{
-                (variant === 'verify' ? 'demo.sims.inbox.bodyVerify' : 'demo.sims.inbox.bodyCode')
+                (variant() === 'verify' ? 'demo.sims.inbox.bodyVerify' : 'demo.sims.inbox.bodyCode')
                   | transloco
               }}
             </p>
             <!-- verify: the branded CTA the real mail carries -->
-            @if (variant === 'verify') {
+            @if (variant() === 'verify') {
               <button
                 type="button"
                 (click)="clickCta()"
+                data-testid="inbox-sim-cta"
                 class="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-coral-700 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-coral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-300"
               >
                 {{ 'demo.sims.inbox.verifyCta' | transloco }}
@@ -85,10 +86,10 @@ import { SandboxDirectorService } from '../../../core/demo/sandbox-director.serv
               </button>
             }
             <!-- code: the step-up one-time code -->
-            @if (variant === 'code') {
+            @if (variant() === 'code') {
               <div class="mt-3 rounded-lg border border-beige bg-white py-3 text-center">
                 <span class="font-mono text-2xl font-bold tabular-nums tracking-[0.3em] text-ink">
-                  {{ stepUpCode }}
+                  {{ stepUpCode() }}
                 </span>
               </div>
             }
@@ -102,12 +103,12 @@ export class InboxSimComponent implements OnInit {
   private readonly director = inject(SandboxDirectorService);
 
   /** 'verify' = activation mail with CTA; 'code' = step-up code mail. */
-  @Input({ required: true }) variant!: 'verify' | 'code';
+  readonly variant = input.required<'verify' | 'code'>();
 
-  stepUpCode = '';
+  readonly stepUpCode = signal('');
 
   ngOnInit(): void {
-    if (this.variant !== 'code') {
+    if (this.variant() !== 'code') {
       return;
     }
     // The step-up fixture's code wins when present; until that slice lands,
@@ -118,10 +119,14 @@ export class InboxSimComponent implements OnInit {
       code = String(Math.floor(100000 + Math.random() * 900000));
       sessionStorage.setItem(DEMO_STEP_UP_KEY, code);
     }
-    this.stepUpCode = code;
+    this.stepUpCode.set(code);
   }
 
   clickCta(): void {
+    // The link in the mail is what activates the account — before this, the
+    // onboarding screen behind this card says the address is still to be
+    // verified, because that is what it is.
+    if (this.variant() === 'verify') markCompanyMailVerified();
     const step = this.director.step();
     if (step) {
       this.director.notify(step.id);

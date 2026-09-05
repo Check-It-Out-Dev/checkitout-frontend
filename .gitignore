@@ -91,3 +91,9 @@ firebase-test-*.json
 # cutover secrets (keys live only locally)
 deployment/vps/.env.cutover
 deployment/vps/cutover-log-*.txt
+
+# Visual-QA capture. `npm run test:perf -- e2e-tests/perf/film.spec.ts` writes a
+# few hundred MB of frames, movies and DOM traces per run; the reports derived
+# from them are what gets written up, never the footage.
+/qa-film/
+/qa-shots/

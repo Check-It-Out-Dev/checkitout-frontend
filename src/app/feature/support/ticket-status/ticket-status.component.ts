@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { LocalizedDatePipe } from '../../../core/i18n/localized-date.pipe';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -51,6 +52,7 @@ import { MarketingToolbarComponent } from '../../landing/marketing-toolbar/marke
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
+    LocalizedDatePipe,
     ReactiveFormsModule,
     TranslocoModule,
     RouterLink,

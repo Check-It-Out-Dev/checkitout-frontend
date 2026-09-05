@@ -1,0 +1,211 @@
+---
+# Frontend CI — the NIGHTLY full-stack run, sharded.
+#
+# There are two test runs in this repository and they optimise for opposite
+# things. `ci-tests.yml` guards a pull request and optimises for LATENCY: it is
+# hermetic, needs no backend, no browsers and no Docker, and it is finished in
+# minutes. This one optimises for COVERAGE: it boots the whole world and runs
+# the tiers a pull request cannot afford — the BDD oracle, the live-backend
+# integration tier, the multi-actor scenarios.
+#
+# Sharding. Playwright's `--shard=i/n` splits by spec file, and each shard gets
+# a runner of its own with its OWN backend, database, cache and mail server on
+# its own ports — otherwise four shards fight over one Postgres and the flake
+# you get back is the test infrastructure's, not the product's. The split is a
+# PRESET QUEUE per shard rather than a dynamic balancer: at this size a
+# scheduler is one more thing that can be wrong at 3 a.m., and a shard whose
+# contents never change is a shard whose failure you can reproduce locally with
+# one command.
+#
+# Merging. Each shard writes a `blob` report; the final job runs
+# `playwright merge-reports` over all four into one HTML report, uploads it as
+# an artifact, and writes the pass rate, duration and flake count into the run
+# summary so the result is legible without downloading anything.
+#
+# ⬜ NOT YET SCHEDULED, deliberately. `workflow_dispatch` only, because the
+# backend service images below have not yet been run in CI and a red cron
+# nobody has ever seen green is worse than no cron. What remains before the
+# `schedule:` block is uncommented:
+#   1. publish the backend image, or build it in a `services:`-shaped job here;
+#   2. seed the database the way `dev-lite` does locally;
+#   3. one green manual run per shard;
+#   4. then, and only then, a nightly schedule and history retention.
+# The README marks this ⬜ for the same reason.
+name: Frontend CI - Nightly Full Stack (sharded)
+
+on:
+  workflow_dispatch:
+    inputs:
+      shards:
+        description: "How many shards to split the suite across"
+        required: false
+        default: "4"
+  # schedule:
+  #   - cron: "0 2 * * *"   # 02:00 UTC — enable once the four steps above are done
+
+concurrency:
+  group: nightly-full-stack-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NG_CLI_ANALYTICS: "false"
+  NODE_OPTIONS: "--max-old-space-size=4096"
+
+jobs:
+  full-stack:
+    name: Shard ${{ matrix.shard }}/4 · ${{ matrix.queue }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # The preset queue. Each shard owns a fixed set of tiers, so a
+          # failure names its own reproduction command.
+          - shard: 1
+            queue: bdd
+            command: npm run test:bdd
+          - shard: 2
+            queue: integration-a
+            command: npx playwright test e2e-tests/integration --project=chromium-desktop --shard=1/2 --workers=1
+          - shard: 3
+            queue: integration-b
+            command: npx playwright test e2e-tests/integration --project=chromium-desktop --shard=2/2 --workers=1
+          - shard: 4
+            queue: scenarios+sandbox
+            command: npx playwright test e2e-tests/scenarios e2e-tests/sandbox --project=chromium-desktop --workers=1
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: checkitout_ci
+        options: >-
+          --health-cmd pg_isready --health-interval 10s
+          --health-timeout 5s --health-retries 5
+        ports: ["5432:5432"]
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping" --health-interval 10s
+          --health-timeout 5s --health-retries 5
+        ports: ["6379:6379"]
+      greenmail:
+        # The step-up and e-mail-verification flows are real flows; a suite that
+        # skips them because there is no mailbox is a suite with a hole in it.
+        image: greenmail/standalone:2.1.0
+        ports: ["3025:3025", "3143:3143"]
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js (from .nvmrc)
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: 📦 Install dependencies
+        run: npm ci --prefer-offline --no-audit --loglevel=error
+
+      - name: 🎭 Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      # ⬜ The backend. Until its image is published this step is the one thing
+      # standing between this workflow and a green run — see the header.
+      - name: 🟢 Boot the backend
+        run: |
+          echo "::warning::Backend boot is not wired up yet — see this workflow's header."
+          echo "Expected: a backend on https://localhost:8080 with the e2e,dev,ssl profiles,"
+          echo "pointed at the postgres/redis/greenmail services above, seeded like dev-lite."
+          exit 78   # neutral: the shard reports 'skipped', not a false green
+
+      - name: 🧪 ${{ matrix.queue }}
+        run: ${{ matrix.command }}
+        env:
+          BE_URL: https://localhost:8080
+          PW_BASE_URL: https://localhost:4201
+          # Every shard writes a report fragment rather than its own HTML, so
+          # the fragments can be merged into ONE report at the end.
+          PLAYWRIGHT_BLOB_OUTPUT_DIR: blob-report
+        continue-on-error: true
+
+      - name: 📤 Upload this shard's report fragment
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: blob-report-${{ matrix.shard }}
+          path: blob-report/
+          retention-days: 14
+          if-no-files-found: ignore
+
+  merge:
+    name: Merge into one report
+    if: always()
+    needs: full-stack
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js (from .nvmrc)
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: 📦 Install dependencies
+        run: npm ci --prefer-offline --no-audit --loglevel=error
+
+      - name: 📥 Collect every shard's fragment
+        uses: actions/download-artifact@v4
+        with:
+          pattern: blob-report-*
+          path: all-blob-reports
+          merge-multiple: true
+
+      # The json reporter writes to stdout unless it is told where to go, and a
+      # report piped to a log is a report nobody can read.
+      - name: 🔗 Merge
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_NAME: report.json
+        run: npx playwright merge-reports --reporter html,json ./all-blob-reports || true
+
+      - name: 📤 One downloadable HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-html-report
+          path: playwright-report/
+          retention-days: 30
+          if-no-files-found: ignore
+
+      # The number a person actually wants: how many passed, how long it took,
+      # and how many only passed on a retry. A flake is not a pass.
+      - name: 📈 Write the result into the run summary
+        if: always()
+        run: |
+          if [ -f report.json ]; then
+            node -e '
+              const r = require("./report.json");
+              const all = [];
+              const walk = s => (s.suites||[]).forEach(walk) || (s.specs||[]).forEach(x => all.push(x));
+              (r.suites||[]).forEach(walk);
+              const flat = all.flatMap(s => s.tests||[]);
+              const n = k => flat.filter(t => t.status === k).length;
+              const ms = flat.flatMap(t => t.results||[]).reduce((a,x)=>a+(x.duration||0),0);
+              console.log("### Nightly full-stack run\n");
+              console.log("| outcome | count |");
+              console.log("| --- | ---: |");
+              ["expected","unexpected","flaky","skipped"].forEach(k => console.log(`| ${k} | ${n(k)} |`));
+              console.log(`\n**${flat.length} tests · ${(ms/60000).toFixed(1)} min of test time**`);
+              if (n("flaky")) console.log("\n> A flaky test is not a passing test. Each one is a bug in the test or in the app.");
+            ' >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No merged report — every shard was skipped (the backend is not wired up yet)." >> "$GITHUB_STEP_SUMMARY"
+          fi

@@ -46,10 +46,13 @@
         (click)="refreshStatus()"
         data-testid="error-page-refresh"
       >
+        <!-- Icon in its own block so it reaches the button's icon slot (NG8011). -->
+        @if (!isRefreshing()) {
+          <mat-icon>refresh</mat-icon>
+        }
         @if (isRefreshing()) {
           <mat-spinner diameter="18" class="!inline-block"></mat-spinner>
         } @else {
-          <mat-icon>refresh</mat-icon>
           {{ 'errors.refresh_status' | transloco }}
         }
       </button>

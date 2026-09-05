@@ -37,7 +37,9 @@ const bddTestDir = defineBddConfig({
  */
 export default defineConfig({
   testDir: './e2e-tests',
-  testIgnore: '**/*.unit.spec.ts',
+  // The smoothness tier needs a served DEMO build, so it stays out of every
+  // other run and is driven by `npm run test:perf` (its own project below).
+  testIgnore: ['**/*.unit.spec.ts', '**/perf/**'],
   fullyParallel: true,
   forbidOnly: !!process.env['CI'],
   retries: process.env['CI'] ? 2 : 0,
@@ -55,13 +57,24 @@ export default defineConfig({
   // Sandbox tests run against the dev server. The webServer block boots
   // ng serve before the suite starts and tears it down after — no manual
   // setup needed when running `npm run test:sandbox`.
-  webServer: {
-    command: 'npm run start -- --port=4201',
-    url: 'https://localhost:4201',
-    reuseExistingServer: !process.env['CI'],
-    timeout: 180_000,
-    ignoreHTTPSErrors: true,
-  },
+  //
+  // The smoothness tier is the exception: it measures a DEMO build, so
+  // `tools/run-perf.mjs` owns its own server on 4300 (or points at production
+  // through PERF_BASE_URL) and sets PERF_TIER so this block stays out of the
+  // way. Leaving it in booted a second, default-configuration `ng serve` under
+  // whatever Node is on PATH — which on this box is 23.x, where Angular 22's
+  // dev server dies on `tls.getCACertificates` and takes the whole run with it.
+  // The tier then reports nothing at all, which is worse than reporting a
+  // regression.
+  webServer: process.env['PERF_TIER']
+    ? undefined
+    : {
+        command: 'npm run start -- --port=4201',
+        url: 'https://localhost:4201',
+        reuseExistingServer: !process.env['CI'],
+        timeout: 180_000,
+        ignoreHTTPSErrors: true,
+      },
 
   projects: [
     {
@@ -91,6 +104,18 @@ export default defineConfig({
     // cover); letting webkit pick them up produces cross-engine interaction
     // timeouts with no added signal. `testMatch` enforces that at the project
     // boundary so no per-spec guard is needed.
+    {
+      // Smoothness tier — timings, layout drift and change-detection cost
+      // rather than pixels. `tools/run-perf.mjs` serves the demo build for it.
+      name: 'perf',
+      testDir: './e2e-tests/perf',
+      testIgnore: '**/*.unit.spec.ts',
+      // One at a time: two workers sharing this machine drop frames in each
+      // other's measurements, and a dropped frame here is supposed to mean
+      // the demo dropped it.
+      fullyParallel: false,
+      use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } },
+    },
     {
       name: 'mobile-safari',
       testMatch: '**/visual-parity/**/*.spec.ts',

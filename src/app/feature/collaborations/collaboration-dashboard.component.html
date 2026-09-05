@@ -13,10 +13,12 @@
     data-testid="collaboration-dashboard-tabs"
   >
     <mat-tab>
+      <!-- Counts hide below `sm`: with them the three labels need ~470 px and
+           the strip paginates with chevrons on every phone. -->
       <ng-template mat-tab-label>
         {{ 'collaborations.dashboard.tabs.in_progress' | transloco }}
         @if (inProgressCount() !== null) {
-          ({{ inProgressCount() }})
+          <span class="hidden sm:inline">({{ inProgressCount() }})</span>
         }
       </ng-template>
     </mat-tab>
@@ -24,7 +26,7 @@
       <ng-template mat-tab-label>
         {{ 'collaborations.dashboard.tabs.registrations' | transloco }}
         @if (registrationsCount() !== null) {
-          ({{ registrationsCount() }})
+          <span class="hidden sm:inline">({{ registrationsCount() }})</span>
         }
       </ng-template>
     </mat-tab>
@@ -32,7 +34,7 @@
       <ng-template mat-tab-label>
         {{ 'collaborations.dashboard.tabs.finished' | transloco }}
         @if (finishedCount() !== null) {
-          ({{ finishedCount() }})
+          <span class="hidden sm:inline">({{ finishedCount() }})</span>
         }
       </ng-template>
     </mat-tab>
@@ -142,7 +144,7 @@
 
             <div class="mt-4 flex items-center justify-between gap-3">
               <span class="text-sm text-slate-500">
-                {{ row.lastUpdateTime || row.createdTime | date: 'mediumDate' }}
+                {{ row.lastUpdateTime || row.createdTime | localizedDate: 'mediumDate' }}
               </span>
               @if (cta(row); as action) {
                 <a

@@ -27,7 +27,7 @@ describe('SocialConnectionsSettingsComponent', () => {
       imports: [
         SocialConnectionsSettingsComponent,
         TranslocoTestingModule.forRoot({
-          langs: { pl: {} },
+          langs: { pl: { settings: { social: { status: { expired: 'Wygasłe' } } } } },
           translocoConfig: { availableLangs: ['pl'], defaultLang: 'pl' },
         }),
       ],
@@ -56,6 +56,20 @@ describe('SocialConnectionsSettingsComponent', () => {
     expect(row!.textContent).toContain('Ania Moda');
     expect(row!.textContent).toContain('Instagram');
     expect(host.querySelector('[data-testid="social-connections-empty"]')).toBeNull();
+  });
+
+  it('labels a non-connected status in words, not as the raw enum', async () => {
+    api.list = jest.fn().mockReturnValue(
+      of({
+        content: [{ ...CONNECTION, id: 12, connectionStatus: ConnectionStatus.EXPIRED }],
+        totalElements: 1,
+      }),
+    );
+    await setup();
+    const row = host.querySelector('[data-testid="social-connection-12"]');
+    expect(row).not.toBeNull();
+    expect(row!.textContent).toContain('Wygasłe');
+    expect(row!.textContent).not.toContain('EXPIRED');
   });
 
   it('shows the empty CTA when nothing is connected', async () => {

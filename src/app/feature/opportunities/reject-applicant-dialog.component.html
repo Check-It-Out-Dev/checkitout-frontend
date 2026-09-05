@@ -1,0 +1,40 @@
+<div class="flex items-start gap-3 p-6 pb-0">
+  <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-red-50">
+    <mat-icon class="!h-7 !w-7 !text-2xl text-red-600">person_off</mat-icon>
+  </span>
+  <div>
+    <h2
+      class="!m-0 font-display text-3xl font-normal text-ink"
+      data-testid="reject-applicant-title"
+    >
+      {{ 'opportunities.applicants.reject_confirm.title' | transloco }}
+    </h2>
+    <p class="mt-1 font-mono text-[10px] uppercase tracking-[0.18em] text-red-700">
+      {{ 'opportunities.applicants.reject_confirm.subtitle' | transloco }}
+    </p>
+  </div>
+</div>
+
+<mat-dialog-content class="!pt-4">
+  <p class="text-sm leading-relaxed text-ink" data-testid="reject-applicant-body">
+    {{
+      'opportunities.applicants.reject_confirm.body'
+        | transloco: { name: data?.influencerName || '—' }
+    }}
+  </p>
+</mat-dialog-content>
+
+<mat-dialog-actions class="!justify-end">
+  <button mat-button type="button" (click)="cancel()" data-testid="reject-applicant-cancel">
+    {{ 'opportunities.applicants.reject_confirm.cancel' | transloco }}
+  </button>
+  <button
+    mat-flat-button
+    color="warn"
+    type="button"
+    (click)="confirm()"
+    data-testid="reject-applicant-confirm"
+  >
+    {{ 'opportunities.applicants.reject_confirm.confirm' | transloco }}
+  </button>
+</mat-dialog-actions>

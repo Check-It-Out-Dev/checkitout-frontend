@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { LocalizedDatePipe } from '../../core/i18n/localized-date.pipe';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -106,19 +107,20 @@ interface RowCta {
  * already-ported `/collaborations/registrations` list.
  */
 @Component({
-    selector: 'app-collaboration-dashboard',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        CommonModule,
-        RouterLink,
-        MatButtonModule,
-        MatIconModule,
-        MatPaginatorModule,
-        MatProgressSpinnerModule,
-        MatTabsModule,
-        TranslocoModule,
-    ],
-    templateUrl: './collaboration-dashboard.component.html'
+  selector: 'app-collaboration-dashboard',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    LocalizedDatePipe,
+    RouterLink,
+    MatButtonModule,
+    MatIconModule,
+    MatPaginatorModule,
+    MatProgressSpinnerModule,
+    MatTabsModule,
+    TranslocoModule,
+  ],
+  templateUrl: './collaboration-dashboard.component.html',
 })
 export class CollaborationDashboardComponent implements OnInit {
   private readonly api = inject(AppliedOpportunityApiService);

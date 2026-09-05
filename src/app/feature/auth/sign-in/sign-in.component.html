@@ -89,10 +89,14 @@
       data-testid="sign-in-submit"
       class="!mt-2"
     >
+      <!-- The icon sits in its own block: a control-flow block reaches the
+           button's icon slot only when it has a single root node (NG8011). -->
+      @if (!loading()) {
+        <mat-icon>login</mat-icon>
+      }
       @if (loading()) {
         <mat-spinner diameter="20" class="mx-auto"></mat-spinner>
       } @else {
-        <mat-icon class="!mr-1">login</mat-icon>
         {{ 'auth.sign_in.submit' | transloco }}
       }
     </button>
@@ -119,7 +123,7 @@
     <p class="mt-2 text-center text-xs text-slate2" data-testid="sign-in-legal">
       {{ 'auth.legal.by_continuing' | transloco }}
       <a
-        href="/assets/docs/terms_conditions_v2_EN.pdf"
+        [href]="'legal.files.terms' | transloco"
         target="_blank"
         rel="noopener"
         class="text-coral-600 transition hover:text-coral-700 hover:underline"
@@ -128,7 +132,7 @@
       </a>
       {{ 'auth.legal.and' | transloco }}
       <a
-        href="/assets/docs/privacy_policy_v2_EN.pdf"
+        [href]="'legal.files.privacy' | transloco"
         target="_blank"
         rel="noopener"
         class="text-coral-600 transition hover:text-coral-700 hover:underline"

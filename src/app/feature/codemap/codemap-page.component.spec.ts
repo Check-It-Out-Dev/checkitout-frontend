@@ -1,3 +1,4 @@
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MatDialog } from '@angular/material/dialog';
@@ -27,7 +28,12 @@ describe('CodemapPageComponent', () => {
           translocoConfig: { availableLangs: ['pl'], defaultLang: 'pl' },
         }),
       ],
-      providers: [provideRouter([]), { provide: MatDialog, useValue: { open: dialogOpen } }],
+      providers: [
+        provideRouter([]),
+        // The marketing toolbar reads the session cache (SessionStateService → HttpClient).
+        provideHttpClient(withXhr()),
+        { provide: MatDialog, useValue: { open: dialogOpen } },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CodemapPageComponent);

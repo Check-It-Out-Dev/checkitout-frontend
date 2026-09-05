@@ -16,6 +16,11 @@ import {
 } from '../../core/subscription/subscription.service';
 import { PlanBillingComponent } from './plan-billing.component';
 import { PublicConfigApiService } from '../../core/config/public-config.service';
+import { isDemoMode } from '../../core/demo/demo-mode';
+
+// The portal button has a demo-only branch (no Stripe customer to redirect
+// to); flip the build flag per test instead of per environment file.
+jest.mock('../../core/demo/demo-mode', () => ({ isDemoMode: jest.fn(() => false) }));
 
 const STATUS_BUSINESS: SubscriptionStatusDtoOut = {
   currentPlanName: 'Business',
@@ -88,7 +93,7 @@ function create(
     imports: [
       PlanBillingComponent,
       TranslocoTestingModule.forRoot({
-        langs: { en: {} },
+        langs: { en: { plan_billing: { invoices: { type: { STANDARD: 'VAT invoice' } } } } },
         translocoConfig: { availableLangs: ['en'], defaultLang: 'en' },
       }),
     ],
@@ -108,6 +113,38 @@ function create(
 
 describe('PlanBillingComponent', () => {
   afterEach(() => TestBed.resetTestingModule());
+
+  it('marks the current plan and keeps only the real upgrade clickable', fakeAsync(() => {
+    const fixture = create(new FakeApi()); // BUSINESS_ACTIVE
+    tick();
+    fixture.detectChanges();
+    const business: HTMLButtonElement = fixture.nativeElement.querySelector(
+      '[data-testid="plan-billing-upgrade-business"]',
+    );
+    const enterprise: HTMLButtonElement = fixture.nativeElement.querySelector(
+      '[data-testid="plan-billing-upgrade-enterprise"]',
+    );
+    expect(business.disabled).toBe(true);
+    expect(business.textContent).toContain('plan_billing.upgrade.current');
+    expect(enterprise.disabled).toBe(false);
+    expect(enterprise.textContent).toContain('plan_billing.upgrade.cta');
+  }));
+
+  it('in the demo build the portal button explains itself instead of redirecting nowhere', fakeAsync(() => {
+    (isDemoMode as jest.Mock).mockReturnValue(true);
+    const write = new FakeWriteApi();
+    const fixture = create(new FakeApi(), write);
+    tick();
+    fixture.detectChanges();
+    fixture.componentInstance.openCustomerPortal();
+    fixture.detectChanges();
+    const notice = fixture.nativeElement.querySelector(
+      '[data-testid="plan-billing-portal-notice"]',
+    );
+    expect(notice?.textContent).toContain('plan_billing.portal.demo_unavailable');
+    expect(write.portalCalls).toBe(0);
+    (isDemoMode as jest.Mock).mockReturnValue(false);
+  }));
 
   it('hides paid CTAs and shows the note when payments are disabled', fakeAsync(() => {
     const config = new FakeConfig();
@@ -134,13 +171,26 @@ describe('PlanBillingComponent', () => {
           status: InvoiceStatus.SENT,
           createdTime: '2026-05-01T00:00:00Z',
         },
+        {
+          id: 12,
+          invoiceType: 'STANDARD',
+          amountPln: 29,
+          status: InvoiceStatus.SENT,
+          createdTime: '2026-06-01T00:00:00Z',
+        },
       ]);
     const fixture = create(api);
     tick();
 
     expect(fixture.componentInstance.state()).toBe('loaded');
     expect(fixture.componentInstance.status()?.currentPlanName).toBe('Business');
-    expect(fixture.componentInstance.invoices()).toHaveLength(1);
+    expect(fixture.componentInstance.invoices()).toHaveLength(2);
+    // Known invoice kinds get a label; unknown ones fall back to the value as
+    // sent instead of leaking an i18n key.
+    const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
+    expect(text).toContain('VAT invoice');
+    expect(text).toContain('REGULAR');
+    expect(text).not.toContain('plan_billing.invoices.type');
   }));
 
   // audit-2026-05-13 P1 — PAYMENT_FAILED previously only styled the badge red

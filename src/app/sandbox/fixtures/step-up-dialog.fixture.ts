@@ -74,6 +74,7 @@ export const STEP_UP_DIALOG_FIXTURES: readonly SandboxFixture[] = [
     id: 'step-up-dialog-awaiting',
     label: 'Step-up dialog · awaiting code (EMAIL_CODE)',
     component: StepUpDialogComponent,
+    frame: 'dialog',
     viewport: { width: 480, height: 360 },
     providers: [
       { provide: MatDialogRef, useValue: DIALOG_REF_STUB },
@@ -85,6 +86,7 @@ export const STEP_UP_DIALOG_FIXTURES: readonly SandboxFixture[] = [
     id: 'step-up-dialog-requesting',
     label: 'Step-up dialog · sending code (spinner)',
     component: StepUpDialogComponent,
+    frame: 'dialog',
     viewport: { width: 480, height: 360 },
     providers: [
       { provide: MatDialogRef, useValue: DIALOG_REF_STUB },
@@ -96,6 +98,7 @@ export const STEP_UP_DIALOG_FIXTURES: readonly SandboxFixture[] = [
     id: 'step-up-dialog-invalid-code',
     label: 'Step-up dialog · invalid code error',
     component: StepUpDialogComponent,
+    frame: 'dialog',
     viewport: { width: 480, height: 360 },
     providers: [
       { provide: MatDialogRef, useValue: DIALOG_REF_STUB },

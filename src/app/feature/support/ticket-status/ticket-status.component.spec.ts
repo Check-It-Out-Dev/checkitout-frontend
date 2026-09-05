@@ -1,3 +1,4 @@
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, provideRouter } from '@angular/router';
 import { TranslocoTestingModule } from '@ngneat/transloco';
@@ -71,6 +72,7 @@ describe('TicketStatusComponent', () => {
       ],
       providers: [
         provideRouter([]),
+        provideHttpClient(withXhr()), // marketing toolbar → SessionStateService → HttpClient
         { provide: SupportTicketApiService, useValue: ticketApi },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams } } },
       ],
@@ -151,6 +153,7 @@ describe('TicketStatusComponent', () => {
       ],
       providers: [
         provideRouter([]),
+        provideHttpClient(withXhr()), // marketing toolbar → SessionStateService → HttpClient
         { provide: SupportTicketApiService, useValue: ticketApi },
         {
           provide: ActivatedRoute,

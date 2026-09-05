@@ -74,7 +74,7 @@
     "subscription": "Plan & Billing",
     "plan_billing": "Plan & Billing",
     "sign_out": "Sign out",
-    "admin_users": "User management",
+    "admin_users": "Users",
     "admin_dictionary": "Dictionary",
     "admin_tickets": "Support tickets"
   },
@@ -189,7 +189,10 @@
       },
       "followers": "{{count}} followers",
       "status": {
-        "connected": "Connected"
+        "connected": "Connected",
+        "expired": "Expired",
+        "revoked": "Revoked",
+        "disconnected": "Disconnected"
       },
       "disconnect": "Disconnect",
       "connect": {
@@ -270,7 +273,7 @@
         "title": "Updated terms.",
         "body": "Please review and accept our updated terms to continue using all features.",
         "cta": "Review & accept",
-        "days": "{{days}} day(s) remaining."
+        "days": "Days remaining: {{days}}."
       },
       "email_verify": {
         "title": "Verify your email.",
@@ -291,7 +294,7 @@
       "blocked_terms": {
         "title": "Account blocked.",
         "body": "You must accept the updated legal documents to continue using the platform.",
-        "days": "{{days}} day(s) remaining.",
+        "days": "Days remaining: {{days}}.",
         "cta": "Review & accept"
       }
     }
@@ -299,6 +302,10 @@
   "plan_billing": {
     "unknown_plan": "—",
     "price_per_month": "{{price}} PLN / month",
+    "documents": {
+      "terms": "Subscription Terms (v1)",
+      "activation_consent": "Subscription Activation Consent"
+    },
     "billing_period": "Billing period",
     "trial_ends": "Trial ends",
     "campaigns_usage": "Campaigns used this period",
@@ -323,6 +330,7 @@
       },
       "consent": {
         "title": "Subscription consent",
+        "eyebrow": "Enterprise trial",
         "summary": "Before we activate your free trial, we need your explicit consent to start the subscription service immediately.",
         "eu_notice": "By checking the box below you expressly request that we begin providing the subscription service before the 14-day withdrawal period ends, and you acknowledge that you thereby waive your right of withdrawal once the service has been fully performed (Directive 2011/83/EU, Art. 16(m)). A record of this consent — including a timestamp and technical proof — is stored with your account.",
         "accept_label": "I have read and accept the {{documentName}} and expressly consent to the immediate start of the service.",
@@ -340,6 +348,7 @@
       "cta": "Downgrade to {{plan}}",
       "confirm": {
         "title": "Downgrade to {{plan}}",
+        "eyebrow": "Plan downgrade",
         "summary": "Your plan will switch to {{plan}} at the end of the current billing period. You'll keep your current benefits until then.",
         "summary_with_date": "Your plan will switch to {{plan}} on {{date}}. You'll keep your current benefits until then. You can cancel the downgrade any time before that date.",
         "cancel": "Keep current plan",
@@ -374,6 +383,7 @@
       "title": "Manage payment methods & invoices",
       "hint": "Opens the Stripe Customer Portal in this window to update cards, download invoices, or change plans.",
       "action": "Open customer portal",
+      "demo_unavailable": "The billing portal is unavailable in demo mode — there is no real Stripe account here.",
       "errors": {
         "no_url": "Couldn't open the customer portal. Please try again.",
         "no_customer": "No active subscription on file. Purchase a plan first.",
@@ -384,8 +394,10 @@
     "upgrade": {
       "section_title": "Upgrade your plan",
       "cta": "Upgrade to {{plan}} · {{price}}",
+      "current": "Your current plan · {{plan}}",
       "confirm": {
         "title": "Upgrade to {{plan}} · {{price}}",
+        "eyebrow": "Plan change",
         "summary": "You'll be redirected to Stripe Checkout to complete payment. Your plan activates as soon as the payment confirms.",
         "terms_excerpt": "By proceeding you accept the subscription terms: monthly billing in PLN, cancellable any time before the next billing cycle, prorated refunds where required by Polish consumer law. Plan benefits and campaign limits are described on this page.",
         "accept_label": "I have read and agree to the {{documentName}}.",
@@ -421,6 +433,12 @@
         "SENT": "Sent",
         "FAILED": "Failed",
         "DEAD_LETTER": "Undelivered"
+      },
+      "type": {
+        "STANDARD": "VAT invoice",
+        "SUBSCRIPTION": "Subscription",
+        "CORRECTION": "Correction",
+        "PROFORMA": "Pro forma"
       }
     },
     "error": {
@@ -759,6 +777,13 @@
       "applied_at": "Applied",
       "accept": "Accept",
       "reject": "Reject",
+      "reject_confirm": {
+        "title": "Reject this application?",
+        "subtitle": "This cannot be undone",
+        "body": "{{name}} will be notified of the rejection. The application leaves this campaign's candidate list.",
+        "cancel": "Cancel",
+        "confirm": "Reject application"
+      },
       "review_content": "Review content",
       "unknown_user": "Anonymous applicant",
       "empty": "No one has applied to this campaign yet.",
@@ -926,6 +951,7 @@
   "step_up": {
     "dialog": {
       "title": "Verify your identity",
+      "eyebrow": "Extra confirmation",
       "email_instruction": "We sent a 6-digit code to your email. Enter it below to confirm this change.",
       "email_instruction_with_email": "We sent a 6-digit code to {{email}}. Enter it below to confirm this change.",
       "totp_instruction": "Enter the 6-digit code from your authenticator app to confirm this change.",
@@ -1082,6 +1108,16 @@
       }
     },
     "how_it_works": {
+      "mock": {
+        "campaign": {
+          "name_label": "Campaign name",
+          "name_value": "Summer coffee menu — creator reviews",
+          "budget_label": "Budget and creators",
+          "budget_value": "PLN 1,500–3,000 · 3 creators · Warsaw",
+          "brief_label": "Brief",
+          "brief_value": "A short reel from the café visit, two product photos and a profile tag."
+        }
+      },
       "badge": "Process",
       "title": "How it works",
       "subtitle": "Simple 4-step process to launch successful influencer campaigns in less than 90 minutes",
@@ -1204,6 +1240,96 @@
           "action": "Publish Content"
         }
       },
+      "beats": {
+        "labels": {
+          "applications": "Applications",
+          "approved": "Approved",
+          "content": "Reel in production",
+          "reach": "Reach",
+          "likes": "Likes",
+          "comments": "Comments",
+          "roi": "Return",
+          "roi_value": "×3.1",
+          "terms": {
+            "title": "Collaboration terms",
+            "items": [
+              "1 reel and 2 photos",
+              "Published by 12 September",
+              "Barter worth $50"
+            ]
+          }
+        },
+        "campaign_created": {
+          "brand": {
+            "status": "Campaign live",
+            "note": "The brief reached creators in Warsaw."
+          },
+          "influencer": {
+            "status": "New campaign",
+            "note": "The campaign shows up among open collaborations."
+          }
+        },
+        "influencer_application": {
+          "brand": {
+            "status": "New application",
+            "note": "Ola Kowalska applied to the campaign."
+          },
+          "influencer": {
+            "status": "Application sent",
+            "note": "Her profile and stats went to the brand."
+          }
+        },
+        "review_selection": {
+          "brand": {
+            "status": "Choosing a creator",
+            "note": "The brand compares the applications and picks Ola."
+          },
+          "influencer": {
+            "status": "Accepted",
+            "note": "Ola gets the confirmation."
+          }
+        },
+        "agreement_planning": {
+          "brand": {
+            "status": "Terms agreed",
+            "note": "Scope, deadline and compensation are on the agreement."
+          },
+          "influencer": {
+            "status": "Terms accepted",
+            "note": "Ola knows the scope and the publication date."
+          }
+        },
+        "content_creation": {
+          "brand": {
+            "status": "Waiting for content",
+            "note": "The brand follows the progress of the material."
+          },
+          "influencer": {
+            "status": "Content in production",
+            "note": "Ola records the reel and sends it for approval."
+          }
+        },
+        "content_approval": {
+          "brand": {
+            "status": "Content approved",
+            "note": "The material passed review and is ready to publish."
+          },
+          "influencer": {
+            "status": "Approved",
+            "note": "Ola is cleared to publish."
+          }
+        },
+        "publication_results": {
+          "brand": {
+            "status": "Campaign closed",
+            "note": "Results land in the brand's dashboard."
+          },
+          "influencer": {
+            "status": "Published",
+            "note": "Both sides see the reach and the engagement."
+          }
+        }
+      },
       "success_modal": {
         "title": "Campaign Completed Successfully!",
         "description": "Congratulations! The collaboration workflow has been completed successfully.",
@@ -1262,37 +1388,7 @@
           }
         },
         "progress": {
-          "title": "Collaboration process",
-          "steps": [
-            {
-              "title": "Application",
-              "description": "Application has been sent"
-            },
-            {
-              "title": "Brand acceptance",
-              "description": "Brand has accepted your application"
-            },
-            {
-              "title": "Influencer acceptance",
-              "description": "Influencer has accepted your application"
-            },
-            {
-              "title": "Content creation",
-              "description": "Influencer creates content materials"
-            },
-            {
-              "title": "Content approval",
-              "description": "Brand reviews and approves content"
-            },
-            {
-              "title": "Payment in progress",
-              "description": "Waiting for payment approval"
-            },
-            {
-              "title": "Completion",
-              "description": "Collaboration has been successfully completed"
-            }
-          ]
+          "title": "Collaboration process"
         }
       }
     },
@@ -1512,7 +1608,7 @@
       "badge": "Pricing",
       "title": "Choose the plan that fits you",
       "description": "Plans for brands who turn influence into results. Our platform gives you the infrastructure to launch fast, learn faster, and scale what works.",
-      "quote": "I want to manage my own campaign quickly and cost-effectively.",
+      "quote": "“I want to manage my own campaign quickly and cost-effectively.”",
       "billing": {
         "monthly": "Monthly",
         "annual": "Annual",
@@ -1566,7 +1662,7 @@
         }
       },
       "hands_free": {
-        "quote": "I want the results of influencer marketing without lifting a finger.",
+        "quote": "“I want the results of influencer marketing without lifting a finger.”",
         "title": "Hands-Free Collabs",
         "price": "1599",
         "currency": "zł",
@@ -1580,7 +1676,7 @@
         "cta": "Connect with us"
       },
       "enterprise": {
-        "quote": "I need a system to run influencer campaigns in-house only with our own creators.",
+        "quote": "“I need a system to run influencer campaigns in-house only with our own creators.”",
         "title": "Enterprise SaaS",
         "price_from": "From",
         "price": "3999",
@@ -1869,7 +1965,7 @@
               "d": "provable consent · real erasure"
             },
             "tests": {
-              "t": "12,190 tests",
+              "t": "10,724 tests",
               "d": "unit · integration · E2E"
             },
             "graph": {
@@ -1892,6 +1988,13 @@
             "velocity": "Why the compiler is an AI's best teammate",
             "pq": "Post-quantum TLS at the edge"
           }
+        },
+        "code": {
+          "label": "The code is public",
+          "hint": "Three repositories, MIT. Whichever one you open first, the other two are a click away.",
+          "frontend": "Frontend — the rewrite, and the test strategy behind it",
+          "backend": "Backend — where the business rules live, and where the contract comes from",
+          "method": "Method — the system as a graph, and the AI tooling built on it"
         }
       },
       "chapters": {
@@ -1928,7 +2031,7 @@
       },
       "testing": {
         "title": "Two test pyramids and a wall of gates",
-        "subtitle": "11,129 unit, 886 integration and 175 E2E scenarios guard the backend; 949 unit specs, 261 visual snapshots, 42 live-backend specs and 27 BDD features guard the rewrite — standing on 18 compile-time contract pins and a fourteen-step pre-commit gate. Nothing merges on vibes.",
+        "subtitle": "8,012 unit, 853 integration and 277 E2E scenarios guard the backend; 1,141 unit specs, 138 visual snapshots, 222 live-backend specs and 27 BDD features guard the rewrite — standing on 18 compile-time contract pins and a fourteen-step pre-commit gate. Nothing merges on vibes.",
         "pyramidLabel": "The backend pyramid",
         "pyramidLabelFe": "The rewrite pyramid — standing on the contract",
         "feTiers": {
@@ -1938,17 +2041,17 @@
             "detail": "Ported 1:1 from the backend Cucumber corpus — the same business language, typed against the generated client"
           },
           "integration": {
-            "count": "42",
+            "count": "222",
             "name": "Live-backend specs",
             "detail": "Trace equivalence against the running backend — catches the drift the type system can't see"
           },
           "visual": {
-            "count": "261",
+            "count": "138",
             "name": "Visual snapshots",
             "detail": "131 sandbox fixtures on 2 chromium engines — committed baselines, reviewed as images in the diff"
           },
           "unit": {
-            "count": "949",
+            "count": "1,141",
             "name": "Unit specs",
             "detail": "Jest, one suite per component and service — runs last in the gate, --bail"
           }
@@ -1959,17 +2062,17 @@
         },
         "tiers": {
           "unit": {
-            "count": "11,129",
+            "count": "8,012",
             "name": "Unit tests",
             "detail": "one reused JVM · embedded Redis · clocks pinned to UTC"
           },
           "it": {
-            "count": "886",
+            "count": "853",
             "name": "Integration tests",
             "detail": "71 suites on real PostgreSQL 15 + Redis 7 via Testcontainers — H2 deliberately removed"
           },
           "e2e": {
-            "count": "175",
+            "count": "277",
             "name": "E2E scenarios",
             "detail": "34 Cucumber features · 15 isolated runners · real Firebase + GreenMail SMTP"
           }
@@ -1984,7 +2087,7 @@
           "human": "Cucumber scenarios are the business logic written in human language — an AI steps into the user's skin and learns what the product does, not just what the code says."
         },
         "snippetCaption": "Real E2E state machinery — deterministic scenarios against a real stack.",
-        "caveat": "Honest numbers: 11,129 counts @Test annotations (parameterized cases expand further); rewrite counts are a live snapshot and grow with every commit; the rewrite's gates run locally by design — no CI theatre."
+        "caveat": "Honest numbers, re-measured 2026-09-30: the backend figures count @Test and @ParameterizedTest methods in the source, and 277 is the Cucumber corpus after Examples expansion. The frontend figures are what its runners report — jest and `playwright test --list` — skipped and fixme included. Every one is a command away, and the READMEs say which command."
       },
       "velocity": {
         "title": "Speed is a feedback loop",
@@ -1999,7 +2102,7 @@
           "suite": {
             "t": "Gate",
             "latency": "minutes",
-            "d": "The pre-commit gate: the fourteen-step check:full — ten audit scripts, both typechecks, ng build strictTemplates, 949 unit specs. What the compiler can't see — envelope translation, i18n parity, fixture coverage — dies here, still before a commit exists."
+            "d": "The pre-commit gate: the fourteen-step check:full — eleven audit scripts, both typechecks, ng build strictTemplates, 1,141 unit specs. What the compiler can't see — envelope translation, i18n parity, fixture coverage — dies here, still before a commit exists."
           },
           "runtime": {
             "t": "Runtime",
@@ -2037,7 +2140,7 @@
           "pullQuote": "Feedback only catches what the verifier can see — so we made the verifier see everything."
         },
         "dogfoodLabel": "Dogfood — one fresh boot of this repo, one afternoon",
-        "dogfood": "2026-09-02: one afternoon, every tier re-run — 11,129 BE unit + 886 BE integration green · rewrite 921 unit + 261 visual + 24 scenario + 135 BDD + 195 trace-equivalence green · a campaign created through the real UI landed on the first try.",
+        "dogfood": "2026-09-30: every tier re-measured by its own runner — 8,908 backend test methods across 34 Cucumber features (277 scenarios expanded) · the rewrite at 1,141 unit + 138 visual + 222 live-backend + 148 BDD + 78 experience = 1,816 · coverage measured for the first time and gated at 77.7 % lines.",
         "caveat": "Honest: types catch contract bugs, not logic bugs — the misses are why the BDD corpus and trace-equivalence exist. And agent output over a weak verifier still needs manual fixes most of the time (2025 studies) — the loop, not the model, is the product."
       },
       "rewrite": {
@@ -2051,7 +2154,7 @@
           },
           "gen": {
             "t": "Codegen 7.10.0",
-            "d": "216 models · 74 services · string enums"
+            "d": "181 models · 41 services · string enums"
           },
           "post": {
             "t": "Post-processor",
@@ -2089,7 +2192,7 @@
           "blocks": {
             "types": {
               "t": "Types all the way down",
-              "d": "Strong Java types on the backend compile into an OpenAPI 3 contract — 74 services, 216 models, real string enums — that generates the TypeScript Angular client. Feature code is forbidden from touching that client directly (gate G2); it goes through strict-mode wrapper services instead. The same generated types flow into both the Angular service layer and the Cucumber step definitions, so a changed backend field stops the frontend compiling — Gherkin included — long before it reaches a user."
+              "d": "Strong Java types on the backend compile into an OpenAPI 3 contract — 41 services, 181 models, real string enums — that generates the TypeScript Angular client. Feature code is forbidden from touching that client directly (gate G2); it goes through strict-mode wrapper services instead. The same generated types flow into both the Angular service layer and the Cucumber step definitions, so a changed backend field stops the frontend compiling — Gherkin included — long before it reaches a user."
             },
             "pyramid": {
               "t": "Both sides of the wire",
@@ -2303,7 +2406,7 @@
       },
       "badge": "Startup in the box · built by three",
       "trust": {
-        "tests": "11,129 unit · 886 integration · 175 E2E scenarios",
+        "tests": "8,908 backend test methods · 277 E2E scenarios · 1,816 frontend tests",
         "staging": "Live in production — logs flowing, crons and gates on schedule",
         "provider": "Meta Tech Provider · GDPR-compliant"
       },
@@ -2400,19 +2503,37 @@
         },
         "topology": {
           "label": "NavigationMaster · 3-level topology",
-          "master": { "desc": "One entry point. Ask it anything about the system." },
-          "navigators": { "desc": "Fifteen domain areas the master routes through." },
-          "impls": { "desc": "Services, controllers, components, crons — the real code." },
+          "master": {
+            "desc": "One entry point. Ask it anything about the system."
+          },
+          "navigators": {
+            "desc": "Fifteen domain areas the master routes through."
+          },
+          "impls": {
+            "desc": "Services, controllers, components, crons — the real code."
+          },
           "caption": "Three levels, 146 nodes, 8 typed edges — traversed in O(k) hops, not read top to bottom."
         },
         "roles": {
           "label": "The 6-entity behavioural lens",
-          "controller": { "look": "REST endpoints, Angular components, webhook handlers." },
-          "configuration": { "look": "application.yml, @ConfigurationProperties, environment.ts." },
-          "security": { "look": "Auth filters, HMAC, @PreAuthorize, route guards." },
-          "implementation": { "look": "Services, entities, repositories, business logic." },
-          "diagnostics": { "look": "Exception handlers, structured logs, metrics." },
-          "lifecycle": { "look": "Crons, migrations, events, state transitions." }
+          "controller": {
+            "look": "REST endpoints, Angular components, webhook handlers."
+          },
+          "configuration": {
+            "look": "application.yml, @ConfigurationProperties, environment.ts."
+          },
+          "security": {
+            "look": "Auth filters, HMAC, @PreAuthorize, route guards."
+          },
+          "implementation": {
+            "look": "Services, entities, repositories, business logic."
+          },
+          "diagnostics": {
+            "look": "Exception handlers, structured logs, metrics."
+          },
+          "lifecycle": {
+            "look": "Crons, migrations, events, state transitions."
+          }
         },
         "query": {
           "label": "One query → the whole system's shape",
@@ -2445,9 +2566,18 @@
         },
         "chain": {
           "label": "The producer chain — one source of truth",
-          "be": { "t": "Strongly-typed backend", "d": "@Schema / @Operation on Spring DTOs" },
-          "spec": { "t": "openapi.json", "d": "generated by an integration test, committed" },
-          "client": { "t": "Generated TS client", "d": "216 models · 74 services · zero hand edits" }
+          "be": {
+            "t": "Strongly-typed backend",
+            "d": "@Schema / @Operation on Spring DTOs"
+          },
+          "spec": {
+            "t": "openapi.json",
+            "d": "generated by an integration test, committed"
+          },
+          "client": {
+            "t": "Generated TS client",
+            "d": "181 models · 41 services · zero hand edits"
+          }
         },
         "branch": "the same generated import · three consumers",
         "consumers": {
@@ -2471,7 +2601,7 @@
           "staleFail": "Tests import the same generated types as production, so a test cannot pass against a stale shape — the \"passes in CI, fails in prod\" gap closes at the type level.",
           "runtime": "What classic consumer-driven contracts add — verifying the running provider — is covered by the live-BE trace-equivalence tier and backend Testcontainers suites against real PostgreSQL and Redis. Best of both, not a shortcut."
         },
-        "sources": "Sources: Gao, Bird & Barr, ICSE 2017 · Postman State of the API 2024 · Hatfield-Dodds & Dygalo, arXiv 2112.10328 · DORA 2021. Repo counts are live: 216 generated models, 74 services, 21 typed wrappers, 27 ported features, 18 L0 pins, 42 integration specs."
+        "sources": "Sources: Gao, Bird & Barr, ICSE 2017 · Postman State of the API 2024 · Hatfield-Dodds & Dygalo, arXiv 2112.10328 · DORA 2021. Repo counts, re-measured 2026-09-30: 181 generated models, 41 services, 31 typed wrappers, 27 ported features, 18 L0 pins, 222 integration tests."
       },
       "techstack": {
         "whyHint": "Click a layer to see why we chose it.",
@@ -2903,7 +3033,7 @@
           "social": "social-connections.json"
         },
         "exportBtn": "Download .zip",
-     "exportDone": "Downloaded",
+        "exportDone": "Downloaded",
         "codeCaption": "From legal/, user/UserAccountOrchestrator and admin/cascade. The grace window is configuration-driven (38 days by default). Demo data only — no real account is touched."
       },
       "zerotrust": {
@@ -3006,7 +3136,7 @@
         },
         {
           "title": "Test depth",
-          "blurb": "11,129 unit, 886 integration (Testcontainers) and 175 E2E (Cucumber) tests.",
+          "blurb": "8,012 unit, 853 integration (Testcontainers) and 277 E2E scenarios (Cucumber).",
           "tag": "process"
         }
       ],
@@ -3023,10 +3153,12 @@
       "team": "Team",
       "codemap": "CodeMap & AI",
       "grants": "Grants",
-      "contact": "Contact"
+      "contact": "Contact",
+      "survey": "How it is built"
     },
     "auth": {
       "sign_in": "Log in",
+      "open_app": "Open the app",
       "sign_up": "Sign up",
       "sign_in_after_release": "Log in available after app release",
       "sign_up_after_release": "Sign up available after app release"
@@ -3468,7 +3600,7 @@
       "sign_up_business": "Business",
       "sign_up_using": "Sign up using",
       "sign_up_using_form": "Sign up using Form",
-      "or_sign_up_as": "or Sign up as",
+      "or_sign_up_as": "Sign up as",
       "or_with_email": "Or sign up with email",
       "continue_with_instagram": "Continue with Instagram",
       "unsupported_provider": "This sign-up provider isn't enabled. Please use email + password.",
@@ -3565,7 +3697,7 @@
         "unsupported_platform": "We don't support that sign-in provider yet.",
         "cancelled": "You cancelled the Instagram sign-in.",
         "provider_failed": "Instagram authorization failed. Please try again.",
-        "no_code": "Authorization didn't return successfully. Please try again.",
+        "no_code": "Authorization failed. Please try again.",
         "csrf_failed": "We couldn't verify the sign-in attempt was from your browser. Please start again from sign-in."
       }
     },
@@ -3632,12 +3764,14 @@
       "success_with_password_message": "Your email has been verified and your password has been set. You can now sign in with email and password."
     },
     "two_factor_verify": {
-      "title": "Two-factor authentication",
+      "title": "Confirm your sign-in",
+      "eyebrow": "Two-factor authentication",
       "description": "Enter the 6-digit code from your authenticator app to finish signing in.",
       "code_label": "6-digit code",
       "submit": "Verify",
       "cancel": "Cancel",
       "invalid_code": "That code didn't match. Try again.",
+      "expired_code": "That code has expired. Generate a new one and try again.",
       "rate_limited": "Too many attempts. Wait a moment and try again.",
       "service_unavailable": "Service is currently unavailable. Try again later.",
       "failed": "Verification failed. Please try again."
@@ -5391,6 +5525,15 @@
       "email_copied": "Email copied to clipboard",
       "copy_failed": "Failed to copy to clipboard",
       "click_to_copy": "Click to copy"
+    },
+    "paginator": {
+      "items_per_page": "Items per page:",
+      "next_page": "Next page",
+      "previous_page": "Previous page",
+      "first_page": "First page",
+      "last_page": "Last page",
+      "range": "{{start}}–{{end}} of {{total}}",
+      "range_empty": "0 of {{total}}"
     }
   },
   "deleteConfirmation": {
@@ -5497,13 +5640,13 @@
       "title": "404 - Page Not Found",
       "description": "Sorry, the page you are looking for was not found."
     },
-    "503": {
-      "title": "503 - Service Unavailable",
-      "description": "The service is currently unavailable. Please try again later."
-    },
     "500": {
       "title": "500 - Server Error",
       "description": "Something went wrong on our side. Please try again in a moment."
+    },
+    "503": {
+      "title": "503 - Service Unavailable",
+      "description": "The service is currently unavailable. Please try again later."
     },
     "site_title": "Check It Out",
     "site_description": "Connect local businesses with influencers for effective marketing campaigns built on trust, transparency, and real results.",
@@ -6222,6 +6365,12 @@
     "delete": "Delete entry"
   },
   "notifications": {
+    "category": {
+      "PARTNERSHIP": "Partnership",
+      "ACCOUNT": "Account",
+      "SUPPORT": "Support",
+      "SYSTEM": "System"
+    },
     "title": "Notifications",
     "mark_all_read": "Mark all as read",
     "mark_read": "Mark as read",
@@ -6234,10 +6383,16 @@
     "reconsent": {
       "title": "Updated legal documents",
       "body": "We have published new versions of our Terms of Service, Privacy Policy and Cookie Policy. Please review and accept all three to unlock your account.",
-      "days_remaining": "{{days}} day(s) left to accept",
+      "days_remaining": "Days left to accept: {{days}}",
       "later": "Later",
       "accept": "Accept all",
       "error": "Saving your consent failed. Please try again."
+    },
+    "files": {
+      "privacy": "/assets/docs/privacy_policy_v2_EN.pdf",
+      "terms": "/assets/docs/terms_conditions_v2_EN.pdf",
+      "cookies": "/assets/docs/cookie_policy_v2_EN.pdf",
+      "data_retention": "/assets/docs/data_retention_policy_v2_EN.pdf"
     }
   },
   "demo": {
@@ -6261,7 +6416,7 @@
       "totp": {
         "title": "Authenticator",
         "hintIdle": "No code yet — generate one",
-        "hintStale": "This code has just expired — generate a fresh one",
+        "hintStale": "This code is valid for a few seconds only",
         "hintFresh": "Fresh code — type it into the app",
         "generate": "Generate code",
         "regenerate": "Generate a new code",
@@ -6285,7 +6440,7 @@
         "buyer": "Buyer",
         "amount": "Amount",
         "plan": "Business plan · monthly",
-     "planEnterprise": "Enterprise plan · monthly",
+        "planEnterprise": "Enterprise plan · monthly",
         "sendKsef": "Send to KSeF",
         "sentDone": "Sent to KSeF",
         "caption": "Simulation — production invoices are created by the billing saga in Fakturownia; KSeF is one flag in the same API call."
@@ -6313,7 +6468,13 @@
       "nextSandbox": "Next sandbox",
       "openSurvey": "How it's built",
       "backToHub": "All sandboxes",
-      "sandboxHint": "Sandbox mode — advance steps with Next"
+      "sandboxHint": "Click the highlighted control — it performs this step in the app",
+      "readHint": "Look around this screen, then click Next",
+      "lookHint": "Read the highlighted part, then click Next",
+      "fillHint": "Type it into the highlighted field, or let the guide do it",
+      "clickHere": "Click here",
+      "retry": "The step was not confirmed — check the data and try again.",
+      "performing": "Working…"
     },
     "sandboxes": {
       "admin-2fa": {
@@ -6321,9 +6482,11 @@
         "tagline": "Log in as the admin — with a phone in hand. The first code will be wrong on purpose.",
         "proves": "Admins get mandatory TOTP; a stolen password alone is useless.",
         "steps": {
-          "login": "You're the admin — this is the standard sign-in screen. In the sandbox you don't need to type anything; let's get to the codes.",
-          "first-code": "The server wants a TOTP code. That's the admin's phone in the corner — generate one and watch it closely.",
-          "fresh-code": "The first code expired before it could be used — that's real TOTP behaviour: the window is seconds. Generate a fresh one and the admin is in."
+          "login": "You are the admin — this is the standard sign-in screen. In the sandbox you do not need to type anything; let us get to the codes.",
+          "first-code": "The server wants a TOTP code. That is the admin phone in the corner — generate the first one.",
+          "first-code-refused": "The code is on the phone. Look at it, then send it to the server — and watch what comes back.",
+          "fresh-code": "The first code expired before it could be used — that is real TOTP behaviour: the window is seconds. Generate a fresh one.",
+          "signed-in": "This one is current. Send it — the dialog closes and the admin is in."
         },
         "recap": {
           "f1": "Admins don't get a choice: TOTP 2FA is mandatory, enforced server-side.",
@@ -6338,7 +6501,7 @@
         "steps": {
           "change-email": "These are the company's account settings. Enter any new e-mail address and send the verification email.",
           "enter-code": "The platform won't just trust the session — a one-time code went to the verified address. Check the inbox in the corner and type it in.",
-          "saved": "Once saved, the change is live immediately. And here's the product decision: companies share accounts, so everyday actions need only a session — sensitive ones demand fresh proof. That's our answer to 2FA for shared accounts."
+          "saved": "The code went through, so the change is under way: a confirmation link has gone to the new address and clicking it is what finishes the job. And here is a product decision: companies share accounts, so everyday actions need only a session — but sensitive ones ask for fresh proof. That is our answer to 2FA for shared accounts."
         },
         "recap": {
           "f1": "Sensitive actions re-authenticate: a fresh code, single-use, minutes-long TTL.",
@@ -6351,7 +6514,9 @@
         "tagline": "Create a campaign, watch an influencer apply, and decide — the whole lifecycle from the company chair.",
         "proves": "The marketplace core: real forms, real states, one coherent flow.",
         "steps": {
-          "create-campaign": "This is the real campaign form. Fill in what matters to you — name, platform, content type — and publish.",
+          "create-campaign": "A campaign brief is one form. Fill it in — the internal name, the public title, where you are meeting, and what you want from the creator.",
+          "publish-campaign": "The form is complete, so the publish button has come alive. Publish it — the campaign gets a page of its own.",
+          "campaign-live": "This is the published campaign: the public title, the location and the brief, exactly as a creator will see it.",
           "decide-applicant": "Once published, a campaign starts collecting applications right away. These are your campaign's applicants: decide on Ola's application — accept it or pass.",
           "lifecycle": "Accepted — the collaboration moved to In Progress. Every state you've just walked is the same machine the survey draws."
         },
@@ -6368,6 +6533,7 @@
         "steps": {
           "browse": "You're Ola now — a creator. These are real campaigns from companies. Open one that suits you.",
           "apply": "Found something? Apply from the campaign's page — add a note if you like.",
+          "applied": "The application is in. The company sees it on their applicant list straight away, and you have the confirmation here.",
           "accepted": "Good news travels fast: the company has just accepted you. This is your applications view — the status is already green."
         },
         "recap": {
@@ -6385,7 +6551,9 @@
           "company-confirmed": "Everything arrived from the registries by itself — GUS, VAT status, PKD, even the bank account. Confirm the data.",
           "verify-mail": "One thing left: prove the e-mail is yours. The branded mail just landed — open the inbox and click.",
           "activated": "That click auto-activated the account — no human in the loop. You're on the plan page now: see the campaign limits per plan.",
-          "upgrade": "Need more room? Upgrade the plan. We assume a test card is already attached — click and watch.",
+          "upgrade": "Need more room? Open the plan change — we show the price and the terms before you confirm anything.",
+          "upgrade-terms": "Before you pay — the subscription terms and the consent. Tick it; without it the payment button stays disabled.",
+          "upgrade-confirm": "Price, terms and consent in one place. The test card is already attached — confirm, and the payment and activation run themselves.",
           "invoice-sent": "The payment succeeded, so the billing saga has already issued the invoice in Fakturownia. Send it on to KSeF — one click, one flag.",
           "ksef-done": "And there it is — registered in the national e-invoice system, with its KSeF number."
         },
@@ -6401,6 +6569,7 @@
         "proves": "Support is a built flow with reference codes and mail — not an inbox black hole.",
         "steps": {
           "ticket-created": "Something's not right? Describe it and send — you'll get a reference code on the spot.",
+          "reference-issued": "That is the ticket reference — keep it. In production the same number goes out by mail, so the conversation has one identifier on both sides.",
           "read-response": "Support has already answered. This is your tickets view — open it and read the reply. In production a mail lands too, with the same reference."
         },
         "recap": {
@@ -6415,12 +6584,15 @@
         "proves": "Moderation and the right to be forgotten are real flows, not policy pages.",
         "steps": {
           "admin-respond": "This is the admin queue. Open a ticket and answer the user — your reply threads onto it instantly.",
-          "cascade-delete": "Now the serious one: a GDPR erasure request. You are on the campaign it concerns — open the cascade delete, review the preview (exact counts per system, a one-time code) and execute.",
+          "reply-threaded": "The reply is on the thread already — under the customer’s message, signed and dated. In production a mail goes out at the same moment, carrying the same reference.",
+          "cascade-delete": "Now the serious one: a GDPR erasure request. You are on the campaign it concerns — open the cascade delete.",
+          "cascade-confirm": "The counts in the preview are the real state of the database, not an estimate: records per system, and a warning for what cannot be undone. Confirm — the cascade runs through every layer.",
+          "cascade-receipt": "Exactly the number the preview promised, and an audit-archive entry nobody can delete. Read the receipt before you close it.",
           "by-the-book": "The cascade ran through Postgres, Firestore and Storage in one orchestrated flow — the campaign is gone from the marketplace, and the audit trail remains. That's GDPR as engineering."
         },
         "recap": {
           "f1": "Admin replies thread onto tickets and notify the user by mail.",
-          "f2": "Erasure is a previewed cascade — exact counts per system and a one-time code, no blind DELETEs.",
+          "f2": "Erasure is a previewed cascade — exact counts per system, and the delete itself has to echo the preview’s one-time code, so no blind DELETE gets through.",
           "f3": "Every deletion leaves a masked audit trail; the data goes, the proof stays."
         }
       }

@@ -1,6 +1,8 @@
+import { OVERLAY_DEFAULT_CONFIG } from '@angular/cdk/overlay';
 import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
 import { APP_INITIALIZER, ApplicationConfig, isDevMode } from '@angular/core';
-import { TitleStrategy, provideRouter } from '@angular/router';
+import { MatPaginatorIntl } from '@angular/material/paginator';
+import { TitleStrategy, provideRouter, withInMemoryScrolling } from '@angular/router';
 
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { TRANSLOCO_LOADER, TranslocoService, provideTransloco } from '@ngneat/transloco';
@@ -14,7 +16,9 @@ import { shellHeadersInterceptor } from './core/interceptors/shell-headers.inter
 import { ssrCookieForwardInterceptor } from './core/interceptors/ssr-cookie-forward.interceptor';
 import { stepUpInterceptor } from './core/interceptors/step-up.interceptor';
 import { demoInterceptor } from './core/demo/demo.interceptor';
+import { isDemoMode } from './core/demo/demo-mode';
 import { HttpTranslocoLoader } from './core/i18n/transloco-loader';
+import { TranslocoPaginatorIntl } from './core/i18n/paginator-intl';
 import { SeoTitleStrategy } from './core/i18n/seo-title.strategy';
 import { readLangChoice } from './core/i18n/lang-preference';
 import { routes } from './app.routes';
@@ -26,11 +30,27 @@ import {
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(routes),
+    // anchorScrolling: the marketing toolbar's "Jak to działa / Cennik / FAQ /
+    // Kontakt" are landing sections; from /grants, /support, /codemap… they
+    // navigate to "/#section" and must land on it. scrollPositionRestoration:
+    // a new page starts at the top, Back returns where the reader was.
+    provideRouter(
+      routes,
+      withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }),
+    ),
     // Route `title` values are translation keys — see SeoTitleStrategy for
     // the `<page> | <site>` rendering + live re-title on language switch.
     { provide: TitleStrategy, useClass: SeoTitleStrategy },
+    // Paginator labels follow the active language (Material ships English only).
+    { provide: MatPaginatorIntl, useClass: TranslocoPaginatorIntl },
     provideAnimationsAsync(),
+    // Demo build only: CDK 22 mounts overlays in the browser's top layer
+    // (Popover API), which no z-index can reach — the guide panel and the
+    // world simulators would sit under every dialog's backdrop, and the
+    // admin-2fa tour needs the phone clickable while the TOTP dialog is
+    // open. Classic stacking keeps them above (guide 99990 / sims 99980 vs
+    // overlays at 1000); production keeps the CDK default.
+    ...(isDemoMode() ? [{ provide: OVERLAY_DEFAULT_CONFIG, useValue: { usePopover: false } }] : []),
     provideHttpClient(
       withXhr(),
       withInterceptors([

@@ -49,10 +49,13 @@
       <p class="mb-8 max-w-xl text-base leading-relaxed text-slate2 sm:text-lg">
         {{ 'landing.hero.description' | transloco }}
       </p>
-      <div class="flex flex-col gap-3 sm:flex-row">
+      <!-- Above `sm` the pills keep their natural width: when both do not fit
+           beside each other the second one drops to the next line whole,
+           instead of the row squeezing them and breaking their labels. -->
+      <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
         <a
           routerLink="/auth/sign-up/business"
-          class="cta-primary"
+          class="cta-primary sm:shrink-0"
           data-testid="landing-cta-primary"
         >
           {{ 'landing.hero.cta.primary' | transloco }}
@@ -60,7 +63,7 @@
         </a>
         <a
           routerLink="/auth/sign-up/influencer"
-          class="cta-secondary"
+          class="cta-secondary sm:shrink-0"
           data-testid="landing-cta-secondary"
         >
           <!-- nowrap per phrase: the pill may break only at the separator, never
@@ -314,12 +317,33 @@
             <div [class.md:order-1]="s.stepNumber % 2 === 0">
               @switch (s.stepNumber) {
                 @case (1) {
-                  <!-- the campaign form, skeletal -->
-                  <div class="rounded-2xl border border-beige bg-white p-6 shadow-sm">
-                    <div class="h-3 w-24 rounded bg-cream"></div>
-                    <div class="mt-3 h-9 rounded-lg border border-beige bg-cream/70"></div>
-                    <div class="mt-2.5 h-9 rounded-lg border border-beige bg-cream/70"></div>
-                    <div class="mt-2.5 h-16 rounded-lg border border-beige bg-cream/70"></div>
+                  <!-- the campaign form, filled in: bare skeleton bars read as a
+                       form that never loaded (owner, 2026-09-04) -->
+                  <div class="rounded-2xl border border-beige bg-white p-6 text-left shadow-sm">
+                    <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                      {{ 'landing.how_it_works.mock.campaign.name_label' | transloco }}
+                    </p>
+                    <div
+                      class="mt-1.5 rounded-lg border border-beige bg-cream/60 px-3 py-2 text-sm text-ink"
+                    >
+                      {{ 'landing.how_it_works.mock.campaign.name_value' | transloco }}
+                    </div>
+                    <p class="mt-3 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                      {{ 'landing.how_it_works.mock.campaign.budget_label' | transloco }}
+                    </p>
+                    <div
+                      class="mt-1.5 rounded-lg border border-beige bg-cream/60 px-3 py-2 text-sm text-ink"
+                    >
+                      {{ 'landing.how_it_works.mock.campaign.budget_value' | transloco }}
+                    </div>
+                    <p class="mt-3 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                      {{ 'landing.how_it_works.mock.campaign.brief_label' | transloco }}
+                    </p>
+                    <div
+                      class="mt-1.5 min-h-16 rounded-lg border border-beige bg-cream/60 px-3 py-2 text-sm leading-relaxed text-slate2"
+                    >
+                      {{ 'landing.how_it_works.mock.campaign.brief_value' | transloco }}
+                    </div>
                     <div class="mt-4 flex justify-end">
                       <span
                         class="inline-flex items-center gap-1.5 rounded-full bg-coral-700 px-4 py-1.5 text-xs font-semibold text-white"
@@ -353,7 +377,7 @@
                             {{ a.handle.charAt(1) }}
                           </span>
                           <span class="min-w-0 flex-grow">
-                            <span class="block truncate text-sm font-semibold text-ink">
+                            <span class="block text-sm font-semibold text-ink sm:truncate">
                               {{ a.handle }}
                             </span>
                             <span class="block text-xs text-slate2">
@@ -493,9 +517,7 @@
       </p>
       <!-- persona quote — the voice these three plans answer -->
       <p class="mx-auto mt-6 max-w-xl font-display text-xl italic text-ink">
-        <span class="text-coral-500">„</span>
         {{ 'landing.pricing.quote' | transloco }}
-        <span class="text-coral-500">"</span>
       </p>
     </div>
     <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -587,15 +609,17 @@
          from 3999 zł/month); the contact CTA routes to the public support
          form (legacy scrolled to a contact anchor the greenfield FAQ does
          not carry). -->
+    <!-- lg: the quote row reserves three lines on both cards, so headings and
+         prices sit at the same height even when one quote wraps more than
+         the other; the cards stretch to one height and the CTAs sit at the
+         bottom (mt-auto). -->
     <div class="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-2">
       <article
         class="lift flex flex-col gap-4 rounded-2xl border border-beige bg-white p-8"
         data-testid="landing-pricing-hands-free"
       >
-        <p class="font-display text-lg italic text-slate2">
-          <span class="text-coral-500">„</span>
+        <p class="font-display text-lg italic text-slate2 lg:min-h-[5.25rem]">
           {{ 'landing.pricing.hands_free.quote' | transloco }}
-          <span class="text-coral-500">"</span>
         </p>
         <h3 class="font-display text-3xl text-ink">
           {{ 'landing.pricing.hands_free.title' | transloco }}
@@ -629,10 +653,8 @@
         class="lift flex flex-col gap-4 rounded-2xl border border-beige bg-white p-8"
         data-testid="landing-pricing-enterprise"
       >
-        <p class="font-display text-lg italic text-slate2">
-          <span class="text-coral-500">„</span>
+        <p class="font-display text-lg italic text-slate2 lg:min-h-[5.25rem]">
           {{ 'landing.pricing.enterprise.quote' | transloco }}
-          <span class="text-coral-500">"</span>
         </p>
         <h3 class="font-display text-3xl text-ink">
           {{ 'landing.pricing.enterprise.title' | transloco }}
@@ -829,15 +851,29 @@
     <!-- PL walkthrough video — click-to-load facade so the third-party
          Vimeo iframe never touches first paint (Lighthouse arc). -->
     @if (lang() === 'pl') {
-      <div class="mx-auto mt-8 max-w-2xl" data-testid="landing-cta-video">
+      <!-- The clip is square (240×240 on Vimeo): a 16:9 frame letterboxed it
+           between two dark gutters inside a thin light border. -->
+      <div class="mx-auto mt-8 w-full max-w-sm" data-testid="landing-cta-video">
         <div
-          class="relative aspect-video overflow-hidden rounded-2xl border border-cream/15 bg-navy-900"
+          class="relative aspect-square overflow-hidden rounded-3xl bg-navy-900 shadow-2xl ring-1 ring-cream/10"
         >
+          <!-- Poster: the facade used to be a bare navy box with a play button
+               and read as an unfinished placeholder. No product still exists
+               and a Vimeo thumbnail would be the third-party request the
+               facade avoids, so the hero's own dashboard illustration stands
+               in (fixed 420 px tall → scaled into the square box). -->
+          <div
+            aria-hidden="true"
+            class="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden bg-gradient-to-br from-navy-900 to-ink"
+            data-testid="landing-video-poster"
+          >
+            <app-hero-illustration class="scale-[0.7] opacity-80" />
+          </div>
           @if (!showVideo()) {
             <button
               type="button"
               (click)="showVideo.set(true)"
-              class="group absolute inset-0 flex flex-col items-center justify-center gap-3"
+              class="group absolute inset-0 flex appearance-none flex-col items-center justify-center gap-3 border-0 bg-transparent p-0"
               data-testid="landing-video-facade"
             >
               <span
@@ -874,7 +910,7 @@
       </a>
       <a
         routerLink="/auth/sign-up/influencer"
-        class="inline-flex items-center justify-center gap-2 rounded-full border border-cream/30 px-6 py-2.5 text-sm font-semibold text-cream transition hover:bg-cream/10"
+        class="inline-flex items-center justify-center gap-2 rounded-full border border-cream/50 px-6 py-[0.85rem] text-[0.95rem] font-semibold text-cream transition hover:bg-cream/10"
       >
         {{ 'landing.hero.cta.secondary1' | transloco }}
       </a>
@@ -882,8 +918,10 @@
   </section>
 
   <!-- Footer -->
+  <!-- `id="contact"` belongs to the FAQ's contact block above; a second one
+       here made the id ambiguous (and a "Kontakt" link land on the footer). -->
   <footer
-    id="contact"
+    id="site-footer"
     class="border-t border-ink/10 bg-ink px-4 py-14 text-cream/70"
     data-testid="landing-footer"
   >
@@ -925,6 +963,37 @@
                 {{ 'footer.nav.faq' | transloco }}
               </a>
             </li>
+            <!-- The engineering pages. They were reachable from one card below
+                 the fold and from nowhere else; a footer is where a reader who
+                 has finished the page goes looking. Labels are the header's, so
+                 the same page is never called two different things. -->
+            <li>
+              <a
+                routerLink="/technical-survey"
+                class="text-cream/60 transition hover:text-white"
+                data-testid="landing-footer-survey"
+              >
+                {{ 'header.nav.survey' | transloco }}
+              </a>
+            </li>
+            <li>
+              <a
+                routerLink="/codemap"
+                class="text-cream/60 transition hover:text-white"
+                data-testid="landing-footer-codemap"
+              >
+                {{ 'header.nav.codemap' | transloco }}
+              </a>
+            </li>
+            <li>
+              <a
+                routerLink="/team"
+                class="text-cream/60 transition hover:text-white"
+                data-testid="landing-footer-team"
+              >
+                {{ 'header.nav.team' | transloco }}
+              </a>
+            </li>
             <li>
               <a
                 routerLink="/grants"
@@ -954,7 +1023,7 @@
           <ul class="space-y-2 text-sm">
             <li>
               <a
-                href="/assets/docs/privacy_policy_v2_EN.pdf"
+                [href]="'legal.files.privacy' | transloco"
                 target="_blank"
                 rel="noopener"
                 class="text-cream/60 transition hover:text-white"
@@ -965,7 +1034,7 @@
             </li>
             <li>
               <a
-                href="/assets/docs/terms_conditions_v2_EN.pdf"
+                [href]="'legal.files.terms' | transloco"
                 target="_blank"
                 rel="noopener"
                 class="text-cream/60 transition hover:text-white"
@@ -976,7 +1045,7 @@
             </li>
             <li>
               <a
-                href="/assets/docs/cookie_policy_v2_EN.pdf"
+                [href]="'legal.files.cookies' | transloco"
                 target="_blank"
                 rel="noopener"
                 class="text-cream/60 transition hover:text-white"
@@ -987,7 +1056,7 @@
             </li>
             <li>
               <a
-                href="/assets/docs/data_retention_policy_v2_EN.pdf"
+                [href]="'legal.files.data_retention' | transloco"
                 target="_blank"
                 rel="noopener"
                 class="text-cream/60 transition hover:text-white"

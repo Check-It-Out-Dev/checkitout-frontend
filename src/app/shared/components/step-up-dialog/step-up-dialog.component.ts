@@ -2,9 +2,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
   Inject,
   OnInit,
   Optional,
+  ViewChild,
   inject,
   signal,
 } from '@angular/core';
@@ -21,6 +23,7 @@ import {
   StepUpChallengeType,
   StepUpService,
 } from '../../../core/step-up/step-up.service';
+import { DialogHeaderComponent } from '../dialog-header/dialog-header.component';
 
 /**
  * Per-action input. The dialog opens, kicks off `/step-up/request` (which
@@ -50,6 +53,7 @@ const CODE_PATTERN = /^\d{6}$/;
   selector: 'app-step-up-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    DialogHeaderComponent,
     ReactiveFormsModule,
     MatButtonModule,
     MatDialogModule,
@@ -67,6 +71,8 @@ export class StepUpDialogComponent implements OnInit {
   readonly phase = signal<Phase>('requesting');
   readonly errorKey = signal<string | null>(null);
   readonly challengeType = signal<StepUpChallengeType>(StepUpChallengeType.EMAIL_CODE);
+
+  @ViewChild('codeInput') private readonly codeInput?: ElementRef<HTMLInputElement>;
 
   readonly codeControl = new FormControl<string>('', {
     nonNullable: true,
@@ -129,6 +135,7 @@ export class StepUpDialogComponent implements OnInit {
         this.phase.set('awaiting_code');
         this.errorKey.set('step_up.dialog.errors.invalid_code');
         this.codeControl.reset('');
+        this.retype();
       },
       error: (err: unknown) => this.handleError(err, 'invalid_code'),
     });
@@ -138,9 +145,17 @@ export class StepUpDialogComponent implements OnInit {
     this.dialogRef?.close(null);
   }
 
+  /** A refused code hands the caret back, the same as the 2FA dialog: the
+   * field is cleared here, so there is nothing to select — but without the
+   * focus the visitor types into nothing. */
+  private retype(): void {
+    setTimeout(() => this.codeInput?.nativeElement.focus());
+  }
+
   private handleError(err: unknown, fallback: 'send_failed' | 'invalid_code'): void {
     this.phase.set('awaiting_code');
     this.codeControl.reset('');
+    this.retype();
     if (err instanceof HttpErrorResponse) {
       if (err.status === 401) {
         this.errorKey.set('step_up.dialog.errors.invalid_code');

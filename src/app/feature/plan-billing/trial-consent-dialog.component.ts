@@ -16,10 +16,13 @@ import { TranslocoModule } from '@ngneat/transloco';
 import { firstValueFrom } from 'rxjs';
 import type { ConsentProofPayload } from '../../core/api-frozen/hidden-models';
 import { SubscriptionWriteApi } from '../../core/subscription/subscription.service';
+import { DialogHeaderComponent } from '../../shared/components/dialog-header/dialog-header.component';
 
 export interface TrialConsentDialogData {
-  /** Display name for the legal document the user is agreeing to. */
+  /** Canonical name of the legal document — recorded with the consent, never localised. */
   readonly documentName: string;
+  /** What the checkbox shows for it in the visitor's language (falls back to the name). */
+  readonly documentLabel?: string;
   /** SHA-256 of the legal document the user saw. Server compares for tamper-evidence. */
   readonly documentHash: string;
 }
@@ -47,6 +50,7 @@ type Phase = 'idle' | 'submitting' | 'error';
   selector: 'app-trial-consent-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    DialogHeaderComponent,
     ReactiveFormsModule,
     MatButtonModule,
     MatCheckboxModule,

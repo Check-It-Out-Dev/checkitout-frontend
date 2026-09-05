@@ -1,3 +1,4 @@
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { TranslocoTestingModule } from '@ngneat/transloco';
@@ -25,7 +26,8 @@ describe('SupportComponent', () => {
           translocoConfig: { availableLangs: ['en'], defaultLang: 'en' },
         }),
       ],
-      providers: [provideRouter([])],
+      // The marketing toolbar reads the session cache (SessionStateService → HttpClient).
+      providers: [provideRouter([]), provideHttpClient(withXhr())],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SupportComponent);

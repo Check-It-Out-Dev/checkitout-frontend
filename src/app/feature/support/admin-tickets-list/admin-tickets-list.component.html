@@ -98,8 +98,12 @@
       </div>
     } @else {
       <div class="mt-6 overflow-hidden rounded-2xl border border-beige bg-white">
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-sm">
+        <!-- min-w makes the horizontal scroll deterministic inside the shell
+             (sidenav + padding leave ~950 px at 1280); the standard scrollbar
+             properties opt Chrome out of overlay scrollbars, which hid the bar
+             until hover and made the last column look clipped. -->
+        <div class="overflow-x-auto [scrollbar-color:#e6dfd3_transparent] [scrollbar-width:thin]">
+          <table class="w-full min-w-[60rem] text-left text-sm">
             <thead>
               <tr class="border-b border-beige">
                 <th class="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
@@ -114,7 +118,12 @@
                 <th class="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
                   {{ 'support.admin.tickets.table.status' | transloco }}
                 </th>
-                <th class="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                <!-- "Utworzono" only from xl up: inside the shell at 1280 the row
+                     is ~1150 px wide for a ~910 px card; "Zaktualizowano" carries
+                     the more useful date for a queue. -->
+                <th
+                  class="hidden px-4 py-3 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2 xl:table-cell"
+                >
                   {{ 'support.admin.tickets.table.created' | transloco }}
                 </th>
                 <th class="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
@@ -135,8 +144,9 @@
                   <td class="whitespace-nowrap px-4 py-3 font-mono text-xs font-semibold text-ink">
                     {{ ticket.ticketReference }}
                   </td>
-                  <td class="max-w-[20rem] truncate px-4 py-3 font-medium text-ink">
-                    {{ ticket.subject }}
+                  <td class="px-4 py-3 font-medium text-ink">
+                    <!-- truncate on a block span: a <td> ignores text-overflow in auto layout -->
+                    <span class="block max-w-[20rem] truncate">{{ ticket.subject }}</span>
                   </td>
                   <td class="px-4 py-3">
                     <span
@@ -154,11 +164,11 @@
                       {{ statusLabelKey(ticket.status) | transloco }}
                     </span>
                   </td>
-                  <td class="whitespace-nowrap px-4 py-3 text-slate2">
-                    {{ ticket.createdTime | date: 'mediumDate' }}
+                  <td class="hidden whitespace-nowrap px-4 py-3 text-slate2 xl:table-cell">
+                    {{ ticket.createdTime | localizedDate: 'mediumDate' }}
                   </td>
                   <td class="whitespace-nowrap px-4 py-3 text-slate2">
-                    {{ ticket.lastUpdateTime | date: 'mediumDate' }}
+                    {{ ticket.lastUpdateTime | localizedDate: 'mediumDate' }}
                   </td>
                   <td class="px-4 py-3 text-right">
                     <mat-icon

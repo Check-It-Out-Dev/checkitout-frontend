@@ -76,15 +76,26 @@
             </div>
             <p class="mt-1 font-mono text-[11px] uppercase tracking-[0.18em] text-slate2">
               {{ 'opportunities.dashboard.created' | transloco }}
-              {{ campaign.createdTime ? (campaign.createdTime | date: 'mediumDate') : '—' }}
+              {{
+                campaign.createdTime ? (campaign.createdTime | localizedDate: 'mediumDate') : '—'
+              }}
             </p>
             @if (campaign.compensationAmountMin || campaign.compensationAmountMax) {
               <p class="mt-2 text-sm text-ink">
                 {{ 'opportunities.dashboard.compensation' | transloco }}:
                 <span class="font-medium">
-                  {{ campaign.compensationAmountMin ?? '—' }}
+                  {{
+                    campaign.compensationAmountMin != null
+                      ? amount(campaign.compensationAmountMin)
+                      : '—'
+                  }}
                   –
-                  {{ campaign.compensationAmountMax ?? '—' }}
+                  {{
+                    campaign.compensationAmountMax != null
+                      ? amount(campaign.compensationAmountMax)
+                      : '—'
+                  }}
+                  PLN
                 </span>
               </p>
             }

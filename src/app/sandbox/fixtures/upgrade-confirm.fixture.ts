@@ -27,15 +27,16 @@ class StubWriteOk {
 
 const DATA: UpgradeConfirmDialogData = {
   targetPlan: UpgradeRequestDtoInTargetPlanEnum.BUSINESS,
-  priceDisplay: '29 PLN / mo',
+  priceDisplay: '29 PLN / miesiąc',
   documentName: 'Subscription Terms v1',
+  documentLabel: 'Regulamin subskrypcji (v1)',
   documentHash: 'fixture-hash',
 };
 
 const ENTERPRISE_DATA: UpgradeConfirmDialogData = {
   ...DATA,
   targetPlan: UpgradeRequestDtoInTargetPlanEnum.ENTERPRISE,
-  priceDisplay: '99 PLN / mo',
+  priceDisplay: '99 PLN / miesiąc',
 };
 
 export const UPGRADE_CONFIRM_FIXTURES: readonly SandboxFixture[] = [
@@ -43,6 +44,7 @@ export const UPGRADE_CONFIRM_FIXTURES: readonly SandboxFixture[] = [
     id: 'upgrade-confirm-business',
     label: 'Upgrade confirm · Business',
     component: UpgradeConfirmDialogComponent,
+    frame: 'dialog',
     viewport: { width: 520, height: 480 },
     providers: [
       { provide: MatDialogRef, useValue: DIALOG_REF_STUB },
@@ -54,6 +56,7 @@ export const UPGRADE_CONFIRM_FIXTURES: readonly SandboxFixture[] = [
     id: 'upgrade-confirm-enterprise',
     label: 'Upgrade confirm · Enterprise',
     component: UpgradeConfirmDialogComponent,
+    frame: 'dialog',
     viewport: { width: 520, height: 480 },
     providers: [
       { provide: MatDialogRef, useValue: DIALOG_REF_STUB },

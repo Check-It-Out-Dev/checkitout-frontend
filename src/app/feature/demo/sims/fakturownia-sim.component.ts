@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslocoPipe } from '@ngneat/transloco';
 import { WorldSimShellComponent } from './world-sim-shell.component';
@@ -23,7 +23,7 @@ import { SandboxDirectorService } from '../../../core/demo/sandbox-director.serv
 @Component({
   selector: 'app-fakturownia-sim',
   imports: [MatIconModule, TranslocoPipe, WorldSimShellComponent],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <app-world-sim-shell [caption]="'demo.sims.fakturownia.caption' | transloco">
       <div
@@ -49,13 +49,13 @@ import { SandboxDirectorService } from '../../../core/demo/sandbox-director.serv
             </div>
             <span
               class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold"
-              [class]="sent ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'"
+              [class]="sent() ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'"
             >
               <mat-icon class="!h-3.5 !w-3.5 !text-sm">
-                {{ sent ? 'check_circle' : 'schedule' }}
+                {{ sent() ? 'check_circle' : 'schedule' }}
               </mat-icon>
               {{
-                (sent ? 'demo.sims.fakturownia.statusSent' : 'demo.sims.fakturownia.statusIssued')
+                (sent() ? 'demo.sims.fakturownia.statusSent' : 'demo.sims.fakturownia.statusIssued')
                   | transloco
               }}
             </span>
@@ -87,17 +87,18 @@ import { SandboxDirectorService } from '../../../core/demo/sandbox-director.serv
           <button
             type="button"
             (click)="sendToKsef()"
-            [disabled]="sent"
+            data-testid="fakturownia-sim-send"
+            [disabled]="sent()"
             class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 disabled:cursor-default"
             [class]="
-              sent
+              sent()
                 ? 'border border-beige bg-cream text-slate2/60'
                 : 'bg-emerald-600 text-white hover:bg-emerald-500'
             "
           >
-            <mat-icon class="!h-4 !w-4 !text-base">{{ sent ? 'check' : 'send' }}</mat-icon>
+            <mat-icon class="!h-4 !w-4 !text-base">{{ sent() ? 'check' : 'send' }}</mat-icon>
             {{
-              (sent ? 'demo.sims.fakturownia.sentDone' : 'demo.sims.fakturownia.sendKsef')
+              (sent() ? 'demo.sims.fakturownia.sentDone' : 'demo.sims.fakturownia.sendKsef')
                 | transloco
             }}
           </button>
@@ -119,13 +120,13 @@ export class FakturowniaSimComponent {
     ? 'demo.sims.fakturownia.planEnterprise'
     : 'demo.sims.fakturownia.plan';
 
-  sent = false;
+  readonly sent = signal(false);
 
   sendToKsef(): void {
-    if (this.sent) {
+    if (this.sent()) {
       return;
     }
-    this.sent = true;
+    this.sent.set(true);
     const step = this.director.step();
     // Brief beat so the status flip is visible before the next step takes over.
     setTimeout(() => {

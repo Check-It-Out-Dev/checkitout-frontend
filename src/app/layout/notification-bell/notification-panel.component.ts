@@ -1,4 +1,5 @@
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { LocalizedDatePipe } from '../../core/i18n/localized-date.pipe';
 import { ChangeDetectionStrategy, Component, EventEmitter, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,17 +23,17 @@ import { NotificationCenterService } from '../../core/notifications/notification
  *  - header mark-all-read; footer load-more while `hasMore`
  */
 @Component({
-    selector: 'app-notification-panel',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        CommonModule,
-        DatePipe,
-        MatButtonModule,
-        MatIconModule,
-        MatProgressSpinnerModule,
-        TranslocoModule,
-    ],
-    templateUrl: './notification-panel.component.html'
+  selector: 'app-notification-panel',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    LocalizedDatePipe,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    TranslocoModule,
+  ],
+  templateUrl: './notification-panel.component.html',
 })
 export class NotificationPanelComponent {
   readonly center = inject(NotificationCenterService);

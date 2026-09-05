@@ -19,10 +19,12 @@ import { CodePanelComponent } from '../ui/code-panel.component';
  * trace-equivalence tier + BE Testcontainers cover the runtime-conformance
  * class CDC also targets. Deliberately NOT oversold as a CDC superset.
  *
- * Every repo count is live: 216 generated models + 74 services
- * (src/app/api), 21 typed wrapper modules (src/app/core), 27 ported Cucumber
+ * Every repo count re-measured 2026-09-30: 181 generated models + 41 services
+ * (src/app/api), 31 typed wrapper modules (src/app/core), 27 ported Cucumber
  * features (e2e-tests/bdd), 18 L0 pins (src/testing/contract, Expect<Equal>),
- * 42 integration specs. Research numbers carry their sources in the caption:
+ * 222 integration tests. These drifted badly once — the page claimed 216/74
+ * against a repo holding 181/41 — so treat them as perishable and re-count
+ * before quoting them anywhere else. Research numbers carry their sources in the caption:
  * Gao/Bird/Barr ICSE 2017 (15%), Postman 2024 (74%), arXiv 2112.10328
  * (1.4–4.5×), DORA 2021 (3.7×).
  *
@@ -171,7 +173,7 @@ export class ContractPipelineShowcaseComponent {
 
   // The three consumers of the SAME generated import (live repo counts).
   readonly consumers = [
-    { key: 'services', icon: 'layers', count: '21' },
+    { key: 'services', icon: 'layers', count: '31' },
     { key: 'bdd', icon: 'fact_check', count: '27' },
     { key: 'pins', icon: 'verified', count: '18' },
   ];

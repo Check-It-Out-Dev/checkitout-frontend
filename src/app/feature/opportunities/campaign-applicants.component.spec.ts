@@ -1,5 +1,6 @@
 import { provideHttpClient, withXhr } from '@angular/common/http';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { TranslocoTestingModule } from '@ngneat/transloco';
@@ -9,6 +10,9 @@ import { OpportunityStatus } from '../../api/model/opportunity-status';
 import type { PageAppliedOpportunityDtoOut } from '../../api/model/page-applied-opportunity-dto-out';
 import { AppliedOpportunityApiService } from '../../core/applied-opportunities/applied-opportunity.service';
 import { CampaignApplicantsComponent } from './campaign-applicants.component';
+
+/** The reject confirmation — answers "yes" unless a test says otherwise. */
+const dialogOpen = jest.fn(() => ({ afterClosed: () => of(true) }));
 
 const APPLIED: AppliedOpportunityDtoOut = {
   id: 101,
@@ -71,6 +75,7 @@ function create(
       provideHttpClient(withXhr()),
       provideAnimationsAsync(),
       provideRouter([]),
+      { provide: MatDialog, useValue: { open: dialogOpen } },
       { provide: AppliedOpportunityApiService, useValue: api },
       { provide: ActivatedRoute, useValue: fakeRoute },
     ],
@@ -135,6 +140,27 @@ describe('CampaignApplicantsComponent', () => {
     expect(api.decisions).toEqual([{ id: 101, accept: false }]);
     const row = fixture.componentInstance.items().find((r) => r.id === 101);
     expect(row?.opportunityStatus?.value).toBe(OpportunityStatus.REJECTED_BY_COMPANY);
+  }));
+
+  it('asks for confirmation before rejecting, and only then decides', fakeAsync(() => {
+    const api = new FakeApi();
+    const fixture = create(api);
+    tick();
+    dialogOpen.mockClear();
+    fixture.componentInstance.reject(APPLIED);
+    tick();
+    expect(dialogOpen).toHaveBeenCalledTimes(1);
+    expect(api.decisions).toEqual([{ id: 101, accept: false }]);
+  }));
+
+  it('keeps the applicant when the confirmation is cancelled', fakeAsync(() => {
+    const api = new FakeApi();
+    const fixture = create(api);
+    tick();
+    dialogOpen.mockImplementationOnce(() => ({ afterClosed: () => of(false) }));
+    fixture.componentInstance.reject(APPLIED);
+    tick();
+    expect(api.decisions).toEqual([]);
   }));
 
   it('skips a duplicate decide call while one is in flight', fakeAsync(() => {
