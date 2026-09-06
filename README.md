@@ -562,12 +562,13 @@ Three repositories and a running site, and each answers the question the previou
 Start at **[docs/README.md](docs/README.md)** — it splits the reading by what you are here
 for: evaluating the engineering, or taking a piece of it and using it.
 
-| Document                                                                  | What it is                                                          |
-| :------------------------------------------------------------------------ | :------------------------------------------------------------------ |
-| [LAYERED-TEST-ARCHITECTURE.md](docs/testing/LAYERED-TEST-ARCHITECTURE.md) | Why the tiers are connected rather than parallel                    |
-| [BROWSER-QA-METHODOLOGY.md](docs/testing/BROWSER-QA-METHODOLOGY.md)       | The error-class register, the instrument laws, and the run log      |
-| [SANDBOX-TODO.md](docs/testing/SANDBOX-TODO.md)                           | Nine error classes, their instruments, and what is open by decision |
-| [docs/openapi/openapi.json](docs/openapi/openapi.json)                    | The committed contract                                              |
+| Document                                                                  | What it is                                                                                                    |
+| :------------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------ |
+| [LAYERED-TEST-ARCHITECTURE.md](docs/testing/LAYERED-TEST-ARCHITECTURE.md) | Why the tiers are connected rather than parallel                                                              |
+| [BROWSER-QA-METHODOLOGY.md](docs/testing/BROWSER-QA-METHODOLOGY.md)       | The error-class register, the instrument laws, and the run log                                                |
+| [SANDBOX-TODO.md](docs/testing/SANDBOX-TODO.md)                           | Nine error classes, their instruments, and what is open by decision                                           |
+| [docs/openapi/openapi.json](docs/openapi/openapi.json)                    | The committed contract                                                                                        |
+| [docs/testing/measured-counts.json](docs/testing/measured-counts.json)    | Every number on this page, as the runners reported it. G15 fails the build if the page and this file disagree |
 
 ## 🔐 Security
 
