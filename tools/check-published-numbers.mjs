@@ -173,6 +173,37 @@ for (const locale of ['en', 'pl']) {
   claimJson(f, 'landing.survey.hub.map.proof.tests.t', estateTotal);
 }
 
+// ── Coverage, published four ways. The percentages barely move; the raw counts
+//    move with every test, and two of them were already one and two behind. ──
+const c = m.coverage;
+claim('README.md', 'coverage badge', /badge\/lines_covered-([\d.]+)%25/, c.lines.pct.toFixed(1));
+for (const [row, key] of [
+  ['Lines', 'lines'],
+  ['Statements', 'statements'],
+  ['Branches', 'branches'],
+  ['Functions', 'functions'],
+]) {
+  claim(
+    'README.md',
+    `coverage row · ${row}`,
+    new RegExp(String.raw`\*\*${row}\*\*\s*\|[^|]*?\*\*([\d.]+) %\*\* \((\d+) / (\d+)\)`),
+    [c[key].pct.toFixed(2), c[key].covered, c[key].total],
+  );
+}
+
+// ── The date the page claims its numbers were measured on. A stale date is a
+//    quieter lie than a stale number and outlives it. ───────────────────────
+for (const [label, pattern] of [
+  ['badge note', /badges are static, measured (\d{4}-\d{2}-\d{2}),/],
+  ['page note', /was measured on \*\*(\d{4}-\d{2}-\d{2})\*\*/],
+]) {
+  const found = read('README.md').match(pattern);
+  if (!found) failures.push({ file: 'README.md', label, detail: 'the measurement date is gone' });
+  else if (found[1] !== m.measuredAt)
+    failures.push({ file: 'README.md', label, got: found[1], want: m.measuredAt });
+  else checked.push(`README.md · ${label}`);
+}
+
 // ── The gate table. Each row quotes its gate's headline number, and every one
 //    of those was copied out of a terminal on the day the row was written. The
 //    i18n one was already wrong by six keys before this check existed. ───────

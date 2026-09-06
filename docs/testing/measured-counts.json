@@ -1,6 +1,6 @@
 {
   "$comment": "Written by tools/measure-test-counts.mjs. Do not hand-edit — run `npm run measure:counts`. check-published-numbers.mjs asserts every published figure against this file.",
-  "measuredAt": "2026-10-08",
+  "measuredAt": "2026-09-06",
   "jest": {
     "tests": 1142,
     "suites": 131
@@ -44,6 +44,28 @@
       "proven": 19,
       "wrappers": 31,
       "waived": 12
+    }
+  },
+  "coverage": {
+    "lines": {
+      "pct": 77.72,
+      "covered": 5369,
+      "total": 6908
+    },
+    "statements": {
+      "pct": 76.34,
+      "covered": 5983,
+      "total": 7837
+    },
+    "branches": {
+      "pct": 68.21,
+      "covered": 2028,
+      "total": 2973
+    },
+    "functions": {
+      "pct": 64.71,
+      "covered": 1269,
+      "total": 1961
     }
   },
   "siblings": {

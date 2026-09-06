@@ -14,7 +14,7 @@ it is ever a bug. Every tier above that re-proves the same truth at a higher lev
 [![Coverage](https://img.shields.io/badge/lines_covered-77.7%25-yellow.svg)](#coverage-size-and-vitals)
 [![CI](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/ci-tests.yml/badge.svg)](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/ci-tests.yml)
 
-<sub>The two count badges are static, measured 2026-09-12, and reproduced by
+<sub>The two count badges are static, measured 2026-09-06, and reproduced by
 <code>npm test&nbsp;--&nbsp;--coverage</code>. The CI badge is the workflow's own and is live.</sub>
 
 ### ▶ [**checkitout.app**](https://checkitout.app) — the live demo
@@ -43,10 +43,11 @@ Three claims, and the rest of this page is where you check them:
 | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------- |
 | **The backend contract cannot silently drift.** 181 model types and 41 API services are generated from the backend's spec; three separate mechanisms refuse to let hand-written code diverge from them.                            | [Contract pipeline](#-the-contract-pipeline) |
 | **1,820 tests across nine tiers, and each proves something the others structurally cannot.** 1142 Jest · 148 BDD scenarios · 222 live-backend integration · 138 visual · 78 experience · counted by the runners, skipped included. | [Test pyramid](#-the-test-pyramid)           |
-| **Fourteen gates run before any commit lands, and each was born from a specific defect that got through.**                                                                                                                         | [Quality gates](#-quality-gates)             |
+| **Fifteen gates run before any commit lands, and each was born from a specific defect that got through.**                                                                                                                          | [Quality gates](#-quality-gates)             |
 
 > [!NOTE]
-> Every number on this page was measured on **2026-09-12** with a command you can run yourself.
+> Every number on this page was measured on **2026-09-06** with a command you can run yourself, and
+> `npm run check:published-numbers` fails the build if any of them drifts from the code.
 > Where something is designed but not yet running, it is marked ⬜ and appears in the
 > [roadmap](#-shipped--in-progress--planned). Nothing here is aspirational unless it says so.
 
@@ -210,8 +211,8 @@ counting them would move the number without moving the truth.
 
 |                          |                                                                                                Measured | Gate                            |
 | :----------------------- | ------------------------------------------------------------------------------------------------------: | :------------------------------ |
-| **Lines**                |                                                                               **77.72 %** (5368 / 6906) | fails under 75                  |
-| **Statements**           |                                                                               **76.34 %** (5982 / 7835) | fails under 74                  |
+| **Lines**                |                                                                               **77.72 %** (5369 / 6908) | fails under 75                  |
+| **Statements**           |                                                                               **76.34 %** (5983 / 7837) | fails under 74                  |
 | **Branches**             |                                                                               **68.21 %** (2028 / 2973) | fails under 66                  |
 | **Functions**            |                                                                               **64.71 %** (1269 / 1961) | fails under 62                  |
 | **Files in scope**       | **242** — every hand-written file under `src/app`; **80 of them have no test at all** and count as zero | —                               |
@@ -387,7 +388,7 @@ for this repository, and each one exists because something specific got through:
 | G12 | `typecheck` + `typecheck:e2e`         | Any type error, app or test                                                                                                                  | Strict everywhere, tests included                                                                                                                                               |
 | G13 | `build:check`                         | Template type errors — `strictTemplates` only fires in `ng build`                                                                            | `tsc --noEmit` does **not** check templates; this is the gate people skip and then wonder why their edits "aren't reaching the browser"                                         |
 | G14 | `jest --bail` + coverage threshold    | A failing test, or coverage sliding below the floor                                                                                          | —                                                                                                                                                                               |
-| G15 | `check:published-numbers`             | Any number this repo publishes about itself disagreeing with the measured one — 39 figures across the README, both locales and one component | The site said 216 generated models against a directory holding 181, and 949 Jest tests against 1,141. `check:i18n-parity` cannot see it: both are valid strings in both locales |
+| G15 | `check:published-numbers`             | Any number this repo publishes about itself disagreeing with the measured one — 54 figures across the README, both locales and one component | The site said 216 generated models against a directory holding 181, and 949 Jest tests against 1,141. `check:i18n-parity` cannot see it: both are valid strings in both locales |
 
 Run the whole wall yourself: `npm run check:full`.
 

@@ -26,7 +26,7 @@
  * the one-engine set: `bdd` + `chromium-desktop` + `perf`.
  */
 import { spawnSync } from 'node:child_process';
-import { writeFileSync, readdirSync } from 'node:fs';
+import { writeFileSync, readdirSync, readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -84,13 +84,33 @@ console.log('Measuring. This asks the runners, so it takes a minute.\n');
 // holds many cases, so it is the wrong instrument. The summary goes to stderr,
 // which is why `run` returns both streams. A red suite still reports its
 // totals, and a count is still a count.
-const jestText = run(BIN.jest, ['--silent']);
+const jestText = run(BIN.jest, ['--silent', '--coverage', '--coverageReporters=json-summary']);
 const jestTests = Number((jestText.match(/Tests:\s+(\d+) passed, (\d+) total/) ?? [])[2] ?? 0);
 const jestSuites = Number(
   (jestText.match(/Test Suites:\s+(\d+) passed, (\d+) total/) ?? [])[2] ?? 0,
 );
 if (!jestTests) throw new Error('could not read the Jest total');
 console.log(`  jest                 ${jestTests} tests in ${jestSuites} suites`);
+
+/**
+ * Coverage, from the same run. It is published four ways — a badge, a table of
+ * four rows with raw counts, a caveat calling function coverage "not good
+ * enough", and a roadmap row — and every one of those was a hand copy. The
+ * percentages barely move; the raw counts move with every test, and two of them
+ * were already one and two behind.
+ */
+const cov = JSON.parse(
+  readFileSync(join(REPO_ROOT, 'coverage', 'coverage-summary.json'), 'utf8'),
+).total;
+const coverage = Object.fromEntries(
+  ['lines', 'statements', 'branches', 'functions'].map((k) => [
+    k,
+    { pct: cov[k].pct, covered: cov[k].covered, total: cov[k].total },
+  ]),
+);
+console.log(
+  `  coverage             lines ${coverage.lines.pct}% · branches ${coverage.branches.pct}% · functions ${coverage.functions.pct}%`,
+);
 
 // bddgen must run before the bdd project can be listed — its testDir is generated.
 run(BIN.bddgen, []);
@@ -204,6 +224,7 @@ const measured = {
   offline: jestTests + tiers.visual + tiers.sandbox + tiers.msw + projects.perf,
   generatedClient: { models, services },
   gates,
+  coverage,
   // Not measured here, and labelled so. The site shows one figure for the whole
   // estate, and half of it lives in another repository; carrying the number with
   // the command that produced it is the difference between a stale claim and a
