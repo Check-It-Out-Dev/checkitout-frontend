@@ -1965,7 +1965,7 @@
               "d": "weryfikowalna zgoda · prawdziwe usuwanie"
             },
             "tests": {
-              "t": "10 724 testów",
+              "t": "10 728 testów",
               "d": "jednostkowe · integracyjne · E2E"
             },
             "graph": {
@@ -2051,7 +2051,7 @@
             "detail": "131 fixture'ów sandboksa na 2 silnikach chromium — baseliny commitowane i przeglądane jako obrazy w diffie"
           },
           "unit": {
-            "count": "1 141",
+            "count": "1 142",
             "name": "Specyfikacje jednostkowe",
             "detail": "Jest, jedna suita na komponent i serwis — działa na końcu bramki, z --bail"
           }
