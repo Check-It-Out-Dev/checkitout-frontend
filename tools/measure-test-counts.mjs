@@ -233,12 +233,15 @@ const measured = {
     backend: {
       repo: 'https://github.com/Check-It-Out-Dev/checkitout-backend',
       testMethods: 8908,
-      measuredAt: '2026-09-26',
+      // Re-run in the public clone on 2026-09-07: 8,312 @Test + 596 @ParameterizedTest.
+      // The pattern is unanchored on purpose — thirty of the parameterized ones
+      // carry a `(name = …)`, and the backend's own README counts them.
+      measuredAt: '2026-09-07',
       // Written without a backslash on purpose: this string has already been
       // through one layer of escaping and come out describing a different
       // regexp than the one that was run.
       command: [
-        'grep -rhE ' + String.raw`'^\s*@Test$'` + " src/test --include='*.java' | wc -l",
+        'grep -rhE ' + String.raw`'^\s*@Test'` + " src/test --include='*.java' | wc -l",
         'and the same for @ParameterizedTest',
       ].join('; '),
     },

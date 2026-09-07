@@ -196,6 +196,7 @@ for (const [row, key] of [
 for (const [label, pattern] of [
   ['badge note', /badges are static, measured (\d{4}-\d{2}-\d{2}),/],
   ['page note', /was measured on \*\*(\d{4}-\d{2}-\d{2})\*\*/],
+  ['coverage note', /Measured (\d{4}-\d{2}-\d{2})\. Coverage excludes/],
 ]) {
   const found = read('README.md').match(pattern);
   if (!found) failures.push({ file: 'README.md', label, detail: 'the measurement date is gone' });

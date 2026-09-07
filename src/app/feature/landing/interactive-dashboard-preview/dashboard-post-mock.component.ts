@@ -10,7 +10,7 @@ export type PostState = 'recording' | 'review' | 'approved' | 'published';
  *
  * The presentation used to stand in for "content" with an empty beige
  * rectangle (`h-14 rounded-lg bg-beige/70`) in both panes — a placeholder
- * that read as a card that never loaded (owner, 2026-09-12: "it should rather
+ * that read as a card that never loaded (owner, 2026-09-07: "it should rather
  * show already filled components"). This is the filled version: a creator
  * header, a media area with the reel glyph and its length, the caption, and
  * the reactions row. The same card plays four states so the two panes can

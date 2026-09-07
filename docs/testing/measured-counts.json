@@ -1,6 +1,6 @@
 {
   "$comment": "Written by tools/measure-test-counts.mjs. Do not hand-edit — run `npm run measure:counts`. check-published-numbers.mjs asserts every published figure against this file.",
-  "measuredAt": "2026-09-12",
+  "measuredAt": "2026-09-07",
   "jest": {
     "tests": 1147,
     "suites": 131
@@ -72,8 +72,8 @@
     "backend": {
       "repo": "https://github.com/Check-It-Out-Dev/checkitout-backend",
       "testMethods": 8908,
-      "measuredAt": "2026-09-26",
-      "command": "grep -rhE '^\\s*@Test$' src/test --include='*.java' | wc -l; and the same for @ParameterizedTest"
+      "measuredAt": "2026-09-07",
+      "command": "grep -rhE '^\\s*@Test' src/test --include='*.java' | wc -l; and the same for @ParameterizedTest"
     }
   }
 }
