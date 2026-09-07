@@ -91,6 +91,7 @@
              carries the countdown as a scaleX fill behind its label. -->
         <ol
           class="flex min-w-0 flex-1 basis-full items-center gap-1.5 lg:basis-auto"
+          [class.flex-wrap]="mode() === 'overview'"
           data-testid="dashboard-progress-steps"
         >
           @for (key of stepKeys; track key; let i = $index) {
@@ -99,50 +100,71 @@
               [class.flex-1]="stepState(i) === 'current'"
               [attr.data-testid]="'dashboard-step-' + key"
             >
-              <button
-                type="button"
-                (click)="goTo(i)"
-                [disabled]="mode() === 'overview'"
-                [attr.aria-current]="stepState(i) === 'current' ? 'step' : null"
-                [attr.aria-label]="
-                  ('landing.dashboard_preview.stepper.go_to' | transloco) +
-                  ' ' +
-                  (i + 1) +
-                  ': ' +
-                  ('landing.dashboard_preview.steps.' + key + '.title' | transloco)
-                "
-                class="relative flex h-8 w-full min-w-8 items-center justify-center gap-1.5 overflow-hidden rounded-full px-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] transition-colors disabled:cursor-default"
-                [class]="pillClass(stepState(i))"
-              >
-                @if (stepState(i) === 'current' && playing()) {
-                  <!-- how long this beat still has; re-created per beat so the
-                       fill restarts (the @for key is the beat index) -->
-                  <span
-                    class="absolute inset-0 overflow-hidden rounded-full"
-                    aria-hidden="true"
-                    data-testid="dashboard-beat-progress"
-                  >
-                    @for (beat of [step()]; track beat) {
-                      <span
-                        class="beat-bar block h-full rounded-full bg-coral-500/25"
-                        [style.animationDuration.ms]="beatMs()"
-                      ></span>
-                    }
+              @if (mode() === 'overview') {
+                <!-- the legend. In the overview nothing is current and nothing
+                     can be clicked, so a row of seven identical checks said
+                     only "done" — a visitor could not tell what any of them
+                     meant. Each step shows its own glyph, coloured by who
+                     acts (coral the firm, navy Ola), and its short name; the
+                     full title is the tooltip. -->
+                <span
+                  class="flex h-8 w-full items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-white px-2.5 text-[11px] font-medium text-ink ring-1 ring-beige"
+                  [attr.title]="'landing.dashboard_preview.steps.' + key + '.title' | transloco"
+                  data-testid="dashboard-legend-step"
+                >
+                  <mat-icon class="!h-3.5 !w-3.5 !text-sm" [class]="stepActorClass(key)">
+                    {{ stepIcon(key) }}
+                  </mat-icon>
+                  <span class="truncate">
+                    {{ 'landing.dashboard_preview.steps.' + key + '.short' | transloco }}
                   </span>
-                }
-                <span class="relative inline-flex items-center gap-1.5">
-                  @if (stepState(i) === 'done') {
-                    <mat-icon class="!h-3.5 !w-3.5 !text-sm">check</mat-icon>
-                  } @else {
-                    <span>{{ i + 1 }}</span>
-                  }
-                  @if (stepState(i) === 'current') {
-                    <span class="hidden truncate normal-case tracking-normal md:inline">
-                      {{ 'landing.dashboard_preview.steps.' + key + '.title' | transloco }}
+                </span>
+              } @else {
+                <button
+                  type="button"
+                  (click)="goTo(i)"
+                  [disabled]="mode() === 'overview'"
+                  [attr.aria-current]="stepState(i) === 'current' ? 'step' : null"
+                  [attr.aria-label]="
+                    ('landing.dashboard_preview.stepper.go_to' | transloco) +
+                    ' ' +
+                    (i + 1) +
+                    ': ' +
+                    ('landing.dashboard_preview.steps.' + key + '.title' | transloco)
+                  "
+                  class="relative flex h-8 w-full min-w-8 items-center justify-center gap-1.5 overflow-hidden rounded-full px-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] transition-colors disabled:cursor-default"
+                  [class]="pillClass(stepState(i))"
+                >
+                  @if (stepState(i) === 'current' && playing()) {
+                    <!-- how long this beat still has; re-created per beat so the
+                       fill restarts (the @for key is the beat index) -->
+                    <span
+                      class="absolute inset-0 overflow-hidden rounded-full"
+                      aria-hidden="true"
+                      data-testid="dashboard-beat-progress"
+                    >
+                      @for (beat of [step()]; track beat) {
+                        <span
+                          class="beat-bar block h-full rounded-full bg-coral-500/25"
+                          [style.animationDuration.ms]="beatMs()"
+                        ></span>
+                      }
                     </span>
                   }
-                </span>
-              </button>
+                  <span class="relative inline-flex items-center gap-1.5">
+                    @if (stepState(i) === 'done') {
+                      <mat-icon class="!h-3.5 !w-3.5 !text-sm">check</mat-icon>
+                    } @else {
+                      <span>{{ i + 1 }}</span>
+                    }
+                    @if (stepState(i) === 'current') {
+                      <span class="hidden truncate normal-case tracking-normal md:inline">
+                        {{ 'landing.dashboard_preview.steps.' + key + '.title' | transloco }}
+                      </span>
+                    }
+                  </span>
+                </button>
+              }
             </li>
           }
         </ol>

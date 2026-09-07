@@ -1197,36 +1197,43 @@
       "steps": {
         "campaign_created": {
           "title": "Kampania utworzona",
+          "short": "Kampania",
           "description": "Firma tworzy kampanię współpracy z określonymi wymaganiami i grupą docelową.",
           "action": "Utwórz kampanię"
         },
         "influencer_application": {
           "title": "Aplikacja influencera",
+          "short": "Zgłoszenie",
           "description": "Wykwalifikowani influencerzy odkrywają i aplikują do kampanii współpracy.",
           "action": "Aplikuj do kampanii"
         },
         "review_selection": {
           "title": "Przegląd i selekcja",
+          "short": "Wybór",
           "description": "Firma przegląda aplikacje i wybiera najlepiej dopasowanych influencerów do kampanii.",
           "action": "Przejrzyj aplikacje"
         },
         "agreement_planning": {
           "title": "Umowa i planowanie",
+          "short": "Umowa",
           "description": "Obie strony uzgadniają warunki, harmonogram i wymagania dotyczące treści współpracy.",
           "action": "Zaakceptuj warunki"
         },
         "content_creation": {
           "title": "Tworzenie treści",
+          "short": "Treść",
           "description": "Influencer tworzy i przesyła treści do zatwierdzenia przez markę przed publikacją.",
           "action": "Utwórz treść"
         },
         "content_approval": {
           "title": "Zatwierdzenie treści",
+          "short": "Akceptacja",
           "description": "Firma przegląda utworzone treści i zapewnia zatwierdzenie lub informację zwrotną o zmianach.",
           "action": "Zatwierdź treść"
         },
         "publication_results": {
           "title": "Publikacja i wyniki",
+          "short": "Wyniki",
           "description": "Treści są publikowane, a metryki wydajności są śledzone i udostępniane marce.",
           "action": "Opublikuj treść"
         }
@@ -1993,7 +2000,7 @@
               "d": "weryfikowalna zgoda · prawdziwe usuwanie"
             },
             "tests": {
-              "t": "10 743 testów",
+              "t": "10 745 testów",
               "d": "jednostkowe · integracyjne · E2E"
             },
             "graph": {
@@ -2079,7 +2086,7 @@
             "detail": "131 fixture'ów sandboksa na 2 silnikach chromium — baseliny commitowane i przeglądane jako obrazy w diffie"
           },
           "unit": {
-            "count": "1 147",
+            "count": "1 148",
             "name": "Specyfikacje jednostkowe",
             "detail": "Jest, jedna suita na komponent i serwis — działa na końcu bramki, z --bail"
           }

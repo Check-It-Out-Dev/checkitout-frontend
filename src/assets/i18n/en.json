@@ -1197,36 +1197,43 @@
       "steps": {
         "campaign_created": {
           "title": "Campaign Created",
+          "short": "Campaign",
           "description": "Brand creates a collaboration campaign with specific requirements and target audience.",
           "action": "Create Campaign"
         },
         "influencer_application": {
           "title": "Influencer Application",
+          "short": "Application",
           "description": "Qualified influencers discover and apply to join the collaboration campaign.",
           "action": "Apply to Campaign"
         },
         "review_selection": {
           "title": "Review & Selection",
+          "short": "Selection",
           "description": "Brand reviews applications and selects the best-fit influencers for their campaign.",
           "action": "Review Applications"
         },
         "agreement_planning": {
           "title": "Agreement & Planning",
+          "short": "Agreement",
           "description": "Both parties agree on terms, timeline, and content requirements for the collaboration.",
           "action": "Accept Terms"
         },
         "content_creation": {
           "title": "Content Creation",
+          "short": "Content",
           "description": "Influencer creates and submits content for brand approval before publication.",
           "action": "Create Content"
         },
         "content_approval": {
           "title": "Content Approval",
+          "short": "Approval",
           "description": "Brand reviews the created content and provides approval or feedback for revisions.",
           "action": "Approve Content"
         },
         "publication_results": {
           "title": "Publication & Results",
+          "short": "Results",
           "description": "Content is published and performance metrics are tracked and shared with the brand.",
           "action": "Publish Content"
         }
@@ -1993,7 +2000,7 @@
               "d": "provable consent · real erasure"
             },
             "tests": {
-              "t": "10,743 tests",
+              "t": "10,745",
               "d": "unit · integration · E2E"
             },
             "graph": {
@@ -2079,7 +2086,7 @@
             "detail": "131 sandbox fixtures on 2 chromium engines — committed baselines, reviewed as images in the diff"
           },
           "unit": {
-            "count": "1,147",
+            "count": "1,148",
             "name": "Unit specs",
             "detail": "Jest, one suite per component and service — runs last in the gate, --bail"
           }

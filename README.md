@@ -10,7 +10,7 @@ it is ever a bug. Every tier above that re-proves the same truth at a higher lev
 [![License: MIT](https://img.shields.io/badge/License-MIT-1f6feb.svg)](LICENSE)
 [![Angular](https://img.shields.io/badge/Angular-22-dd0031.svg)](https://angular.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178c6.svg)](https://www.typescriptlang.org/)
-[![Tests](https://img.shields.io/badge/tests-1835-15c213.svg)](#-the-test-pyramid)
+[![Tests](https://img.shields.io/badge/tests-1837-15c213.svg)](#-the-test-pyramid)
 [![Coverage](https://img.shields.io/badge/lines_covered-77.8%25-yellow.svg)](#coverage-size-and-vitals)
 [![CI](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/ci-tests.yml/badge.svg)](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/ci-tests.yml)
 
@@ -42,7 +42,7 @@ Three claims, and the rest of this page is where you check them:
 | Claim                                                                                                                                                                                                                              | Where to check it                            |
 | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------- |
 | **The backend contract cannot silently drift.** 181 model types and 41 API services are generated from the backend's spec; three separate mechanisms refuse to let hand-written code diverge from them.                            | [Contract pipeline](#-the-contract-pipeline) |
-| **1,835 tests across nine tiers, and each proves something the others structurally cannot.** 1147 Jest · 148 BDD scenarios · 222 live-backend integration · 138 visual · 79 experience · counted by the runners, skipped included. | [Test pyramid](#-the-test-pyramid)           |
+| **1,837 tests across nine tiers, and each proves something the others structurally cannot.** 1148 Jest · 148 BDD scenarios · 222 live-backend integration · 138 visual · 79 experience · counted by the runners, skipped included. | [Test pyramid](#-the-test-pyramid)           |
 | **Fifteen gates run before any commit lands, and each was born from a specific defect that got through.**                                                                                                                          | [Quality gates](#-quality-gates)             |
 
 > [!NOTE]
@@ -73,7 +73,7 @@ npm run build:demo
 npx http-server dist/check-it-out-fe-greenfield/browser
 ```
 
-That is also enough to run **1,418 of the 1,835 tests**: every Jest test, the fifteen-gate wall, and
+That is also enough to run **1,420 of the 1,837 tests**: every Jest test, the fifteen-gate wall, and
 the sandbox, visual and experience tiers.
 
 ### 3 · Run the whole platform — a weekend, and some of it costs money
@@ -102,7 +102,7 @@ public repository looks like a leak whether or not it is one.
 <summary><b>Every test command</b></summary>
 
 ```bash
-npm test                  # 1147 Jest unit + component tests          ~20 s
+npm test                  # 1148 Jest unit + component tests          ~20 s
 npm test -- --coverage    # …with coverage, gated by a threshold
 npm run check:full        # the entire 14-gate wall, exactly as CI runs it
 npm run test:bdd          # 148 Cucumber scenarios       (needs the stack)
@@ -137,14 +137,14 @@ npm run openapi:cycle     # regenerate the client from the backend spec
 > teaches people to ignore red.
 >
 > **What runs with no setup at all:** the demo build (every `/api` answered in the browser), all
-> 1147 Jest tests, the fifteen-gate wall, and the sandbox and visual tiers. That is 1,418 of
-> the 1,835 tests, on a clean clone, with no account and no key.
+> 1148 Jest tests, the fifteen-gate wall, and the sandbox and visual tiers. That is 1,420 of
+> the 1,837 tests, on a clean clone, with no account and no key.
 
 ---
 
 ## 🔺 The test pyramid
 
-**1,835 tests.** Five layers in the pyramid, four tiers beside it. The point is not the count — it
+**1,837 tests.** Five layers in the pyramid, four tiers beside it. The point is not the count — it
 is that the layers are **connected**: each is built from the artifacts of the one below, so a
 regression cannot pass a lower layer and hide in a higher one. The tiers beside the pyramid are
 there because they answer questions the chain structurally cannot.
@@ -159,7 +159,7 @@ there because they answer questions the chain structurally cannot.
                     │  screens a real user touches                 │  needs the full stack
                 ┌───┴──────────────────────────────────────────────┴───┐
                 │  L2 · COMPONENT                                      │
-                │  UI logic against service interfaces, never HTTP     │  1147 tests
+                │  UI logic against service interfaces, never HTTP     │  1148 tests
             ┌───┴──────────────────────────────────────────────────────┴───┐
             │  L1 · SERVICE                                                │  131 suites
             │  every wrapper's URL, verb, body and return type             │  ~20 s
@@ -175,7 +175,7 @@ there because they answer questions the chain structurally cannot.
    ▸ SCENARIOS   · multi-actor flows     6 tests ·  3 files · two people, one campaign
    ▸ EXPERIENCE  · perf                 78 tests · 15 files · smooth, readable, honest in motion
 
-   1147 Jest + 688 Playwright = 1,835 tests. Counted by the runners themselves,
+   1148 Jest + 689 Playwright = 1,837 tests. Counted by the runners themselves,
    skipped and fixme included — `npx playwright test <dir> --list` says so.
 ```
 
@@ -211,10 +211,10 @@ counting them would move the number without moving the truth.
 
 |                          |                                                                                                Measured | Gate                            |
 | :----------------------- | ------------------------------------------------------------------------------------------------------: | :------------------------------ |
-| **Lines**                |                                                                               **77.83 %** (5405 / 6944) | fails under 75                  |
-| **Statements**           |                                                                               **76.47 %** (6027 / 7881) | fails under 74                  |
-| **Branches**             |                                                                               **68.41 %** (2047 / 2992) | fails under 66                  |
-| **Functions**            |                                                                               **64.90 %** (1280 / 1972) | fails under 62                  |
+| **Lines**                |                                                                               **77.84 %** (5407 / 6946) | fails under 75                  |
+| **Statements**           |                                                                               **76.48 %** (6029 / 7883) | fails under 74                  |
+| **Branches**             |                                                                               **68.43 %** (2049 / 2994) | fails under 66                  |
+| **Functions**            |                                                                               **64.94 %** (1282 / 1974) | fails under 62                  |
 | **Files in scope**       | **242** — every hand-written file under `src/app`; **80 of them have no test at all** and count as zero | —                               |
 | **Test code : app code** |                                              **0.75 : 1** — 50,639 lines of tests against 67,409 of app | —                               |
 | **Initial bundle**       |                                                                **1.09 MB** raw · **250 kB** transferred | 1250 kB warning / 1500 kB error |
@@ -293,7 +293,7 @@ flowchart TD
     D["⚙️ src/app/api<br/>181 models · 41 services · never hand-edited"]
     E["🔒 src/app/core<br/>one typed wrapper per domain"]
     F["✅ L0 — compile-time type proofs"]
-    G["🧪 L1 · L2 — 1147 Jest tests"]
+    G["🧪 L1 · L2 — 1148 Jest tests"]
     H["🎭 L3 — 148 BDD scenarios · 222 integration tests<br/>against the live backend"]
     I["🚫 a drifted signature stops the build"]
     J["🖼️ L4 — visual and experience tiers"]
@@ -376,7 +376,7 @@ for this repository, and each one exists because something specific got through:
 | :-- | :------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | G1  | `check:no-legacy-ui`                  | Any import from the old template library                                                                                                     | The rewrite's whole point                                                                                                                                                       |
 | G2  | `check:api-wrappers`                  | Feature code importing the generated client directly                                                                                         | `Observable<any>` leaking through casts                                                                                                                                         |
-| G3  | `check:i18n-parity`                   | `en.json` and `pl.json` having different key sets — 4492 keys and 52 templates, checked pairwise                                             | A typo'd key shipping as raw text                                                                                                                                               |
+| G3  | `check:i18n-parity`                   | `en.json` and `pl.json` having different key sets — 4499 keys and 52 templates, checked pairwise                                             | A typo'd key shipping as raw text                                                                                                                                               |
 | G4  | `check:visual-fixture-coverage`       | A sandbox fixture with no visual baseline — 140/140 registered and captured                                                                  | Silent coverage loss when new fixtures land                                                                                                                                     |
 | G5  | `check:visual-baseline-freshness`     | Baselines older than the components they claim to show                                                                                       | An editorial sweep touched 27 templates without regenerating baselines                                                                                                          |
 | G6  | `check:integration-cucumber-citation` | An integration spec that does not cite the backend feature it ports — 67/67 cite theirs                                                      | The tier is a _port_ of the backend corpus, not a parallel one                                                                                                                  |
@@ -530,7 +530,7 @@ and **[#graph-dev](https://checkitout.app/technical-survey/engineering#graph-dev
 | :-- | :------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------- |
 | ✅  | Contract pipeline, end to end                            | Spec → codegen → wrappers → compile-time proofs → every tier                                                                                    |
 | ✅  | 14-gate wall, local and in CI                            | Identical locally and on pull requests                                                                                                          |
-| ✅  | 1147 Jest unit + component tests                         | Coverage measured and now gated                                                                                                                 |
+| ✅  | 1148 Jest unit + component tests                         | Coverage measured and now gated                                                                                                                 |
 | ✅  | 148 BDD scenarios from the backend corpus                | 27 feature files; 26 of 34 backend features ported, 8 waived, gated by G7                                                                       |
 | ✅  | 222 live-backend integration tests                       | Each citing the feature it ports                                                                                                                |
 | ✅  | 138 visual snapshots over 140 fixtures + 41 parity diffs | Coverage gated by G4, freshness by G5                                                                                                           |

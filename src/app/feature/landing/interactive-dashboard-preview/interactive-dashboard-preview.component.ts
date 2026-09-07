@@ -446,6 +446,16 @@ export class InteractiveDashboardPreviewComponent implements OnDestroy {
     }
   }
 
+  /** The step's glyph, for the overview legend — the same one its channel badge and cargo carry. */
+  stepIcon(key: string): string {
+    return BADGES[key].icon;
+  }
+
+  /** Coral when the firm acts, navy when Ola does: the channel badge's colours, on the legend. */
+  stepActorClass(key: string): string {
+    return BADGES[key].actor === 'brand' ? 'text-coral-600' : 'text-navy-500';
+  }
+
   /** A click on a step pill: jump there. Keeps playing if it was playing,
    * with the new beat's own hold; stays paused if it was paused. */
   goTo(index: number): void {

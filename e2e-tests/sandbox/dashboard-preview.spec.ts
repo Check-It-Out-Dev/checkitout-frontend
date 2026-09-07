@@ -235,4 +235,41 @@ test.describe('Sandbox · InteractiveDashboardPreviewComponent', () => {
     // The overview is the same stage as the story — same height, not content-sized.
     expect(geo.stage, 'the overview stage is not the fixed height').toBe(480);
   });
+  /**
+   * The overview's stepper is a legend, not a stepper: seven identical checks
+   * told a visitor nothing. Each pill now carries the step's glyph and short
+   * name, and the row has to hold all seven on one line at lg and wrap, not
+   * cut, on a phone.
+   */
+  test('the overview legend names every step and fits the bar', async ({ page }) => {
+    for (const width of [1440, 1280, 412]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto('/__sandbox/landing');
+      await page.waitForLoadState('networkidle');
+      const bar = page.getByTestId('dashboard-progress-steps');
+      await expect(bar).toHaveCSS('display', 'flex');
+      await expect(bar.getByTestId('dashboard-legend-step')).toHaveCount(7);
+      const geo = await bar.evaluate((ol) => {
+        const pills = [
+          ...ol.querySelectorAll('[data-testid="dashboard-legend-step"]'),
+        ] as HTMLElement[];
+        const label = (p: HTMLElement) => p.querySelector('span')!;
+        return {
+          rows: new Set(pills.map((p) => Math.round(p.getBoundingClientRect().top))).size,
+          cut: pills.filter((p) => label(p).scrollWidth > label(p).clientWidth + 1).length,
+          names: pills.map((p) => label(p).textContent!.trim()),
+          titled: pills.every((p) => (p.getAttribute('title') ?? '').length > 0),
+          right: Math.round(ol.getBoundingClientRect().right),
+          viewport: window.innerWidth,
+        };
+      });
+      expect(geo.cut, `at ${width}: a short name is cut off`).toBe(0);
+      expect(new Set(geo.names).size, `at ${width}: names repeat`).toBe(7);
+      expect(geo.titled, `at ${width}: a pill has no tooltip`).toBe(true);
+      expect(geo.right, `at ${width}: the legend leaves the viewport`).toBeLessThanOrEqual(
+        geo.viewport,
+      );
+      if (width >= 1280) expect(geo.rows, `at ${width}: the legend wrapped`).toBe(1);
+    }
+  });
 });

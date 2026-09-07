@@ -49,6 +49,40 @@ describe('InteractiveDashboardPreviewComponent', () => {
     }
   });
 
+  it('in the overview the pills are a legend: each step shows its glyph and its short name', () => {
+    const legend: NodeListOf<HTMLElement> = fixture.nativeElement.querySelectorAll(
+      '[data-testid="dashboard-legend-step"]',
+    );
+    expect(legend).toHaveLength(component.stepKeys.length);
+    const icons = [...legend].map((el) => el.querySelector('mat-icon')!.textContent!.trim());
+    expect(icons).toEqual([
+      'campaign',
+      'send',
+      'fact_check',
+      'handshake',
+      'videocam',
+      'verified',
+      'insights',
+    ]);
+    for (const el of legend) {
+      expect(el.getAttribute('title')).toBeTruthy();
+      expect(el.querySelector('span')!.textContent!.trim().length).toBeGreaterThan(0);
+    }
+    // Nothing to click in the overview; the simulation gets its buttons back.
+    expect(
+      fixture.nativeElement.querySelector('[data-testid="dashboard-progress-steps"] button'),
+    ).toBeNull();
+    component.setMode('simulation');
+    fixture.detectChanges();
+    expect(
+      fixture.nativeElement.querySelectorAll('[data-testid="dashboard-legend-step"]'),
+    ).toHaveLength(0);
+    expect(
+      fixture.nativeElement.querySelectorAll('[data-testid="dashboard-progress-steps"] button'),
+    ).toHaveLength(component.stepKeys.length);
+    component.setMode('overview'); // stops the story's timer
+  });
+
   it('opening the presentation starts playing it', () => {
     jest.useFakeTimers();
     try {
