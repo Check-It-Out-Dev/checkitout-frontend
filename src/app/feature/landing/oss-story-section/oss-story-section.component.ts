@@ -336,6 +336,24 @@ interface TeamMember {
   `,
   styles: [
     `
+      /* Preflight is off in this app; the landing page removes the user-agent
+         margins on headings, paragraphs and lists, and this section renders
+         inside it with its own encapsulation, so it does the same. */
+      h1,
+      h2,
+      h3,
+      p,
+      ul,
+      ol {
+        margin: 0;
+      }
+      /* The prose here runs in paragraph pairs; a paragraph following a
+         paragraph gets one line of air — the gap the user agent used to give
+         every paragraph, now given on purpose to the ones that need it. */
+      p + p {
+        margin-top: 1em;
+      }
+
       /* Blueprint grid substrate — the same restrained texture the survey and
          demo hubs stand on, so the teaser reads as a doorway to them. */
       .oss-grid {

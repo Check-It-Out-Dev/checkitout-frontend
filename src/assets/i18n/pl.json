@@ -1683,11 +1683,7 @@
           "per_day": "dziennie",
           "campaigns": "MIESIĘCZNE KAMPANIE",
           "campaigns_count": "10",
-          "growth_benefits": {
-            "title": "KORZYŚCI BUSINESS",
-            "priority_support": "Priorytetowe wsparcie",
-            "priority_support_desc": "Skontaktujemy się z Tobą na żywo w ciągu 24h"
-          },
+          "includes_growth": "Wszystko z planu Business, oraz:",
           "premium_benefits": {
             "title": "KORZYŚCI ENTERPRISE",
             "brand_badge": "Odznaka premium marki",
@@ -2000,7 +1996,7 @@
               "d": "weryfikowalna zgoda · prawdziwe usuwanie"
             },
             "tests": {
-              "t": "10 745 testów",
+              "t": "10 748 testów",
               "d": "jednostkowe · integracyjne · E2E"
             },
             "graph": {

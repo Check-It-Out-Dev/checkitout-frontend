@@ -8,8 +8,8 @@
   "playwright": {
     "projects": {
       "bdd": 148,
-      "chromium-desktop": 462,
-      "mobile-chrome": 462,
+      "chromium-desktop": 465,
+      "mobile-chrome": 465,
       "perf": 79,
       "mobile-safari": 41,
       "tablet-safari": 41
@@ -17,21 +17,21 @@
     "tiers": {
       "integration": 222,
       "visualParity": 41,
-      "sandbox": 54,
+      "sandbox": 57,
       "scenarios": 6,
       "msw": 1,
       "visual": 138
     },
-    "distinct": 689
+    "distinct": 692
   },
-  "total": 1837,
-  "offline": 1420,
+  "total": 1840,
+  "offline": 1423,
   "generatedClient": {
     "models": 181,
     "services": 41
   },
   "gates": {
-    "i18nKeys": 4499,
+    "i18nKeys": 4497,
     "i18nTemplates": 52,
     "visualFixtures": 140,
     "integrationSpecsCiting": 67,

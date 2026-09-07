@@ -109,6 +109,8 @@ const BADGES: Record<string, { icon: string; actor: 'brand' | 'influencer' }> = 
        row's <ol> carried 16 px each way and made the bar 80 px instead of 56.
        Measured, not guessed — see e2e-tests/sandbox/dashboard-preview.spec.ts.
        Scoped to this component by emulated encapsulation. */
+    h1,
+    h2,
     h3,
     p,
     ol,

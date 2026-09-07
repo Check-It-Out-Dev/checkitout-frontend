@@ -46,7 +46,7 @@
         </span>
         <span class="block">{{ 'landing.hero.title_suffix' | transloco }}</span>
       </h1>
-      <p class="mb-8 max-w-xl text-base leading-relaxed text-slate2 sm:text-lg">
+      <p class="mb-8 mt-6 max-w-xl text-base leading-relaxed text-slate2 sm:text-lg">
         {{ 'landing.hero.description' | transloco }}
       </p>
       <!-- Above `sm` the pills keep their natural width: when both do not fit
@@ -497,10 +497,15 @@
         {{ 'landing.pricing.quote' | transloco }}
       </p>
     </div>
-    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+    <!-- md: one row per part of a plan — name, description, price, campaigns,
+         benefits, button — shared by the three cards through a subgrid, so a
+         price sits at the same height whatever the description above it
+         wrapped to, and the buttons line up. The benefits row is the 1fr
+         track: it takes whatever height the fullest card needs. -->
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-3 md:grid-rows-[auto_auto_auto_auto_1fr_auto]">
       @for (p of pricingPlans; track p.id) {
         <article
-          class="lift relative flex flex-col gap-4 rounded-2xl border bg-white p-8"
+          class="lift relative flex flex-col gap-4 rounded-2xl border bg-white p-8 md:grid md:grid-rows-subgrid md:row-span-6"
           [class.border-beige]="!p.highlight"
           [class.border-coral-500]="p.highlight"
           [class.shadow-lg]="p.highlight"
@@ -544,25 +549,30 @@
               {{ p.campaignsCountKey | transloco }}
             </p>
           </div>
-          @if (p.benefitBoxes; as boxes) {
-            @for (b of boxes; track b.titleKey) {
-              <div class="rounded-xl border border-beige bg-cream/60 p-4">
-                <p
-                  class="font-mono text-[0.6rem] font-medium uppercase tracking-[0.18em] text-coral-700"
-                >
-                  {{ b.titleKey | transloco }}
-                </p>
-                <p class="mt-1.5 text-sm font-semibold text-ink">{{ b.nameKey | transloco }}</p>
-                <p class="mt-0.5 text-xs leading-relaxed text-slate2">
-                  {{ b.descKey | transloco }}
-                </p>
-              </div>
+          <div class="flex flex-col gap-4 empty:hidden md:row-start-5">
+            @if (p.inheritsKey) {
+              <p class="text-sm text-slate2">{{ p.inheritsKey | transloco }}</p>
             }
-          }
+            @if (p.benefitBoxes; as boxes) {
+              @for (b of boxes; track b.titleKey) {
+                <div class="rounded-xl border border-beige bg-cream/60 p-4">
+                  <p
+                    class="font-mono text-[0.6rem] font-medium uppercase tracking-[0.18em] text-coral-700"
+                  >
+                    {{ b.titleKey | transloco }}
+                  </p>
+                  <p class="mt-1.5 text-sm font-semibold text-ink">{{ b.nameKey | transloco }}</p>
+                  <p class="mt-0.5 text-xs leading-relaxed text-slate2">
+                    {{ b.descKey | transloco }}
+                  </p>
+                </div>
+              }
+            }
+          </div>
           @if (p.highlight) {
             <a
               routerLink="/auth/sign-up/business"
-              class="cta-primary !mt-auto"
+              class="cta-primary !mt-auto md:row-start-6"
               [attr.data-testid]="'landing-pricing-cta-' + p.id"
             >
               {{ p.ctaKey | transloco }}
@@ -571,7 +581,7 @@
           } @else {
             <a
               routerLink="/auth/sign-up/business"
-              class="cta-secondary !mt-auto"
+              class="cta-secondary !mt-auto md:row-start-6"
               [attr.data-testid]="'landing-pricing-cta-' + p.id"
             >
               {{ p.ctaKey | transloco }}
@@ -586,16 +596,18 @@
          from 3999 zł/month); the contact CTA routes to the public support
          form (legacy scrolled to a contact anchor the greenfield FAQ does
          not carry). -->
-    <!-- lg: the quote row reserves three lines on both cards, so headings and
-         prices sit at the same height even when one quote wraps more than
-         the other; the cards stretch to one height and the CTAs sit at the
-         bottom (mt-auto). -->
-    <div class="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-2">
+    <!-- lg: seven shared rows — quote, title, price, subtitle (Enterprise
+         only), description, features, button — through a subgrid, so the
+         titles and prices sit level however a quote wraps, and the buttons
+         line up at the bottom. -->
+    <div
+      class="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-2 lg:grid-rows-[auto_auto_auto_auto_auto_1fr_auto]"
+    >
       <article
-        class="lift flex flex-col gap-4 rounded-2xl border border-beige bg-white p-8"
+        class="lift flex flex-col gap-4 rounded-2xl border border-beige bg-white p-8 lg:grid lg:grid-rows-subgrid lg:row-span-7"
         data-testid="landing-pricing-hands-free"
       >
-        <p class="font-display text-lg italic text-slate2 lg:min-h-[5.25rem]">
+        <p class="font-display text-lg italic text-slate2">
           {{ 'landing.pricing.hands_free.quote' | transloco }}
         </p>
         <h3 class="font-display text-3xl text-ink">
@@ -608,10 +620,10 @@
             }}{{ 'landing.pricing.hands_free.per' | transloco }}
           </span>
         </p>
-        <p class="text-sm leading-relaxed text-slate2">
+        <p class="text-sm leading-relaxed text-slate2 lg:row-start-5">
           {{ 'landing.pricing.hands_free.description' | transloco }}
         </p>
-        <ul class="flex flex-col gap-2">
+        <ul class="flex flex-col gap-2 lg:row-start-6">
           @for (f of $any('landing.pricing.hands_free.features' | transloco); track f) {
             <li class="flex items-start gap-2 text-sm text-slate2">
               <mat-icon class="mt-0.5 !h-4 !w-4 shrink-0 !text-base text-emerald-500">
@@ -621,16 +633,16 @@
             </li>
           }
         </ul>
-        <a routerLink="/support" class="cta-secondary !mt-auto self-start">
+        <a routerLink="/support" class="cta-secondary !mt-auto self-start lg:row-start-7">
           {{ 'landing.pricing.hands_free.cta' | transloco }}
         </a>
       </article>
 
       <article
-        class="lift flex flex-col gap-4 rounded-2xl border border-beige bg-white p-8"
+        class="lift flex flex-col gap-4 rounded-2xl border border-beige bg-white p-8 lg:grid lg:grid-rows-subgrid lg:row-span-7"
         data-testid="landing-pricing-enterprise"
       >
-        <p class="font-display text-lg italic text-slate2 lg:min-h-[5.25rem]">
+        <p class="font-display text-lg italic text-slate2">
           {{ 'landing.pricing.enterprise.quote' | transloco }}
         </p>
         <h3 class="font-display text-3xl text-ink">
@@ -662,7 +674,7 @@
             </li>
           }
         </ul>
-        <a routerLink="/support" class="cta-secondary !mt-auto self-start">
+        <a routerLink="/support" class="cta-secondary !mt-auto self-start lg:row-start-7">
           {{ 'landing.pricing.enterprise.cta' | transloco }}
         </a>
       </article>

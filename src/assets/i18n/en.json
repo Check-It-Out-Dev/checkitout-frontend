@@ -1683,11 +1683,7 @@
           "per_day": "per day",
           "campaigns": "MONTHLY CAMPAIGNS",
           "campaigns_count": "10",
-          "growth_benefits": {
-            "title": "BUSINESS BENEFITS",
-            "priority_support": "Priority support",
-            "priority_support_desc": "We will connect with you live within 24h"
-          },
+          "includes_growth": "Everything in Business, plus:",
           "premium_benefits": {
             "title": "ENTERPRISE BENEFITS",
             "brand_badge": "Premium brand badge",
@@ -2000,7 +1996,7 @@
               "d": "provable consent · real erasure"
             },
             "tests": {
-              "t": "10,745",
+              "t": "10,748",
               "d": "unit · integration · E2E"
             },
             "graph": {
