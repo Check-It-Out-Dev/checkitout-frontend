@@ -1,4 +1,5 @@
 import { OVERLAY_DEFAULT_CONFIG } from '@angular/cdk/overlay';
+import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogConfig } from '@angular/material/dialog';
 import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
 import { APP_INITIALIZER, ApplicationConfig, isDevMode } from '@angular/core';
 import { MatPaginatorIntl } from '@angular/material/paginator';
@@ -139,5 +140,13 @@ export const appConfig: ApplicationConfig = {
     // after a hard navigation) is silently dropped — surfaced by the logout
     // oracle once guarded routes started SSR-rendering (2026-09-02).
     provideClientHydration(withNoIncrementalHydration(), withEventReplay()),
+    // A guided tour cannot recover a dialog that a click on the backdrop
+    // dismissed — the beat points at a control that is gone. In the demo a
+    // dialog closes only through its own buttons; production keeps the
+    // Material default.
+    {
+      provide: MAT_DIALOG_DEFAULT_OPTIONS,
+      useFactory: () => Object.assign(new MatDialogConfig(), { disableClose: isDemoMode() }),
+    },
   ],
 };

@@ -100,7 +100,7 @@ import { buildZip } from './demo-export-zip';
           </button>
         </div>
       </div>
-      <div class="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-5">
+      <div class="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-5">
         @for (s of life; track s.k; let i = $index, last = $last) {
           <div
             class="relative rounded-xl p-4 ring-1 transition-all duration-300"

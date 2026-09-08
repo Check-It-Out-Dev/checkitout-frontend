@@ -1,3 +1,4 @@
+account_balance
 account_circle
 account_tree
 add
@@ -66,6 +67,7 @@ info_outline
 insert_drive_file
 insights
 instagram
+lan
 layers
 light_mode
 location_on
@@ -94,10 +96,12 @@ picture_as_pdf
 pl
 place
 play_arrow
-play_circle
+psychology
+receipt_long
 refresh
 remove_circle_outline
 replay
+rocket_launch
 rose
 rule
 savings
@@ -110,16 +114,19 @@ share
 shield
 sky
 smartphone
+speed
 sports_tennis
 stars
 storage
 storefront
+summarize
 support_agent
 swap_horiz
 task_alt
 terminal
 thumb_down
 thumb_up
+translate
 travel_explore
 trending_down
 trending_up
@@ -132,3 +139,4 @@ visibility
 visibility_off
 vpn_key
 warning
+web

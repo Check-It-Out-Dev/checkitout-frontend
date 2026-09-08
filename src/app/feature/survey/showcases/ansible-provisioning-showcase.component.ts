@@ -48,7 +48,7 @@ import { CodePanelComponent } from '../ui/code-panel.component';
           </button>
         </div>
       </div>
-      <div class="mt-2 space-y-3">
+      <div class="mt-5 space-y-3">
         @for (p of phases; track p.key; let i = $index) {
           <div
             class="relative overflow-hidden rounded-xl border p-4 pl-5 transition-all duration-300"

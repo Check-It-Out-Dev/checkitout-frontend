@@ -116,15 +116,18 @@ describe('demo fixtures', () => {
     expect(res.vatStatus).toBe('Czynny');
   });
 
-  it('serves the answered support thread to both my-tickets and the admin queue', () => {
+  it('serves the seeded support thread, unanswered, to both my-tickets and the admin queue', () => {
     const mine = matchDemoFixture('GET', '/api/support/ticket/my-tickets', null) as {
-      content?: Array<{ ticketReference?: string; responses?: unknown[] }>;
+      content?: Array<{ ticketReference?: string; responses?: unknown[]; status?: string }>;
     };
     const queue = matchDemoFixture('GET', '/api/support/ticket', null) as {
       content?: Array<{ ticketReference?: string }>;
     };
     expect(mine.content?.[0]?.ticketReference).toBe('CIO-2026-0189');
-    expect(mine.content?.[0]?.responses?.length).toBe(1);
+    // The admin tour writes the first reply itself: the thread it opens holds
+    // only the customer's message.
+    expect(mine.content?.[0]?.responses?.length).toBe(0);
+    expect(mine.content?.[0]?.status).toBe('OPEN');
     expect(queue.content?.[0]?.ticketReference).toBe('CIO-2026-0189');
   });
 
@@ -273,7 +276,7 @@ describe('demo fixtures', () => {
     expect(updated.title).toBe('Edytowany tytuł');
   });
 
-  it('plays the whole upgrade beat — consent, same-origin checkout, plan flip', () => {
+  it('plays the whole upgrade beat — consent, a checkout to pay in, then the plan flip', () => {
     // Business before the upgrade…
     const before = matchDemoFixture('GET', '/api/subscription/status', null) as {
       currentPlanName?: string;
@@ -290,6 +293,14 @@ describe('demo fixtures', () => {
       targetPlan: 'ENTERPRISE',
     }) as { sessionUrl?: string };
     expect(session.sessionUrl).toBe('/user/settings/plan-billing');
+    // Opening the checkout sells nothing yet: the tier is noted for the
+    // simulator, and the plan flips only when it is paid for (the webhook).
+    expect(sessionStorage.getItem('demoCheckout')).toBe('ENTERPRISE');
+    const unpaid = matchDemoFixture('GET', '/api/subscription/status', null) as {
+      currentPlanName?: string;
+    };
+    expect(unpaid.currentPlanName).toBe('Business');
+    sessionStorage.setItem('demoPlan', 'ENTERPRISE');
 
     // …where the plan is already flipped (the webhook-equivalent), the limit
     // matches the Enterprise offer, and the upgrade's invoice tops the list.
@@ -318,11 +329,11 @@ describe('demo fixtures', () => {
     ) as { opportunityStatus?: { value?: string } };
     expect(companyAccept.opportunityStatus?.value).toBe('ACCEPTED_BY_COMPANY');
 
-    // 8102 already carries the company's acceptance: the same accept action
-    // is now the influencer's counter-signature (the P0#5 machinery).
+    // 8103 (Piotr) already carries the company's acceptance: the same accept
+    // action is now the influencer's counter-signature (the P0#5 machinery).
     const influencerAccept = matchDemoFixture(
       'PATCH',
-      '/api/applied-opportunity/status/update/8102?accept=true',
+      '/api/applied-opportunity/status/update/8103?accept=true',
       null,
     ) as { opportunityStatus?: { value?: string } };
     expect(influencerAccept.opportunityStatus?.value).toBe('ACCEPTED_BY_INFLUENCER');
@@ -580,7 +591,12 @@ describe('demo fixtures', () => {
   });
 
   describe('company accept/decline round-trip', () => {
-    beforeEach(() => resetDemoTourStores());
+    // The store is persona-scoped: the company sees Ola's fresh row and the
+    // three creators on its summer campaign (Piotr, Marta, Kuba).
+    beforeEach(() => {
+      localStorage.setItem('demoRole', 'COMPANY');
+      resetDemoTourStores();
+    });
     afterEach(() => resetDemoTourStores());
 
     it('moves the accepted application into the in-progress tab and its counter', () => {
@@ -588,7 +604,7 @@ describe('demo fixtures', () => {
         inProgress: number;
         newOpportunities: number;
       };
-      expect(before).toMatchObject({ inProgress: 1, newOpportunities: 1 });
+      expect(before).toMatchObject({ inProgress: 3, newOpportunities: 1 });
 
       matchDemoFixture(
         'PATCH',
@@ -601,14 +617,14 @@ describe('demo fixtures', () => {
         inProgress: number;
         newOpportunities: number;
       };
-      expect(after).toMatchObject({ inProgress: 2, newOpportunities: 0 });
+      expect(after).toMatchObject({ inProgress: 4, newOpportunities: 0 });
       const inProgress = matchDemoFixture(
         'GET',
         '/api/applied-opportunity/paged',
         null,
         new HttpParams({ fromObject: { 'filters.opportunityStatus': 'ACCEPTED_BY_COMPANY' } }),
       ) as { content: Array<{ id?: number }> };
-      expect(inProgress.content.map((r) => r.id)).toEqual([8101, 8102]);
+      expect(inProgress.content.map((r) => r.id)).toEqual([8101, 8103]);
     });
 
     it('a new tour restores the seed statuses', () => {
@@ -622,7 +638,16 @@ describe('demo fixtures', () => {
       const stats = matchDemoFixture('GET', '/api/applied-opportunity/statistics', null) as {
         inProgress: number;
       };
-      expect(stats.inProgress).toBe(1);
+      expect(stats.inProgress).toBe(3);
+    });
+
+    it('the influencer sees only her own rows', () => {
+      localStorage.setItem('demoRole', 'INFLUENCER');
+      const stats = matchDemoFixture('GET', '/api/applied-opportunity/statistics', null) as {
+        total: number;
+        inProgress: number;
+      };
+      expect(stats).toMatchObject({ total: 2, inProgress: 1 });
     });
   });
 });

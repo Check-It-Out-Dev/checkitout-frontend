@@ -296,8 +296,11 @@ export function currentDemoUser(): UserDtoOut {
 }
 
 // ── Campaign world (three campaigns, one application mid-lifecycle) ─────────
+/** The demo company on the campaigns it owns — the detail page's owner controls read it. */
+const DEMO_OWNER = { id: DEMO_COMPANY.id, name: DEMO_COMPANY.name } as never;
+
 const CAMPAIGNS = [
-  buildOpportunity(),
+  buildOpportunity({ company: DEMO_OWNER }),
   buildOpportunity({
     id: 502,
     name: 'FitFuel S.A.',
@@ -327,32 +330,50 @@ const CAMPAIGNS = [
   }),
 ];
 
+const OLA_ID = 501;
+const OLA = {
+  id: OLA_ID,
+  name: 'Ola Kowalska',
+  firstName: 'Ola',
+  lastName: 'Kowalska',
+  email: 'ola.kowalska@example.com',
+} as never;
+
+/** The company's summer campaign — seeded campaign 501, as the rows name it. */
+const SUMMER_CAMPAIGN = {
+  id: 501,
+  title: 'Letnia kampania specjałów kawowych',
+  name: 'Kawiarnia Złote Ziarno',
+  city: 'Kraków',
+  active: true,
+  createdTime: '2026-06-15T10:30:00',
+} as never;
+
 // Ola's fresh application (the "Zgłoszenia" bucket is APPLIED-only — the
-// company tour's decide-applicant beat plays on this row)...
+// company tour's decide-applicant beat plays on this row). It waits under the
+// summer campaign until the company tour publishes a new one; then it moves
+// there (see storeCreatedCampaign)...
 const APPLICATION_OLA = buildApplication({
   id: 8101,
-  influencer: {
-    id: 501,
-    name: 'Ola Kowalska',
-    firstName: 'Ola',
-    lastName: 'Kowalska',
-    email: 'ola.kowalska@example.com',
-  } as never,
+  note: 'Dzień dobry! Prowadzę krakowski profil kawowy i chętnie pokażę Waszą nową kartę.',
+  createdTime: '2026-09-07T09:40:00',
+  lastUpdateTime: '2026-09-07T09:40:00',
+  influencer: OLA,
+  partnershipOpportunity: SUMMER_CAMPAIGN,
 });
 
-// ...and her already-accepted collab on the FitFuel campaign — the
-// in-progress beat for the company, the green "accepted" beat for Ola.
+// ...and her older collab on the FitFuel campaign, further along: the reel
+// is in and waits for FitFuel's review. Next to the row the influencer tour
+// creates (accepted, green) it used to carry the same status and the same
+// dates, and the two read as one collaboration twice (owner, 2026-09-07).
 const APPLICATION_ACTIVE = buildApplication({
   id: 8102,
-  opportunityStatus: buildOpportunityStatus(OpportunityStatus.ACCEPTED_BY_COMPANY),
+  opportunityStatus: buildOpportunityStatus(OpportunityStatus.CONTENT_SEND_TO_ACCEPT),
   note: 'Trenuję i gotuję — chętnie sprawdzę linię proteinową w prawdziwym planie dnia.',
-  influencer: {
-    id: 501,
-    name: 'Ola Kowalska',
-    firstName: 'Ola',
-    lastName: 'Kowalska',
-    email: 'ola.kowalska@example.com',
-  } as never,
+  createdTime: '2026-08-20T09:30:00',
+  lastUpdateTime: '2026-09-04T17:10:00',
+  executionDate: '2026-09-12T18:00:00',
+  influencer: OLA,
   partnershipOpportunity: {
     id: 502,
     title: 'Premiera linii przekąsek proteinowych',
@@ -361,7 +382,66 @@ const APPLICATION_ACTIVE = buildApplication({
   },
 });
 
-const APPLICATIONS = [APPLICATION_OLA, APPLICATION_ACTIVE];
+// The summer campaign already has three creators, each somewhere else in the
+// process: the company's inbox shows the one whose turn is the company's
+// (Piotr, accepted, next to Ola's fresh row), and the in-progress list shows
+// all three under the campaign with a status each. Two rows that both said
+// "Ola Kowalska" used to stand in for all of this (owner, 2026-09-07).
+const APPLICATION_PIOTR = buildApplication({
+  id: 8103,
+  opportunityStatus: buildOpportunityStatus(OpportunityStatus.ACCEPTED_BY_COMPANY),
+  note: 'Nagrywam wideo o kawie speciality — chętnie zrobię relację z degustacji letniej karty.',
+  createdTime: '2026-08-31T11:20:00',
+  lastUpdateTime: '2026-09-01T09:12:00',
+  influencer: {
+    id: 502,
+    name: 'Piotr Nowak',
+    firstName: 'Piotr',
+    lastName: 'Nowak',
+    email: 'piotr.nowak@example.com',
+  } as never,
+  partnershipOpportunity: SUMMER_CAMPAIGN,
+});
+const APPLICATION_MARTA = buildApplication({
+  id: 8104,
+  opportunityStatus: buildOpportunityStatus(OpportunityStatus.CONTENT_SEND_TO_ACCEPT),
+  note: 'Zdjęcia z kawiarni i krótki reel — gotowe do sprawdzenia.',
+  createdTime: '2026-08-24T16:05:00',
+  lastUpdateTime: '2026-09-05T18:40:00',
+  influencer: {
+    id: 503,
+    name: 'Marta Wiśniewska',
+    firstName: 'Marta',
+    lastName: 'Wiśniewska',
+    email: 'marta.wisniewska@example.com',
+  } as never,
+  partnershipOpportunity: SUMMER_CAMPAIGN,
+});
+const APPLICATION_KUBA = buildApplication({
+  id: 8105,
+  opportunityStatus: buildOpportunityStatus(OpportunityStatus.TO_BE_PAID),
+  note: 'Reel z degustacji opublikowany, link w treściach.',
+  createdTime: '2026-08-18T12:00:00',
+  lastUpdateTime: '2026-09-03T10:15:00',
+  influencer: {
+    id: 504,
+    name: 'Kuba Zieliński',
+    firstName: 'Kuba',
+    lastName: 'Zieliński',
+    email: 'kuba.zielinski@example.com',
+  } as never,
+  partnershipOpportunity: SUMMER_CAMPAIGN,
+});
+
+const APPLICATIONS = [
+  APPLICATION_OLA,
+  APPLICATION_ACTIVE,
+  APPLICATION_PIOTR,
+  APPLICATION_MARTA,
+  APPLICATION_KUBA,
+];
+/** Where Ola's waiting row sits before a tour publishes a campaign. */
+const SEED_OLA_CAMPAIGN = APPLICATION_OLA.partnershipOpportunity;
 /** Seed statuses — the company's accept/decline mutates a row in place so
  * the dashboard tabs and counters follow; a new tour puts them back. */
 const SEED_APPLICATION_STATUS = new Map(
@@ -377,6 +457,26 @@ const IN_PROGRESS_STATUSES: ReadonlySet<string> = new Set([
   OpportunityStatus.CONTENT_POSTED_REJECTED,
   OpportunityStatus.TO_BE_PAID,
 ]);
+
+/** Campaigns the demo company owns, by id; created ones count too. */
+const OWN_CAMPAIGN_IDS: ReadonlySet<number> = new Set([501]);
+
+/**
+ * The rows the signed-in persona may see. One store serves both chairs: Ola
+ * sees her own applications, the company sees applications to its campaigns,
+ * the admin sees all of them — the way the BE scopes the same endpoint.
+ */
+function mineApplications(): typeof APPLICATIONS {
+  const role = currentDemoRole();
+  if (role === 'INFLUENCER') return APPLICATIONS.filter((a) => a.influencer?.id === OLA_ID);
+  if (role === 'COMPANY') {
+    return APPLICATIONS.filter((a) => {
+      const id = a.partnershipOpportunity?.id;
+      return id != null && (OWN_CAMPAIGN_IDS.has(id) || CREATED_CAMPAIGNS.some((c) => c.id === id));
+    });
+  }
+  return APPLICATIONS;
+}
 
 // ── Classification dictionaries (the campaign form's selects) ───────────────
 // PL-market rows, id+name is all the form binds; the guided campaign tour
@@ -444,6 +544,9 @@ export function resetDemoTourStores(): void {
     const seed = SEED_APPLICATION_STATUS.get(a.id);
     if (seed) a.opportunityStatus = seed;
   }
+  APPLICATION_OLA.partnershipOpportunity = SEED_OLA_CAMPAIGN;
+  uploadSerial = 0;
+  UPLOAD_URLS.clear();
 }
 
 // ── Submitted content (the review/submission screens of a collaboration) ────
@@ -763,10 +866,13 @@ function storeCreatedCampaign(body: unknown): ReturnType<typeof buildOpportunity
     currency?: number;
     platforms?: number[];
     contentTypes?: number[];
-    photos?: { url?: string; orderNumber?: number; isCover?: boolean }[];
+    photos?: { url?: string; uploadId?: string; orderNumber?: number; isCover?: boolean }[];
   };
   const created = buildOpportunity({
     id: nextCreatedCampaignId++,
+    company: DEMO_OWNER,
+    createdTime: new Date().toISOString(),
+    lastUpdateTime: new Date().toISOString(),
     name: dto.name,
     title: dto.title,
     city: dto.city,
@@ -794,12 +900,25 @@ function storeCreatedCampaign(body: unknown): ReturnType<typeof buildOpportunity
       .filter(Boolean) as never,
     photos: (dto.photos ?? []).map((p, i) => ({
       id: 62000 + i,
-      url: p.url,
+      // The form sends the tracked uploadId, never a URL: resolve what the
+      // signed-url step handed out for it.
+      url: p.url ?? (p.uploadId ? UPLOAD_URLS.get(p.uploadId) : undefined) ?? DEMO_PHOTO_URL,
       orderNumber: p.orderNumber ?? i,
       isCover: p.isCover ?? i === 0,
     })) as never,
   });
   CREATED_CAMPAIGNS.unshift(created);
+  // Ola applies to what the company just published: her waiting row moves
+  // under the new campaign, so the inbox and the in-progress list both name
+  // the campaign the visitor typed.
+  APPLICATION_OLA.partnershipOpportunity = {
+    id: created.id,
+    title: created.title,
+    name: created.name,
+    city: created.city,
+    active: created.active,
+    createdTime: created.createdTime,
+  } as never;
   return created;
 }
 
@@ -807,6 +926,12 @@ function storeCreatedCampaign(body: unknown): ReturnType<typeof buildOpportunity
  * Campaign-photo placeholder the demo upload pipeline resolves to — a tiny
  * inline SVG so the thumbnail renders offline, no bucket involved.
  */
+/** Files the campaign tour attaches — they live in the app's own assets. */
+const DEMO_UPLOADS: ReadonlySet<string> = new Set(['karta-kawowa.png', 'latte.png']);
+let uploadSerial = 0;
+/** uploadId -> public URL, for the campaign the form then creates. */
+const UPLOAD_URLS = new Map<string, string>();
+
 const DEMO_PHOTO_URL =
   'data:image/svg+xml;utf8,' +
   encodeURIComponent(
@@ -847,27 +972,18 @@ const TICKET: SupportTicketDtoOut = {
   subject: 'Nie mogę edytować opublikowanej kampanii',
   description:
     'Po publikacji kampanii przycisk edycji jest nieaktywny. Czy mogę jeszcze poprawić budżet?',
-  status: TicketStatus.WAITING_FOR_CUSTOMER,
-  statusDisplay: 'Czeka na Twoją odpowiedź',
+  status: TicketStatus.OPEN,
+  statusDisplay: 'Otwarte',
   category: TicketCategory.TECHNICAL_PROBLEM,
   categoryDisplay: 'Problem techniczny',
   ticketReference: 'CIO-2026-0189',
   adminAssignee: 'Zespół checkItOut',
   createdTime: '2026-09-01T10:05:00',
-  lastUpdateTime: '2026-09-01T12:41:00',
-  responses: [
-    {
-      id: 1,
-      ticketId: 9001,
-      content:
-        'Dzień dobry! Opublikowaną kampanię można edytować do pierwszego zgłoszenia — potem ' +
-        'warunki są zamrożone, bo influencerzy aplikują na konkretną ofertę. Budżet zmienisz, ' +
-        'duplikując kampanię (przycisk „Duplikuj") i publikując poprawioną wersję.',
-      fromAdmin: true,
-      adminName: 'Zespół checkItOut',
-      createdTime: '2026-09-01T12:41:00',
-    },
-  ],
+  lastUpdateTime: '2026-09-01T10:05:00',
+  // No reply yet: the admin tour writes the first one, so the thread the
+  // admin opens holds only the customer's message (owner, 2026-09-07). The
+  // support tour reads its answer on the ticket it raised, not on this one.
+  responses: [],
   attachments: [],
   resolved: false,
 };
@@ -880,6 +996,8 @@ const TICKET: SupportTicketDtoOut = {
 // that full-page reload — the status rule reads it back, playing the role
 // of the completed payment webhook.
 export const DEMO_PLAN_KEY = 'demoPlan';
+/** Session key for the tier the checkout simulator is asked to sell. */
+export const DEMO_CHECKOUT_KEY = 'demoCheckout';
 /** Session key for the step-up tour's one-time e-mail code. */
 export const DEMO_STEP_UP_KEY = 'demoStepUpCode';
 /** Session key for the phone simulator's TOTP attempt — see PhoneTotpSimComponent. */
@@ -1097,12 +1215,22 @@ const RULES: DemoRule[] = [
   {
     method: 'POST',
     match: /\/upload\/signed-url$/,
-    respond: () => ({
-      uploadUrl: '/api/demo/upload-sink',
-      publicUrl: DEMO_PHOTO_URL,
-      uploadId: 'demo-upload-1',
-      filePath: 'demo/campaign-photo.svg',
-    }),
+    respond: (_p, body) => {
+      const filename = (body as { filename?: string } | null)?.filename ?? '';
+      // A file from the repo shows as itself; anything the visitor picks
+      // resolves to the inline placeholder (there is no bucket to take it).
+      const publicUrl = DEMO_UPLOADS.has(filename)
+        ? `/assets/demo/campaign/${filename}`
+        : DEMO_PHOTO_URL;
+      const uploadId = `demo-upload-${++uploadSerial}`;
+      UPLOAD_URLS.set(uploadId, publicUrl);
+      return {
+        uploadUrl: '/api/demo/upload-sink',
+        publicUrl,
+        uploadId,
+        filePath: `demo/${filename || 'campaign-photo.svg'}`,
+      };
+    },
   },
   { method: 'POST', match: /\/upload\/confirm\//, respond: () => ({ status: 'CONFIRMED' }) },
 
@@ -1220,12 +1348,12 @@ const RULES: DemoRule[] = [
     // Counted from the store so an accepted applicant moves the tab badges.
     respond: () => {
       const status = (a: (typeof APPLICATIONS)[number]): string => a.opportunityStatus?.value ?? '';
+      const mine = mineApplications();
       return {
-        total: APPLICATIONS.length,
-        newOpportunities: APPLICATIONS.filter((a) => status(a) === OpportunityStatus.APPLIED)
-          .length,
-        inProgress: APPLICATIONS.filter((a) => IN_PROGRESS_STATUSES.has(status(a))).length,
-        done: APPLICATIONS.filter((a) => status(a) === OpportunityStatus.DONE).length,
+        total: mine.length,
+        newOpportunities: mine.filter((a) => status(a) === OpportunityStatus.APPLIED).length,
+        inProgress: mine.filter((a) => IN_PROGRESS_STATUSES.has(status(a))).length,
+        done: mine.filter((a) => status(a) === OpportunityStatus.DONE).length,
       } satisfies AppliedOpportunityStatisticsDto;
     },
   },
@@ -1256,12 +1384,21 @@ const RULES: DemoRule[] = [
     method: 'GET',
     match: /\/applied-opportunity(\/paged)?$/,
     respond: (_p, _b, params) => {
-      const campaignId = params?.get('filters.partnershipOpportunity.id');
+      // The generated client is post-processed to send list filters FLAT
+      // (`opportunityStatus=A,B`, `partnershipOpportunity.id=501`), not under a
+      // `filters.` prefix; read both forms, so a hand-built HttpParams in a test
+      // and the real request agree. The prefixed-only lookup silently matched
+      // nothing in the browser, and the per-campaign applicants page listed
+      // every application there was (owner, 2026-09-07: "two the same persons").
+      const filter = (key: string): string | null =>
+        params?.get(key) ?? params?.get(`filters.${key}`) ?? null;
+      const campaignId = filter('partnershipOpportunity.id');
       // The collaboration dashboard asks per tab: `opportunityStatus=A,B,C`.
-      const statuses = params?.get('filters.opportunityStatus')?.split(',').filter(Boolean);
+      const statuses = filter('opportunityStatus')?.split(',').filter(Boolean);
+      const mine = mineApplications();
       let rows = campaignId
-        ? APPLICATIONS.filter((a) => String(a.partnershipOpportunity?.id) === campaignId)
-        : APPLICATIONS;
+        ? mine.filter((a) => String(a.partnershipOpportunity?.id) === campaignId)
+        : mine;
       if (statuses?.length) {
         rows = rows.filter((a) => statuses.includes(a.opportunityStatus?.value ?? ''));
       }
@@ -1298,7 +1435,9 @@ const RULES: DemoRule[] = [
     match: /\/activecoop\/inprogress$/,
     respond: () =>
       buildPage(
-        APPLICATIONS.filter((a) => IN_PROGRESS_STATUSES.has(a.opportunityStatus?.value ?? '')),
+        mineApplications().filter((a) =>
+          IN_PROGRESS_STATUSES.has(a.opportunityStatus?.value ?? ''),
+        ),
       ),
   },
 
@@ -1522,9 +1661,11 @@ const RULES: DemoRule[] = [
     },
   },
 
-  // Upgrade trio — consent proof lands, then the "checkout": the sessionUrl
-  // is same-origin, so the real window.location.href redirect simply reloads
-  // the plan page with the new plan already active (see PLAN_PRESETS above).
+  // Upgrade trio — consent proof lands, then the checkout: the sessionUrl is
+  // same-origin, so the plan page hops there without a reload, and the tour's
+  // checkout simulator plays Stripe's page for the tier noted here. The plan
+  // itself is stored by the simulator's Pay — the completed-payment webhook —
+  // not by the request that only opened the checkout (see PLAN_PRESETS above).
   { method: 'POST', match: /\/subscription\/consent$/, respond: () => ({ recorded: true }) },
   {
     method: 'POST',
@@ -1535,7 +1676,7 @@ const RULES: DemoRule[] = [
         (target === 'ENTERPRISE' || target === 'BUSINESS') &&
         typeof sessionStorage !== 'undefined'
       ) {
-        sessionStorage.setItem(DEMO_PLAN_KEY, target);
+        sessionStorage.setItem(DEMO_CHECKOUT_KEY, target);
       }
       return { sessionUrl: '/user/settings/plan-billing' };
     },
@@ -1684,7 +1825,7 @@ const RULES: DemoRule[] = [
         content: dto.content ?? '',
         fromAdmin: true,
         adminName: dto.adminName || 'Zespół checkItOut',
-        createdTime: '2026-09-02T02:45:00',
+        createdTime: new Date().toISOString(),
       };
       TICKET.responses = [...(TICKET.responses ?? []), response];
       TICKET.lastUpdateTime = response.createdTime;

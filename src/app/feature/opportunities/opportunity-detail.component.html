@@ -93,6 +93,27 @@
             </div>
           </header>
 
+          @if (o.photos?.length) {
+            <!-- The campaign's photos, cover first — the creator sees these before the brief. -->
+            <ul
+              role="list"
+              class="-mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-1"
+              data-testid="opportunity-detail-photos"
+            >
+              @for (photo of o.photos; track photo.id ?? $index; let i = $index) {
+                <li class="shrink-0 snap-start">
+                  <img
+                    [src]="photo.url"
+                    [alt]="'opportunities.detail.photo_alt' | transloco: { index: i + 1 }"
+                    class="h-36 w-52 rounded-xl border border-beige object-cover"
+                    loading="lazy"
+                    [attr.data-testid]="'opportunity-detail-photo-' + i"
+                  />
+                </li>
+              }
+            </ul>
+          }
+
           <dl class="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
             <div>
               <dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
@@ -189,13 +210,38 @@
               <!-- apply-guard: companies (and admins) can't apply — say so
                    instead of serving a form that would only 403 -->
               @if (!isAdmin()) {
-                <div
-                  class="flex items-start gap-2 rounded-2xl border border-beige bg-cream px-4 py-3 text-sm text-slate2"
-                  data-testid="opportunity-detail-company-note"
-                >
-                  <mat-icon class="!h-5 !w-5 !text-slate2">info</mat-icon>
-                  <span>{{ 'opportunities.detail.apply.company_note' | transloco }}</span>
-                </div>
+                @if (isOwner()) {
+                  <div
+                    class="flex flex-wrap items-center gap-3"
+                    data-testid="opportunity-detail-owner-actions"
+                  >
+                    <a
+                      mat-flat-button
+                      color="primary"
+                      routerLink="/collaborations/applicants"
+                      data-testid="opportunity-detail-manage"
+                    >
+                      <mat-icon>inbox</mat-icon>
+                      {{ 'opportunities.detail.manage_applicants' | transloco }}
+                    </a>
+                    <a
+                      mat-stroked-button
+                      [routerLink]="['/collaborations/edit', o.id]"
+                      data-testid="opportunity-detail-edit"
+                    >
+                      <mat-icon>edit</mat-icon>
+                      {{ 'opportunities.detail.edit_campaign' | transloco }}
+                    </a>
+                  </div>
+                } @else {
+                  <div
+                    class="flex items-start gap-2 rounded-2xl border border-beige bg-cream px-4 py-3 text-sm text-slate2"
+                    data-testid="opportunity-detail-company-note"
+                  >
+                    <mat-icon class="!h-5 !w-5 !text-slate2">info</mat-icon>
+                    <span>{{ 'opportunities.detail.apply.company_note' | transloco }}</span>
+                  </div>
+                }
               }
             } @else if (applyState() === 'applied') {
               <div

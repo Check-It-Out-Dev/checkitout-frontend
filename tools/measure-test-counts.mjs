@@ -25,12 +25,20 @@
  * summing all six projects would count most tests twice. The distinct total is
  * the one-engine set: `bdd` + `chromium-desktop` + `perf`.
  */
-import { spawnSync } from 'node:child_process';
+import { execSync, spawnSync } from 'node:child_process';
 import { writeFileSync, readdirSync, readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+/**
+ * The date stamped into the file. The dev box's clock has run weeks ahead twice
+ * (see the visual-freshness gate's history), so an explicit MEASURED_AT wins
+ * over the system clock when it is set.
+ */
+const today = /^\d{4}-\d{2}-\d{2}$/.test(process.env.MEASURED_AT ?? '')
+  ? process.env.MEASURED_AT
+  : new Date().toISOString().slice(0, 10);
 const OUT = join(REPO_ROOT, 'docs', 'testing', 'measured-counts.json');
 
 /**
@@ -212,11 +220,51 @@ console.log(`  gates                ${JSON.stringify(gates)}`);
 
 const distinctPlaywright = projects.bdd + projects['chromium-desktop'] + projects.perf;
 
+/**
+ * The PR run's duration, asked of GitHub the way the counts are asked of the
+ * runners: the last six successful runs of ci-tests.yml on the public mirror,
+ * median of (updatedAt − createdAt). When `gh` is absent or offline the
+ * previous measurement is kept, labelled with its own date, so an offline box
+ * never turns a measured figure into a missing one.
+ */
+function measureCi() {
+  const workflow = 'ci-tests.yml';
+  const repo = 'Check-It-Out-Dev/checkitout-frontend';
+  const command = `gh run list -R ${repo} --workflow ${workflow} --status success --limit 6 --json createdAt,updatedAt`;
+  try {
+    const runs = JSON.parse(execSync(command, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }));
+    const secs = runs
+      .map((r) => Math.round((Date.parse(r.updatedAt) - Date.parse(r.createdAt)) / 1000))
+      .filter((n) => Number.isFinite(n) && n > 0)
+      .sort((a, b) => a - b);
+    if (secs.length) {
+      const mid = Math.floor(secs.length / 2);
+      const median = secs.length % 2 ? secs[mid] : Math.round((secs[mid - 1] + secs[mid]) / 2);
+      console.log(`  ci · PR run          ${median} s median of ${secs.length} (${secs.join(', ')})`);
+      return { prRun: { workflow, repo, medianSeconds: median, runs: secs.length, measuredAt: today, command } };
+    }
+  } catch {
+    /* fall through to the previous measurement */
+  }
+  try {
+    const prev = JSON.parse(readFileSync(OUT, 'utf8')).ci;
+    if (prev?.prRun) {
+      console.log(`  ci · PR run          ${prev.prRun.medianSeconds} s (kept from ${prev.prRun.measuredAt}; gh unavailable)`);
+      return prev;
+    }
+  } catch {
+    /* no previous file */
+  }
+  console.log('  ci · PR run          not measured (gh unavailable, no previous value)');
+  return { prRun: null };
+}
+const ci = measureCi();
+
 const measured = {
   $comment:
     'Written by tools/measure-test-counts.mjs. Do not hand-edit — run `npm run measure:counts`. ' +
     'check-published-numbers.mjs asserts every published figure against this file.',
-  measuredAt: new Date().toISOString().slice(0, 10),
+  measuredAt: today,
   jest: { tests: jestTests, suites: jestSuites },
   playwright: { projects, tiers, distinct: distinctPlaywright },
   total: jestTests + distinctPlaywright,
@@ -225,6 +273,7 @@ const measured = {
   generatedClient: { models, services },
   gates,
   coverage,
+  ci,
   // Not measured here, and labelled so. The site shows one figure for the whole
   // estate, and half of it lives in another repository; carrying the number with
   // the command that produced it is the difference between a stale claim and a

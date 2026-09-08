@@ -211,8 +211,8 @@
         </article>
       }
     </div>
-    <div class="mt-12 text-center">
-      <p class="mb-5 text-slate2">
+    <div class="mt-14 pb-2 text-center">
+      <p class="mx-auto max-w-2xl pb-7 text-slate2">
         {{ 'landing.campaign_examples.cta.text' | transloco }}
       </p>
       <a routerLink="/auth/sign-in" class="cta-primary" data-testid="landing-campaign-cta-all">
@@ -324,23 +324,23 @@
                       {{ 'landing.how_it_works.mock.campaign.name_label' | transloco }}
                     </p>
                     <div
-                      class="mt-1.5 rounded-lg border border-beige bg-cream/60 px-3 py-2 text-sm text-ink"
+                      class="mt-2 rounded-lg border border-beige bg-cream/60 px-3 py-2 text-sm text-ink"
                     >
                       {{ 'landing.how_it_works.mock.campaign.name_value' | transloco }}
                     </div>
-                    <p class="mt-3 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                    <p class="pt-4 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
                       {{ 'landing.how_it_works.mock.campaign.budget_label' | transloco }}
                     </p>
                     <div
-                      class="mt-1.5 rounded-lg border border-beige bg-cream/60 px-3 py-2 text-sm text-ink"
+                      class="mt-2 rounded-lg border border-beige bg-cream/60 px-3 py-2 text-sm text-ink"
                     >
                       {{ 'landing.how_it_works.mock.campaign.budget_value' | transloco }}
                     </div>
-                    <p class="mt-3 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                    <p class="pt-4 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
                       {{ 'landing.how_it_works.mock.campaign.brief_label' | transloco }}
                     </p>
                     <div
-                      class="mt-1.5 min-h-16 rounded-lg border border-beige bg-cream/60 px-3 py-2 text-sm leading-relaxed text-slate2"
+                      class="mt-2 min-h-16 rounded-lg border border-beige bg-cream/60 px-3 py-2 text-sm leading-relaxed text-slate2"
                     >
                       {{ 'landing.how_it_works.mock.campaign.brief_value' | transloco }}
                     </div>
@@ -893,13 +893,25 @@
     }
 
     <div class="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-      <a routerLink="/auth/sign-up/business" class="cta-primary">
+      <!-- On the ink strip the hero's coral button turned into a dark-red
+           blot with a glow around it. Here the primary is cream on ink — the
+           strongest thing on the strip — with the arrow in coral; the secondary
+           stays an outline. No shadow, no halo (owner, 2026-09-07). -->
+      <a
+        routerLink="/auth/sign-up/business"
+        class="group inline-flex max-w-full items-center justify-center gap-2 rounded-full bg-cream px-7 py-[0.95rem] text-center text-base font-semibold text-ink transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-400 focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
+        data-testid="landing-strip-cta-primary"
+      >
         {{ 'landing.hero.cta.primary' | transloco }}
-        <mat-icon class="!h-5 !w-5 !text-lg">arrow_forward</mat-icon>
+        <mat-icon
+          class="!h-5 !w-5 !text-lg text-coral-600 transition-transform group-hover:translate-x-0.5"
+        >
+          arrow_forward
+        </mat-icon>
       </a>
       <a
         routerLink="/auth/sign-up/influencer"
-        class="inline-flex items-center justify-center gap-2 rounded-full border border-cream/50 px-6 py-[0.85rem] text-[0.95rem] font-semibold text-cream transition hover:bg-cream/10"
+        class="inline-flex items-center justify-center gap-2 rounded-full border border-cream/50 px-6 py-[0.95rem] text-base font-semibold text-cream transition hover:bg-cream/10"
       >
         {{ 'landing.hero.cta.secondary1' | transloco }}
       </a>

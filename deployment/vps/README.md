@@ -32,10 +32,17 @@ Ubuntu 24.04 with the dedicated key `~/.ssh/id_ed25519_greenfield_vps`
 ## Build + deploy the demo bundle
 
 ```
-npm run build -- --configuration demo
-cd dist/check-it-out-fe-greenfield/browser
-scp -r . gvps:/var/www/check-it-out.pl/       # or: tar czf - . | ssh gvps 'tar xzf - -C /var/www/check-it-out.pl'
+npm run serve:demo                 # local twin: the built demo behind nginx's rules, http://localhost:4300
+npm run deploy:demo -- --dry-run   # what the VPS would run
+npm run deploy:demo                # build if stale, stream over ssh, atomic swap with a dated .bak-, verify through the edge
 ```
+
+`tools/deploy-demo.mjs` is the by-hand recipe made repeatable: `<webroot>.new` filled from
+`tar | ssh gvps`, ownership `ubuntu:www-data`, the old webroot moved to `.bak-YYYYMMDD-HHMMSS`,
+one `mv` into place, then both domains fetched with a cache-busting query and their `main-*.js`
+compared with the build's. `--prune-backups 3` keeps the three newest backups. The freshness rule
+(rebuild when `src/` or `public/` is newer than the shell) is shared with `serve:demo` and
+`test:perf` in `tools/demo-build.mjs`.
 
 `--configuration demo` uses `src/environments/environment.demo.ts` — fully
 mocked backend (`core/demo/demo.interceptor.ts`), FE-only sandboxes, guided

@@ -2,6 +2,14 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslocoPipe } from '@ngneat/transloco';
 import { SurveyCardComponent } from '../ui/survey-card.component';
+import { STACK_MARKS, STACK_MARK_OF, type StackMark } from './stack-icons';
+
+/** Chips without a brand mark: what the thing is, as a Material glyph. */
+const FALLBACK_GLYPH: Readonly<Record<string, string>> = {
+  'Transloco (i18n)': 'translate',
+  Fakturownia: 'receipt_long',
+  KSeF: 'account_balance',
+};
 
 /**
  * "Stack at a glance" overview strip — the whole technology stack grouped by
@@ -63,9 +71,31 @@ import { SurveyCardComponent } from '../ui/survey-card.component';
             </button>
             <div class="flex flex-wrap gap-1.5">
               @for (t of g.items; track t) {
+                <!-- A brand mark per chip, in the brand's own colour (simple-icons,
+                     generated into stack-icons.ts). Text-only chips read as a list;
+                     these read as the things themselves — and a visitor scanning
+                     for "do they run Postgres?" finds the elephant before the
+                     word. The mark is decorative: the label carries the name. -->
                 <span
-                  class="rounded-lg bg-cream px-2.5 py-1 text-xs font-medium text-ink ring-1 ring-beige"
+                  class="inline-flex items-center gap-1.5 rounded-lg bg-white px-2.5 py-1 text-xs font-medium text-ink ring-1 ring-beige"
                 >
+                  @if (mark(t); as m) {
+                    <svg
+                      viewBox="0 0 24 24"
+                      class="h-3.5 w-3.5 shrink-0"
+                      [attr.fill]="m.hex"
+                      aria-hidden="true"
+                    >
+                      <path [attr.d]="m.path" />
+                    </svg>
+                  } @else {
+                    <mat-icon
+                      class="!h-3.5 !w-3.5 !text-sm shrink-0 text-coral-600"
+                      aria-hidden="true"
+                    >
+                      {{ glyph(t) }}
+                    </mat-icon>
+                  }
                   {{ t }}
                 </span>
               }
@@ -129,6 +159,15 @@ import { SurveyCardComponent } from '../ui/survey-card.component';
 export class TechStackStripComponent {
   // One open "why we chose it" panel at a time (click the layer header).
   openWhy: string | null = null;
+  /** The brand mark for a chip, or null for a house product / a library without one. */
+  mark(label: string): StackMark | null {
+    const slug = STACK_MARK_OF[label];
+    return slug ? (STACK_MARKS[slug] ?? null) : null;
+  }
+  /** Material glyph for the chips that have no brand mark. */
+  glyph(label: string): string {
+    return FALLBACK_GLYPH[label] ?? 'extension';
+  }
   toggleWhy(key: string): void {
     this.openWhy = this.openWhy === key ? null : key;
   }

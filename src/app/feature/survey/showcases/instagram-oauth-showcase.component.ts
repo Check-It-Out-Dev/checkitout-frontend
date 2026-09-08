@@ -86,7 +86,7 @@ import { CodePanelComponent } from '../ui/code-panel.component';
           </button>
         </div>
       </div>
-      <div class="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+      <div class="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
         @for (f of flow; track f.key; let i = $index; let last = $last) {
           <div
             class="relative rounded-xl p-4 ring-1 transition-all duration-300"

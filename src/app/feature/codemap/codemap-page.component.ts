@@ -1,10 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@ngneat/transloco';
 import { MarketingToolbarComponent } from '../landing/marketing-toolbar/marketing-toolbar.component';
-import { CodemapFilmDialogComponent } from './film-dialog/codemap-film-dialog.component';
 import { TrajectoryPlayerComponent } from './trajectory-player/trajectory-player.component';
 
 /**
@@ -31,21 +29,17 @@ import { TrajectoryPlayerComponent } from './trajectory-player/trajectory-player
   templateUrl: './codemap-page.component.html',
 })
 export class CodemapPageComponent {
-  private readonly dialog = inject(MatDialog);
-
   /** Real, resolved destinations. */
   readonly repoUrl = 'https://github.com/Check-It-Out-Dev/graph-theory-system-modeling';
   readonly installUrl =
     'https://github.com/Check-It-Out-Dev/graph-theory-system-modeling/tree/main/applications/CodeMap';
   readonly contactMail = 'norbert_marchewka@checkitout.app';
 
-  /** The real 92-second capture, self-hosted (UX-F swaps the source to Vimeo). */
-  openFilm(): void {
-    this.dialog.open(CodemapFilmDialogComponent, {
-      maxWidth: 'min(96vw, 1200px)',
-      panelClass: 'codemap-film-panel',
-      autoFocus: false,
-    });
+  /** The real 92-second capture, self-hosted; it plays in place under the intro. */
+  readonly filmSrc = 'assets/codemap/codemap-demo.mp4';
+  readonly filmPlaying = signal(false);
+  playFilm(): void {
+    this.filmPlaying.set(true);
   }
 
   /** Training journey milestones (numbers are the measured gate results). */

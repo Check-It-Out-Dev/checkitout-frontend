@@ -5,3 +5,7 @@ description
 image
 insert_drive_file
 picture_as_pdf
+# tech-stack-strip.component.ts: glyphs for chips without a brand mark (FALLBACK_GLYPH map)
+translate
+receipt_long
+account_balance

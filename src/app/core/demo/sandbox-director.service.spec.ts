@@ -1,7 +1,14 @@
+jest.mock('./demo-mode', () => ({
+  ...jest.requireActual('./demo-mode'),
+  isDemoMode: () => true,
+}));
+
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subject } from 'rxjs';
+import { SessionStateService } from '../auth/session-state.service';
+import { currentDemoRole, isDemoSignedIn } from './demo-mode';
 import { GuideRunnerService } from './guide-runner.service';
 import { SandboxDirectorService } from './sandbox-director.service';
 import { SCENARIOS, scenarioByKey } from './scenario-registry';
@@ -22,6 +29,9 @@ describe('SandboxDirectorService', () => {
     watch: jest.Mock;
   };
   let dialog: { closeAll: jest.Mock };
+  /** What the page's session cache holds. By default it agrees with the
+   * persona store, the way a freshly booted page does. */
+  let cachedUser: () => { userType?: { value: string } } | null;
   /** Done-condition watchers the director armed, newest last. */
   let watchers: { pred: () => boolean; onTrue: () => void }[];
 
@@ -55,12 +65,14 @@ describe('SandboxDirectorService', () => {
       }),
     };
     dialog = { closeAll: jest.fn() };
+    cachedUser = () => (isDemoSignedIn() ? { userType: { value: currentDemoRole() } } : null);
     TestBed.configureTestingModule({
       providers: [
         SandboxDirectorService,
         { provide: Router, useValue: router },
         { provide: GuideRunnerService, useValue: runner },
         { provide: MatDialog, useValue: dialog },
+        { provide: SessionStateService, useValue: { user: () => cachedUser() } },
       ],
     });
     service = TestBed.inject(SandboxDirectorService);
@@ -97,6 +109,20 @@ describe('SandboxDirectorService', () => {
     expect(localStorage.getItem('demoSession')).toBe('0');
     expect(localStorage.getItem('demoRole')).toBe('ADMIN');
     expect(reload).toHaveBeenCalledWith('/auth/sign-in');
+  });
+
+  it('start() boots when the page remembers a different session than the store', () => {
+    // The store says the company persona is signed in, but this page still
+    // holds the signed-out session it was frozen with.
+    cachedUser = () => null;
+    const reload = jest
+      .spyOn(service as unknown as { reload(url: string): void }, 'reload')
+      .mockImplementation(() => undefined);
+
+    service.start(companyScenario.key);
+
+    expect(reload).toHaveBeenCalledWith(companyScenario.steps[0].route);
+    expect(router.navigateByUrl).not.toHaveBeenCalled();
   });
 
   it('start() enters step 0 and navigates to its route', () => {
@@ -187,13 +213,54 @@ describe('SandboxDirectorService', () => {
     expect(JSON.parse(raw!)).toMatchObject({ key: companyScenario.key, step: 1, done: false });
   });
 
-  it('exit() clears state and returns to the hub', () => {
-    service.start(companyScenario.key);
+  it('exit() clears state, signs the persona out and boots to the hub when the tour had signed it in', () => {
+    const reload = jest
+      .spyOn(service as unknown as { reload(url: string): void }, 'reload')
+      .mockImplementation(() => undefined);
+    service.start(companyScenario.key); // an app scenario: the persona is signed in
+    sessionStorage.setItem('demoTotp', JSON.stringify({ attempt: 2, code: '408952' }));
+    reload.mockClear();
+    router.navigateByUrl.mockClear();
+
     service.exit();
 
     expect(service.active()).toBe(false);
     expect(sessionStorage.getItem('demoSandbox')).toBeNull();
-    expect(router.navigateByUrl).toHaveBeenLastCalledWith('/demo');
+    expect(sessionStorage.getItem('demoTotp')).toBeNull();
+    expect(localStorage.getItem('demoSession')).toBe('0');
+    // A session flip is a full boot — the session cache is primed at startup.
+    expect(reload).toHaveBeenCalledWith('/demo');
+    expect(router.navigateByUrl).not.toHaveBeenCalled();
+  });
+
+  it('exit() from a signed-out tour is a plain hop, and carries its destination', () => {
+    jest
+      .spyOn(service as unknown as { reload(url: string): void }, 'reload')
+      .mockImplementation(() => undefined);
+    service.start('admin-2fa'); // plays on /auth/sign-in: the persona is signed out
+    router.navigateByUrl.mockClear();
+
+    service.exit('/technical-survey/security#auth-depth');
+
+    expect(localStorage.getItem('demoSession')).toBe('0');
+    expect(router.navigateByUrl).toHaveBeenLastCalledWith('/technical-survey/security#auth-depth');
+  });
+
+  it('reset() primes the persona for the start route — a replay from a signed-in recap boots signed out', () => {
+    const reload = jest
+      .spyOn(service as unknown as { reload(url: string): void }, 'reload')
+      .mockImplementation(() => undefined);
+    service.start('admin-2fa');
+    for (let i = 0; i < 5; i++) service.advance();
+    expect(service.state()?.done).toBe(true);
+    localStorage.setItem('demoSession', '1'); // the tour signed the admin in
+    reload.mockClear();
+
+    service.reset();
+
+    expect(localStorage.getItem('demoSession')).toBe('0');
+    expect(reload).toHaveBeenCalledWith('/auth/sign-in');
+    expect(service.state()).toMatchObject({ key: 'admin-2fa', step: 0, done: false });
   });
 
   it('notify() advances the current step on a matching id — manual steps included', () => {
@@ -291,35 +358,7 @@ describe('SandboxDirectorService', () => {
       expect(service.stalled()).toBeNull();
     });
 
-    /**
-     * The checkout used to persist the next step BEFORE running its recipe, so
-     * the reload would land on the right beat. That made every failure a
-     * phantom: its three clicks all land on controls that are already on
-     * screen — the previous step opened the dialog — so swallowing them left
-     * the runner reporting success and the tour narrating an invoice for a
-     * purchase nobody made. The pre-advance was never needed: restore() moves
-     * past this step whenever it finds the stored plan, whichever side of the
-     * reload the advance happens on.
-     */
-    it('a reload step waits for the purchase like any other step', async () => {
-      service.start('nip-to-ksef');
-      const def = scenarioByKey('nip-to-ksef')!;
-      const at = def.steps.findIndex((st) => st.id === 'upgrade-confirm');
-      for (let i = 0; i < at; i++) service.advance();
-      expect(service.step()?.reloads).toBe(true);
-      let stepDuringRun = -1;
-      runner.run.mockImplementation(async () => {
-        stepDuringRun = JSON.parse(sessionStorage.getItem('demoSandbox')!).step;
-        return true;
-      });
-
-      await service.next();
-
-      expect(stepDuringRun).toBe(at); // still on the checkout while it runs
-      expect(service.state()?.step).toBe(at + 1);
-    });
-
-    it('a reload step whose recipe did nothing holds and says why', async () => {
+    it('the checkout step whose recipe did nothing holds and says why', async () => {
       service.start('nip-to-ksef');
       const def = scenarioByKey('nip-to-ksef')!;
       const at = def.steps.findIndex((st) => st.id === 'upgrade-confirm');
@@ -339,7 +378,7 @@ describe('SandboxDirectorService', () => {
      * reporting success. Only the purchase is missing, and the stored plan is
      * what says so.
      */
-    it('a reload step whose recipe ran but bought nothing holds too', async () => {
+    it('the checkout step whose recipe ran but changed nothing holds too', async () => {
       service.start('nip-to-ksef');
       const def = scenarioByKey('nip-to-ksef')!;
       const at = def.steps.findIndex((st) => st.id === 'upgrade-confirm');
@@ -353,7 +392,7 @@ describe('SandboxDirectorService', () => {
       expect(service.stalled()).toBe('upgrade-confirm');
     });
 
-    it('a second press on a stalled reload step goes through', async () => {
+    it('a second press on the stalled checkout step goes through', async () => {
       service.start('nip-to-ksef');
       const def = scenarioByKey('nip-to-ksef')!;
       const at = def.steps.findIndex((st) => st.id === 'upgrade-confirm');
@@ -369,29 +408,7 @@ describe('SandboxDirectorService', () => {
 
     /** The reload path itself: whoever bought the tier, landing back with the
      *  plan stored means that beat is over. */
-    it('restores past the checkout when the plan is already stored', () => {
-      service.start('nip-to-ksef');
-      const def = scenarioByKey('nip-to-ksef')!;
-      const at = def.steps.findIndex((st) => st.id === 'upgrade-confirm');
-      sessionStorage.setItem(
-        'demoSandbox',
-        JSON.stringify({ key: 'nip-to-ksef', step: at, done: false }),
-      );
-      sessionStorage.setItem('demoPlan', 'ENTERPRISE');
-
-      TestBed.resetTestingModule();
-      TestBed.configureTestingModule({
-        providers: [
-          SandboxDirectorService,
-          { provide: Router, useValue: router },
-          { provide: GuideRunnerService, useValue: runner },
-          { provide: MatDialog, useValue: dialog },
-        ],
-      });
-      expect(TestBed.inject(SandboxDirectorService).state()?.step).toBe(at + 1);
-    });
-
-    it('a reload step whose recipe worked stays advanced', async () => {
+    it('the checkout step whose recipe worked stays advanced', async () => {
       service.start('nip-to-ksef');
       const def = scenarioByKey('nip-to-ksef')!;
       const at = def.steps.findIndex((st) => st.id === 'upgrade-confirm');
@@ -574,33 +591,20 @@ describe('SandboxDirectorService', () => {
     });
   });
 
-  it('a reload-step tour resumes past the checkout when the plan is stored', () => {
-    const def = scenarioByKey('nip-to-ksef')!;
-    const upgrade = def.steps.findIndex((st) => st.id === 'upgrade-confirm');
-    sessionStorage.setItem(
-      'demoSandbox',
-      JSON.stringify({ key: 'nip-to-ksef', step: upgrade, done: false }),
-    );
-    sessionStorage.setItem('demoPlan', 'ENTERPRISE');
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({
-      providers: [
-        SandboxDirectorService,
-        {
-          provide: Router,
-          useValue: {
-            navigateByUrl: jest.fn(),
-            events: new Subject<unknown>(),
-            navigated: true,
-            url: '/subscription',
-          },
-        },
-        { provide: GuideRunnerService, useValue: runner },
-        { provide: MatDialog, useValue: dialog },
-      ],
-    });
+  it('boots again when the page comes back from the back-forward cache', () => {
+    const again = jest
+      .spyOn(service as unknown as { reloadInPlace(): void }, 'reloadInPlace')
+      .mockImplementation(() => undefined);
+    const restored = new Event('pageshow');
+    Object.defineProperty(restored, 'persisted', { value: true });
+    window.dispatchEvent(restored);
+    expect(again).toHaveBeenCalledTimes(1);
 
-    expect(TestBed.inject(SandboxDirectorService).state()?.step).toBe(upgrade + 1);
+    // an ordinary load fires pageshow too, and must not loop
+    const fresh = new Event('pageshow');
+    Object.defineProperty(fresh, 'persisted', { value: false });
+    window.dispatchEvent(fresh);
+    expect(again).toHaveBeenCalledTimes(1);
   });
 
   it('exit() closes any dialog the tour left open', () => {

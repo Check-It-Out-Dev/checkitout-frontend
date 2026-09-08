@@ -32,6 +32,8 @@ interface Cover {
   panelOverRing: boolean;
   done: boolean;
   way: 'pill' | 'next' | 'none';
+  /** Where the pill was, so a complaint can be placed: left, top, width, height. */
+  pillBox: number[] | null;
 }
 
 async function look(page: Page): Promise<Cover> {
@@ -55,9 +57,14 @@ async function look(page: Page): Promise<Cover> {
       // explicitly not what the visitor is reading — so only the top layer
       // counts. Without this the sweep reports the pill covering a heading two
       // layers down that nobody can read anyway.
+      // A centred world simulator is the same shape: it draws a scrim over the
+      // whole page and the card on it is the only thing being read. The
+      // checkout, invoice and KSeF beats all sit over the plan page, and
+      // without this the sweep named the "Faktury" heading and the downgrade
+      // note under the scrim, dimmed to half and read by nobody.
       const modal = document.querySelector('.cdk-overlay-backdrop-showing')
         ? document.querySelector('mat-dialog-container')
-        : null;
+        : document.querySelector('app-world-sim-shell [role="dialog"] .sim-pop');
 
       const pillOver: { text: string; overlap: [number, number] }[] = [];
       const q = pill?.getBoundingClientRect();
@@ -104,6 +111,7 @@ async function look(page: Page): Promise<Cover> {
         modal: modal !== null,
         pillOver,
         panelOverRing,
+        pillBox: q ? [q.left, q.top, q.width, q.height].map(Math.round) : null,
         way: document.querySelector('[data-testid="guide-spot-next"]')
           ? ('pill' as const)
           : document.querySelector('[data-testid="guide-next"]')
@@ -117,6 +125,7 @@ async function look(page: Page): Promise<Cover> {
       modal: false,
       pillOver: [],
       panelOverRing: false,
+      pillBox: null,
       way: 'none' as const,
     }));
 }
@@ -141,7 +150,7 @@ test.describe('The guide stays out of its own way', () => {
         for (const hit of at.pillOver) {
           complaints.push(
             `${tour} step ${String(at.step)}: the pill covers "${hit.text}" ` +
-              `by ${hit.overlap[0]}x${hit.overlap[1]} px`,
+              `by ${hit.overlap[0]}x${hit.overlap[1]} px (pill at ${String(at.pillBox)})`,
           );
         }
         if (at.panelOverRing) {

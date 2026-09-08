@@ -5,29 +5,25 @@ import { expect, test, type Page } from '@playwright/test';
  *
  * Everything else in this tier asks business questions — did the step advance,
  * is the ring on its control. This one asks only technical ones, because the
- * complaint about this beat is not that it fails: it is that the new tier is
- * simply *there*, with no moment in which it arrives.
+ * complaint about this beat used to be that the new tier was simply *there*,
+ * with no moment in which it arrived: the fixture stored the plan as the
+ * checkout opened, the component reloaded the document, and the visitor saw
+ * one page, a blink, and a different page.
  *
- * What actually happens is a full page reload. The fixture answers
- * POST /subscription/upgrade by writing the plan into sessionStorage and
- * returning a same-origin `sessionUrl`, the component assigns
- * `window.location.href`, and the document is replaced. On the way back
- * `restore()` sees the stored plan and moves the tour on. The visitor never
- * sees the plan change — they see one page, a blink, and a different page.
+ * What happens now (2026-09-07): confirming closes the dialog and hops — no
+ * document is replaced — and the beat that follows is Stripe Checkout,
+ * simulated. Paying is what stores the plan (the completed-payment webhook)
+ * and the plan page reads itself again. So the timeline this file draws is
+ * ONE document from the confirm press to the new tier on the card, with the
+ * purchase in the middle of it, and the numbers it exists for are:
+ *   • confirmToClose — press → the dialog gone.
+ *   • simRevealMs    — press → the checkout card on screen.
+ *   • payToTierMs    — Pay → the card saying ENTERPRISE. Non-zero now, by
+ *                      construction: there is a moment the tier arrives.
  *
- * So the instrument has to survive the reload. The recorder is installed with
- * addInitScript (it runs in every document, before app code), and every mark is
- * stamped with `performance.timeOrigin + performance.now()` — a high-resolution
- * epoch that is comparable across the two documents — and appended to a
- * sessionStorage array that the second document inherits. What comes back is
- * one timeline across the navigation boundary.
- *
- * Two numbers are the point of the whole file:
- *   • blankMs      — pagehide → first contentful paint: how long the visitor
- *                    looks at nothing, or at the page they already left.
- *   • tierRevealMs — first contentful paint → the card showing the new tier.
- *                    At ~0 the higher tier does not appear, it was simply
- *                    always there. That is the "too instant" this measures.
+ * The recorder is still installed with addInitScript and still stamps each
+ * mark with an epoch comparable across documents — so that if a reload ever
+ * comes back, it shows up here as a second document rather than as a hole.
  *
  * Run: `npm run test:perf -- e2e-tests/perf/demo-checkout-timeline.spec.ts`
  * (add PERF_BASE_URL=https://www.checkitout.app to measure production).
@@ -171,6 +167,9 @@ function recorder(key: string): void {
       if (text.includes('ENTERPRISE')) once('dom.tierEnterprise');
     }
     if (document.querySelector('app-world-sim-shell')) once('dom.simOpen');
+    // the checkout card by name: `dom.simOpen` was spent on the inbox mail
+    // three beats earlier, and `once` says a moment happens once
+    if (document.querySelector('[data-testid="checkout-sim"]')) once('dom.checkoutOpen');
     if (document.querySelector('[data-testid="guide-shield"]')) once('dom.shieldUp');
     else if (seen.has('dom.shieldUp')) once('dom.shieldDown');
     const pill = document.querySelector('[data-testid="guide-spot-next"]');
@@ -321,15 +320,35 @@ test.describe('Demo checkout timeline', () => {
       { timeout: 15_000 },
     );
 
-    // ── beat two: the visitor confirms, and the hand-off happens ──────────
+    // ── beat two: the visitor confirms, and the checkout arrives ──────────
     await page.evaluate((k) => sessionStorage.removeItem(k), MARKS_KEY);
     await press();
-
-    // the beat is over when the tour has resumed on the invoice simulator
+    // the beat is over when the tour is standing on the checkout simulator
     await page.waitForFunction(
       () =>
         JSON.parse(sessionStorage.getItem('demoSandbox') ?? '{}').step === 7 &&
-        !!document.querySelector('app-world-sim-shell'),
+        !!document.querySelector('[data-testid="checkout-sim-pay"]') &&
+        !!document.querySelector('[data-testid="guide-spot-next"],[data-testid="guide-next"]'),
+      undefined,
+      { timeout: 30_000 },
+    );
+    await page.waitForTimeout(600); // let the card finish arriving
+    expect(
+      await page.evaluate(() => sessionStorage.getItem('demoPlan')),
+      'nothing may be bought by confirming — the checkout is where the purchase happens',
+    ).toBeNull();
+
+    // ── beat three: the visitor pays ──────────────────────────────────────
+    await page.evaluate(() => {
+      const w = window as unknown as Record<string, unknown>;
+      (w['__ckMark'] as (n: string) => void)?.('pay');
+    });
+    await press();
+    // over when the tour has moved on to the invoice simulator
+    await page.waitForFunction(
+      () =>
+        JSON.parse(sessionStorage.getItem('demoSandbox') ?? '{}').step === 8 &&
+        !!document.querySelector('[data-testid="fakturownia-sim-send"]'),
       undefined,
       { timeout: 30_000 },
     );
@@ -345,7 +364,7 @@ test.describe('Demo checkout timeline', () => {
 
     // eslint-disable-next-line no-console -- the timeline is the deliverable
     console.log(
-      '\n  checkout timeline (ms from the press)\n' +
+      '\n  checkout timeline (ms from the confirm press)\n' +
         marks
           .map(
             (m) =>
@@ -360,52 +379,48 @@ test.describe('Demo checkout timeline', () => {
     // No network assertion on purpose. The demo answers /subscription/consent
     // and /subscription/upgrade inside an Angular HttpInterceptor, so nothing
     // reaches fetch or XMLHttpRequest and no request is ever made — measured,
-    // not assumed: the patches below record every /subscription/ call and this
-    // timeline contains none. Against a real backend they would appear.
-    expect(names, 'the plan must be written before the document is replaced').toContain(
+    // not assumed. Against a real backend they would appear.
+    expect(names, 'confirming must close the dialog').toContain('dom.dialogClosed');
+    expect(names, 'the checkout must arrive as a simulator card').toContain('dom.checkoutOpen');
+    expect(names, 'paying must store the plan — the webhook the simulator plays').toContain(
       'storage.plan',
     );
-    expect(names, 'the hand-off is a full document replacement').toContain('doc.pagehide');
-    expect(names, 'the second document must report a contentful paint').toContain(
-      'paint.first-contentful-paint',
-    );
     expect(names, 'the new tier must end up on the card').toContain('dom.tierEnterprise');
+    expect(names, 'the hand-off must stay in this document — no reload, no flash').not.toContain(
+      'doc.pagehide',
+    );
     expect(
       new Set(marks.map((m) => m.d)).size,
-      'the timeline must span the document boundary, not stop at the unload',
-    ).toBeGreaterThan(1);
+      'one document from the confirm press to the new tier',
+    ).toBe(1);
 
-    // the plan is stored before the unload, or the reload would land nowhere
+    // the purchase happens on Pay, not before: the plan is stored after that press
+    const payAt = at('pay');
     const planAt = at('storage.plan');
-    const hideAt = at('doc.pagehide');
+    const tierAt = at('dom.tierEnterprise');
+    expect(payAt).toBeDefined();
     expect(planAt).toBeDefined();
-    expect(hideAt).toBeDefined();
-    expect(planAt!, 'the plan must be stored before the page goes away').toBeLessThan(hideAt!);
-
-    // ── the two numbers this file exists for ──────────────────────────────
-    const fcp = at('paint.first-contentful-paint');
-    const tier = at('dom.tierEnterprise');
-    const blankMs = hideAt !== undefined && fcp !== undefined ? fcp - hideAt : undefined;
-    const tierRevealMs = fcp !== undefined && tier !== undefined ? tier - fcp : undefined;
-    // eslint-disable-next-line no-console -- the whole point of the measurement
-    console.log(
-      `  confirmToClose (press → the checkout closes): ${String(rel('dom.dialogClosed'))}\n` +
-        `  blankMs (pagehide → first contentful paint): ${String(blankMs)}\n` +
-        `  tierRevealMs (paint → the card says ENTERPRISE): ${String(tierRevealMs)}\n` +
-        `  total (confirm → the new tier on screen): ${String(rel('dom.tierEnterprise'))}\n` +
-        '  (the checkout itself is no longer timed here: it stays open until the\n' +
-        '   visitor confirms, which is the fix this beat was split for)\n',
+    expect(tierAt).toBeDefined();
+    expect(
+      planAt!,
+      'the plan is stored by the Pay press, not by opening the checkout',
+    ).toBeGreaterThanOrEqual(payAt!);
+    expect(tierAt!, 'the card changes only once the plan is stored').toBeGreaterThanOrEqual(
+      planAt!,
     );
 
-    // A reload in the middle of a guided tour is a deliberate design, but the
-    // visitor should not be left looking at nothing for long.
-    expect(blankMs, 'the hand-off must not leave the screen stale').toBeLessThanOrEqual(2500);
-
-    // No budget on tierRevealMs yet, on purpose: today it is ~0 by
-    // construction — the second document is painted with the new tier already
-    // on it, which is exactly the "too instant" being investigated. The number
-    // is printed so a decision about what the reveal should be can be made
-    // against a measurement rather than an impression.
-    expect(tierRevealMs, 'the tier reveal must be measurable at all').toBeDefined();
+    // ── the numbers this file exists for ──────────────────────────────────
+    const confirmToClose = rel('dom.dialogClosed');
+    const simRevealMs = rel('dom.checkoutOpen');
+    const payToTierMs = tierAt! - payAt!;
+    // eslint-disable-next-line no-console -- the whole point of the measurement
+    console.log(
+      `  confirmToClose (press → the checkout dialog closes): ${String(confirmToClose)}\n` +
+        `  simRevealMs (press → the Stripe card on screen): ${String(simRevealMs)}\n` +
+        `  payToTierMs (Pay → the card says ENTERPRISE): ${String(payToTierMs)}\n`,
+    );
+    expect(confirmToClose, 'the dialog must go promptly').toBeLessThanOrEqual(1500);
+    expect(simRevealMs, 'the checkout must arrive promptly').toBeLessThanOrEqual(2500);
+    expect(payToTierMs, 'the new tier must follow the payment promptly').toBeLessThanOrEqual(2500);
   });
 });

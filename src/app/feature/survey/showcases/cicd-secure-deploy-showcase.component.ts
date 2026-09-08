@@ -49,7 +49,7 @@ import { CodePanelComponent } from '../ui/code-panel.component';
           </button>
         </div>
       </div>
-      <div class="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-6">
+      <div class="mt-5 grid grid-cols-3 gap-2 sm:grid-cols-6">
         @for (s of stages; track s.name; let i = $index) {
           <div
             class="rounded-xl border p-3 text-center transition-all duration-300"

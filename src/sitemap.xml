@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The public, prerendered surface. robots.txt has advertised this file since the
+     legacy port; it exists since 2026-09-08. Authenticated routes are not listed. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://checkitout.app/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://checkitout.app/technical-survey</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://checkitout.app/technical-survey/engineering</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://checkitout.app/technical-survey/platform</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://checkitout.app/technical-survey/security</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://checkitout.app/technical-survey/compliance</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://checkitout.app/technical-survey/operations</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://checkitout.app/codemap</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://checkitout.app/demo</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://checkitout.app/team</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://checkitout.app/grants</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://checkitout.app/support</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
+</urlset>

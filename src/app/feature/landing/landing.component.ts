@@ -95,17 +95,12 @@ interface PricingPlan {
          card measured 1023 px with 357 px of nothing above its button. This is
          the part of preflight the templates were written against; spacing is
          now only what a class says. */
-      h1,
-      h2,
-      h3,
-      h4,
-      h5,
-      h6,
-      p,
-      ul,
-      ol {
-        margin: 0;
-      }
+      /* The type reset (UA block margins off h1-h6, p, ul, ol) lives in
+         styles.scss as "app-landing h2 { margin-block: 0 }" and friends.
+         Here, emulated encapsulation would turn "p" into "p[_ngcontent-x]"
+         (0,1,1), which beat every mt-* and mx-auto utility (0,1,0) on a
+         heading or paragraph: the CTA strip's title sat at the left edge of a
+         wide screen and the mock card's labels had no room above them. */
 
       .landing-title-highlight {
         background-image: linear-gradient(to right, #2563eb, #06b6d4);

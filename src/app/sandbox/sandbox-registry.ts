@@ -56,7 +56,9 @@ import { UPGRADE_CONFIRM_FIXTURES } from './fixtures/upgrade-confirm.fixture';
 import { USER_TICKETS_LIST_FIXTURES } from './fixtures/user-tickets-list.fixture';
 import { VERIFY_EMAIL_FIXTURES } from './fixtures/verify-email.fixture';
 import { ICON_AUDIT_FIXTURES } from './fixtures/icon-audit.fixture';
+import { GRAPH_TOPOLOGY_FIXTURES } from './fixtures/graph-topology.fixture';
 import { CODEMAP_FIXTURES } from './fixtures/codemap.fixture';
+import { SURVEY_ENTRY_FIXTURES } from './fixtures/survey-entry.fixture';
 
 /**
  * One fixture entry — describes how to render a component in isolation for
@@ -153,7 +155,9 @@ export const SANDBOX_REGISTRY: readonly SandboxFixture[] = [
   ...ADMIN_DICTIONARY_FIXTURES,
   ...ADMIN_CASCADE_DELETE_FIXTURES,
   ...ICON_AUDIT_FIXTURES,
+  ...GRAPH_TOPOLOGY_FIXTURES,
   ...CODEMAP_FIXTURES,
+  ...SURVEY_ENTRY_FIXTURES,
 ];
 
 export function findFixture(id: string): SandboxFixture | undefined {

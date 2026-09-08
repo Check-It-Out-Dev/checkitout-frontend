@@ -14,13 +14,13 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@ngneat/transloco';
 import { groupedDecimal } from '../../core/i18n/number-format';
 import { isDemoMode } from '../../core/demo/demo-mode';
+import { SUBSCRIPTION_CHANGED, listen } from '../../core/cross-tab';
 import { PublicConfigApiService } from '../../core/config/public-config.service';
 import { firstValueFrom, forkJoin } from 'rxjs';
 import type { InvoiceRecordDtoOut } from '../../core/api-frozen/hidden-models';
@@ -49,6 +49,61 @@ import {
 } from './upgrade-confirm-dialog.component';
 
 type LoadState = 'loading' | 'loaded' | 'error' | 'not-applicable';
+
+type PlanKey = 'FREE' | 'BUSINESS' | 'ENTERPRISE';
+
+interface PlanTier {
+  readonly key: PlanKey;
+  readonly name: string;
+  readonly price: number;
+  readonly limit: number;
+  readonly features: readonly string[];
+}
+
+export interface PlanCard extends PlanTier {
+  readonly isCurrent: boolean;
+  readonly highlight: boolean;
+  readonly upgrade: UpgradeRequestDtoInTargetPlanEnum | null;
+  readonly currentSlot: boolean;
+  readonly downgrade: DowngradeRequestDtoInTargetPlanEnum | null;
+}
+
+/** Prices mirror the BE seed (0/29/99), limits the landing tiers (2/5/10). */
+const PLAN_LADDER: readonly PlanTier[] = [
+  {
+    key: 'FREE',
+    name: 'Free',
+    price: 0,
+    limit: 2,
+    features: [
+      'plan_billing.plans.free.f1',
+      'plan_billing.plans.free.f2',
+      'plan_billing.plans.free.f3',
+    ],
+  },
+  {
+    key: 'BUSINESS',
+    name: 'Business',
+    price: 29,
+    limit: 5,
+    features: [
+      'plan_billing.plans.business.f1',
+      'plan_billing.plans.business.f2',
+      'plan_billing.plans.business.f3',
+    ],
+  },
+  {
+    key: 'ENTERPRISE',
+    name: 'Enterprise',
+    price: 99,
+    limit: 10,
+    features: [
+      'plan_billing.plans.enterprise.f1',
+      'plan_billing.plans.enterprise.f2',
+      'plan_billing.plans.enterprise.f3',
+    ],
+  },
+];
 type TrialState = 'idle' | 'activating' | 'activated' | 'error';
 type CancelDowngradeState = 'idle' | 'cancelling' | 'error';
 type PortalState = 'idle' | 'opening' | 'error';
@@ -74,7 +129,6 @@ type PortalState = 'idle' | 'opening' | 'error';
     RouterLink,
     MatButtonModule,
     MatDialogModule,
-    MatDividerModule,
     MatIconModule,
     MatProgressSpinnerModule,
     TranslocoModule,
@@ -85,6 +139,7 @@ export class PlanBillingComponent implements OnInit {
   private readonly api = inject(SubscriptionApiService);
   private readonly writeApi = inject(SubscriptionWriteApi);
   private readonly dialog = inject(MatDialog);
+  private readonly router = inject(Router);
   private readonly publicConfig = inject(PublicConfigApiService);
 
   /**
@@ -179,6 +234,63 @@ export class PlanBillingComponent implements OnInit {
     }));
   });
 
+  /** The plan the status enum says we are on; the name is the fallback. */
+  readonly currentPlanKey = computed<PlanKey>(() => {
+    const s = this.status();
+    switch (s?.status) {
+      case SubscriptionStatus.ENTERPRISE_ACTIVE:
+      case SubscriptionStatus.TRIAL_ENTERPRISE:
+        return 'ENTERPRISE';
+      case SubscriptionStatus.BUSINESS_ACTIVE:
+        return 'BUSINESS';
+      case SubscriptionStatus.FREE_ACTIVE:
+        return 'FREE';
+      default: {
+        const name = s?.currentPlanName?.toUpperCase();
+        return name === 'ENTERPRISE' || name === 'BUSINESS' ? name : 'FREE';
+      }
+    }
+  });
+
+  /** Whether an upgrade is on offer at all (an Enterprise subscriber has nowhere up to go). */
+  readonly showUpgrade = computed(() => {
+    const st = this.status()?.status;
+    return (
+      st === SubscriptionStatus.FREE_ACTIVE ||
+      st === SubscriptionStatus.TRIAL_ENTERPRISE ||
+      st === SubscriptionStatus.BUSINESS_ACTIVE
+    );
+  });
+
+  /**
+   * The three plans side by side, each knowing what it is to this account:
+   * the one you are on, the one you could move up to (a button), the ones you
+   * could move down to (a quieter button). One ladder replaces the two
+   * boxes of loose buttons the page used to be (owner, 2026-09-07).
+   */
+  readonly planCards = computed<PlanCard[]>(() => {
+    const current = this.currentPlanKey();
+    const ups = this.showUpgrade() ? this.upgradeOptions() : [];
+    const downs = this.availableDowngrades();
+    return PLAN_LADDER.map((plan) => {
+      const isCurrent = plan.key === current;
+      const up = ups.find((u) => (u.target as string) === plan.key);
+      return {
+        ...plan,
+        isCurrent,
+        highlight: plan.key === 'ENTERPRISE' && !isCurrent,
+        upgrade: up && !up.isCurrent ? up.target : null,
+        currentSlot: !!up?.isCurrent,
+        downgrade: downs.find((d) => (d as string) === plan.key) ?? null,
+      };
+    });
+  });
+
+  /** The usage ring: coral for what is used, beige for what is left. */
+  readonly usageRing = computed(
+    () => `conic-gradient(#e2543e ${String(this.usagePercent())}%, #eadecf 0)`,
+  );
+
   readonly statusBadgeClass = computed(() => statusBadgeClass(this.status()?.status));
   readonly statusBadgeKey = computed(() => statusBadgeKey(this.status()?.status));
   readonly usagePercent = computed(() => {
@@ -206,6 +318,9 @@ export class PlanBillingComponent implements OnInit {
 
   ngOnInit(): void {
     this.load();
+    // Stripe Checkout and the customer portal return in a tab of their own;
+    // when they announce a change, this page reads its status again.
+    this.destroyRef.onDestroy(listen(SUBSCRIPTION_CHANGED, () => this.load()));
     // bfcache (audit P2): coming back from the Stripe customer portal via
     // the browser's Back button restores this page from the back/forward
     // cache WITHOUT re-running ngOnInit — the plan/status on screen would
@@ -319,7 +434,7 @@ export class PlanBillingComponent implements OnInit {
       UpgradeConfirmDialogComponent,
       UpgradeConfirmDialogData,
       UpgradeConfirmResult
-    >(UpgradeConfirmDialogComponent, { data, width: '480px', autoFocus: 'first-tabbable' });
+    >(UpgradeConfirmDialogComponent, { data, width: '560px', autoFocus: 'first-tabbable' });
 
     try {
       const result = await firstValueFrom(ref.afterClosed());
@@ -336,6 +451,12 @@ export class PlanBillingComponent implements OnInit {
    * so the back button doesn't return to the consent dialog state.
    */
   protected redirectTo(url: string): void {
+    // Stripe's URL is another origin and needs the browser; one of our own
+    // paths does not — a full reload there was a screen flash for nothing.
+    if (url.startsWith('/')) {
+      void this.router.navigateByUrl(url, { replaceUrl: true });
+      return;
+    }
     if (typeof window !== 'undefined') {
       window.location.href = url;
     }

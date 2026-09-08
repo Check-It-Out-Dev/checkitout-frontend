@@ -21,32 +21,10 @@
  *   PERF_BASE_URL=https://www.checkitout.app npm run test:perf   (live)
  */
 import { spawn, spawnSync } from 'node:child_process';
-import { existsSync, readdirSync, statSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { buildDemo, stale } from './demo-build.mjs';
 
 const PORT = 4300;
 const URL = `http://localhost:${PORT}/`;
-const SHELL = resolve('dist/check-it-out-fe-greenfield/browser/index.html');
-
-/** Newest mtime under a directory, skipping the noise. */
-function newest(dir, skip = /node_modules|\.angular|dist/) {
-  let latest = 0;
-  for (const entry of readdirSync(dir, { withFileTypes: true })) {
-    if (skip.test(entry.name)) continue;
-    const full = join(dir, entry.name);
-    const t = entry.isDirectory() ? newest(full, skip) : statSync(full).mtimeMs;
-    if (t > latest) latest = t;
-  }
-  return latest;
-}
-
-/** Is the built demo missing, or older than the sources it was built from? */
-function stale() {
-  if (!existsSync(SHELL)) return true;
-  const built = statSync(SHELL).mtimeMs;
-  return ['src', 'public'].some((d) => existsSync(d) && newest(resolve(d)) > built);
-}
-
 const log = (m) => console.log(`\x1b[36m[perf] ${m}\x1b[0m`);
 
 function probe(url) {
@@ -73,8 +51,7 @@ let server;
 function rebuildIfStale() {
   if (!stale()) return;
   log('the demo build is missing or older than src/ — building it');
-  const built = spawnSync('npm', ['run', 'build:demo'], { stdio: 'inherit', shell: true });
-  if (built.status !== 0) {
+  if (!buildDemo()) {
     log('build:demo failed');
     process.exit(1);
   }

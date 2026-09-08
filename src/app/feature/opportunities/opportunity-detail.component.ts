@@ -78,6 +78,19 @@ export class OpportunityDetailComponent implements OnInit {
 
   readonly state = signal<LoadState>('loading');
   readonly opp = signal<PartnershipOpportunityDtoOut | null>(null);
+
+  /** The company that owns this campaign manages it from here — the way to
+   * its applications sits on the page, not two menus away. Any other company
+   * only reads it. */
+  readonly isOwner = computed(() => {
+    const user = this.session.user();
+    const owner = this.opp()?.company?.id;
+    return (
+      (user?.userType?.value as string | undefined) === 'COMPANY' &&
+      owner != null &&
+      owner === user?.id
+    );
+  });
   readonly applyState = signal<ApplyState>('idle');
   readonly applyErrorKey = signal<string | null>(null);
   readonly opportunityId = signal<number | null>(null);

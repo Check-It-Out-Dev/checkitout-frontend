@@ -716,7 +716,7 @@
   font-family: 'Material Icons';
   font-style: normal;
   font-weight: 400;
-  src: url(/assets/fonts/materialicons_v145_subset.woff2?v=0c14736cadf5) format('woff2');
+  src: url(/assets/fonts/materialicons_v145_subset.woff2?v=04c1eed33669) format('woff2');
 }
 
 .material-icons {
@@ -992,6 +992,22 @@ a {
     0 0 0 4px rgba(255, 90, 54, 0.55);
 }
 
+/* The landing's type reset. Preflight is off, so the UA's block margins on
+   headings, paragraphs and lists stacked on every gap and margin utility the
+   templates were written against. Element selectors only, on purpose: (0,0,2)
+   loses to any utility class, so mt-4 and mx-auto on a heading keep working,
+   which is why this is not in the component's own styles (landing.component.ts). */
+app-landing h1,
+app-landing h2,
+app-landing h3,
+app-landing h4,
+app-landing h5,
+app-landing h6,
+app-landing p,
+app-landing ul,
+app-landing ol {
+  margin-block: 0;
+}
 /* Secondary CTA — ink outline, transparent. */
 .cta-secondary {
   display: inline-flex;

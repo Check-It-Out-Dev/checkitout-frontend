@@ -86,7 +86,7 @@ import { GRAPH_REPO_URL } from '../ui/survey-links';
           </button>
         </div>
       </div>
-      <div class="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+      <div class="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
         @for (r of replay; track r.k; let i = $index) {
           <div
             class="relative rounded-xl border p-4 transition-all duration-300"

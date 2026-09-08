@@ -36,6 +36,7 @@
     "test:sandbox": "playwright test e2e-tests/sandbox",
     "test:msw": "playwright test e2e-tests/msw",
     "test:perf": "node tools/run-perf.mjs",
+    "perf:k6": "k6 run e2e-tests/perf/k6/demo-routes.js",
     "test:visual": "playwright test e2e-tests/visual/",
     "test:visual:update": "playwright test e2e-tests/visual/ --update-snapshots && node tools/write-regen-tag.mjs",
     "test:integration": "playwright test e2e-tests/integration --project=chromium-desktop --retries=2 --workers=1",
@@ -59,7 +60,8 @@
     "check:icon-subset": "node tools/subset-material-icons.mjs --check",
     "start:demo": "ng serve --configuration demo --ssl",
     "build:demo": "ng build --configuration demo",
-    "serve:demo": "node tools/serve-demo.mjs"
+    "serve:demo": "node tools/serve-demo.mjs",
+    "deploy:demo": "node tools/deploy-demo.mjs"
   },
   "private": true,
   "dependencies": {
@@ -108,6 +110,7 @@
     "postcss": "^8.4.35",
     "prettier": "^3.8.3",
     "selfsigned": "^5.5.0",
+    "simple-icons": "^16.30.0",
     "tailwindcss": "^3.4.1",
     "typescript": "~6.0.3"
   },

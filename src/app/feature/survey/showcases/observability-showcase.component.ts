@@ -48,7 +48,7 @@ import { CodePanelComponent } from '../ui/code-panel.component';
           </button>
         </div>
       </div>
-      <div class="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+      <div class="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
         @for (s of pipeline; track s.name; let i = $index, last = $last) {
           <div
             class="relative rounded-xl border p-4 transition-all duration-300"

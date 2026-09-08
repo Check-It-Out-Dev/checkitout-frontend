@@ -16,13 +16,37 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
 import type { AppliedOpportunityDtoOut } from '../../api/model/applied-opportunity-dto-out';
 import { OpportunityStatus } from '../../api/model/opportunity-status';
+import type { PartnershipOpportunitySimpleDtoOut } from '../../api/model/partnership-opportunity-simple-dto-out';
 import { AppliedOpportunityApiService } from '../../core/applied-opportunities/applied-opportunity.service';
+import { AvatarComponent } from '../../shared/components/avatar/avatar.component';
 import {
   RejectApplicantDialogComponent,
   type RejectApplicantDialogData,
 } from './reject-applicant-dialog.component';
 
 type LoadState = 'loading' | 'loaded' | 'empty' | 'error' | 'not-found';
+
+/** The inbox lists rows at the stage where the decision is still the company's. */
+const INBOX_STATUSES: ReadonlyArray<OpportunityStatus> = [
+  OpportunityStatus.APPLIED,
+  OpportunityStatus.ACCEPTED_BY_COMPANY,
+];
+
+/** A campaign published in the last week is still "new" to its applicants. */
+const NEW_CAMPAIGN_DAYS = 7;
+
+export type CampaignStage = 'new' | 'running' | 'closed';
+
+/** Where a campaign is in its own life, read off the row's nested copy of it. */
+export function campaignStage(
+  campaign: Pick<PartnershipOpportunitySimpleDtoOut, 'createdTime' | 'active'>,
+  now = Date.now(),
+): CampaignStage {
+  if (campaign.active === false) return 'closed';
+  const created = campaign.createdTime ? Date.parse(campaign.createdTime) : NaN;
+  if (!Number.isNaN(created) && now - created < NEW_CAMPAIGN_DAYS * 86_400_000) return 'new';
+  return 'running';
+}
 
 /**
  * Stage 4 / E7a — Company-facing applicants list per campaign at
@@ -48,6 +72,7 @@ type LoadState = 'loading' | 'loaded' | 'empty' | 'error' | 'not-found';
     MatIconModule,
     MatProgressSpinnerModule,
     TranslocoModule,
+    AvatarComponent,
   ],
   templateUrl: './campaign-applicants.component.html',
 })
@@ -57,6 +82,8 @@ export class CampaignApplicantsComponent implements OnInit {
   private readonly api = inject(AppliedOpportunityApiService);
 
   readonly campaignId = signal<number | null>(null);
+  /** No campaign in the route: the inbox across every campaign of this company. */
+  readonly inbox = signal(false);
   readonly state = signal<LoadState>('loading');
   readonly items = signal<AppliedOpportunityDtoOut[]>([]);
   /** Per-row in-flight flag — disables both buttons on that row while a
@@ -67,7 +94,12 @@ export class CampaignApplicantsComponent implements OnInit {
 
   ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('id');
-    const id = idParam ? Number(idParam) : NaN;
+    if (idParam === null) {
+      this.inbox.set(true);
+      this.load(null);
+      return;
+    }
+    const id = Number(idParam);
     if (!id || Number.isNaN(id)) {
       this.state.set('not-found');
       return;
@@ -76,9 +108,13 @@ export class CampaignApplicantsComponent implements OnInit {
     this.load(id);
   }
 
-  load(campaignId: number): void {
+  load(campaignId: number | null): void {
     this.state.set('loading');
-    this.api.list(0, 100, { 'partnershipOpportunity.id': String(campaignId) }).subscribe({
+    const filters: Record<string, string> =
+      campaignId === null
+        ? { opportunityStatus: INBOX_STATUSES.join(',') }
+        : { 'partnershipOpportunity.id': String(campaignId) };
+    this.api.list(0, 100, filters).subscribe({
       next: (page) => {
         const content = page.content ?? [];
         this.items.set(content);
@@ -130,6 +166,33 @@ export class CampaignApplicantsComponent implements OnInit {
         });
       },
     });
+  }
+
+  campaignStage(campaign: PartnershipOpportunitySimpleDtoOut): CampaignStage {
+    return campaignStage(campaign);
+  }
+
+  /** The campaign chip: green for one just published, amber for one running. */
+  campaignBadgeClass(campaign: PartnershipOpportunitySimpleDtoOut): string {
+    switch (campaignStage(campaign)) {
+      case 'new':
+        return 'border-emerald-200 bg-emerald-50 text-emerald-800';
+      case 'running':
+        return 'border-amber-200 bg-amber-50 text-amber-900';
+      default:
+        return 'border-beige bg-cream text-slate2';
+    }
+  }
+
+  campaignStageClass(campaign: PartnershipOpportunitySimpleDtoOut): string {
+    switch (campaignStage(campaign)) {
+      case 'new':
+        return 'text-emerald-700';
+      case 'running':
+        return 'text-amber-700';
+      default:
+        return 'text-slate2';
+    }
   }
 
   isAwaitingDecision(row: AppliedOpportunityDtoOut): boolean {

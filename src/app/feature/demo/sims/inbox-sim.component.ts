@@ -4,6 +4,7 @@ import { TranslocoPipe } from '@ngneat/transloco';
 import { WorldSimShellComponent } from './world-sim-shell.component';
 import { DEMO_STEP_UP_KEY, markCompanyMailVerified } from '../../../core/demo/demo-fixtures';
 import { SandboxDirectorService } from '../../../core/demo/sandbox-director.service';
+import { ACCOUNT_ACTIVATED, announce } from '../../../core/cross-tab';
 
 /**
  * Inbox simulator — "the user's mailbox". Shows one branded CheckItOut
@@ -24,13 +25,10 @@ import { SandboxDirectorService } from '../../../core/demo/sandbox-director.serv
   imports: [MatIconModule, TranslocoPipe, WorldSimShellComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <app-world-sim-shell
-      [position]="variant() === 'code' ? 'dock' : 'center'"
-      [caption]="'demo.sims.inbox.caption' | transloco"
-    >
+    <app-world-sim-shell position="dock" [caption]="'demo.sims.inbox.caption' | transloco">
       <div
         class="overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-beige"
-        [class]="variant() === 'code' ? 'w-[20rem]' : 'w-[28rem] max-w-[calc(100vw-3rem)]'"
+        [class]="variant() === 'code' ? 'w-[20rem]' : 'w-[25rem] max-w-[calc(100vw-3rem)]'"
       >
         <!-- mail client chrome -->
         <div class="flex items-center gap-2 border-b border-beige bg-cream px-4 py-2.5">
@@ -67,6 +65,11 @@ import { SandboxDirectorService } from '../../../core/demo/sandbox-director.serv
             }}
           </div>
           <div class="mt-3 rounded-xl border border-beige bg-cream p-4">
+            @if (variant() === 'verify') {
+              <p class="mb-1.5 text-sm font-semibold text-ink">
+                {{ 'demo.sims.inbox.greeting' | transloco }}
+              </p>
+            }
             <p class="text-xs leading-relaxed text-slate2">
               {{
                 (variant() === 'verify' ? 'demo.sims.inbox.bodyVerify' : 'demo.sims.inbox.bodyCode')
@@ -82,8 +85,11 @@ import { SandboxDirectorService } from '../../../core/demo/sandbox-director.serv
                 class="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-coral-700 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-coral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-300"
               >
                 {{ 'demo.sims.inbox.verifyCta' | transloco }}
-                <mat-icon class="!h-4 !w-4 !text-base">check_circle</mat-icon>
+                <mat-icon class="!h-4 !w-4 !text-base">arrow_forward</mat-icon>
               </button>
+              <p class="mt-3 text-[10px] leading-relaxed text-slate2/80">
+                {{ 'demo.sims.inbox.footer' | transloco }}
+              </p>
             }
             <!-- code: the step-up one-time code -->
             @if (variant() === 'code') {
@@ -126,7 +132,12 @@ export class InboxSimComponent implements OnInit {
     // The link in the mail is what activates the account — before this, the
     // onboarding screen behind this card says the address is still to be
     // verified, because that is what it is.
-    if (this.variant() === 'verify') markCompanyMailVerified();
+    if (this.variant() === 'verify') {
+      markCompanyMailVerified();
+      // …and the onboarding page in the middle hears it, the way it would
+      // hear the real link opening in another tab.
+      announce(ACCOUNT_ACTIVATED);
+    }
     const step = this.director.step();
     if (step) {
       this.director.notify(step.id);

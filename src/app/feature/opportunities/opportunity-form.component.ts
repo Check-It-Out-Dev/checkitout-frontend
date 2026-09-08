@@ -17,7 +17,7 @@ import {
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { provideNativeDateAdapter } from '@angular/material/core';
+import { MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -26,7 +26,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { TranslocoModule } from '@ngneat/transloco';
+import { TranslocoModule, TranslocoService } from '@ngneat/transloco';
 import { forkJoin } from 'rxjs';
 import { AddressDtoIn, AddressDtoInAddressTypeEnum } from '../../api/model/address-dto-in';
 import { CompensationType } from '../../api/model/compensation-type';
@@ -139,7 +139,15 @@ const dateOrderValidator: ValidatorFn = (group: AbstractControl): ValidationErro
 @Component({
   selector: 'app-opportunity-form',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [provideNativeDateAdapter()],
+  providers: [
+    provideNativeDateAdapter(),
+    // The native adapter formats with the browser's default locale, which put
+    // "9/21/2026" into a Polish form. Follow the UI language instead.
+    {
+      provide: MAT_DATE_LOCALE,
+      useFactory: () => (inject(TranslocoService).getActiveLang() === 'pl' ? 'pl-PL' : 'en-GB'),
+    },
+  ],
   imports: [
     ReactiveFormsModule,
     RouterLink,

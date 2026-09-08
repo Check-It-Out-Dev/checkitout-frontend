@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { Title } from '@angular/platform-browser';
+import { Meta, Title } from '@angular/platform-browser';
 import {
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
@@ -18,6 +18,7 @@ class BlankComponent {}
 describe('SeoTitleStrategy', () => {
   let transloco: TranslocoService;
   let title: Title;
+  let meta: Meta;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -28,6 +29,7 @@ describe('SeoTitleStrategy', () => {
               seo: {
                 site_title: 'Check It Out',
                 login: { title: 'Zaloguj się' },
+                survey: { title: 'Jak testujemy?', intro: 'Nawyki stojące za platformą.' },
                 '404': { title: '404 - Strona nie znaleziona' },
               },
             },
@@ -35,6 +37,7 @@ describe('SeoTitleStrategy', () => {
               seo: {
                 site_title: 'Check It Out',
                 login: { title: 'Sign In' },
+                survey: { title: 'How do we test?', intro: 'The habits behind the platform.' },
                 '404': { title: '404 - Page Not Found' },
               },
             },
@@ -47,6 +50,12 @@ describe('SeoTitleStrategy', () => {
         provideRouter([
           { path: 'login', title: 'seo.login.title', component: BlankComponent },
           { path: 'plain', component: BlankComponent },
+          {
+            path: 'survey',
+            title: 'seo.survey.title',
+            data: { description: 'seo.survey.intro' },
+            component: BlankComponent,
+          },
           { path: 'error/:type', title: errorTitleKey, component: BlankComponent },
         ]),
         { provide: TitleStrategy, useClass: SeoTitleStrategy },
@@ -54,6 +63,28 @@ describe('SeoTitleStrategy', () => {
     }).compileComponents();
     transloco = TestBed.inject(TranslocoService);
     title = TestBed.inject(Title);
+    meta = TestBed.inject(Meta);
+  });
+
+  it('describes a page that declares data.description — meta + Open Graph, translated', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/survey');
+    expect(meta.getTag('name="description"')?.content).toBe('Nawyki stojące za platformą.');
+    expect(meta.getTag('property="og:title"')?.content).toBe('Jak testujemy? | Check It Out');
+    expect(meta.getTag('property="og:description"')?.content).toBe('Nawyki stojące za platformą.');
+    expect(meta.getTag('property="og:url"')?.content).toBe('https://checkitout.app/survey');
+    transloco.setActiveLang('en');
+    await harness.fixture.whenStable();
+    expect(meta.getTag('name="description"')?.content).toBe('The habits behind the platform.');
+  });
+
+  it('removes the description when the next page declares none', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/survey');
+    expect(meta.getTag('name="description"')).toBeTruthy();
+    await harness.navigateByUrl('/plain');
+    expect(meta.getTag('name="description"')).toBeNull();
+    expect(meta.getTag('property="og:url"')).toBeNull();
   });
 
   it('titles a routed page as "<page> | <site>"', async () => {

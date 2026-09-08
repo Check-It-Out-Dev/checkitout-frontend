@@ -11,6 +11,7 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
+import { SessionStateService } from '../auth/session-state.service';
 import { GuideRunnerService } from './guide-runner.service';
 import {
   SCENARIOS,
@@ -19,10 +20,11 @@ import {
   ScenarioStep,
   scenarioByKey,
 } from './scenario-registry';
-import { DEMO_PLAN_KEY, resetDemoTourStores } from './demo-fixtures';
+import { resetDemoTourStores } from './demo-fixtures';
 import {
   DEMO_PERSONA_KEYS,
   currentDemoRole,
+  isDemoMode,
   isDemoSignedIn,
   setDemoRole,
   setDemoSignedIn,
@@ -61,6 +63,7 @@ export interface SandboxState {
 @Injectable({ providedIn: 'root' })
 export class SandboxDirectorService {
   private readonly router = inject(Router);
+  private readonly session = inject(SessionStateService);
   private readonly dialog = inject(MatDialog);
   private readonly runner = inject(GuideRunnerService);
   private readonly server = isPlatformServer(inject(PLATFORM_ID));
@@ -104,6 +107,15 @@ export class SandboxDirectorService {
 
   readonly all = SCENARIOS;
 
+  /**
+   * Set the moment a full boot is decided on. The boot must find the state
+   * in sessionStorage, but the page being left must not act on it: with the
+   * signal set first, the effect below re-armed the done watch against the
+   * 2FA dialog still open on screen, and a replay pressed there walked
+   * itself from step 0 to step 2 before the reload landed on step 0.
+   */
+  private booting = false;
+
   constructor() {
     // Demo fixtures can advance steps without touching components: a rule
     // dispatches CustomEvent('demo-sandbox', {detail:{id}}) and lands here.
@@ -111,6 +123,18 @@ export class SandboxDirectorService {
       window.addEventListener('demo-sandbox', (e) => {
         const id = (e as CustomEvent<{ id?: string }>).detail?.id;
         if (id) this.notify(id);
+      });
+    }
+    // A page brought back from the back-forward cache is a page from before
+    // the tour changed the persona. Its session cache may still say signed
+    // out while localStorage says in, and its guide still shows whatever it
+    // showed when the tour booted away from it: the hub came back with a
+    // 1/5 panel over it, and the next Start bounced to the sign-in screen
+    // (owner, 2026-09-07). Nothing a resurrected page holds in memory can be
+    // trusted in the demo; it boots again.
+    if (typeof window !== 'undefined' && isDemoMode()) {
+      window.addEventListener('pageshow', (e) => {
+        if ((e as PageTransitionEvent).persisted) this.reloadInPlace();
       });
     }
     // A tour follows the visitor through the app, not out of it: landing on
@@ -147,8 +171,7 @@ export class SandboxDirectorService {
     const def = scenarioByKey(key);
     if (!def || !def.steps.length) return;
     this.clearTourArtifacts();
-    this.persist({ key, step: 0, done: false });
-    this.enter(def, def.steps[0].route);
+    this.enter(def, { key, step: 0, done: false }, def.steps[0].route);
   }
 
   /**
@@ -172,15 +195,12 @@ export class SandboxDirectorService {
    * a simulator calling notify() itself (never twice). Nothing here sleeps:
    * the waits resolve on the next DOM mutation.
    *
-   * The checkout ends in a full page load and needs no special case. Its
-   * `done` is the stored plan, written by the upgrade call before it redirects,
-   * so it confirms in this document like any other step; and whichever wins the
-   * race — this advance or the reload — restore() lands on the right beat,
-   * because a stored plan on a `reloads` step means that beat is over. It used
-   * to persist the next step BEFORE running the recipe, which made every
-   * failure a phantom: all three of its clicks land on controls that are
-   * already on screen, so swallowing them still left the tour narrating an
-   * invoice for a purchase nobody made.
+   * No step reloads the document any more: the checkout that used to hand
+   * off through a full page load is a router hop into a simulator (2026-09-07),
+   * so every step confirms in this document like any other. The old pre-advance
+   * for that reload made every failure a phantom — all three of its clicks
+   * landed on controls already on screen, so swallowing them still left the
+   * tour narrating an invoice for a purchase nobody made — and is gone with it.
    *
    * Two rules keep a rejected step honest. The shield covers the typing only,
    * not the waiting, so the page is never frozen while the guide hopes. And a
@@ -306,8 +326,12 @@ export class SandboxDirectorService {
     // what a reload does NOT clear — so "Restart" used to hand the replay every
     // artifact the last run left behind.
     this.clearTourArtifacts();
-    this.persist({ key: d.key, step: 0, done: false });
-    this.reload(d.startRoute);
+    // And the persona is primed for the start route exactly as start() primes
+    // it. A replay from the recap is signed in by the very tour it replays;
+    // reloading the sign-in route with the session still on had the guard
+    // bounce it into the marketplace, with the guide narrating step 1 of 5
+    // over a page the step is not about (owner's screenshot, 2026-09-07).
+    this.enter(d, { key: d.key, step: 0, done: false }, d.startRoute, true);
   }
 
   /**
@@ -354,9 +378,25 @@ export class SandboxDirectorService {
     return stores;
   }
 
-  exit(): void {
+  /**
+   * Leaving is leaving. The run's state and artifacts go, and so does the
+   * session the tour signed the visitor into: the hub, the landing page and
+   * the next start all begin where a first visit does. Left signed in, the
+   * landing bounced straight back into the app and the brand mark looked
+   * dead. A session flip needs a full boot — the session cache is primed by
+   * /users/me at startup — so a signed-in exit reloads at `to`; a signed-out
+   * one is a plain hop.
+   */
+  exit(to = '/demo'): void {
     this.abandon();
-    void this.router.navigateByUrl('/demo');
+    this.clearTourArtifacts();
+    const wasSignedIn = isDemoSignedIn();
+    setDemoSignedIn(false);
+    if (wasSignedIn) {
+      this.reload(to);
+      return;
+    }
+    void this.router.navigateByUrl(to);
   }
 
   /** Watch the current step's done condition (cancelling the previous one).
@@ -364,7 +404,7 @@ export class SandboxDirectorService {
   private armDoneWatch(step: ScenarioStep | null, busy: boolean): void {
     this.doneWatch?.();
     this.doneWatch = null;
-    if (this.server || busy || !step?.done) return;
+    if (this.server || this.booting || busy || !step?.done) return;
     const at = this._state()?.step;
     const pred = this.runner.doneWatcher(step.done);
     this.doneWatch = this.runner.watch(pred, () => {
@@ -397,12 +437,26 @@ export class SandboxDirectorService {
    * the session cache through a full boot (the /users/me fixture reads
    * localStorage on every probe); otherwise it is a plain router hop.
    */
-  private enter(def: ScenarioDef, route: string): void {
+  private enter(def: ScenarioDef, state: SandboxState, route: string, reboot = false): void {
     const wantsSignedIn = !route.startsWith('/auth/');
-    const reprime = currentDemoRole() !== def.role || isDemoSignedIn() !== wantsSignedIn;
+    const stored = currentDemoRole() !== def.role || isDemoSignedIn() !== wantsSignedIn;
+    // The page's own memory can lag the store: a tab brought back from the
+    // back-forward cache, or a second tab, still holds the session it booted
+    // with. A plain hop from such a page meets the auth guard with the wrong
+    // answer — the sign-in screen, with a 1/5 panel over it (owner,
+    // 2026-09-07). Only a page whose cached session already IS the persona
+    // may hop; every other one boots.
+    const cached = this.session.user();
+    const stale = wantsSignedIn ? cached?.userType?.value !== def.role : cached !== null;
+    const reprime = stored || stale;
     setDemoRole(def.role);
     setDemoSignedIn(wantsSignedIn);
-    if (reprime) {
+    // `reboot`: a replay wants the full boot regardless — the in-memory
+    // fixture stores only re-seed on one. Decided BEFORE the state is written,
+    // so the watch does not arm on a page that is on its way out.
+    this.booting = reprime || reboot;
+    this.persist(state);
+    if (this.booting) {
       this.reload(route);
       return;
     }
@@ -412,6 +466,11 @@ export class SandboxDirectorService {
   /** Full boot — seam for tests (jsdom cannot navigate). */
   private reload(url: string): void {
     window.location.href = url;
+  }
+
+  /** The same page, booted again — seam for tests. */
+  private reloadInPlace(): void {
+    window.location.reload();
   }
 
   private persist(state: SandboxState): void {
@@ -429,13 +488,6 @@ export class SandboxDirectorService {
       const parsed = JSON.parse(raw) as SandboxState;
       const def = scenarioByKey(parsed.key);
       if (!def) return null;
-      // The plan upgrade hands off through a full reload. Landing back with
-      // the plan already stored means that beat is over — whoever did it, the
-      // guide's pill (which persists the next step first) or the visitor
-      // clicking through the real dialog.
-      if (def.steps[parsed.step]?.reloads && sessionStorage.getItem(DEMO_PLAN_KEY)) {
-        return { ...parsed, step: parsed.step + 1 };
-      }
       return parsed;
     } catch {
       return null;

@@ -172,6 +172,53 @@ describe('GuideSpotlightComponent', () => {
     expect(seen).toEqual([true]);
   });
 
+  it('keeps the panel quiet while a glide is still carrying the control into view', async () => {
+    // The campaign form's publish button is 1685 px down when its step begins,
+    // and the glide there eases in: its first frames move less than half a
+    // pixel, which the settle check used to read as "landed". The control was
+    // then off screen for its 500 ms of grace and the panel handed out a Next
+    // that the pill replaced when the button arrived — the smoothness tier's
+    // "step changed its way forward". The scroll is simulated the way the page
+    // does it: a document tall enough to glide, and a control whose box
+    // follows the glide's own curve.
+    const seen: boolean[] = [];
+    const drawn: boolean[] = [];
+    fixture.componentInstance.seen = seen;
+    fixture.componentInstance.drawn = drawn;
+    placeTarget(host, 300);
+    fixture.componentInstance.target.set('[data-testid="spot-target"]');
+    fixture.detectChanges();
+    await frames(fixture);
+    expect(seen).toEqual([true]);
+
+    const root = document.documentElement as unknown as Record<string, unknown>;
+    Object.defineProperty(root, 'scrollHeight', { value: 3000, configurable: true });
+    const far = document.createElement('button');
+    far.dataset['testid'] = 'far-target';
+    host.appendChild(far);
+    far.getClientRects = () => [{}] as unknown as DOMRectList;
+    const ease = (t: number): number => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+    const started = performance.now();
+    far.getBoundingClientRect = () => {
+      const top = 1685 - 1321 * ease(Math.min(1, (performance.now() - started) / 1400));
+      return { top, left: 100, width: 160, height: 40, right: 260, bottom: top + 40 } as DOMRect;
+    };
+    try {
+      fixture.componentInstance.target.set('[data-testid="far-target"]');
+      fixture.detectChanges();
+      await new Promise((resolve) => setTimeout(resolve, 600));
+      expect(seen).toEqual([true]); // still the ring's step: the control is on its way
+
+      await new Promise((resolve) => setTimeout(resolve, 900));
+      fixture.detectChanges();
+      expect(drawn).toEqual([true, false, true]); // and the ring lands on it
+      expect(seen).toEqual([true]);
+    } finally {
+      delete root['scrollHeight'];
+      far.remove();
+    }
+  });
+
   it('hides the ring and shields the page while the guide performs the step', async () => {
     placeTarget(host, 300);
     fixture.componentInstance.target.set('[data-testid="spot-target"]');

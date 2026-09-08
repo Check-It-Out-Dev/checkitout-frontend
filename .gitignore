@@ -97,3 +97,6 @@ deployment/vps/cutover-log-*.txt
 # from them are what gets written up, never the footage.
 /qa-film/
 /qa-shots/
+
+# k6 summaries (one JSON per run)
+e2e-tests/perf/k6/results/
