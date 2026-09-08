@@ -1,4 +1,4 @@
-<section class="mx-auto max-w-3xl p-4" data-testid="plan-billing">
+<section class="mx-auto max-w-4xl p-4" data-testid="plan-billing">
   @switch (state()) {
     @case ('loading') {
       <div class="flex min-h-[40vh] items-center justify-center">
@@ -43,18 +43,33 @@
     }
     @case ('loaded') {
       @if (status(); as s) {
+        <!-- ── Your plan: what you are on, and how much of it you have used ── -->
         <article
           data-testid="plan-billing-card"
-          class="flex flex-col gap-5 rounded-2xl border border-beige bg-white p-7"
+          class="overflow-hidden rounded-3xl border border-beige bg-white"
         >
-          <header class="flex items-center justify-between gap-4">
-            <div>
-              <h1 class="font-display text-4xl font-normal text-ink">
-                {{ s.currentPlanName || ('plan_billing.unknown_plan' | transloco) }}
-              </h1>
+          <div class="grid gap-6 p-7 md:grid-cols-[1fr_auto] md:items-center">
+            <div class="min-w-0">
+              <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                {{ 'plan_billing.plans.current_eyebrow' | transloco }}
+              </p>
+              <div class="mt-2 flex flex-wrap items-center gap-3">
+                <h1 class="font-display text-5xl font-normal text-ink">
+                  {{ s.currentPlanName || ('plan_billing.unknown_plan' | transloco) }}
+                </h1>
+                <span
+                  [class]="
+                    statusBadgeClass() +
+                    ' rounded-full px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em]'
+                  "
+                  data-testid="plan-billing-status-badge"
+                >
+                  {{ statusBadgeKey() | transloco }}
+                </span>
+              </div>
               @if (s.currentPlanPrice !== undefined && s.currentPlanPrice !== null) {
                 <p
-                  class="mt-1 font-mono text-[11px] uppercase tracking-[0.18em] text-slate2"
+                  class="mt-2 font-mono text-[11px] uppercase tracking-[0.18em] text-slate2"
                   data-testid="plan-billing-price"
                 >
                   {{
@@ -63,247 +78,237 @@
                   }}
                 </p>
               }
-            </div>
-            <span
-              [class]="
-                statusBadgeClass() +
-                ' rounded-full px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em]'
-              "
-              data-testid="plan-billing-status-badge"
-            >
-              {{ statusBadgeKey() | transloco }}
-            </span>
-          </header>
-
-          @if (s.status === 'PAYMENT_FAILED') {
-            <div
-              role="alert"
-              class="flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900"
-              data-testid="plan-billing-payment-failed"
-            >
-              <mat-icon class="!h-5 !w-5 shrink-0 !text-red-600">error_outline</mat-icon>
-              <div class="flex flex-1 flex-col gap-2">
-                <span>{{ 'plan_billing.payment_failed.body' | transloco }}</span>
-                <div>
-                  <button
-                    mat-flat-button
-                    color="warn"
-                    type="button"
-                    [disabled]="portalState() === 'opening'"
-                    (click)="openCustomerPortal()"
-                    data-testid="plan-billing-payment-failed-cta"
-                  >
-                    @if (portalState() === 'opening') {
-                      <mat-spinner diameter="18" class="!inline-block" />
-                    } @else {
-                      {{ 'plan_billing.payment_failed.action' | transloco }}
-                    }
-                  </button>
-                </div>
-              </div>
-            </div>
-          }
-
-          @if (s.targetPlanName) {
-            <div
-              role="status"
-              class="flex flex-col items-start gap-2 rounded-2xl border border-navy-400/30 bg-navy-50 px-4 py-3 text-sm text-navy-900 sm:flex-row sm:items-center"
-              data-testid="plan-billing-pending-downgrade"
-            >
-              <mat-icon class="!h-5 !w-5 !text-navy-500">schedule</mat-icon>
-              <span class="flex-1">
-                {{
-                  'plan_billing.pending_downgrade'
-                    | transloco
-                      : {
-                          targetPlan: s.targetPlanName,
-                          date: (s.billingPeriodEnd | localizedDate: 'mediumDate'),
-                        }
-                }}
-              </span>
-              <button
-                mat-stroked-button
-                type="button"
-                (click)="cancelPendingDowngrade()"
-                [disabled]="cancelDowngradeState() === 'cancelling'"
-                data-testid="plan-billing-cancel-downgrade"
-              >
-                @if (cancelDowngradeState() === 'cancelling') {
-                  <mat-spinner diameter="18" class="!inline-block" />
-                } @else {
-                  {{ 'plan_billing.cancel_downgrade.action' | transloco }}
+              <dl class="mt-5 grid gap-x-8 gap-y-3 text-sm sm:grid-cols-2">
+                @if (s.billingPeriodStart || s.billingPeriodEnd) {
+                  <div>
+                    <dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                      {{ 'plan_billing.billing_period' | transloco }}
+                    </dt>
+                    <dd data-testid="plan-billing-period" class="mt-1 font-medium text-ink">
+                      {{ s.billingPeriodStart | localizedDate: 'mediumDate' }} —
+                      {{ s.billingPeriodEnd | localizedDate: 'mediumDate' }}
+                    </dd>
+                  </div>
                 }
-              </button>
+                @if (s.trialEndDate) {
+                  <div>
+                    <dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                      {{ 'plan_billing.trial_ends' | transloco }}
+                    </dt>
+                    <dd class="mt-1 font-medium text-ink">
+                      {{ s.trialEndDate | localizedDate: 'mediumDate' }}
+                    </dd>
+                  </div>
+                }
+              </dl>
             </div>
-            @if (cancelDowngradeErrorKey(); as ek) {
-              <p
-                role="alert"
-                class="text-sm text-red-600"
-                data-testid="plan-billing-cancel-downgrade-error"
+
+            <!-- the usage ring: campaigns used this period, out of the plan's limit -->
+            @if (s.campaignLimit !== undefined && s.campaignLimit !== null) {
+              <div
+                class="flex items-center gap-4 md:flex-col md:text-center"
+                data-testid="plan-billing-usage-ring"
               >
-                {{ ek | transloco }}
-              </p>
+                <div
+                  class="relative h-28 w-28 shrink-0 rounded-full"
+                  [style.background]="usageRing()"
+                  role="progressbar"
+                  [attr.aria-valuenow]="usagePercent()"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  [attr.aria-label]="'plan_billing.campaigns_usage' | transloco"
+                >
+                  <div
+                    class="absolute inset-2 flex flex-col items-center justify-center rounded-full bg-white"
+                  >
+                    <span
+                      class="font-display text-2xl leading-none text-ink"
+                      data-testid="plan-billing-usage"
+                    >
+                      {{ s.campaignsUsedThisPeriod ?? 0 }} / {{ s.campaignLimit }}
+                    </span>
+                  </div>
+                </div>
+                <p
+                  class="max-w-[9rem] font-mono text-[10px] uppercase tracking-[0.18em] text-slate2"
+                >
+                  {{ 'plan_billing.campaigns_usage' | transloco }}
+                </p>
+              </div>
             }
-          }
+          </div>
 
-          @if (
-            paymentsEnabled() && s.trialEligible && !s.trialUsed && trialState() !== 'activated'
-          ) {
-            <div
-              role="status"
-              class="flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900"
-              data-testid="plan-billing-trial-eligible"
-            >
-              <mat-icon class="!h-5 !w-5 !text-amber-600">stars</mat-icon>
-              <div class="flex flex-1 flex-col gap-2">
-                <span>{{ 'plan_billing.trial_eligible' | transloco }}</span>
-                @if (trialErrorKey(); as ek) {
-                  <span
-                    role="alert"
-                    class="text-sm text-red-700"
-                    data-testid="plan-billing-trial-error"
-                  >
-                    {{ ek | transloco }}
-                  </span>
-                }
-                <div>
-                  <button
-                    mat-flat-button
-                    color="primary"
-                    type="button"
-                    [disabled]="trialState() === 'activating'"
-                    (click)="activateTrial()"
-                    data-testid="plan-billing-trial-activate"
-                  >
-                    @if (trialState() === 'activating') {
-                      <mat-spinner diameter="18" class="!inline-block" />
-                    } @else {
-                      {{ 'plan_billing.trial.activate' | transloco }}
-                    }
-                  </button>
+          <!-- what needs your attention, if anything -->
+          <div class="flex flex-col gap-3 px-7 empty:hidden">
+            @if (s.status === 'PAYMENT_FAILED') {
+              <div
+                role="alert"
+                class="mb-5 flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900"
+                data-testid="plan-billing-payment-failed"
+              >
+                <mat-icon class="!h-5 !w-5 shrink-0 !text-red-600">error_outline</mat-icon>
+                <div class="flex flex-1 flex-col gap-2">
+                  <span>{{ 'plan_billing.payment_failed.body' | transloco }}</span>
+                  <div>
+                    <button
+                      mat-flat-button
+                      color="warn"
+                      type="button"
+                      [disabled]="portalState() === 'opening'"
+                      (click)="openCustomerPortal()"
+                      data-testid="plan-billing-payment-failed-cta"
+                    >
+                      @if (portalState() === 'opening') {
+                        <mat-spinner diameter="18" class="!inline-block" />
+                      } @else {
+                        {{ 'plan_billing.payment_failed.action' | transloco }}
+                      }
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          }
-          @if (trialState() === 'activated') {
-            <div
-              role="status"
-              class="flex items-start gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"
-              data-testid="plan-billing-trial-activated"
-            >
-              <mat-icon class="!h-5 !w-5 !text-emerald-600">check_circle</mat-icon>
-              <span>{{ 'plan_billing.trial.activated' | transloco }}</span>
-            </div>
-          }
+            }
 
-          @if (!paymentsEnabled()) {
-            <div
-              role="status"
-              class="flex items-start gap-3 rounded-2xl border border-beige bg-cream px-4 py-3 text-sm text-slate2"
-              data-testid="plan-billing-payments-disabled"
-            >
-              <mat-icon class="!h-5 !w-5 !text-slate2/70">info</mat-icon>
-              <span>{{ 'plan_billing.payments_disabled' | transloco }}</span>
-            </div>
-          }
-
-          @if (
-            paymentsEnabled() &&
-            (s.status === 'FREE_ACTIVE' ||
-              s.status === 'TRIAL_ENTERPRISE' ||
-              s.status === 'BUSINESS_ACTIVE')
-          ) {
-            <div
-              class="flex flex-col gap-3 rounded-2xl border border-beige bg-cream p-5"
-              data-testid="plan-billing-upgrade"
-            >
-              <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
-                {{ 'plan_billing.upgrade.section_title' | transloco }}
-              </p>
-              <div class="flex flex-wrap gap-2">
-                @for (plan of upgradeOptions(); track plan.target) {
-                  <button
-                    mat-stroked-button
-                    color="primary"
-                    type="button"
-                    class="w-full !h-auto !whitespace-normal !py-2 !leading-snug sm:w-auto"
-                    [disabled]="plan.isCurrent || upgrading() !== null"
-                    (click)="startUpgrade(plan.target)"
-                    [attr.data-testid]="'plan-billing-upgrade-' + plan.target.toLowerCase()"
-                  >
-                    @if (plan.isCurrent) {
-                      {{ 'plan_billing.upgrade.current' | transloco: { plan: plan.target } }}
-                    } @else {
-                      {{
-                        'plan_billing.upgrade.cta'
-                          | transloco: { plan: plan.target, price: priceLabel(plan.price) }
-                      }}
-                    }
-                  </button>
-                }
-              </div>
-            </div>
-          }
-
-          @if (paymentsEnabled() && availableDowngrades().length > 0) {
-            <div
-              class="flex flex-col gap-3 rounded-2xl border border-beige bg-cream p-5"
-              data-testid="plan-billing-downgrade"
-            >
-              <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
-                {{ 'plan_billing.downgrade.section_title' | transloco }}
-              </p>
-              <div class="flex flex-wrap gap-2">
-                @for (target of availableDowngrades(); track target) {
-                  <button
-                    mat-stroked-button
-                    type="button"
-                    [disabled]="downgrading() !== null"
-                    (click)="startDowngrade(target)"
-                    [attr.data-testid]="'plan-billing-downgrade-' + target.toLowerCase()"
-                  >
-                    {{ 'plan_billing.downgrade.cta' | transloco: { plan: target } }}
-                  </button>
-                }
-              </div>
-            </div>
-          }
-
-          @if (paymentsEnabled() && canCancelTrial()) {
-            <div
-              class="flex flex-col items-start gap-3 rounded-2xl border border-beige bg-cream p-5 sm:flex-row sm:items-center sm:justify-between"
-              data-testid="plan-billing-cancel-trial"
-            >
-              <div class="flex flex-col">
-                <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
-                  {{ 'plan_billing.cancel_trial.section_title' | transloco }}
-                </p>
-                <p class="mt-1 text-xs text-slate2">
-                  {{ 'plan_billing.cancel_trial.hint' | transloco }}
-                </p>
-              </div>
-              <button
-                mat-stroked-button
-                type="button"
-                [disabled]="cancellingTrial()"
-                (click)="cancelTrial()"
-                data-testid="plan-billing-cancel-trial-btn"
+            @if (s.targetPlanName) {
+              <div
+                role="status"
+                class="mb-5 flex flex-col items-start gap-2 rounded-2xl border border-navy-400/30 bg-navy-50 px-4 py-3 text-sm text-navy-900 sm:flex-row sm:items-center"
+                data-testid="plan-billing-pending-downgrade"
               >
-                {{ 'plan_billing.cancel_trial.action' | transloco }}
-              </button>
-            </div>
-          }
+                <mat-icon class="!h-5 !w-5 !text-navy-500">schedule</mat-icon>
+                <span class="flex-1">
+                  {{
+                    'plan_billing.pending_downgrade'
+                      | transloco
+                        : {
+                            targetPlan: s.targetPlanName,
+                            date: (s.billingPeriodEnd | localizedDate: 'mediumDate'),
+                          }
+                  }}
+                </span>
+                <button
+                  mat-stroked-button
+                  type="button"
+                  (click)="cancelPendingDowngrade()"
+                  [disabled]="cancelDowngradeState() === 'cancelling'"
+                  data-testid="plan-billing-cancel-downgrade"
+                >
+                  @if (cancelDowngradeState() === 'cancelling') {
+                    <mat-spinner diameter="18" class="!inline-block" />
+                  } @else {
+                    {{ 'plan_billing.cancel_downgrade.action' | transloco }}
+                  }
+                </button>
+              </div>
+              @if (cancelDowngradeErrorKey(); as ek) {
+                <p
+                  role="alert"
+                  class="mb-5 text-sm text-red-600"
+                  data-testid="plan-billing-cancel-downgrade-error"
+                >
+                  {{ ek | transloco }}
+                </p>
+              }
+            }
 
+            @if (
+              paymentsEnabled() && s.trialEligible && !s.trialUsed && trialState() !== 'activated'
+            ) {
+              <div
+                role="status"
+                class="mb-5 flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900"
+                data-testid="plan-billing-trial-eligible"
+              >
+                <mat-icon class="!h-5 !w-5 !text-amber-600">stars</mat-icon>
+                <div class="flex flex-1 flex-col gap-2">
+                  <span>{{ 'plan_billing.trial_eligible' | transloco }}</span>
+                  @if (trialErrorKey(); as ek) {
+                    <span
+                      role="alert"
+                      class="text-sm text-red-700"
+                      data-testid="plan-billing-trial-error"
+                    >
+                      {{ ek | transloco }}
+                    </span>
+                  }
+                  <div>
+                    <button
+                      mat-flat-button
+                      color="primary"
+                      type="button"
+                      [disabled]="trialState() === 'activating'"
+                      (click)="activateTrial()"
+                      data-testid="plan-billing-trial-activate"
+                    >
+                      @if (trialState() === 'activating') {
+                        <mat-spinner diameter="18" class="!inline-block" />
+                      } @else {
+                        {{ 'plan_billing.trial.activate' | transloco }}
+                      }
+                    </button>
+                  </div>
+                </div>
+              </div>
+            }
+            @if (trialState() === 'activated') {
+              <div
+                role="status"
+                class="mb-5 flex items-start gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"
+                data-testid="plan-billing-trial-activated"
+              >
+                <mat-icon class="!h-5 !w-5 !text-emerald-600">check_circle</mat-icon>
+                <span>{{ 'plan_billing.trial.activated' | transloco }}</span>
+              </div>
+            }
+
+            @if (!paymentsEnabled()) {
+              <div
+                role="status"
+                class="mb-5 flex items-start gap-3 rounded-2xl border border-beige bg-cream px-4 py-3 text-sm text-slate2"
+                data-testid="plan-billing-payments-disabled"
+              >
+                <mat-icon class="!h-5 !w-5 !text-slate2/70">info</mat-icon>
+                <span>{{ 'plan_billing.payments_disabled' | transloco }}</span>
+              </div>
+            }
+
+            @if (paymentsEnabled() && canCancelTrial()) {
+              <div
+                class="mb-5 flex flex-col items-start gap-3 rounded-2xl border border-beige bg-cream p-5 sm:flex-row sm:items-center sm:justify-between"
+                data-testid="plan-billing-cancel-trial"
+              >
+                <div class="flex flex-col">
+                  <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                    {{ 'plan_billing.cancel_trial.section_title' | transloco }}
+                  </p>
+                  <p class="mt-1 text-xs text-slate2">
+                    {{ 'plan_billing.cancel_trial.hint' | transloco }}
+                  </p>
+                </div>
+                <button
+                  mat-stroked-button
+                  type="button"
+                  [disabled]="cancellingTrial()"
+                  (click)="cancelTrial()"
+                  data-testid="plan-billing-cancel-trial-btn"
+                >
+                  {{ 'plan_billing.cancel_trial.action' | transloco }}
+                </button>
+              </div>
+            }
+          </div>
+
+          <!-- cards, invoices, the plan itself: Stripe's portal, in one quiet row -->
           @if (paymentsEnabled() && s.hasStripeSubscription) {
             <div
-              class="flex flex-col items-start gap-3 rounded-2xl border border-beige bg-cream p-5 sm:flex-row sm:items-center sm:justify-between"
+              class="flex flex-col items-start gap-3 border-t border-beige bg-cream/50 px-7 py-4 sm:flex-row sm:items-center sm:justify-between"
               data-testid="plan-billing-portal"
             >
-              <div class="flex flex-col">
-                <p class="font-display text-xl font-normal text-ink">
+              <div class="flex min-w-0 flex-col">
+                <p class="text-sm font-medium text-ink">
                   {{ 'plan_billing.portal.title' | transloco }}
                 </p>
-                <p class="mt-1 text-xs text-slate2">
+                <p class="mt-0.5 text-xs text-slate2">
                   {{ 'plan_billing.portal.hint' | transloco }}
                 </p>
                 @if (portalErrorKey(); as ek) {
@@ -327,8 +332,8 @@
               </div>
               <button
                 mat-stroked-button
-                color="primary"
                 type="button"
+                class="shrink-0"
                 [disabled]="portalState() === 'opening'"
                 (click)="openCustomerPortal()"
                 data-testid="plan-billing-portal-open"
@@ -336,61 +341,138 @@
                 @if (portalState() === 'opening') {
                   <mat-spinner diameter="18" class="!inline-block" />
                 } @else {
-                  {{ 'plan_billing.portal.action' | transloco }}
+                  <span class="inline-flex items-center gap-1.5">
+                    <mat-icon class="!h-4 !w-4 !text-base">open_in_new</mat-icon>
+                    {{ 'plan_billing.portal.action' | transloco }}
+                  </span>
                 }
               </button>
             </div>
           }
-
-          <mat-divider class="!border-beige" />
-
-          <dl class="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
-            @if (s.billingPeriodStart || s.billingPeriodEnd) {
-              <div>
-                <dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
-                  {{ 'plan_billing.billing_period' | transloco }}
-                </dt>
-                <dd data-testid="plan-billing-period" class="mt-1 font-medium text-ink">
-                  {{ s.billingPeriodStart | localizedDate: 'mediumDate' }} —
-                  {{ s.billingPeriodEnd | localizedDate: 'mediumDate' }}
-                </dd>
-              </div>
-            }
-            @if (s.trialEndDate) {
-              <div>
-                <dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
-                  {{ 'plan_billing.trial_ends' | transloco }}
-                </dt>
-                <dd class="mt-1 font-medium text-ink">
-                  {{ s.trialEndDate | localizedDate: 'mediumDate' }}
-                </dd>
-              </div>
-            }
-            @if (s.campaignLimit !== undefined && s.campaignLimit !== null) {
-              <div class="sm:col-span-2">
-                <dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
-                  {{ 'plan_billing.campaigns_usage' | transloco }}
-                </dt>
-                <dd data-testid="plan-billing-usage" class="mt-1 font-medium text-ink">
-                  {{ s.campaignsUsedThisPeriod ?? 0 }} / {{ s.campaignLimit }}
-                </dd>
-                <div
-                  class="mt-2 h-2 w-full overflow-hidden rounded-full bg-beige"
-                  role="progressbar"
-                  [attr.aria-valuenow]="usagePercent()"
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                >
-                  <div class="h-full bg-coral-500" [style.width.%]="usagePercent()"></div>
-                </div>
-              </div>
-            }
-          </dl>
         </article>
 
+        <!-- ── The plans, side by side: where you are and where you could go ── -->
+        @if (paymentsEnabled()) {
+          <section
+            class="mt-8"
+            [attr.data-testid]="showUpgrade() ? 'plan-billing-upgrade' : 'plan-billing-plans'"
+          >
+            <div class="flex flex-wrap items-baseline justify-between gap-2 px-1">
+              <h2 class="font-display text-3xl font-normal text-ink">
+                {{ 'plan_billing.plans.title' | transloco }}
+              </h2>
+              <p class="text-sm text-slate2">{{ 'plan_billing.plans.subtitle' | transloco }}</p>
+            </div>
+            <ol class="mt-4 grid list-none gap-4 pl-0 md:grid-cols-3">
+              @for (plan of planCards(); track plan.key) {
+                <li
+                  class="flex flex-col rounded-3xl border px-6 pb-10 pt-6"
+                  [ngClass]="
+                    plan.isCurrent
+                      ? 'border-navy-500 bg-navy-50/40 ring-1 ring-navy-500'
+                      : plan.highlight
+                        ? 'border-coral-200 bg-white shadow-lg shadow-coral-500/10'
+                        : 'border-beige bg-white'
+                  "
+                  [attr.data-testid]="'plan-billing-plan-' + plan.key.toLowerCase()"
+                >
+                  <div class="flex items-center justify-between gap-2">
+                    <h3 class="font-display text-2xl font-normal text-ink">{{ plan.name }}</h3>
+                    @if (plan.isCurrent) {
+                      <span
+                        class="rounded-full bg-navy-500 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.18em] text-white"
+                      >
+                        {{ 'plan_billing.plans.current' | transloco }}
+                      </span>
+                    } @else if (plan.highlight) {
+                      <span
+                        class="rounded-full bg-coral-50 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.18em] text-coral-700"
+                      >
+                        {{ 'plan_billing.plans.recommended' | transloco }}
+                      </span>
+                    }
+                  </div>
+                  <p class="mt-3 flex items-baseline gap-1.5">
+                    <span class="font-display text-4xl leading-none text-ink">
+                      {{ formatPrice(plan.price) }}
+                    </span>
+                    <span class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+                      PLN / {{ 'plan_billing.plans.month' | transloco }}
+                    </span>
+                  </p>
+                  <p class="mt-3 text-sm font-medium text-ink">
+                    {{ 'plan_billing.plans.limit' | transloco: { n: plan.limit } }}
+                  </p>
+                  <ul class="mt-3 flex list-none flex-col gap-1.5 pl-0 text-sm text-slate2">
+                    @for (feature of plan.features; track feature) {
+                      <li class="flex items-start gap-2">
+                        <mat-icon class="mt-0.5 !h-4 !w-4 shrink-0 !text-base text-emerald-600">
+                          check
+                        </mat-icon>
+                        <span>{{ feature | transloco }}</span>
+                      </li>
+                    }
+                  </ul>
+                  <div class="mt-auto pt-5">
+                    @if (plan.upgrade) {
+                      <button
+                        mat-flat-button
+                        color="primary"
+                        type="button"
+                        class="w-full !rounded-full"
+                        [disabled]="upgrading() !== null"
+                        (click)="startUpgrade(plan.upgrade)"
+                        [attr.data-testid]="'plan-billing-upgrade-' + plan.key.toLowerCase()"
+                      >
+                        {{
+                          'plan_billing.upgrade.cta'
+                            | transloco: { plan: plan.key, price: priceLabel(plan.price) }
+                        }}
+                      </button>
+                    } @else if (plan.isCurrent && plan.currentSlot) {
+                      <button
+                        mat-stroked-button
+                        type="button"
+                        class="w-full !rounded-full"
+                        disabled
+                        [attr.data-testid]="'plan-billing-upgrade-' + plan.key.toLowerCase()"
+                      >
+                        {{ 'plan_billing.upgrade.current' | transloco: { plan: plan.key } }}
+                      </button>
+                    } @else if (plan.downgrade) {
+                      <button
+                        mat-stroked-button
+                        type="button"
+                        class="w-full !rounded-full"
+                        [disabled]="downgrading() !== null"
+                        (click)="startDowngrade(plan.downgrade)"
+                        [attr.data-testid]="'plan-billing-downgrade-' + plan.key.toLowerCase()"
+                      >
+                        {{ 'plan_billing.downgrade.cta' | transloco: { plan: plan.key } }}
+                      </button>
+                    } @else if (plan.isCurrent) {
+                      <p
+                        class="text-center font-mono text-[10px] uppercase tracking-[0.18em] text-slate2"
+                      >
+                        {{ 'plan_billing.plans.yours' | transloco }}
+                      </p>
+                    }
+                  </div>
+                </li>
+              }
+            </ol>
+            @if (availableDowngrades().length > 0) {
+              <p class="mt-3 px-1 text-xs text-slate2" data-testid="plan-billing-downgrade">
+                {{ 'plan_billing.plans.downgrade_note' | transloco }}
+              </p>
+            }
+          </section>
+        }
+
+        <!-- ── Invoices ── -->
         <article
           data-testid="plan-billing-invoices"
-          class="mt-6 flex flex-col gap-3 rounded-2xl border border-beige bg-white p-7"
+          class="mt-8 flex flex-col gap-3 rounded-3xl border border-beige bg-white p-7"
         >
           <h2 class="font-display text-3xl font-normal text-ink">
             {{ 'plan_billing.invoices.title' | transloco }}
@@ -401,26 +483,33 @@
               {{ 'plan_billing.invoices.empty' | transloco }}
             </p>
           } @else {
-            <ul class="flex flex-col divide-y divide-beige" role="list">
+            <ul class="flex list-none flex-col divide-y divide-beige pl-0" role="list">
               @for (inv of invoices(); track inv.id) {
                 <li
                   class="flex items-center justify-between gap-3 py-3 text-sm"
                   [attr.data-testid]="'plan-billing-invoice-' + inv.id"
                 >
-                  <div class="flex flex-col">
-                    <span class="font-medium text-ink">
-                      {{ inv.createdTime | localizedDate: 'mediumDate' }}
+                  <div class="flex items-center gap-3">
+                    <!-- a settled purchase: the check says so (the receipt glyph is not in the icon subset) -->
+                    <span
+                      class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-emerald-50 text-emerald-600"
+                      aria-hidden="true"
+                    >
+                      <mat-icon class="!h-5 !w-5 !text-xl">check_circle</mat-icon>
+                    </span>
+                    <div class="flex flex-col">
+                      <span class="font-medium text-ink">
+                        {{ inv.createdTime | localizedDate: 'mediumDate' }}
+                      </span>
                       @if (inv.invoiceType) {
-                        <span
-                          class="ml-2 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2"
-                        >
+                        <span class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
                           {{ invoiceTypeLabel(inv.invoiceType) }}
                         </span>
                       }
-                    </span>
-                    @if (inv.errorMessage) {
-                      <span class="text-xs text-red-600">{{ inv.errorMessage }}</span>
-                    }
+                      @if (inv.errorMessage) {
+                        <span class="text-xs text-red-600">{{ inv.errorMessage }}</span>
+                      }
+                    </div>
                   </div>
                   <div class="flex items-center gap-3">
                     <span class="font-mono text-ink">
@@ -428,7 +517,7 @@
                     </span>
                     @if (inv.status) {
                       <span
-                        class="rounded-full bg-beige px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.18em] text-ink"
+                        class="rounded-full bg-emerald-50 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.18em] text-emerald-800"
                       >
                         {{ 'plan_billing.invoices.status.' + inv.status | transloco }}
                       </span>

@@ -65,6 +65,8 @@ interface PricingPlan {
   readonly ctaKey: string;
   readonly badgeKey?: string;
   readonly highlight?: boolean;
+  /** "Everything in the tier below, plus:" — shown above the plan's own benefits. */
+  readonly inheritsKey?: string;
   readonly benefitBoxes?: readonly PlanBenefitBox[];
 }
 
@@ -85,6 +87,21 @@ interface PricingPlan {
   changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [
     `
+      /* Tailwind's preflight is off in this app (it clashes with Material), so
+         the user agent's margins on headings, paragraphs and lists were still
+         in force here — every card on the page stacked its own \`gap-*\` on
+         top of 1em above and below each \`p\`, 0.83em around each \`h2\`,
+         1em around each \`h3\`. The pricing cards were the worst of it: a plan
+         card measured 1023 px with 357 px of nothing above its button. This is
+         the part of preflight the templates were written against; spacing is
+         now only what a class says. */
+      /* The type reset (UA block margins off h1-h6, p, ul, ol) lives in
+         styles.scss as "app-landing h2 { margin-block: 0 }" and friends.
+         Here, emulated encapsulation would turn "p" into "p[_ngcontent-x]"
+         (0,1,1), which beat every mt-* and mx-auto utility (0,1,0) on a
+         heading or paragraph: the CTA strip's title sat at the left edge of a
+         wide screen and the mock card's labels had no room above them. */
+
       .landing-title-highlight {
         background-image: linear-gradient(to right, #2563eb, #06b6d4);
         -webkit-background-clip: text;
@@ -277,12 +294,8 @@ export class LandingComponent {
       campaignsKey: 'landing.pricing.plans.premium.campaigns',
       campaignsCountKey: 'landing.pricing.plans.premium.campaigns_count',
       ctaKey: 'landing.pricing.plans.premium.cta',
+      inheritsKey: 'landing.pricing.plans.premium.includes_growth',
       benefitBoxes: [
-        {
-          titleKey: 'landing.pricing.plans.premium.growth_benefits.title',
-          nameKey: 'landing.pricing.plans.premium.growth_benefits.priority_support',
-          descKey: 'landing.pricing.plans.premium.growth_benefits.priority_support_desc',
-        },
         {
           titleKey: 'landing.pricing.plans.premium.premium_benefits.title',
           nameKey: 'landing.pricing.plans.premium.premium_benefits.brand_badge',

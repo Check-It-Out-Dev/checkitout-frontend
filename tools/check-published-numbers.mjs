@@ -125,6 +125,16 @@ function claimJson(file, path, expected) {
   }
 }
 
+/** A date inside a translated sentence — a stale date is a quieter lie than a stale number. */
+function claimJsonDate(file, path, expected) {
+  const doc = JSON.parse(read(file));
+  const raw = path.split('.').reduce((o, k) => (o == null ? o : o[k]), doc);
+  const found = String(raw ?? '').match(/\d{4}-\d{2}-\d{2}/);
+  if (!found) failures.push({ file, label: path, detail: 'no date in the sentence' });
+  else if (found[0] !== expected) failures.push({ file, label: path, got: found[0], want: expected });
+  else checked.push(`${file} · ${path} (date)`);
+}
+
 // ── README.md ───────────────────────────────────────────────────────────────
 claim('README.md', 'tests badge', /badge\/tests-(\d+)-/, m.total);
 claim('README.md', 'headline total', /\*\*([\d,]+) tests across nine tiers/, m.total);
@@ -154,9 +164,24 @@ claim(
 // The four remaining literal copies in the README. They are prose rather than a
 // table, which is exactly why they were the ones left behind the last time.
 claim('README.md', 'prose total', /\*\*([\d,]+) tests\.\*\* Five layers/, m.total);
-claim('README.md', 'clean-clone total', /the ([\d,]+) tests, on a clean clone/, m.total);
-claim('README.md', 'pyramid L1/L2 label', /L1 · L2 — ([\d,]+) Jest tests/, jest);
+claim('README.md', 'in-progress · integration row', /\| ([\d,]+) live-backend integration tests/, t.integration);
+claim(
+  'README.md',
+  'in-progress · visual row',
+  /\| ([\d,]+) visual snapshots over ([\d,]+) fixtures \+ ([\d,]+) parity diffs/,
+  [t.visual, m.gates.visualFixtures, t.visualParity],
+);
+claim('README.md', 'in-progress · experience row', /Experience tier — ([\d,]+) measurements/, p.perf);
 claim('README.md', 'roadmap row', /\| ([\d,]+) Jest unit \+ component tests/, jest);
+claim('README.md', 'sandbox line', /npm run test:sandbox\s+# ([\d,]+) component-sandbox/, t.sandbox);
+claim('README.md', 'perf line', /npm run test:perf\s+# ([\d,]+) experience/, p.perf);
+claim('README.md', 'pyramid suites', /│ {2,}(\d+) suites/, m.jest.suites);
+// The docs index repeats one figure; it was the one place G15 did not look, and it was stale.
+claim('docs/README.md', 'docs index Jest', /the ([\d,]+) Jest tests and the gate wall/, jest);
+// The CI table's measured duration — asked of GitHub by measure:counts, kept with its own date.
+if (m.ci?.prRun) {
+  claim('README.md', 'PR run duration', /\*\*(\d+) s\*\*, median of the last six runs/, m.ci.prRun.medianSeconds);
+}
 
 // ── The live site. Numbers appear in both locales and must agree with the repo,
 //    not merely with each other — which is all check:i18n-parity can prove. ──
@@ -171,6 +196,16 @@ for (const locale of ['en', 'pl']) {
   // catches is real and just happened: four tests were added here and the
   // combined figure two pages away stayed at its old value.
   claimJson(f, 'landing.survey.hub.map.proof.tests.t', estateTotal);
+  // The entry page's repository badges and CI card (2026-09). The frontend badge
+  // quotes the total; the backend badge quotes the declared sibling figure; the
+  // PR-run row quotes the Jest count and the measured median duration.
+  claimJson(f, 'landing.survey.estate.repos.frontend.figure', m.total);
+  claimJson(f, 'landing.survey.estate.repos.backend.figure', m.siblings.backend.testMethods);
+  claimJson(f, 'landing.survey.pipelines.runs.pr.what', jest);
+  if (m.ci?.prRun) {
+    claimJson(f, 'landing.survey.pipelines.runs.pr.figure', m.ci.prRun.medianSeconds);
+    claimJsonDate(f, 'landing.survey.pipelines.note', m.ci.prRun.measuredAt);
+  }
 }
 
 // ── Coverage, published four ways. The percentages barely move; the raw counts
@@ -196,6 +231,7 @@ for (const [row, key] of [
 for (const [label, pattern] of [
   ['badge note', /badges are static, measured (\d{4}-\d{2}-\d{2}),/],
   ['page note', /was measured on \*\*(\d{4}-\d{2}-\d{2})\*\*/],
+  ['coverage note', /Measured (\d{4}-\d{2}-\d{2})\. Coverage excludes/],
 ]) {
   const found = read('README.md').match(pattern);
   if (!found) failures.push({ file: 'README.md', label, detail: 'the measurement date is gone' });

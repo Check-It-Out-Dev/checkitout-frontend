@@ -17,7 +17,7 @@ import {
 import { MatIconModule } from '@angular/material/icon';
 import { TranslocoPipe } from '@ngneat/transloco';
 import { GuideRunnerService } from '../../core/demo/guide-runner.service';
-import { scrollBehaviourFor } from '../../core/demo/reduced-motion';
+import { glideIntoView } from '../../core/demo/glide';
 
 interface SpotRect {
   top: number;
@@ -63,6 +63,10 @@ const PILL_ROOM = 44;
 const SETTLE_MS = 700;
 /** Frames of stillness before the pill is allowed to pick a new side. */
 const STILL_FRAMES = 8;
+/** A glide eases in, so its first frames barely move: two equal boxes there
+ * are the start of a scroll, not the end of one. The settle check may not
+ * read stillness until the glide has had this long to show its motion. */
+const GLIDE_SHOW_MS = 100;
 /** A control that is on the page but cannot be reached — behind a dialog, or
  * scrolled away — gets this long before the panel is told to take over. The
  * visitor can act on it themselves, so the alternative should come quickly. */
@@ -326,6 +330,8 @@ export class GuideSpotlightComponent implements OnDestroy {
   private revealPending: string | undefined;
   private revealedFor: string | undefined;
   private settleDeadline = 0;
+  /** When the current glide was started; see GLIDE_SHOW_MS. */
+  private glideSince = 0;
   private lastGlideBox: SpotRect | null = null;
   /** The ring as drawn — the control's box cut down to what is showing. */
   private rect: SpotRect | null = null;
@@ -340,7 +346,12 @@ export class GuideSpotlightComponent implements OnDestroy {
   private viewport = { width: 0, height: 0 };
   private painted = { width: 0, height: 0 };
   private paintedOnce = false;
-  private onScreen = false;
+  /** What the guide was last told; null until the first report. A control
+   * that was never found still has to be reported gone once its grace is
+   * over — starting this at false swallowed exactly that report, and a page
+   * reloaded mid-tour kept saying "click here" over nothing (owner,
+   * 2026-09-07). */
+  private onScreen: boolean | null = null;
 
   constructor() {
     effect(() => {
@@ -444,9 +455,13 @@ export class GuideSpotlightComponent implements OnDestroy {
     if (this.revealPending === selector) {
       this.revealPending = undefined;
       this.settleDeadline = this.now() + SETTLE_MS;
+      this.glideSince = this.now();
       this.lastGlideBox = null;
       try {
-        el.scrollIntoView({ block: 'center', behavior: scrollBehaviourFor(this.doc.defaultView) });
+        // The glide is the ring's own motion budget: it knows how long the
+        // target will keep moving and waits that long before settling.
+        const glide = this.zone.runOutsideAngular(() => glideIntoView(el));
+        this.settleDeadline = this.now() + Math.max(SETTLE_MS, glide + 150);
       } catch {
         /* jsdom has no layout */
       }
@@ -566,14 +581,17 @@ export class GuideSpotlightComponent implements OnDestroy {
     const ring = this.ringRef?.nativeElement;
     const pill = this.pillRef?.nativeElement;
     if (!ring || !pill) return;
-    ring.style.transform = `translate3d(${rect.left}px, ${rect.top}px, 0)`;
+    // Whole pixels: a composited layer moved to a fractional offset is
+    // resampled, and the pill's 10 px capitals came out soft at 100 % zoom
+    // (owner, 2026-09-07).
+    ring.style.transform = `translate3d(${Math.round(rect.left)}px, ${Math.round(rect.top)}px, 0)`;
     if (this.painted.width !== rect.width || this.painted.height !== rect.height) {
       ring.style.width = `${rect.width}px`;
       ring.style.height = `${rect.height}px`;
       this.painted = { width: rect.width, height: rect.height };
     }
     const spot = this.spotFor(rect, this.side ?? 'above', this.pillBox(pill));
-    pill.style.transform = `translate3d(${spot.left}px, ${spot.top}px, 0)`;
+    pill.style.transform = `translate3d(${Math.round(spot.left)}px, ${Math.round(spot.top)}px, 0)`;
     ring.style.opacity = '1';
     pill.style.opacity = '1';
     this.paintedOnce = true;
@@ -583,7 +601,14 @@ export class GuideSpotlightComponent implements OnDestroy {
    * deadline, for a page that never stops moving. */
   private landed(rect: SpotRect): boolean {
     if (this.settleDeadline === 0) return true;
-    const still = this.lastGlideBox !== null && !this.moved(this.lastGlideBox, rect);
+    // Measured on the campaign form: the publish button sat 1685 px down, the
+    // glide's first two frames moved it less than half a pixel, that read as
+    // landed, the control was then off screen for 500 ms of grace, and the
+    // panel handed out a Next that the pill replaced 300 ms later when the
+    // button arrived. The smoothness tier calls that a step changing its way
+    // forward, and it is.
+    const showing = this.now() - this.glideSince >= GLIDE_SHOW_MS;
+    const still = showing && this.lastGlideBox !== null && !this.moved(this.lastGlideBox, rect);
     this.lastGlideBox = rect;
     if (still || this.now() >= this.settleDeadline) {
       this.settleDeadline = 0;

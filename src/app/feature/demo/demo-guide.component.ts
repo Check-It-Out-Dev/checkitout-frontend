@@ -18,6 +18,7 @@ import { SandboxDirectorService } from '../../core/demo/sandbox-director.service
 import { isDemoMode } from '../../core/demo/demo-mode';
 import { hintKeyFor } from '../../core/demo/guide-hint';
 import { PhoneTotpSimComponent } from './sims/phone-totp-sim.component';
+import { CheckoutSimComponent } from './sims/checkout-sim.component';
 import { InboxSimComponent } from './sims/inbox-sim.component';
 import { FakturowniaSimComponent } from './sims/fakturownia-sim.component';
 import { KsefSimComponent } from './sims/ksef-sim.component';
@@ -44,6 +45,7 @@ import { GuideSpotlightComponent } from './guide-spotlight.component';
     MatIconModule,
     TranslocoPipe,
     PhoneTotpSimComponent,
+    CheckoutSimComponent,
     InboxSimComponent,
     FakturowniaSimComponent,
     KsefSimComponent,
@@ -61,6 +63,9 @@ import { GuideSpotlightComponent } from './guide-spotlight.component';
         }
         @case ('inbox-code') {
           <app-inbox-sim variant="code" />
+        }
+        @case ('checkout') {
+          <app-checkout-sim />
         }
         @case ('fakturownia') {
           <app-fakturownia-sim />
@@ -189,6 +194,7 @@ import { GuideSpotlightComponent } from './guide-spotlight.component';
                       <button
                         type="button"
                         (click)="director.reset()"
+                        data-testid="guide-reset"
                         [attr.aria-label]="'demo.guide.reset' | transloco"
                         [title]="'demo.guide.reset' | transloco"
                         class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-cream/60 transition-colors hover:bg-white/10 hover:text-cream focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-300"
@@ -198,6 +204,7 @@ import { GuideSpotlightComponent } from './guide-spotlight.component';
                       <button
                         type="button"
                         (click)="director.exit()"
+                        data-testid="guide-exit"
                         [attr.aria-label]="'demo.guide.exit' | transloco"
                         [title]="'demo.guide.exit' | transloco"
                         class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-cream/60 transition-colors hover:bg-white/10 hover:text-cream focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-300"
@@ -232,15 +239,37 @@ import { GuideSpotlightComponent } from './guide-spotlight.component';
                     </div>
                   }
                 </div>
-                <div class="mt-4 grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    (click)="startNext()"
-                    class="inline-flex items-center justify-center gap-1.5 rounded-lg bg-coral-700 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-coral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-300"
+                @if (isLast()) {
+                  <!-- the last sandbox: the tour is over, say so -->
+                  <p
+                    class="mt-3 rounded-lg border border-emerald-400/30 bg-emerald-500/10 px-3 py-2 text-[12px] leading-snug text-emerald-200"
+                    data-testid="guide-last"
                   >
-                    {{ 'demo.guide.nextSandbox' | transloco }}
-                    <mat-icon class="!h-4 !w-4 !text-base">arrow_forward</mat-icon>
-                  </button>
+                    {{ 'demo.guide.lastRecap' | transloco }}
+                  </p>
+                }
+                <div class="mt-4 grid grid-cols-2 gap-2">
+                  @if (isLast()) {
+                    <button
+                      type="button"
+                      (click)="director.exit()"
+                      data-testid="guide-finish"
+                      class="inline-flex items-center justify-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
+                    >
+                      <mat-icon class="!h-4 !w-4 !text-base">flag</mat-icon>
+                      {{ 'demo.guide.finish' | transloco }}
+                    </button>
+                  } @else {
+                    <button
+                      type="button"
+                      (click)="startNext()"
+                      data-testid="guide-next-sandbox"
+                      class="inline-flex items-center justify-center gap-1.5 rounded-lg bg-coral-700 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-coral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-300"
+                    >
+                      {{ 'demo.guide.nextSandbox' | transloco }}
+                      <mat-icon class="!h-4 !w-4 !text-base">arrow_forward</mat-icon>
+                    </button>
+                  }
                   <button
                     type="button"
                     (click)="openSurvey()"
@@ -254,6 +283,7 @@ import { GuideSpotlightComponent } from './guide-spotlight.component';
                   <button
                     type="button"
                     (click)="director.reset()"
+                    data-testid="guide-reset"
                     class="inline-flex items-center gap-1 rounded text-cream/50 transition-colors hover:text-cream focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-300"
                   >
                     <mat-icon class="!h-3.5 !w-3.5 !text-sm">replay</mat-icon>
@@ -262,6 +292,7 @@ import { GuideSpotlightComponent } from './guide-spotlight.component';
                   <button
                     type="button"
                     (click)="director.exit()"
+                    data-testid="guide-exit"
                     class="inline-flex items-center gap-1 rounded text-cream/50 transition-colors hover:text-cream focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-300"
                   >
                     <mat-icon class="!h-3.5 !w-3.5 !text-sm">arrow_back</mat-icon>
@@ -429,6 +460,14 @@ export class DemoGuideComponent {
     return Math.min(((s.step + 1) / d.steps.length) * 100, 100);
   });
 
+  /** The hub lists the sandboxes in order; after the last one the tour ends
+   * instead of wrapping around to the first (owner, 2026-09-07). */
+  readonly isLast = computed(() => {
+    const d = this.director.scenario();
+    const all = this.director.all;
+    return !!d && all.findIndex((s) => s.key === d.key) === all.length - 1;
+  });
+
   startNext(): void {
     const d = this.director.scenario();
     if (!d) {
@@ -444,9 +483,14 @@ export class DemoGuideComponent {
     if (!d) {
       return;
     }
-    this.director.exit();
-    void this.router.navigate(['/technical-survey', d.surveyPath], {
-      fragment: d.surveyFragment,
-    });
+    // exit() may boot the page to sign the persona out, so the destination
+    // travels with it instead of racing a router hop that the boot discards.
+    this.director.exit(
+      this.router.serializeUrl(
+        this.router.createUrlTree(['/technical-survey', d.surveyPath], {
+          fragment: d.surveyFragment,
+        }),
+      ),
+    );
   }
 }

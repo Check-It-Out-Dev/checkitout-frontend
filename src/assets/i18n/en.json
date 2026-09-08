@@ -300,6 +300,32 @@
     }
   },
   "plan_billing": {
+    "plans": {
+      "current_eyebrow": "Your plan",
+      "title": "Plans",
+      "subtitle": "Changes apply at once — up after payment, down from the next period.",
+      "current": "Your plan",
+      "recommended": "Recommended",
+      "month": "mo",
+      "limit": "{{n}} campaigns a month",
+      "yours": "The plan you are on",
+      "downgrade_note": "A downgrade takes effect from the next billing period — nothing changes until then.",
+      "free": {
+        "f1": "Company profile and creator browsing",
+        "f2": "Unlimited applications and decisions",
+        "f3": "E-mail support"
+      },
+      "business": {
+        "f1": "Everything in Free",
+        "f2": "Priority support within 24 h",
+        "f3": "Campaign statistics"
+      },
+      "enterprise": {
+        "f1": "Everything in Business",
+        "f2": "Premium brand badge",
+        "f3": "A dedicated account manager"
+      }
+    },
     "unknown_plan": "—",
     "price_per_month": "{{price}} PLN / month",
     "documents": {
@@ -393,13 +419,13 @@
     },
     "upgrade": {
       "section_title": "Upgrade your plan",
-      "cta": "Upgrade to {{plan}} · {{price}}",
+      "cta": "Switch to {{plan}}",
       "current": "Your current plan · {{plan}}",
       "confirm": {
         "title": "Upgrade to {{plan}} · {{price}}",
         "eyebrow": "Plan change",
         "summary": "You'll be redirected to Stripe Checkout to complete payment. Your plan activates as soon as the payment confirms.",
-        "terms_excerpt": "By proceeding you accept the subscription terms: monthly billing in PLN, cancellable any time before the next billing cycle, prorated refunds where required by Polish consumer law. Plan benefits and campaign limits are described on this page.",
+        "terms_excerpt": "By clicking “Continue to checkout” you accept the subscription terms: monthly billing in PLN, cancellable any time before the next billing cycle, prorated refunds where required by Polish consumer law. Plan benefits and campaign limits are described on this page.",
         "accept_label": "I have read and agree to the {{documentName}}.",
         "cancel": "Cancel",
         "submit": "Continue to checkout"
@@ -546,7 +572,8 @@
       "activated_body": "Company data confirmed and your account is now fully active. Time to launch your first campaign.",
       "pending_body": "We saved your company data. Verify your email address to finish activating the account.",
       "cta_campaigns": "Go to my campaigns",
-      "cta_verify": "Go to account settings"
+      "cta_verify": "Go to account settings",
+      "cta_subscription": "Manage subscription"
     },
     "confirmed": {
       "title": "Company already verified",
@@ -575,6 +602,15 @@
         "influencer": "Influencer",
         "company": "Company",
         "step": "Step {{step}} of {{total}}"
+      },
+      "group": {
+        "creators": "Creators",
+        "untitled": "Untitled campaign",
+        "stage": {
+          "new": "New",
+          "running": "Running",
+          "closed": "Closed"
+        }
       },
       "cta": {
         "review_content": "Review content",
@@ -772,6 +808,16 @@
       }
     },
     "applicants": {
+      "inbox_title": "Applications",
+      "inbox_subtitle": "Applicants to your campaigns, at the stage where the decision is yours. Newest first.",
+      "inbox_empty": "No one has applied to your campaigns yet.",
+      "back_inbox": "Back to collaborations",
+      "from_creator": "Message from the creator",
+      "stage": {
+        "new": "New campaign",
+        "running": "Campaign running",
+        "closed": "Campaign closed"
+      },
       "title": "Applicants",
       "back": "Back to my campaigns",
       "applied_at": "Applied",
@@ -899,6 +945,9 @@
       }
     },
     "detail": {
+      "photo_alt": "Campaign photo {{index}}",
+      "manage_applicants": "Manage applications",
+      "edit_campaign": "Edit campaign",
       "back": "Back to campaigns",
       "go_back": "Browse campaigns",
       "not_found": "We couldn't find that campaign. It may have been removed.",
@@ -1163,11 +1212,6 @@
       "notifications": {
         "new_applications": "3 new applications"
       },
-      "buttons": {
-        "launch": "Launch",
-        "review": "Review Applications",
-        "download_report": "Download Report"
-      },
       "analytics": {
         "post_published": "Instagram Post Published",
         "live_status": "Live since 2 hours ago",
@@ -1199,43 +1243,46 @@
       }
     ],
     "dashboard_preview": {
-      "scroll_hint": {
-        "mobile": "Scroll to see more",
-        "desktop": "Check the progress"
-      },
       "steps": {
         "campaign_created": {
           "title": "Campaign Created",
+          "short": "Campaign",
           "description": "Brand creates a collaboration campaign with specific requirements and target audience.",
           "action": "Create Campaign"
         },
         "influencer_application": {
           "title": "Influencer Application",
+          "short": "Application",
           "description": "Qualified influencers discover and apply to join the collaboration campaign.",
           "action": "Apply to Campaign"
         },
         "review_selection": {
           "title": "Review & Selection",
+          "short": "Selection",
           "description": "Brand reviews applications and selects the best-fit influencers for their campaign.",
           "action": "Review Applications"
         },
         "agreement_planning": {
           "title": "Agreement & Planning",
+          "short": "Agreement",
           "description": "Both parties agree on terms, timeline, and content requirements for the collaboration.",
           "action": "Accept Terms"
         },
         "content_creation": {
           "title": "Content Creation",
+          "short": "Content",
           "description": "Influencer creates and submits content for brand approval before publication.",
           "action": "Create Content"
         },
         "content_approval": {
           "title": "Content Approval",
+          "short": "Approval",
           "description": "Brand reviews the created content and provides approval or feedback for revisions.",
           "action": "Approve Content"
         },
         "publication_results": {
           "title": "Publication & Results",
+          "short": "Results",
           "description": "Content is published and performance metrics are tracked and shared with the brand.",
           "action": "Publish Content"
         }
@@ -1390,6 +1437,43 @@
         "progress": {
           "title": "Collaboration process"
         }
+      },
+      "empty": {
+        "discovering": {
+          "title": "Ola is browsing campaigns",
+          "note": "Your offer is already on her list."
+        }
+      },
+      "stepper": {
+        "go_to": "Go to step"
+      },
+      "post": {
+        "handle": "ola.kowalska",
+        "kind": "Reel",
+        "duration": "0:24",
+        "caption": "Café in the Old Town ☕ #collab",
+        "recording": "Recording",
+        "published_at": "Published · today 18:30"
+      },
+      "application": {
+        "title": "Your application",
+        "items": [
+          "Profile",
+          "Stats",
+          "Portfolio"
+        ]
+      },
+      "acceptance": {
+        "title": "The brand picked you for the campaign"
+      },
+      "flight": {
+        "campaign_created": "Campaign brief",
+        "influencer_application": "Ola's application",
+        "review_selection": "Accepted",
+        "agreement_planning": "Terms",
+        "content_creation": "Reel for review",
+        "content_approval": "Approved",
+        "publication_results": "Results"
       }
     },
     "testimonials": {
@@ -1648,11 +1732,7 @@
           "per_day": "per day",
           "campaigns": "MONTHLY CAMPAIGNS",
           "campaigns_count": "10",
-          "growth_benefits": {
-            "title": "BUSINESS BENEFITS",
-            "priority_support": "Priority support",
-            "priority_support_desc": "We will connect with you live within 24h"
-          },
+          "includes_growth": "Everything in Business, plus:",
           "premium_benefits": {
             "title": "ENTERPRISE BENEFITS",
             "brand_badge": "Premium brand badge",
@@ -1708,7 +1788,7 @@
       "githubFrontend": "Frontend on GitHub",
       "githubMethod": "The method — papers & graphs",
       "mit": "MIT license",
-      "story": "We are opening the code and sharing what we learned: we want Polish and EU companies to focus on their business — and take our platform as the blueprint that handles all the rest.",
+      "story": "We are opening the code and describing what we learned: Polish and EU companies can focus on their business and take this platform as a proven starting point for everything else.",
       "pentest": "We had the platform independently penetration-tested — GrayBox, OWASP methodology, by WRO4digITal (EDIH Wrocław, with the Wrocław Centre for Networking and Supercomputing). It came back with an above-average security posture and a short, honest list of findings.",
       "security": {
         "eyebrow": "Independent security audit — completed",
@@ -1723,20 +1803,20 @@
           "info": "Info"
         }
       },
-      "invite": "The authors would love to take you on a journey and show you how this platform works and how it is built. We have two options for you — depending on what you prefer.",
+      "invite": "There are two ways to get to know the platform — depending on whether you prefer to click or to read.",
       "survey": {
         "tag": "Option 1 · Documentation",
-        "title": "Technical survey — for those who love the technical stuff",
-        "p1": "We prepared easy-to-follow documentation which — we promise — is cool to read. You start with an introduction, a platform overview and a few high-level diagrams; later, pick any chapter below to see how each major subsystem works under the hood.",
-        "p2": "We love to learn — so many cool graphics and live Angular components wait for you inside. This visual approach keeps us sane and effective, and we hold the same standard for you.",
+        "title": "Technical survey — technical documentation written to be read",
+        "p1": "Five chapters, real code and measured numbers. You start with a platform overview and a few high-level diagrams; then pick a chapter to see how each major subsystem works, from the HTTP request to the database write.",
+        "p2": "Each chapter shows rather than tells: diagrams, live Angular components and code taken from the repository. The same standard holds across the documentation.",
         "browse": "The chapters",
         "cta": "Start with the overview"
       },
       "demo": {
         "tag": "Option 2 · Interactive demo",
-        "title": "Interactive demo — feel like a real user",
-        "p1": "A hard lesson we learned: we like code, but we build for people. That is why here you can simply play as our user — choose a role and start clicking through the real flows.",
-        "p2": "Pick a flow below and see how this app can work for you. The application is real; the world around it — phones, inboxes, invoicing, KSeF — is simulated.",
+        "title": "Interactive demo — from the user’s perspective",
+        "p1": "We build for people, not for code. The demo lets you pick a role — company, influencer, administrator — and walk the real flows the way a user does.",
+        "p2": "Pick a scenario below and see how the application behaves in practice. The application is real; the world around it — phones, inboxes, invoicing, KSeF — is simulated.",
         "browse": "The sandboxes",
         "cta": "Open the demo hub"
       },
@@ -1866,7 +1946,7 @@
     "survey": {
       "back": "Back to home",
       "title": "Startup in the box — how it works",
-      "subtitle": "Swap in your business logic and ship. Everything around it is already handled — and running in production.",
+      "subtitle": "Swap in your business logic and ship. Everything around it is already handled — and proven in production.",
       "intro": "This is the platform's README, written to be read: five short chapters, real code, honest numbers. Pick the question you'd ask first.",
       "verified_tag": "verified in code",
       "onThisPage": "On this page",
@@ -1894,7 +1974,7 @@
       "nextLabel": "Next chapter",
       "hub": {
         "questionsLabel": "Five chapters",
-        "questionsHint": "Everyone starts with what interests them most. Look under the hood.",
+        "questionsHint": "Everyone starts with the question that interests them most.",
         "openChapter": "Open chapter",
         "meta": "Cards: {{cards}} · ~{{minutes}} min",
         "handled": [
@@ -1910,9 +1990,9 @@
           "Mail & notifications"
         ],
         "map": {
-          "title": "The box, at a glance",
+          "title": "The whole platform on one screen",
           "subtitle": "Every tile is a real, running system. Hover to light it up; click to read its chapter.",
-          "flowLabel": "How a request crosses the box",
+          "flowLabel": "How a request crosses the system",
           "opsLabel": "What operates it",
           "proofLabel": "What proves it works",
           "nodes": {
@@ -1965,7 +2045,7 @@
               "d": "provable consent · real erasure"
             },
             "tests": {
-              "t": "10,728 tests",
+              "t": "10,792",
               "d": "unit · integration · E2E"
             },
             "graph": {
@@ -1975,17 +2055,17 @@
           }
         },
         "cool": {
-          "label": "The good stuff",
-          "hint": "Shortcuts to the bits engineers usually ask about first.",
+          "label": "Key topics",
+          "hint": "Shortcuts to what engineers usually ask about first.",
           "items": {
             "geoip": "42,900 km/h — the login we refused",
-            "tamper": "Try to tamper with a sealed release",
+            "tamper": "Verify that a sealed release cannot be altered",
             "saga": "A payment that survives a crash",
             "zerotrust": "Walk a request through seven layers",
             "graph": "23 production bugs, tracked as a graph",
             "contract": "A contract that compiles — drift dies in the build",
             "topology": "The whole system, one Cypher query away",
-            "velocity": "Why the compiler is an AI's best teammate",
+            "velocity": "Why the compiler is the best verifier of AI-written code",
             "pq": "Post-quantum TLS at the edge"
           }
         },
@@ -2024,14 +2104,14 @@
         },
         "engineering": {
           "name": "Engineering practice",
-          "question": "How do we work?",
-          "intro": "The habits behind the platform: the tests, the quality gates and the knowledge graph that keep a codebase honest.",
-          "handoff": "That's the whole box — and everything you just read is running in the demo."
+          "question": "How do we test, ship and measure?",
+          "intro": "The habits behind the platform: the test pyramids, the quality gates, a contract that compiles, CI/CD and the knowledge graph — and what is under way.",
+          "handoff": "That is the whole platform. This is how the product is built, and how it is checked."
         }
       },
       "testing": {
         "title": "Two test pyramids and a wall of gates",
-        "subtitle": "8,012 unit, 853 integration and 277 E2E scenarios guard the backend; 1,141 unit specs, 138 visual snapshots, 222 live-backend specs and 27 BDD features guard the rewrite — standing on 18 compile-time contract pins and a fourteen-step pre-commit gate. Nothing merges on vibes.",
+        "subtitle": "8,012 unit, 853 integration and 277 E2E scenarios guard the backend; 1,141 unit specs, 139 visual snapshots, 222 live-backend specs and 27 BDD features guard the rewrite — standing on 18 compile-time contract pins and a fourteen-step pre-commit gate. Nothing merges on vibes.",
         "pyramidLabel": "The backend pyramid",
         "pyramidLabelFe": "The rewrite pyramid — standing on the contract",
         "feTiers": {
@@ -2046,12 +2126,12 @@
             "detail": "Trace equivalence against the running backend — catches the drift the type system can't see"
           },
           "visual": {
-            "count": "138",
+            "count": "142",
             "name": "Visual snapshots",
             "detail": "131 sandbox fixtures on 2 chromium engines — committed baselines, reviewed as images in the diff"
           },
           "unit": {
-            "count": "1,142",
+            "count": "1,181",
             "name": "Unit specs",
             "detail": "Jest, one suite per component and service — runs last in the gate, --bail"
           }
@@ -2184,7 +2264,7 @@
           "specs": "42 integration specs, each a 1:1 Cucumber port"
         },
         "snippetCaption": "The honest threshold: loose enough for Material-vs-legacy rendering, tight enough to fire on real divergence.",
-        "caveat": "Honest: the license is MIT — the README drift that used to say Apache is fixed; webkit parity needs a one-time npx playwright install webkit.",
+        "caveat": "The license is MIT — the README drift that used to say Apache is fixed; webkit parity needs a one-time npx playwright install webkit.",
         "method": {
           "eyebrow": "REWRITE IN FLIGHT",
           "headline": "Break it at compile time. Never in production.",
@@ -2330,7 +2410,7 @@
         "caveat": "Also honest: a bucket-name drift between one script default and the live config; customer-managed encryption keys for the bucket are staged, not active."
       },
       "demometa": {
-        "title": "This demo is also an exhibit",
+        "title": "How this demo works",
         "subtitle": "What you're clicking is a backend-less Angular build: one interceptor answers every API call from fixtures, in memory, in your browser.",
         "howLabel": "How a backend-less app answers you",
         "how": {
@@ -2402,12 +2482,12 @@
           "smtp": "STARTTLS-required SMTP · password from Secret Manager, never in config"
         },
         "snippetCaption": "Mail as a side-effect of committed facts — with exactly one node allowed to send.",
-        "caveat": "Honest: the provider is plain Gmail SMTP today — fine at this scale, swappable by config; \"magic links\" are Firebase oobCode action links brokered server-side; non-subscription notifications are deliberately plain text."
+        "caveat": "The provider is plain Gmail SMTP today — fine at this scale, swappable by config; \"magic links\" are Firebase oobCode action links brokered server-side; non-subscription notifications are deliberately plain text."
       },
       "badge": "Startup in the box · built by three",
       "trust": {
         "tests": "8,908 backend test methods · 277 E2E scenarios · 1,816 frontend tests",
-        "staging": "Live in production — logs flowing, crons and gates on schedule",
+        "staging": "Ran in production with real users — logs, crons and gates on schedule; today an open demo on sample data",
         "provider": "Meta Tech Provider · GDPR-compliant"
       },
       "mapTitle": "The full platform map",
@@ -2512,7 +2592,12 @@
           "impls": {
             "desc": "Services, controllers, components, crons — the real code."
           },
-          "caption": "Three levels, 146 nodes, 8 typed edges — traversed in O(k) hops, not read top to bottom."
+          "caption": "Three levels, 146 nodes, 8 edge types — every domain with the number of components it implements; walked in O(k) hops, not read top to bottom.",
+          "cats": {
+            "app": "Application domain",
+            "infra": "Infrastructure",
+            "quality": "Quality & graph"
+          }
         },
         "roles": {
           "label": "The 6-entity behavioural lens",
@@ -2553,7 +2638,47 @@
           "body": "The same graph and the executable Cucumber specs let the AI understand what the app does — what a user is trying to achieve and what must stay true — instead of guessing from token proximity. That behavioural understanding is the whole point: it's what makes an automated rewrite faithful instead of merely plausible.",
           "cta": "See the method on GitHub"
         },
-        "snapshot": "Snapshot of the CheckItOutSystem Neo4j namespace."
+        "snapshot": "Snapshot of the CheckItOutSystem Neo4j namespace.",
+        "map": {
+          "label": "NavigationMaster · 3-level map",
+          "hint": "Hover a domain or a component, click to pin. Esc returns to the master.",
+          "vintage": "40 of the 130 components carry a behavioural role (C/F/S/I/D/L) — those are the ones with shapes and typed relationships; the other 90 carry a \"why\". Both layers of the model were kept, because each answers a different question.",
+          "inspector": {
+            "title": "What the agent reads",
+            "relations": "Relations",
+            "domains": "domains",
+            "components": "components",
+            "query": "The same, in one query",
+            "back": "Back to the master"
+          },
+          "protocol": {
+            "title": "Discovery protocol — how an agent enters",
+            "steps": {
+              "0": "Ask the master: one node, O(1), always the same entry point.",
+              "1": "Pick a domain along a GUIDES edge — fifteen descriptions, one choice.",
+              "2": "Descend IMPLEMENTS to the components and their typed relationships (TRIGGERS, PROTECTS…).",
+              "3": "Assemble a two-hop context. That goes into the prompt — not the codebase."
+            }
+          }
+        },
+        "cost": {
+          "label": "What an answer costs",
+          "intro": "Four questions an engineer or an agent really asks. On the left, the answer from the graph — one hop along typed edges; on the right, the same answer without it: search the backend source for the term and read the files that contain it.",
+          "colQuestion": "Question",
+          "colGraph": "Graph: one hop",
+          "colSearch": "Without it: search and read",
+          "colRatio": "Fewer tokens",
+          "hop": "hop",
+          "nodes": "nodes",
+          "files": "files",
+          "questions": {
+            "dependents": "What depends on SubscriptionService?",
+            "billing": "What makes up the billing saga, and what does each part do?",
+            "consent": "What keeps the consent cookies from being forged?",
+            "scheduled": "What runs on a schedule (the crons)?"
+          },
+          "note": "Measured on {{date}} over {{files}} Java files ({{mb}} MB) of the checkItOut-be2 backend by tools/measure-graph-vs-grep.mjs. \"Search and read\" = every file containing the term, read whole; tokens ≈ characters / 4. The graph query ran in memory over the exported graph — a Neo4j one-hop is single-digit milliseconds."
+        }
       },
       "contract": {
         "title": "The contract compiles — drift is a build error, not an incident",
@@ -2668,7 +2793,7 @@
       },
       "immutability": {
         "tamper": {
-          "label": "Try it — attack the sealed release",
+          "label": "Verify it — modify the sealed release",
           "cta": "Attempt tamper",
           "replay": "Try again",
           "done": "0 of 3 attacks landed",
@@ -3141,7 +3266,109 @@
         }
       ],
       "cta_demo": "Open the interactive demo",
-      "cta_home": "Back to home"
+      "cta_home": "Back to home",
+      "estate": {
+        "tag": "The estate",
+        "title": "Four surfaces, one system",
+        "subtitle": "The page you are reading is the demo. The code that backs it lives in three public repositories — each answers a different question.",
+        "lead": "Arriving from a CV? This chapter is the entry point: below are the test strategy and the quality gates, a contract that compiles, the knowledge graph, CI/CD and what is under way. Every number on this page is measured and guarded by a gate — when the repository changes, the page cannot build until it is updated.",
+        "answersLabel": "Answers:",
+        "author": "Designed, built and tested by",
+        "repos": {
+          "frontend": {
+            "kind": "Frontend · Angular 22",
+            "owns": "The rewrite, and the test strategy behind it: nine test tiers, fifteen pre-commit gates, a client generated from the contract.",
+            "figure": "1,884 tests · 9 tiers · 15 gates",
+            "answers": "is the test strategy backed by code?",
+            "docs": "Layered test architecture"
+          },
+          "backend": {
+            "kind": "Backend · Spring Boot 3 / Java 21",
+            "owns": "The business rules and the origin of the contract: the Stripe → Fakturownia → KSeF billing saga, the RODO layer, authentication with step-up, the Cucumber corpus shared with the frontend.",
+            "figure": "8,908 test methods · 34 feature files",
+            "answers": "is the other side of the seam real?",
+            "docs": "Testing philosophy"
+          },
+          "method": {
+            "kind": "Method · the graph and the AI tooling",
+            "owns": "The system as a typed knowledge graph and the tooling built on it: prompt contracts, MCP servers for embeddings and reranking, a local model that abstains when the answer is not in the graph.",
+            "figure": "8 papers · 2 MCP servers · 24 prompt contracts",
+            "answers": "how did one person keep all of this straight?",
+            "docs": "CodeMap evaluation"
+          }
+        }
+      },
+      "pipelines": {
+        "title": "What runs on every push, what at night, and what on release",
+        "subtitle": "Four pipelines that exist in the repositories today — with durations measured, not declared.",
+        "runs": {
+          "pr": {
+            "name": "Every push and pull request",
+            "trigger": "ci-tests.yml · ubuntu-latest",
+            "what": "Eleven static gates, two typechecks, ng build with strictTemplates, 1,181 Jest tests with coverage and the L0 contract assertions at compile time. Hermetic by design: no backend, no browsers, no Docker, so a fork’s PR never touches the self-hosted infrastructure.",
+            "figure": "147 s · median of the last 6"
+          },
+          "nightly": {
+            "name": "Nightly full-stack run",
+            "trigger": "nightly-full-stack.yml · 4 shards",
+            "what": "Four shards — BDD, integration ×2, scenarios + sandbox — each with its own PostgreSQL 16, Redis 7 and GreenMail; blob reports merged into one HTML report with pass, fail and flaky counts. Written, run on demand: the schedule goes live once the backend images have run in CI — a red cron nobody has seen green is worse than no cron.",
+            "figure": "75 min budget"
+          },
+          "release": {
+            "name": "Release",
+            "trigger": "backend: 11 workflows · demo: deploy-demo.mjs",
+            "what": "Backend: configuration validated in strict mode → Maven and a Docker image to GHCR → pre-deployment backup → deploy-and-secure (sha256-gated, immutable scripts) → reload-and-validate; a reusable rollback exists and its wiring is in progress. Demo: build, tar over SSH, atomic directory swap, three rollback copies, hash verification on both domains.",
+            "figure": "atomic swap"
+          },
+          "perf": {
+            "name": "Performance",
+            "trigger": "k6 · npm run perf:k6",
+            "what": "A k6 script with thresholds on the demo’s routes — p95 response time and a zero error rate — run locally and on demand in CI; the same script moves to k6-operator once test execution moves to Kubernetes.",
+            "figure": "p95 thresholds"
+          }
+        },
+        "note": "The PR run time was measured on 2026-09-08 with gh run list; the test counts come from docs/testing/measured-counts.json. The backend has no test pipeline in GitHub Actions today — its 8,908 test methods run locally through ./mvnw; the test pipeline is the next step, described below.",
+        "beWorkflows": "backend workflows"
+      },
+      "roadmap": {
+        "tag": "In progress",
+        "title": "What is under way",
+        "subtitle": "The product fit a three-person team without a cloud test pipeline; in a larger organisation that pipeline is required. The next step is a substrate for running tests, not new hosting.",
+        "why": "Hosting stays on Docker Compose and systemd — right-sized for this scale. Kubernetes enters only as the place where tests run: ephemeral runner pods, suites sharded across machines, reports merged in one place.",
+        "status": {
+          "progress": "in progress",
+          "next": "next"
+        },
+        "items": {
+          "k8s": {
+            "t": "Test execution on Kubernetes",
+            "d": "Playwright and JUnit suites sharded across ephemeral runners; blob reports merged after the run; on main the run fails on a flaky test, on PRs only changed specs run.",
+            "tools": "Testkube Test Workflows · GitHub ARC · playwright merge-reports · JUnit 5 parallel · Cucumber-JVM"
+          },
+          "perf": {
+            "t": "Performance in CI",
+            "d": "The k6 script with thresholds exists; on Kubernetes it runs through k6-operator as a TestRun with thresholds as the pass condition — a performance regression stops a release the way a red test does.",
+            "tools": "k6 · k6-operator · Grafana"
+          },
+          "reports": {
+            "t": "Report aggregation and a flaky policy",
+            "d": "One place with run history instead of a report per run: a quarantine lane for unstable tests, readmission after a 99 % pass rate, error clustering.",
+            "tools": "Allure Report → ReportPortal · JUnit XML → GitHub checks"
+          },
+          "vitals": {
+            "t": "Lighthouse CI and web-vitals budgets",
+            "d": "Today’s lab measurement (LCP, CLS, TBT) becomes an assertion on every PR: a warning first, an error at p90; plus a whole-site crawl.",
+            "tools": "Lighthouse CI · budget.json · Unlighthouse"
+          }
+        },
+        "ai": {
+          "title": "Evaluating the AI in the loop — now and next",
+          "present": "Built: prompts as XML contracts (24 documents, five generations), an evaluation harness with an exec-fp oracle — the answer compared with execution, not with an opinion — SFT/DPO evaluation ladders and a local model that abstains when the answer is not in the graph: abstention 1.0 on out-of-graph questions.",
+          "next": "Next: prompt and model evaluation as a CI gate — a question set with expected answers runs on every prompt change; and measuring the quality of an AI system in production: the share of answers grounded in the graph, the abstention rate, drift between graph version and model version.",
+          "link": "The method and the tooling on GitHub",
+          "evalLink": "Prompt-transfer evaluation findings"
+        }
+      }
     }
   },
   "header": {
@@ -3498,6 +3725,12 @@
         }
       },
       "ticket_detail": {
+        "sent": {
+          "title": "Reply sent",
+          "body": "It is on the thread, and the customer got an e-mail with the same reference. What next?",
+          "back_to_queue": "Back to the queue",
+          "manage_campaigns": "Manage campaigns"
+        },
         "title": "Ticket Details",
         "description": "Description",
         "back": "Back to List",
@@ -6423,14 +6656,33 @@
         "caption": "Simulation — in production this is Google Authenticator on the admin's phone."
       },
       "inbox": {
+        "greeting": "Hi, Demo Brand!",
+        "footer": "The link works for 24 hours. If this was not you, ignore this message.",
         "title": "Inbox",
         "now": "now",
         "subjectVerify": "Confirm your e-mail address",
         "subjectCode": "Your verification code",
-        "bodyVerify": "Welcome to CheckItOut! One click and your account activates itself — no waiting for a human.",
+        "bodyVerify": "Your company data is confirmed. One thing left — a single click on the link below activates the account at once, with no human in the loop.",
         "bodyCode": "You asked to change a sensitive setting. Here's your one-time code — it works once and only for a few minutes.",
-        "verifyCta": "Verify my address",
+        "verifyCta": "Activate the account",
         "caption": "Simulation — the real mail is sent by our templates over SMTP (E2E-tested with GreenMail)."
+      },
+      "checkout": {
+        "caption": "Simulation — production hands the browser to Stripe Checkout; the payment webhook comes back to our BE.",
+        "testMode": "test mode",
+        "subscribeTo": "Subscribe to",
+        "perMonth": "{{price}} zł per month",
+        "lineSubscription": "Monthly subscription",
+        "lineVat": "VAT 23%",
+        "included": "included",
+        "total": "Due today",
+        "poweredBy": "Powered by",
+        "email": "E-mail",
+        "card": "Card details",
+        "expiry": "Expiry",
+        "cardholder": "Name on card",
+        "pay": "Pay {{price}} zł",
+        "testCardNote": "Stripe test card 4242 4242 4242 4242 — no money changes hands."
       },
       "fakturownia": {
         "env": "test mode",
@@ -6466,6 +6718,8 @@
       "exit": "Exit sandbox",
       "recapBadge": "Done",
       "nextSandbox": "Next sandbox",
+      "finish": "Finish — sandbox list",
+      "lastRecap": "That was the last sandbox. You have walked the whole demo — thank you. Go back to the list, or see how it works inside.",
       "openSurvey": "How it's built",
       "backToHub": "All sandboxes",
       "sandboxHint": "Click the highlighted control — it performs this step in the app",
@@ -6483,9 +6737,9 @@
         "proves": "Admins get mandatory TOTP; a stolen password alone is useless.",
         "steps": {
           "login": "You are the admin — this is the standard sign-in screen. In the sandbox you do not need to type anything; let us get to the codes.",
-          "first-code": "The server wants a TOTP code. That is the admin phone in the corner — generate the first one.",
-          "first-code-refused": "The code is on the phone. Look at it, then send it to the server — and watch what comes back.",
-          "fresh-code": "The first code expired before it could be used — that is real TOTP behaviour: the window is seconds. Generate a fresh one.",
+          "first-code": "The server wants a TOTP code. That is the admin phone in the corner — generate the first one; it lands in the form for you.",
+          "first-code-refused": "The code is in the form. Send it to the server — and watch what comes back.",
+          "fresh-code": "The first code expired before it could be used — that is real TOTP behaviour: the window is seconds. Generate a fresh one; it replaces the stale one in the form.",
           "signed-in": "This one is current. Send it — the dialog closes and the admin is in."
         },
         "recap": {
@@ -6500,7 +6754,8 @@
         "proves": "Step-up re-auth guards the actions that matter; sessions alone aren't trusted.",
         "steps": {
           "change-email": "These are the company's account settings. Enter any new e-mail address and send the verification email.",
-          "enter-code": "The platform won't just trust the session — a one-time code went to the verified address. Check the inbox in the corner and type it in.",
+          "enter-code": "The platform does not trust the session alone — a one-time code went to the verified address. Look at the inbox in the corner; the code types itself into the field for you.",
+          "verify-code": "The code is in the field. Verify it — the server checks it is the one it sent, and only then does the change begin.",
           "saved": "The code went through, so the change is under way: a confirmation link has gone to the new address and clicking it is what finishes the job. And here is a product decision: companies share accounts, so everyday actions need only a session — but sensitive ones ask for fresh proof. That is our answer to 2FA for shared accounts."
         },
         "recap": {
@@ -6514,11 +6769,12 @@
         "tagline": "Create a campaign, watch an influencer apply, and decide — the whole lifecycle from the company chair.",
         "proves": "The marketplace core: real forms, real states, one coherent flow.",
         "steps": {
-          "create-campaign": "A campaign brief is one form. Fill it in — the internal name, the public title, where you are meeting, and what you want from the creator.",
+          "create-campaign": "A campaign brief is one form. Start at the top: the internal name, the public title and where you are meeting — press, and we fill them in for you.",
+          "complete-brief": "Below it, the rest of the brief: the description, the requirements, the budget, the platforms, the dates and the photos. One press completes it all, and the page glides down to the photos.",
           "publish-campaign": "The form is complete, so the publish button has come alive. Publish it — the campaign gets a page of its own.",
-          "campaign-live": "This is the published campaign: the public title, the location and the brief, exactly as a creator will see it.",
-          "decide-applicant": "Once published, a campaign starts collecting applications right away. These are your campaign's applicants: decide on Ola's application — accept it or pass.",
-          "lifecycle": "Accepted — the collaboration moved to In Progress. Every state you've just walked is the same machine the survey draws."
+          "campaign-live": "This is the published campaign: the title, the location, the brief and the photos, exactly as a creator will see it. Go to the applications — the first one is already waiting.",
+          "decide-applicant": "The inbox of applications to your campaigns. Piotr was accepted a week ago for the summer campaign; Ola has just applied to the new one. Decide — accept her or pass.",
+          "lifecycle": "Accepted — Ola is now under the new campaign among the collaborations in progress. Below it, the summer campaign with three creators, each at a different point of the process. Every one of those states is the same machine the survey draws."
         },
         "recap": {
           "f1": "One coherent lifecycle: draft → published → applications → in progress — no orphan states.",
@@ -6549,11 +6805,12 @@
         "steps": {
           "nip-lookup": "Company onboarding starts with one number. Type a NIP (try 5260250995) and search.",
           "company-confirmed": "Everything arrived from the registries by itself — GUS, VAT status, PKD, even the bank account. Confirm the data.",
-          "verify-mail": "One thing left: prove the e-mail is yours. The branded mail just landed — open the inbox and click.",
-          "activated": "That click auto-activated the account — no human in the loop. You're on the plan page now: see the campaign limits per plan.",
+          "verify-mail": "One thing left: prove the e-mail is yours. The branded mail has just landed in the inbox on the left — the account is waiting for that one click.",
+          "account-active": "That click activated the account by itself — no human in the loop. Company confirmed, e-mail verified. Go to the subscription: you will see the campaign limits per plan.",
           "upgrade": "Need more room? Open the plan change — we show the price and the terms before you confirm anything.",
           "upgrade-terms": "Before you pay — the subscription terms and the consent. Tick it; without it the payment button stays disabled.",
-          "upgrade-confirm": "Price, terms and consent in one place. The test card is already attached — confirm, and the payment and activation run themselves.",
+          "upgrade-confirm": "Price, terms and consent in one place. Confirm — you go on to Stripe Checkout; in the demo its simulator opens instead.",
+          "pay": "Stripe Checkout in test mode: the details and the 4242 test card are already in. Pay — the successful-payment webhook activates the plan and starts the billing saga.",
           "invoice-sent": "The payment succeeded, so the billing saga has already issued the invoice in Fakturownia. Send it on to KSeF — one click, one flag.",
           "ksef-done": "And there it is — registered in the national e-invoice system, with its KSeF number."
         },
@@ -6568,9 +6825,10 @@
         "tagline": "Something's wrong? File a ticket and watch the answer arrive — the support loop from the user's chair.",
         "proves": "Support is a built flow with reference codes and mail — not an inbox black hole.",
         "steps": {
-          "ticket-created": "Something's not right? Describe it and send — you'll get a reference code on the spot.",
-          "reference-issued": "That is the ticket reference — keep it. In production the same number goes out by mail, so the conversation has one identifier on both sides.",
-          "read-response": "Support has already answered. This is your tickets view — open it and read the reply. In production a mail lands too, with the same reference."
+          "describe": "Something's not right? Describe it: a subject and the details. Press, and we type an example for you.",
+          "send": "The form is ready and the send button has come alive. Send — you get a reference code on the spot.",
+          "reference-issued": "That is the ticket reference — keep it. In production the same number goes out by mail, so the conversation has one identifier on both sides. Check the ticket's status.",
+          "read-response": "Support has already answered. This is your ticket's status page — the same reference, the reply on the thread. In production a mail lands too, with the same number."
         },
         "recap": {
           "f1": "Every ticket gets a reference code — trackable even without an account.",
@@ -6583,12 +6841,14 @@
         "tagline": "A support ticket arrives; answer it and run a full GDPR cascade delete — by the book.",
         "proves": "Moderation and the right to be forgotten are real flows, not policy pages.",
         "steps": {
-          "admin-respond": "This is the admin queue. Open a ticket and answer the user — your reply threads onto it instantly.",
-          "reply-threaded": "The reply is on the thread already — under the customer’s message, signed and dated. In production a mail goes out at the same moment, carrying the same reference.",
+          "admin-open": "This is the admin queue. Open the ticket — the customer's message is waiting on the thread.",
+          "admin-draft": "Only the customer's message, no reply yet. Press, and we type the reply into the form.",
+          "admin-send": "The reply is ready and the button has come alive. Send — it threads onto the ticket at once, and the customer gets a mail with the same reference.",
+          "to-campaigns": "The reply is on the thread — under the customer's message, signed and dated. That is how people and tickets are handled. Now we take you to collaboration management.",
           "cascade-delete": "Now the serious one: a GDPR erasure request. You are on the campaign it concerns — open the cascade delete.",
           "cascade-confirm": "The counts in the preview are the real state of the database, not an estimate: records per system, and a warning for what cannot be undone. Confirm — the cascade runs through every layer.",
           "cascade-receipt": "Exactly the number the preview promised, and an audit-archive entry nobody can delete. Read the receipt before you close it.",
-          "by-the-book": "The cascade ran through Postgres, Firestore and Storage in one orchestrated flow — the campaign is gone from the marketplace, and the audit trail remains. That's GDPR as engineering."
+          "by-the-book": "The cascade ran through Postgres, Firestore and Storage in one orchestrated flow — the campaign is gone from the marketplace, and the audit trail remains. That's GDPR as engineering. And that was the last sandbox — press Next for the wrap-up."
         },
         "recap": {
           "f1": "Admin replies thread onto tickets and notify the user by mail.",

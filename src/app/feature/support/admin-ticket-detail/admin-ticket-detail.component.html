@@ -213,6 +213,47 @@
           }
         </div>
 
+        @if (replied()) {
+          <!-- The reply is out. Say so, and offer the two places an admin goes next. -->
+          <div
+            role="status"
+            class="mt-6 flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-5"
+            data-testid="admin-response-sent"
+          >
+            <span
+              class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-emerald-600"
+            >
+              <mat-icon>check_circle</mat-icon>
+            </span>
+            <div class="min-w-0 flex-1">
+              <p class="font-display text-xl text-ink">
+                {{ 'support.admin.ticket_detail.sent.title' | transloco }}
+              </p>
+              <p class="mt-1 text-sm text-slate2">
+                {{ 'support.admin.ticket_detail.sent.body' | transloco }}
+              </p>
+              <div class="mt-4 flex flex-wrap items-center gap-3">
+                <a
+                  mat-stroked-button
+                  routerLink="/support/admin/tickets"
+                  data-testid="admin-ticket-queue"
+                >
+                  {{ 'support.admin.ticket_detail.sent.back_to_queue' | transloco }}
+                </a>
+                <a
+                  mat-flat-button
+                  color="primary"
+                  routerLink="/collaborations/list"
+                  data-testid="admin-ticket-campaigns"
+                >
+                  <mat-icon>campaign</mat-icon>
+                  {{ 'support.admin.ticket_detail.sent.manage_campaigns' | transloco }}
+                </a>
+              </div>
+            </div>
+          </div>
+        }
+
         <!-- Admin reply form -->
         <form
           #responseFormDir="ngForm"

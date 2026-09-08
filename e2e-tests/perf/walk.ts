@@ -9,10 +9,11 @@
  * the more expensive, because it does not look like a mistake: the press lands
  * on nothing, the step never moves, and the sweep reports the tour as stuck.
  *
- * `company-campaign` step 0 ends with a route change to the applicants list.
- * The step index is persisted the moment the tour advances; the list arrives
- * later. Two separate sweeps concluded the tour was broken there, on the same
- * day, for that reason alone.
+ * `company-campaign` step 2 ends with a route change to the published
+ * campaign's page, and step 3 with another to the applicants list. The step
+ * index is persisted the moment the tour advances; the page arrives later. Two
+ * separate sweeps concluded the tour was broken there, on the same day, for
+ * that reason alone.
  *
  * So the loop lives here, once, and every sweep waits for the same three
  * things: the beat turned over, something is pressable, and the ring has

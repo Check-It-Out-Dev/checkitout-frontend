@@ -212,6 +212,24 @@ async function settle(
   return { ...last, sawBusy };
 }
 
+/**
+ * Does the beat's recipe press the control it rings? The fault this sweep
+ * injects is a swallowed click on the RINGED control, so only a beat that
+ * clicks that control has anything for it to break. The campaign brief's
+ * second beat rings the description field and presses selects and radios
+ * elsewhere in the form: swallowing clicks on the field changed nothing, the
+ * step confirmed exactly as it should, and the sweep called it a phantom.
+ */
+function landsOnTarget(
+  step: { target?: string; perform?: readonly { kind: string; selector?: string }[] } | undefined,
+): boolean {
+  const target = step?.target;
+  if (!target) return false;
+  return (step?.perform ?? []).some(
+    (p) => p.kind === 'click' && typeof p.selector === 'string' && p.selector.startsWith(target),
+  );
+}
+
 test.describe('No phantom steps', () => {
   for (const tour of TOURS) {
     test(`${tour}: no step advances without its action`, async ({ page }) => {
@@ -243,7 +261,7 @@ test.describe('No phantom steps', () => {
         // seven fills go in, the publish button comes alive, and the step is
         // confirmed by the application exactly as it should be. Injecting there
         // reports a phantom that is really the beat working.
-        const clicks = (defined?.perform ?? []).some((p) => p.kind === 'click');
+        const clicks = landsOnTarget(defined);
         // A beat that owes an injection gets waited for, not walked past: a
         // simulator card scales in over 300 ms and its pill arrives with it.
         // …and until the guide has finished with the beat before. A press that
@@ -322,9 +340,7 @@ test.describe('No phantom steps', () => {
       // injections stopped resolving and the test still reported green. The
       // registry knows how many beats carry a recipe and a target; that is the
       // number, and a drop in it is now a failure rather than a smaller run.
-      const owed = (scenarioByKey(tour)?.steps ?? []).filter(
-        (st) => st.target && (st.perform ?? []).some((p) => p.kind === 'click'),
-      ).length;
+      const owed = (scenarioByKey(tour)?.steps ?? []).filter((st) => landsOnTarget(st)).length;
       expect(
         tested.length,
         `${tour}: ${String(owed)} beat(s) carry a recipe and a ring, but only ` +

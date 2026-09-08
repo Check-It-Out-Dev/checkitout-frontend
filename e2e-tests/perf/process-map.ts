@@ -309,6 +309,20 @@ export const PROCESSES: Process[] = [
         atomic: [{ id: 'step-up', kind: 'visible', testid: 'step-up-code-input' }],
       },
       {
+        step: 'verify-code',
+        says: 'The code is in the field. Verify it — the server checks it is the one it sent, and only then does the change begin.',
+        requires: [
+          {
+            id: 'code-in-field',
+            see: 'the one-time code already in the dialog field, legible',
+            readableMs: 1500,
+            via: 'step-up-verify',
+          },
+          { id: 'verify-live', see: 'the verify button no longer greyed out' },
+        ],
+        atomic: [{ id: 'dialog-gone', kind: 'absent', testid: 'step-up-code-input' }],
+      },
+      {
         step: 'saved',
         says: 'The code went through, so the change is under way: a confirmation link has gone to the new address and clicking it is what finishes the job. And here is a product decision: companies share accounts, so everyday actions need only a session - sensitive ones ask for fresh proof. That is our answer to 2FA for shared accounts.',
         requires: [
@@ -332,12 +346,12 @@ export const PROCESSES: Process[] = [
     phases: [
       {
         step: 'create-campaign',
-        says: 'A campaign brief is one form. Fill it in - the internal name, the public title, where you are meeting, and what you want from the creator.',
+        says: 'A campaign brief is one form. Start at the top: the internal name, the public title and where you are meeting — press, and we fill them in for you.',
         requires: [
           { id: 'form-visible', see: 'the campaign form' },
           {
-            id: 'fields-filled',
-            see: 'the form carrying its values, each one legible and not printed under its own label',
+            id: 'top-filled',
+            see: 'the name, the title and the address carrying their values, each legible and not printed under its own label',
             readableMs: 2000,
             via: 'opp-form-name',
           },
@@ -345,8 +359,25 @@ export const PROCESSES: Process[] = [
         atomic: [{ id: 'form', kind: 'visible', testid: 'opp-form-name' }],
       },
       {
+        step: 'complete-brief',
+        says: 'Below it, the rest of the brief: the description, the requirements, the budget, the platforms, the dates and the photos. One press completes it all, and the page glides down to the photos.',
+        requires: [
+          {
+            id: 'rest-filled',
+            see: 'the brief, the budget, the platforms and the dates carrying their values',
+          },
+          {
+            id: 'photos-in',
+            see: 'two photo thumbnails under the brief, the page having glided down to them',
+            readableMs: 1500,
+            via: 'opp-form-photo-1',
+          },
+        ],
+        atomic: [{ id: 'second-photo', kind: 'visible', testid: 'opp-form-photo-1' }],
+      },
+      {
         step: 'publish-campaign',
-        says: 'The form is complete, so the publish button has come alive. Publish it - the campaign gets a page of its own.',
+        says: 'The form is complete, so the publish button has come alive. Publish it — the campaign gets a page of its own.',
         requires: [
           { id: 'enabled', see: 'the publish button no longer greyed out' },
           { id: 'lands-on-detail', see: "the saved campaign's own page once it is published" },
@@ -356,7 +387,7 @@ export const PROCESSES: Process[] = [
       {
         step: 'campaign-live',
         carries: 'screen',
-        says: 'This is the published campaign: the public title, the location and the brief, exactly as a creator will see it.',
+        says: 'This is the published campaign: the title, the location, the brief and the photos, exactly as a creator will see it. Go to the applications — the first one is already waiting.',
         requires: [
           {
             id: 'names-it',
@@ -364,30 +395,42 @@ export const PROCESSES: Process[] = [
             readableMs: 3000,
             via: 'opportunity-detail-card',
           },
-          { id: 'brief-there', see: 'the brief text on it' },
+          { id: 'brief-there', see: 'the brief text and the two photos on it' },
+          {
+            id: 'way-onward',
+            see: 'a control leading to the applications, with the guide sitting beside it',
+          },
         ],
         atomic: [{ id: 'on-detail', kind: 'route', pattern: '^/collaborations/\\d+$' }],
       },
       {
         step: 'decide-applicant',
-        says: "Once published, a campaign starts collecting applications right away. These are your campaign's applicants: decide on Ola's application — accept it or pass.",
+        says: 'The inbox of applications to your campaigns. Piotr was accepted a week ago for the summer campaign; Ola has just applied to the new one. Decide — accept her or pass.',
         requires: [
-          { id: 'applicants-list', see: 'the applicants list for this campaign, with Ola on it' },
+          {
+            id: 'inbox',
+            see: 'the applications inbox with two people on it, each with a coloured avatar and the campaign they applied to',
+          },
           {
             id: 'both-choices',
-            see: 'both an accept and a decline control — the visitor is being given a decision',
+            see: "both an accept and a decline control on Ola's row — the visitor is being given a decision",
           },
           { id: 'decision-lands', see: 'the accept control gone once the decision is made' },
         ],
         atomic: [
-          { id: 'on-applicants', kind: 'route', pattern: '^/collaborations/\\d+/applicants' },
+          { id: 'on-applicants', kind: 'route', pattern: '^/collaborations/applicants' },
           { id: 'accept-gone', kind: 'absent', testid: 'applicant-accept-8101' },
         ],
       },
       {
         step: 'lifecycle',
-        says: 'Accepted — the collaboration moved to In Progress. Every state you have just walked is the same machine the survey draws.',
-        requires: [{ id: 'in-progress', see: 'the collaboration listed as in progress' }],
+        says: 'Accepted — Ola is now under the new campaign among the collaborations in progress. Below it, the summer campaign with three creators, each at a different point of the process. Every one of those states is the same machine the survey draws.',
+        requires: [
+          {
+            id: 'two-campaigns',
+            see: 'two campaigns: the new one with Ola accepted, and the summer one with three creators, each with a status',
+          },
+        ],
         atomic: [{ id: 'on-in-progress', kind: 'route', pattern: '^/collaborations/in-progress' }],
       },
     ],
@@ -484,7 +527,7 @@ export const PROCESSES: Process[] = [
       },
       {
         step: 'verify-mail',
-        says: 'One thing left: prove the e-mail is yours. The branded mail just landed — open the inbox and click.',
+        says: 'One thing left: prove the e-mail is yours. The branded mail has just landed in the inbox on the left — the account is waiting for that one click.',
         requires: [
           { id: 'inbox', see: 'the inbox simulator with the verification mail' },
           {
@@ -497,23 +540,32 @@ export const PROCESSES: Process[] = [
         atomic: [{ id: 'cta', kind: 'visible', testid: 'inbox-sim-cta' }],
       },
       {
-        step: 'activated',
-        says: 'That click auto-activated the account — no human in the loop. You are on the plan page now: see the campaign limits per plan.',
+        step: 'account-active',
+        says: 'That click activated the account by itself — no human in the loop. Company confirmed, e-mail verified. Go to the subscription: you will see the campaign limits per plan.',
         requires: [
-          { id: 'plan-page', see: 'the plan and billing page' },
           {
-            id: 'limits-legible',
-            see: 'the campaign limits for each plan, readable side by side',
-            readableMs: 3000,
-            via: 'plan-billing-upgrade-enterprise',
+            id: 'active-card',
+            see: 'the setup page saying the account is active',
+            readableMs: 2000,
+          },
+          {
+            id: 'way-onward',
+            see: 'a control leading to the subscription, with the guide beside it',
+            via: 'company-setup-subscription',
           },
         ],
-        atomic: [{ id: 'on-plan', kind: 'route', pattern: '^/user/settings/plan-billing' }],
+        atomic: [{ id: 'cta', kind: 'visible', testid: 'company-setup-subscription' }],
       },
       {
         step: 'upgrade',
         says: 'Need more room? Open the plan change — we show the price and the terms before you confirm anything.',
         requires: [
+          {
+            id: 'plans-side-by-side',
+            see: 'the three plans side by side with their campaign limits, the current one marked',
+            readableMs: 2500,
+            via: 'plan-billing-upgrade-enterprise',
+          },
           { id: 'checkout-opens', see: 'the plan-change dialog open' },
           {
             id: 'waits',
@@ -538,17 +590,28 @@ export const PROCESSES: Process[] = [
       },
       {
         step: 'upgrade-confirm',
-        says: 'The card is already attached — confirm, and the payment and activation run themselves.',
+        says: 'Price, terms and consent in one place. Confirm — you go on to Stripe Checkout; in the demo its simulator opens instead.',
         requires: [
           {
             id: 'enabled',
             see: 'the payment button no longer greyed out, now that the box is ticked',
           },
-          { id: 'card', see: 'the attached test card' },
+          { id: 'dialog-goes', see: 'the dialog gone once confirmed, with no flash of the page' },
+        ],
+        atomic: [{ id: 'dialog-gone', kind: 'absent', testid: 'upgrade-confirm-submit' }],
+      },
+      {
+        step: 'pay',
+        says: 'Stripe Checkout in test mode: the details and the 4242 test card are already in. Pay — the successful-payment webhook activates the plan and starts the billing saga.',
+        requires: [
           {
-            id: 'new-tier-after',
-            see: 'the new tier active on the plan page once the checkout returns',
+            id: 'checkout',
+            see: 'a checkout page in test mode: the order on one side, the payment form on the other',
+            readableMs: 2500,
+            via: 'checkout-sim-pay',
           },
+          { id: 'card-filled', see: 'the test card 4242 already typed into the form' },
+          { id: 'new-tier-after', see: 'the new tier active on the plan page once paid' },
         ],
         atomic: [{ id: 'plan-stored', kind: 'storage', key: 'demoPlan' }],
       },
@@ -576,45 +639,62 @@ export const PROCESSES: Process[] = [
   {
     tour: 'support-ticket',
     // The reference issued when the ticket is raised.
-    subject: { from: 'ticket-created', read: 'ticket-reference', extract: 'CIO-[0-9]{4}-[0-9]{4}' },
+    subject: { from: 'send', read: 'ticket-reference', extract: 'CIO-[0-9]{4}-[0-9]{4}' },
     phases: [
       {
-        step: 'ticket-created',
-        says: 'Something is not right? Describe it and send — you will get a reference code on the spot.',
+        step: 'describe',
+        says: "Something's not right? Describe it: a subject and the details. Press, and we type an example for you.",
         requires: [
           { id: 'form', see: 'a ticket form with a subject and a description' },
-          { id: 'described', see: 'both actually filled in before it is sent' },
-          { id: 'reference', see: 'a reference code shown once it is sent', readableMs: 2000 },
+          {
+            id: 'described',
+            see: 'both actually filled in, legible in their fields',
+            readableMs: 1500,
+            via: 'create-ticket-subject',
+          },
         ],
         atomic: [{ id: 'subject', kind: 'visible', testid: 'create-ticket-subject' }],
       },
       {
+        step: 'send',
+        says: 'The form is ready and the send button has come alive. Send — you get a reference code on the spot.',
+        requires: [
+          { id: 'send-live', see: 'the send button no longer greyed out' },
+          { id: 'reference', see: 'a reference code shown once it is sent', readableMs: 2000 },
+        ],
+        atomic: [{ id: 'reference-shown', kind: 'visible', testid: 'ticket-reference' }],
+      },
+      {
         step: 'reference-issued',
         carries: 'screen',
-        says: 'That is the ticket reference - keep it. In production the same number goes out by mail, so the conversation has one identifier on both sides.',
+        says: "That is the ticket reference — keep it. In production the same number goes out by mail, so the conversation has one identifier on both sides. Check the ticket's status.",
         requires: [
           {
             id: 'reference-readable',
-            see: 'the ticket reference code, readable',
+            see: 'the ticket reference code, readable, with the ring on the status button beside it and not on the code',
             readableMs: 2500,
-            via: 'ticket-reference',
+            via: 'create-ticket-view-status',
           },
         ],
-        atomic: [{ id: 'reference', kind: 'visible', testid: 'ticket-reference' }],
+        atomic: [{ id: 'on-status', kind: 'route', pattern: '^/support/tickets/status' }],
       },
       {
         step: 'read-response',
         carries: 'result',
-        says: 'Support has already answered. This is your tickets view — open it and read the reply. In production a mail lands too, with the same reference.',
+        says: "Support has already answered. This is your ticket's status page — the same reference, the reply on the thread. In production a mail lands too, with the same number.",
         requires: [
-          { id: 'ticket-list', see: "the visitor's own tickets, with the new one on it" },
-          { id: 'reply-readable', see: 'the support reply, in full', readableMs: 4000 },
+          {
+            id: 'reply-readable',
+            see: 'the support reply, in full',
+            readableMs: 4000,
+            via: 'ticket-response-1',
+          },
           {
             id: 'same-reference',
             see: 'the same reference code as the one given when it was sent',
           },
         ],
-        atomic: [{ id: 'on-status', kind: 'route', pattern: '^/support/tickets' }],
+        atomic: [{ id: 'reply', kind: 'visible', testid: 'ticket-response-1' }],
       },
     ],
   },
@@ -629,30 +709,56 @@ export const PROCESSES: Process[] = [
     // number the preview promised" - which is a different class, not this one.
     phases: [
       {
-        step: 'admin-respond',
-        says: 'This is the admin queue. Open a ticket and answer the user — your reply threads onto it instantly.',
+        step: 'admin-open',
+        says: "This is the admin queue. Open the ticket — the customer's message is waiting on the thread.",
         requires: [
-          { id: 'queue', see: 'the admin ticket queue' },
-          { id: 'reply-posted', see: 'the reply submitted on the open ticket' },
+          { id: 'queue', see: 'the admin ticket queue with the ring on the ticket row' },
+          { id: 'opened', see: "the ticket's own page once pressed" },
         ],
-        atomic: [{ id: 'on-admin', kind: 'route', pattern: '^/support/admin/tickets' }],
+        atomic: [{ id: 'on-ticket', kind: 'route', pattern: '^/support/admin/tickets/[0-9]+' }],
       },
       {
-        step: 'reply-threaded',
-        says: 'The reply is on the thread already — under the customer’s message, signed and dated. In production a mail goes out at the same moment, carrying the same reference.',
+        step: 'admin-draft',
+        says: "Only the customer's message, no reply yet. Press, and we type the reply into the form.",
+        requires: [
+          {
+            id: 'only-customer',
+            see: "the thread holding only the customer's message — no reply yet",
+          },
+          {
+            id: 'drafted',
+            see: 'the reply typed into the form, legible',
+            readableMs: 1500,
+            via: 'admin-response-content',
+          },
+        ],
+        atomic: [{ id: 'field', kind: 'visible', testid: 'admin-response-content' }],
+      },
+      {
+        step: 'admin-send',
+        says: 'The reply is ready and the button has come alive. Send — it threads onto the ticket at once, and the customer gets a mail with the same reference.',
+        requires: [
+          { id: 'send-live', see: 'the send button no longer greyed out' },
+          { id: 'reply-posted', see: 'the reply on the thread once sent', readableMs: 2000 },
+        ],
+        atomic: [{ id: 'reply-there', kind: 'visible', testid: 'admin-ticket-response-1' }],
+      },
+      {
+        step: 'to-campaigns',
+        says: "The reply is on the thread — under the customer's message, signed and dated. That is how people and tickets are handled. Now we take you to collaboration management.",
         requires: [
           {
             id: 'on-the-thread',
-            see: 'the admin reply on the ticket thread, under the customer’s message, with who wrote it and when',
+            see: "the admin reply on the ticket thread, under the customer's message, with who wrote it and when",
             readableMs: 3000,
-            via: 'admin-ticket-response-2',
+            via: 'admin-ticket-campaigns',
           },
           {
-            id: 'still-the-ticket',
-            see: 'the ticket still open — the tour has not navigated away',
+            id: 'sent-panel',
+            see: 'a panel saying the reply went out, with the way to the campaigns and the guide beside it',
           },
         ],
-        atomic: [{ id: 'reply-there', kind: 'visible', testid: 'admin-ticket-response-2' }],
+        atomic: [{ id: 'cta', kind: 'visible', testid: 'admin-ticket-campaigns' }],
       },
       {
         step: 'cascade-delete',
@@ -709,7 +815,7 @@ export const PROCESSES: Process[] = [
       },
       {
         step: 'by-the-book',
-        says: 'The cascade ran through Postgres, Firestore and Storage in one orchestrated flow — the campaign is gone from the marketplace, and the audit trail remains. That is GDPR as engineering.',
+        says: "The cascade ran through Postgres, Firestore and Storage in one orchestrated flow — the campaign is gone from the marketplace, and the audit trail remains. That's GDPR as engineering. And that was the last sandbox — press Next for the wrap-up.",
         requires: [
           { id: 'gone-from-list', see: 'the marketplace list without campaign 502 on it' },
           {

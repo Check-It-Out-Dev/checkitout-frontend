@@ -58,19 +58,27 @@ describe('PlatformChapterComponent', () => {
     fixture.detectChanges(); // re-render both branch states of the stepper template
   });
 
-  it('plays a subscription scenario (lit nodes/edges + restartable token)', () => {
+  it('plays a subscription scenario (states and transitions lit in sequence)', () => {
     const fsm = fixture.debugElement.query(
       By.directive(SubscriptionStateMachineShowcaseComponent),
     ).componentInstance;
     expect(fsm.active).toBeNull();
     const terms = fsm.scenarios.find((s: { key: string }) => s.key === 'terms');
     fsm.select(terms);
-    expect(fsm.playId).toBe(1);
-    expect(fsm.isNodeLit(fsm.nodes.find((n: { key: string }) => n.key === 'TERMS_PENDING'))).toBe(
-      true,
+    const termsNode = fsm.nodes.find((n: { key: string }) => n.key === 'TERMS_PENDING');
+    expect(fsm.isNodeLit(termsNode)).toBe(true);
+    // the story is told in order: ENTERPRISE first, its transition half a beat
+    // later, TERMS a beat after that — there is no dot to carry it any more
+    expect(
+      fsm.nodeDelay(fsm.nodes.find((n: { key: string }) => n.key === 'ENTERPRISE_ACTIVE')),
+    ).toBe('0.00s');
+    expect(fsm.edgeDelay(fsm.edges[4])).toBe('0.28s'); // ENTERPRISE_ACTIVE>TERMS_PENDING
+    expect(fsm.nodeDelay(termsNode)).toBe('0.55s');
+    expect(fsm.nodeDelay(fsm.nodes.find((n: { key: string }) => n.key === 'FREE_ACTIVE'))).toBe(
+      '0s',
     );
     expect(fsm.active.ghost).toBe('ENTERPRISE_ACTIVE');
-    fixture.detectChanges(); // renders ghost ring + traveling token branches
+    fixture.detectChanges(); // renders the ghost ring branch
   });
 
   it('steps the Instagram OAuth handshake through to connected', () => {

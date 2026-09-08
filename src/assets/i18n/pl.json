@@ -169,6 +169,32 @@
     }
   },
   "plan_billing": {
+    "plans": {
+      "current_eyebrow": "Twój plan",
+      "title": "Plany",
+      "subtitle": "Zmiana działa od razu — w górę po płatności, w dół od następnego okresu.",
+      "current": "Twój plan",
+      "recommended": "Polecany",
+      "month": "mies.",
+      "limit": "{{n}} kampanie w miesiącu",
+      "yours": "Plan, na którym jesteś",
+      "downgrade_note": "Obniżenie planu zaczyna obowiązywać od następnego okresu rozliczeniowego — do tego czasu nic się nie zmienia.",
+      "free": {
+        "f1": "Profil firmy i przeglądanie twórców",
+        "f2": "Zgłoszenia i decyzje bez limitu",
+        "f3": "Wsparcie e-mail"
+      },
+      "business": {
+        "f1": "Wszystko z planu Free",
+        "f2": "Priorytetowe wsparcie w 24 h",
+        "f3": "Statystyki kampanii"
+      },
+      "enterprise": {
+        "f1": "Wszystko z planu Business",
+        "f2": "Odznaka premium marki",
+        "f3": "Dedykowany opiekun"
+      }
+    },
     "unknown_plan": "—",
     "price_per_month": "{{price}} PLN / miesiąc",
     "documents": {
@@ -262,13 +288,13 @@
     },
     "upgrade": {
       "section_title": "Zmień plan",
-      "cta": "Wybierz plan {{plan}} · {{price}}",
+      "cta": "Przejdź na plan {{plan}}",
       "current": "Twój obecny plan · {{plan}}",
       "confirm": {
         "title": "Plan {{plan}} · {{price}}",
         "eyebrow": "Zmiana planu",
         "summary": "Zostaniesz przekierowany do Stripe Checkout, aby dokończyć płatność. Plan zostanie aktywowany po potwierdzeniu płatności.",
-        "terms_excerpt": "Klikając Dalej akceptujesz regulamin subskrypcji: rozliczenie miesięczne w PLN, możliwość anulowania przed kolejnym okresem rozliczeniowym, zwroty proporcjonalne zgodnie z polskim prawem konsumenckim.",
+        "terms_excerpt": "Klikając „Przejdź do płatności”, akceptujesz regulamin subskrypcji: rozliczenie miesięczne w PLN, możliwość anulowania przed kolejnym okresem rozliczeniowym, zwroty proporcjonalne zgodnie z polskim prawem konsumenckim.",
         "accept_label": "Przeczytałem(-am) i akceptuję {{documentName}}.",
         "cancel": "Anuluj",
         "submit": "Przejdź do płatności"
@@ -546,7 +572,8 @@
       "activated_body": "Dane firmy potwierdzone, a konto jest w pełni aktywne. Czas uruchomić pierwszą kampanię.",
       "pending_body": "Zapisaliśmy dane Twojej firmy. Zweryfikuj adres e-mail, aby dokończyć aktywację konta.",
       "cta_campaigns": "Przejdź do moich kampanii",
-      "cta_verify": "Przejdź do ustawień konta"
+      "cta_verify": "Przejdź do ustawień konta",
+      "cta_subscription": "Zarządzaj subskrypcją"
     },
     "confirmed": {
       "title": "Firma już zweryfikowana",
@@ -575,6 +602,15 @@
         "influencer": "Influencer",
         "company": "Firma",
         "step": "Krok {{step}} z {{total}}"
+      },
+      "group": {
+        "creators": "Twórcy",
+        "untitled": "Kampania bez tytułu",
+        "stage": {
+          "new": "Nowa",
+          "running": "Trwa",
+          "closed": "Zakończona"
+        }
       },
       "cta": {
         "review_content": "Oceń treści",
@@ -772,6 +808,16 @@
       }
     },
     "applicants": {
+      "inbox_title": "Zgłoszenia",
+      "inbox_subtitle": "Kandydatury do Twoich kampanii na etapie, na którym decyzja należy do Ciebie. Najnowsze u góry.",
+      "inbox_empty": "Nie ma jeszcze zgłoszeń do Twoich kampanii.",
+      "back_inbox": "Wróć do współprac",
+      "from_creator": "Wiadomość od twórcy",
+      "stage": {
+        "new": "Nowa kampania",
+        "running": "Kampania trwa",
+        "closed": "Kampania zakończona"
+      },
       "title": "Aplikanci",
       "back": "Wróć do moich kampanii",
       "applied_at": "Wysłano",
@@ -899,6 +945,9 @@
       }
     },
     "detail": {
+      "photo_alt": "Zdjęcie kampanii {{index}}",
+      "manage_applicants": "Zarządzaj zgłoszeniami",
+      "edit_campaign": "Edytuj kampanię",
       "back": "Wróć do kampanii",
       "go_back": "Przeglądaj kampanie",
       "not_found": "Nie znaleziono kampanii. Mogła zostać usunięta.",
@@ -1163,11 +1212,6 @@
       "notifications": {
         "new_applications": "3 nowe zgłoszenia"
       },
-      "buttons": {
-        "launch": "Uruchom",
-        "review": "Przejrzyj zgłoszenia",
-        "download_report": "Pobierz raport"
-      },
       "analytics": {
         "post_published": "Post na Instagramie opublikowany",
         "live_status": "Aktywny od 2 godzin",
@@ -1199,43 +1243,46 @@
       }
     ],
     "dashboard_preview": {
-      "scroll_hint": {
-        "mobile": "Przewiń, aby zobaczyć więcej",
-        "desktop": "Sprawdź postęp"
-      },
       "steps": {
         "campaign_created": {
           "title": "Kampania utworzona",
+          "short": "Kampania",
           "description": "Firma tworzy kampanię współpracy z określonymi wymaganiami i grupą docelową.",
           "action": "Utwórz kampanię"
         },
         "influencer_application": {
           "title": "Aplikacja influencera",
+          "short": "Zgłoszenie",
           "description": "Wykwalifikowani influencerzy odkrywają i aplikują do kampanii współpracy.",
           "action": "Aplikuj do kampanii"
         },
         "review_selection": {
           "title": "Przegląd i selekcja",
+          "short": "Wybór",
           "description": "Firma przegląda aplikacje i wybiera najlepiej dopasowanych influencerów do kampanii.",
           "action": "Przejrzyj aplikacje"
         },
         "agreement_planning": {
           "title": "Umowa i planowanie",
+          "short": "Umowa",
           "description": "Obie strony uzgadniają warunki, harmonogram i wymagania dotyczące treści współpracy.",
           "action": "Zaakceptuj warunki"
         },
         "content_creation": {
           "title": "Tworzenie treści",
+          "short": "Treść",
           "description": "Influencer tworzy i przesyła treści do zatwierdzenia przez markę przed publikacją.",
           "action": "Utwórz treść"
         },
         "content_approval": {
           "title": "Zatwierdzenie treści",
+          "short": "Akceptacja",
           "description": "Firma przegląda utworzone treści i zapewnia zatwierdzenie lub informację zwrotną o zmianach.",
           "action": "Zatwierdź treść"
         },
         "publication_results": {
           "title": "Publikacja i wyniki",
+          "short": "Wyniki",
           "description": "Treści są publikowane, a metryki wydajności są śledzone i udostępniane marce.",
           "action": "Opublikuj treść"
         }
@@ -1390,6 +1437,43 @@
         "progress": {
           "title": "Proces współpracy"
         }
+      },
+      "empty": {
+        "discovering": {
+          "title": "Ola przegląda kampanie",
+          "note": "Twoja oferta jest już na jej liście."
+        }
+      },
+      "stepper": {
+        "go_to": "Przejdź do kroku"
+      },
+      "post": {
+        "handle": "ola.kowalska",
+        "kind": "Reel",
+        "duration": "0:24",
+        "caption": "Kawiarnia na Starówce ☕ #współpraca",
+        "recording": "Nagrywanie",
+        "published_at": "Opublikowano · dziś 18:30"
+      },
+      "application": {
+        "title": "Twoje zgłoszenie",
+        "items": [
+          "Profil",
+          "Statystyki",
+          "Portfolio"
+        ]
+      },
+      "acceptance": {
+        "title": "Firma wybrała Cię do kampanii"
+      },
+      "flight": {
+        "campaign_created": "Brief kampanii",
+        "influencer_application": "Zgłoszenie Oli",
+        "review_selection": "Akceptacja",
+        "agreement_planning": "Warunki",
+        "content_creation": "Reel do akceptacji",
+        "content_approval": "Zatwierdzone",
+        "publication_results": "Wyniki"
       }
     },
     "testimonials": {
@@ -1648,11 +1732,7 @@
           "per_day": "dziennie",
           "campaigns": "MIESIĘCZNE KAMPANIE",
           "campaigns_count": "10",
-          "growth_benefits": {
-            "title": "KORZYŚCI BUSINESS",
-            "priority_support": "Priorytetowe wsparcie",
-            "priority_support_desc": "Skontaktujemy się z Tobą na żywo w ciągu 24h"
-          },
+          "includes_growth": "Wszystko z planu Business, oraz:",
           "premium_benefits": {
             "title": "KORZYŚCI ENTERPRISE",
             "brand_badge": "Odznaka premium marki",
@@ -1708,7 +1788,7 @@
       "githubFrontend": "Frontend na GitHubie",
       "githubMethod": "Metoda — artykuły i grafy",
       "mit": "Licencja MIT",
-      "story": "Udostępniamy kod i dzielimy się tym, czego się nauczyliśmy: chcemy, żeby polskie i unijne firmy mogły skupić się na swoim biznesie — a naszą platformę wzięły jako blueprint, który ogarnia całą resztę.",
+      "story": "Udostępniamy kod i opisujemy, czego się nauczyliśmy: polskie i unijne firmy mogą skupić się na swoim biznesie, a tę platformę wziąć jako sprawdzony punkt wyjścia dla całej reszty.",
       "pentest": "Zleciliśmy niezależne testy penetracyjne platformy — metodyka GrayBox, OWASP, wykonane przez WRO4digITal (EDIH Wrocław, z Wrocławskim Centrum Sieciowo-Superkomputerowym). Wynik: poziom bezpieczeństwa powyżej średniej i krótka, uczciwa lista ustaleń.",
       "security": {
         "eyebrow": "Niezależny audyt bezpieczeństwa — zakończony",
@@ -1723,20 +1803,20 @@
           "info": "Informacyjne"
         }
       },
-      "invite": "Autorzy z przyjemnością zabiorą Was w podróż i pokażą, jak ta platforma działa i jak jest zbudowana. Mamy dla Was dwie opcje — zależnie od tego, co wolicie.",
+      "invite": "Platformę możesz poznać na dwa sposoby — zależnie od tego, czy wolisz klikać, czy czytać.",
       "survey": {
         "tag": "Opcja 1 · Dokumentacja",
-        "title": "Technical survey — dla tych, którzy kochają technikalia",
-        "p1": "Przygotowaliśmy dokumentację, którą łatwo się czyta i która — obiecujemy — naprawdę wciąga. Zaczynacie od wprowadzenia, przeglądu platformy i kilku diagramów wysokiego poziomu; potem wybierzcie dowolny rozdział poniżej, żeby zobaczyć, jak każdy większy podsystem działa pod maską.",
-        "p2": "Uwielbiamy się uczyć — w środku czeka na Was mnóstwo grafik i żywych komponentów Angulara. To wizualne podejście trzyma nas przy zdrowych zmysłach i daje efekty — i ten sam standard trzymamy dla Was.",
+        "title": "Technical survey — dokumentacja techniczna, którą da się przeczytać",
+        "p1": "Pięć rozdziałów, prawdziwy kod i zmierzone liczby. Zaczynasz od przeglądu platformy i kilku diagramów wysokiego poziomu; potem wybierasz rozdział, żeby zobaczyć, jak działa każdy większy podsystem — od żądania HTTP po zapis w bazie.",
+        "p2": "Każdy rozdział pokazuje zamiast opisywać: diagramy, żywe komponenty Angulara i fragmenty kodu wzięte z repozytorium. Ten sam standard obowiązuje w całej dokumentacji.",
         "browse": "Rozdziały",
         "cta": "Zacznij od przeglądu"
       },
       "demo": {
         "tag": "Opcja 2 · Interaktywne demo",
-        "title": "Interaktywne demo — poczuj się jak prawdziwy użytkownik",
-        "p1": "Twarda lekcja, którą odebraliśmy: lubimy kod, ale budujemy dla ludzi. Dlatego tutaj możecie po prostu pobawić się jak nasz użytkownik — wybrać rolę i klikać po prawdziwych flow.",
-        "p2": "Wybierzcie scenariusz poniżej i zobaczcie, jak ta aplikacja może zadziałać dla Was. Aplikacja jest prawdziwa; świat dookoła — telefony, skrzynki, fakturowanie, KSeF — jest zasymulowany.",
+        "title": "Interaktywne demo — z perspektywy użytkownika",
+        "p1": "Budujemy dla ludzi, nie dla kodu. Dlatego demo pozwala wybrać rolę — firma, influencer, administrator — i przejść prawdziwe przepływy tak, jak robi to użytkownik.",
+        "p2": "Wybierz scenariusz poniżej i sprawdź, jak aplikacja działa w praktyce. Aplikacja jest prawdziwa; świat dookoła — telefony, skrzynki, fakturowanie, KSeF — jest zasymulowany.",
         "browse": "Sandboxy",
         "cta": "Otwórz centrum demo"
       },
@@ -1866,7 +1946,7 @@
     "survey": {
       "back": "Powrót do strony głównej",
       "title": "Startup in the box — jak to działa",
-      "subtitle": "Podmień logikę biznesową i wypuszczaj produkt. Wszystko wokół niej jest już obsłużone — i działa na produkcji.",
+      "subtitle": "Podmień logikę biznesową i wypuszczaj produkt. Wszystko wokół niej jest już obsłużone — i sprawdzone na produkcji.",
       "intro": "To README platformy napisane tak, żeby dało się je czytać: pięć krótkich rozdziałów, prawdziwy kod, uczciwe liczby. Zacznij od pytania, które nasuwa się pierwsze.",
       "verified_tag": "zweryfikowane w kodzie",
       "onThisPage": "Na tej stronie",
@@ -1894,7 +1974,7 @@
       "nextLabel": "Następny rozdział",
       "hub": {
         "questionsLabel": "Pięć rozdziałów",
-        "questionsHint": "Każdy zaczyna od tego, co interesuje go najbardziej. Zajrzyj pod maskę.",
+        "questionsHint": "Każdy zaczyna od pytania, które interesuje go najbardziej.",
         "openChapter": "Otwórz rozdział",
         "meta": "Karty: {{cards}} · ~{{minutes}} min",
         "handled": [
@@ -1910,9 +1990,9 @@
           "Maile i powiadomienia"
         ],
         "map": {
-          "title": "Rzut oka na pudełko",
+          "title": "Cała platforma na jednym ekranie",
           "subtitle": "Każdy kafelek to działający system. Najedź, by go podświetlić; kliknij, by przeczytać rozdział.",
-          "flowLabel": "Jak żądanie przechodzi przez pudełko",
+          "flowLabel": "Jak żądanie przechodzi przez system",
           "opsLabel": "Co nim steruje",
           "proofLabel": "Co dowodzi, że działa",
           "nodes": {
@@ -1965,7 +2045,7 @@
               "d": "weryfikowalna zgoda · prawdziwe usuwanie"
             },
             "tests": {
-              "t": "10 728 testów",
+              "t": "10 792 testów",
               "d": "jednostkowe · integracyjne · E2E"
             },
             "graph": {
@@ -1976,16 +2056,16 @@
         },
         "cool": {
           "label": "Konkrety",
-          "hint": "Skróty do rzeczy, o które inżynierowie pytają najpierw.",
+          "hint": "Skróty do tego, o co inżynierowie pytają najpierw.",
           "items": {
             "geoip": "42 900 km/h — login, który odrzuciliśmy",
-            "tamper": "Spróbuj naruszyć zapieczętowany release",
+            "tamper": "Zweryfikuj, że zapieczętowanego release’u nie da się zmienić",
             "saga": "Płatność, która przeżyje crash",
             "zerotrust": "Przeprowadź żądanie przez siedem warstw",
             "graph": "23 bugi z produkcji, śledzone jako graf",
             "contract": "Kontrakt, który się kompiluje — rozjazd ginie w buildzie",
             "topology": "Cały system na jedno zapytanie Cypher",
-            "velocity": "Dlaczego kompilator to najlepszy kolega AI",
+            "velocity": "Dlaczego kompilator jest najlepszym weryfikatorem pracy AI",
             "pq": "Post-quantum TLS na edge'u"
           }
         },
@@ -2024,14 +2104,14 @@
         },
         "engineering": {
           "name": "Warsztat inżynierski",
-          "question": "Jak pracujemy?",
-          "intro": "Nawyki stojące za platformą: testy, quality gates i graf wiedzy, które trzymają kod w ryzach.",
-          "handoff": "To całe pudełko — a wszystko, o czym czytałeś, działa w demo."
+          "question": "Jak testujemy, wdrażamy i mierzymy?",
+          "intro": "Nawyki stojące za platformą: piramidy testów, bramki jakości, kontrakt, który się kompiluje, CI/CD i graf wiedzy — oraz to, co jest w toku.",
+          "handoff": "To cała platforma. Tak powstaje i tak jest sprawdzany ten produkt."
         }
       },
       "testing": {
         "title": "Dwie piramidy testów i mur bramek",
-        "subtitle": "8 012 testów jednostkowych, 853 integracyjne i 277 scenariuszy E2E pilnuje backendu; 1 141 specyfikacji jednostkowych, 138 migawek wizualnych, 222 specyfikacje na żywym backendzie i 27 plików BDD pilnuje rewrite'u — a wszystko stoi na 18 kotwicach kontraktu z czasu kompilacji i czternastostopniowej bramce pre-commit. Nic nie merguje się na czuja.",
+        "subtitle": "8 012 testów jednostkowych, 853 integracyjne i 277 scenariuszy E2E pilnuje backendu; 1 141 specyfikacji jednostkowych, 139 migawek wizualnych, 222 specyfikacje na żywym backendzie i 27 plików BDD pilnuje rewrite'u — a wszystko stoi na 18 kotwicach kontraktu z czasu kompilacji i czternastostopniowej bramce pre-commit. Nic nie merguje się na czuja.",
         "pyramidLabel": "Piramida backendu",
         "pyramidLabelFe": "Piramida rewrite'u — stojąca na kontrakcie",
         "feTiers": {
@@ -2046,12 +2126,12 @@
             "detail": "Równoważność śladów na działającym backendzie — łapie rozjazdy, których system typów nie widzi"
           },
           "visual": {
-            "count": "138",
+            "count": "142",
             "name": "Migawki wizualne",
             "detail": "131 fixture'ów sandboksa na 2 silnikach chromium — baseliny commitowane i przeglądane jako obrazy w diffie"
           },
           "unit": {
-            "count": "1 142",
+            "count": "1 181",
             "name": "Specyfikacje jednostkowe",
             "detail": "Jest, jedna suita na komponent i serwis — działa na końcu bramki, z --bail"
           }
@@ -2184,7 +2264,7 @@
           "specs": "42 specyfikacje integracyjne, każda to port 1:1 z Cucumbera"
         },
         "snippetCaption": "Uczciwy próg: dość luźny na różnice renderowania Material vs legacy, dość ciasny, by łapać prawdziwe rozjazdy.",
-        "caveat": "Uczciwie: licencja to MIT — dryf w README (dawniej Apache) jest naprawiony; parity na webkicie wymaga jednorazowego npx playwright install webkit.",
+        "caveat": "Licencja to MIT — dryf w README (dawniej Apache) jest naprawiony; parity na webkicie wymaga jednorazowego npx playwright install webkit.",
         "method": {
           "eyebrow": "PRZEBUDOWA W LOCIE",
           "headline": "Zepsuj to na kompilacji. Nigdy na produkcji.",
@@ -2199,8 +2279,8 @@
               "d": "Frontend układa się w pięć warstw: L0 asercje kontraktu na poziomie typów jadące na kompilatorze, L1 testy serwisów mockujące klienta i sprawdzające kopertę żądania, L2 komponenty, L3 BDD uruchamiane przez playwright-bdd oraz L4 bajtowo stabilne baseline'y wizualne plus pixel parity legacy-vs-greenfield — wszystkie z jednego źródła fixtures. Pod spodem trzypoziomowa piramida backendu: jednostkowe, integracyjne na Testcontainers z Postgresem i Redisem oraz end-to-end w Cucumberze."
             },
             "slice": {
-              "t": "Jak wchodzi jeden plasterek",
-              "d": "Każda zmiana zaczyna się od brainstormingu design-first, rozgałęzia na równoległe agenty recon, krytyki i sędziego, a ląduje jako jeden plasterek na commit — jedna widoczna dla użytkownika zmiana wraz z testami, i18n, fixture i baseline'em wizualnym. Wielostopniowa bramka pre-commit (husky) cofa wszystko przy pierwszym czerwonym, a testy trace-equivalence odciskają wywołania API legacy-vs-greenfield, żeby złapać dryf, którego kompilator nie widzi. Korpus BDD, przeniesiony wprost z backendu, jest wykonywalną wyrocznią."
+              "t": "Jak wchodzi jedna zmiana",
+              "d": "Każda zmiana zaczyna się od projektu, rozgałęzia na równoległe agenty rozpoznania, krytyki i oceny, a trafia do repozytorium jako jeden commit — jedna widoczna dla użytkownika zmiana wraz z testami, i18n, fixture i baseline'em wizualnym. Wielostopniowa bramka pre-commit (husky) cofa wszystko przy pierwszym czerwonym, a testy trace-equivalence odciskają wywołania API legacy-vs-greenfield, żeby wychwycić dryf, którego kompilator nie widzi. Korpus BDD, przeniesiony wprost z backendu, jest wykonywalną wyrocznią."
             },
             "faster": {
               "t": "Dlaczego to szybsze, nie wolniejsze",
@@ -2330,37 +2410,37 @@
         "caveat": "Też uczciwie: dryf nazwy bucketa między domyślną w jednym skrypcie a żywą konfiguracją; klucze CMEK dla bucketa są przygotowane, nie aktywne."
       },
       "demometa": {
-        "title": "To demo samo jest eksponatem",
-        "subtitle": "To, w co klikasz, to build Angulara bez backendu: jeden interceptor odpowiada na każde wywołanie API z fixture'ów, w pamięci, w Twojej przeglądarce.",
-        "howLabel": "Jak aplikacja bez backendu Ci odpowiada",
+        "title": "Jak działa to demo",
+        "subtitle": "Klikasz w zwykły build Angulara bez backendu: jeden interceptor odpowiada na każde wywołanie API danymi przykładowymi, które żyją w pamięci Twojej przeglądarki.",
+        "howLabel": "Jak aplikacja odpowiada bez backendu",
         "how": {
           "req": {
-            "t": "Twój klik",
+            "t": "Twoje kliknięcie",
             "d": "dowolne wywołanie /api z aplikacji"
           },
           "intercept": {
             "t": "demo.interceptor",
-            "d": "pierwszy z 7 interceptorów — przecina łańcuch"
+            "d": "pierwszy z 7 interceptorów — przerywa łańcuch"
           },
           "store": {
             "t": "Fixtures + store",
-            "d": "zapisywalny stan in-memory na czas sesji"
+            "d": "zapisywalny stan w pamięci na czas sesji"
           },
           "resp": {
             "t": "HTTP 200",
-            "d": "of(new HttpResponse(...)) — zero sieci"
+            "d": "of(new HttpResponse(...)) — bez sieci"
           }
         },
         "facts": {
           "roles": "Jeden build, trzy perspektywy — przełącznik Firma / Influencer / Admin",
-          "reset": "Reset przywraca czyste dane przykładowe",
-          "persist": "Tworzenie i edycja utrzymują się w pamięci przez Twoją sesję",
-          "offline": "Zero wywołań sieciowych — działa w trybie samolotowym"
+          "reset": "Reset przywraca wyjściowe dane przykładowe",
+          "persist": "Utworzone i edytowane dane pozostają w pamięci do końca sesji",
+          "offline": "Zero wywołań sieciowych — działa także w trybie samolotowym"
         },
-        "flexTitle": "Debugowane jak produkcja",
-        "flexDesc": "Zanim pokazaliśmy to demo komukolwiek, napisaliśmy jego śledczą diagnozę: pięć defektów namierzonych do pliku i linii — pasek przycinający scroll, nieprzetłumaczone miesiące, po cichu gubione zapisy, ślepy zaułek 2FA, gradient spoza palety — i naprawiliśmy każdy. Ten nawyk to właściwy eksponat.",
-        "snippetCaption": "Cały backend zastąpiony jednym uczciwym interceptorem.",
-        "caveat": "Wszystko mock z założenia: Stripe, OAuth i KSeF zostają tu impression-only. Stary frontend wciąż stoi na komercyjnej licencji UI — karta rewrite'u powyżej ją usuwa."
+        "flexTitle": "Sprawdzone jak produkcja",
+        "flexDesc": "Zanim to demo trafiło do kogokolwiek, przeszło pełną diagnozę: pięć defektów wskazanych do pliku i linii — pasek obcinający scroll, nieprzetłumaczone nazwy miesięcy, po cichu gubione zapisy, ślepa uliczka 2FA, gradient spoza palety — i każdy z nich został naprawiony. Ten nawyk jest częścią tego, co pokazujemy.",
+        "snippetCaption": "Cały backend zastąpiony jednym, jawnie opisanym interceptorem.",
+        "caveat": "Wszystko jest atrapą z założenia: Stripe, OAuth i KSeF pozostają tu wyłącznie poglądowe. Stary frontend nadal opiera się na komercyjnej licencji UI — karta o przebudowie powyżej opisuje, jak ją usuwamy."
       },
       "mail": {
         "title": "Maile, które przeżyją crash",
@@ -2402,12 +2482,12 @@
           "smtp": "SMTP z wymaganym STARTTLS · hasło z Secret Managera, nigdy w configu"
         },
         "snippetCaption": "Mail jako skutek uboczny zacommitowanych faktów — i dokładnie jeden węzeł ma prawo wysyłać.",
-        "caveat": "Uczciwie: providerem jest dziś zwykły Gmail SMTP — wystarczający w tej skali, wymienialny configiem; „magic linki” to linki akcji Firebase oobCode brokerowane po stronie serwera; powiadomienia poza subskrypcjami są celowo plain-textowe."
+        "caveat": "Providerem jest dziś zwykły Gmail SMTP — wystarczający w tej skali, wymienialny configiem; „magic linki” to linki akcji Firebase oobCode brokerowane po stronie serwera; powiadomienia poza subskrypcjami są celowo plain-textowe."
       },
       "badge": "Startup in the box · zbudowany przez trzy osoby",
       "trust": {
         "tests": "8 908 metod testowych backendu · 277 scenariuszy E2E · 1 816 testów frontendu",
-        "staging": "Działa na produkcji — logi płyną, crony i bramki zgodnie z harmonogramem",
+        "staging": "Uruchomiony na produkcji z prawdziwymi użytkownikami — logi, crony i bramki zgodnie z harmonogramem; dziś otwarte demo na danych przykładowych",
         "provider": "Meta Tech Provider · zgodność z RODO"
       },
       "mapTitle": "Pełna mapa platformy",
@@ -2512,7 +2592,12 @@
           "impls": {
             "desc": "Serwisy, kontrolery, komponenty, crony — realny kod."
           },
-          "caption": "Trzy poziomy, 146 węzłów, 8 typów krawędzi — przechodzone w O(k) przeskokach, nie czytane od góry do dołu."
+          "caption": "Trzy poziomy, 146 węzłów, 8 typów krawędzi — każdy obszar z liczbą komponentów, które realizuje; przechodzone w O(k) przeskokach, nie czytane od góry do dołu.",
+          "cats": {
+            "app": "Domena aplikacji",
+            "infra": "Infrastruktura",
+            "quality": "Jakość i graf"
+          }
         },
         "roles": {
           "label": "Sześcioelementowy pryzmat behawioralny",
@@ -2553,7 +2638,47 @@
           "body": "Ten sam graf i wykonywalne specyfikacje Cucumber pozwalają AI zrozumieć, co aplikacja robi — do czego dąży użytkownik i co musi pozostać prawdą — zamiast zgadywać z bliskości tokenów. To behawioralne zrozumienie jest całym sensem: sprawia, że automatyczny rewrite jest wierny, a nie tylko prawdopodobny.",
           "cta": "Zobacz metodę na GitHubie"
         },
-        "snapshot": "Zrzut przestrzeni nazw CheckItOutSystem w Neo4j."
+        "snapshot": "Zrzut przestrzeni nazw CheckItOutSystem w Neo4j.",
+        "map": {
+          "label": "NavigationMaster · mapa 3-poziomowa",
+          "hint": "Najedź na obszar lub komponent, kliknij, by przypiąć. Esc wraca do mastera.",
+          "vintage": "40 ze 130 komponentów niesie rolę behawioralną (C/F/S/I/D/L) — to one mają kształty i typowane relacje; pozostałe 90 niosą pole „why”. Obie warstwy modelu zostały, bo każda odpowiada na inne pytanie.",
+          "inspector": {
+            "title": "Co czyta agent",
+            "relations": "Relacje",
+            "domains": "domen",
+            "components": "komponentów",
+            "query": "To samo jednym zapytaniem",
+            "back": "Wróć do mastera"
+          },
+          "protocol": {
+            "title": "Protokół odkrywania — jak wchodzi agent",
+            "steps": {
+              "0": "Zapytaj mastera: jeden węzeł, O(1), zawsze ten sam punkt wejścia.",
+              "1": "Wybierz obszar domenowy po krawędzi GUIDES — piętnaście opisów, jeden wybór.",
+              "2": "Zejdź po IMPLEMENTS do komponentów i ich typowanych relacji (TRIGGERS, PROTECTS…).",
+              "3": "Złóż kontekst z dwóch przeskoków. To trafia do promptu — nie cały kod."
+            }
+          }
+        },
+        "cost": {
+          "label": "Ile kosztuje odpowiedź",
+          "intro": "Cztery pytania, które inżynier albo agent naprawdę zadaje. Po lewej odpowiedź z grafu — jeden przeskok po typowanych krawędziach; po prawej ta sama odpowiedź bez grafu: wyszukaj termin w źródłach backendu i przeczytaj pliki, które go zawierają.",
+          "colQuestion": "Pytanie",
+          "colGraph": "Graf: jeden przeskok",
+          "colSearch": "Bez grafu: szukaj i czytaj",
+          "colRatio": "Mniej tokenów",
+          "hop": "przeskok",
+          "nodes": "węzłów",
+          "files": "plików",
+          "questions": {
+            "dependents": "Co zależy od SubscriptionService?",
+            "billing": "Z czego składa się saga rozliczeń i co robi każdy element?",
+            "consent": "Co chroni ciasteczka zgody przed podrobieniem?",
+            "scheduled": "Co działa według harmonogramu (crony)?"
+          },
+          "note": "Zmierzono {{date}} na {{files}} plikach Java ({{mb}} MB) backendu checkItOut-be2, skryptem tools/measure-graph-vs-grep.mjs. „Szukaj i czytaj” = pliki zawierające termin, czytane w całości; tokeny ≈ znaki / 4. Zapytanie do grafu wykonano w pamięci na wyeksportowanym grafie — jeden przeskok w Neo4j to pojedyncze milisekundy."
+        }
       },
       "contract": {
         "title": "Kontrakt się kompiluje — rozjazd to błąd builda, nie awaria",
@@ -2668,7 +2793,7 @@
       },
       "immutability": {
         "tamper": {
-          "label": "Sprawdź sam — zaatakuj zapieczętowany release",
+          "label": "Zweryfikuj — zmodyfikuj zapieczętowany release",
           "cta": "Spróbuj naruszyć",
           "replay": "Jeszcze raz",
           "done": "0 z 3 ataków weszło",
@@ -3141,7 +3266,109 @@
         }
       ],
       "cta_demo": "Otwórz interaktywne demo",
-      "cta_home": "Powrót do strony głównej"
+      "cta_home": "Powrót do strony głównej",
+      "estate": {
+        "tag": "Całość",
+        "title": "Cztery powierzchnie, jeden system",
+        "subtitle": "Strona, którą czytasz, to demo. Kod, który ją potwierdza, leży w trzech publicznych repozytoriach — każde odpowiada na inne pytanie.",
+        "lead": "Trafiasz tu z CV? Ten rozdział jest punktem wejścia: poniżej strategia testów i bramki jakości, kontrakt, który się kompiluje, graf wiedzy, CI/CD i to, co jest w toku. Każda liczba na tej stronie jest zmierzona i pilnowana przez bramkę — gdy repozytorium się zmienia, strona bez aktualizacji nie przechodzi builda.",
+        "answersLabel": "Odpowiada na:",
+        "author": "Zaprojektował, zbudował i przetestował",
+        "repos": {
+          "frontend": {
+            "kind": "Frontend · Angular 22",
+            "owns": "Przepisanie aplikacji i strategia testów, która za nim stoi: dziewięć warstw testów, piętnaście bramek pre-commit, klient generowany z kontraktu.",
+            "figure": "1 884 testów · 9 warstw · 15 bramek",
+            "answers": "czy strategia testów jest poparta kodem?",
+            "docs": "Architektura warstw testów"
+          },
+          "backend": {
+            "kind": "Backend · Spring Boot 3 / Java 21",
+            "owns": "Reguły biznesowe i źródło kontraktu: saga rozliczeń Stripe → Fakturownia → KSeF, warstwa RODO, uwierzytelnianie ze step-up, korpus Cucumbera współdzielony z frontendem.",
+            "figure": "8 908 metod testowych · 34 pliki feature",
+            "answers": "czy druga strona styku jest prawdziwa?",
+            "docs": "Filozofia testowania"
+          },
+          "method": {
+            "kind": "Metoda · graf i narzędzia AI",
+            "owns": "System jako typowany graf wiedzy i narzędzia zbudowane na nim: kontrakty promptów, serwery MCP do embeddingów i rerankingu, lokalny model, który odmawia odpowiedzi, gdy nie ma jej w grafie.",
+            "figure": "8 prac · 2 serwery MCP · 24 kontrakty promptów",
+            "answers": "jak jedna osoba utrzymała to wszystko w spójności?",
+            "docs": "Ewaluacja CodeMap"
+          }
+        }
+      },
+      "pipelines": {
+        "title": "Co uruchamia się na każdy push, co nocą, a co przy wydaniu",
+        "subtitle": "Cztery potoki, które istnieją w repozytoriach dziś — z czasem trwania zmierzonym, a nie zadeklarowanym.",
+        "runs": {
+          "pr": {
+            "name": "Każdy push i pull request",
+            "trigger": "ci-tests.yml · ubuntu-latest",
+            "what": "Jedenaście bramek statycznych, dwa typechecki, ng build ze strictTemplates, 1 181 testów Jest z pokryciem i asercje kontraktu L0 w czasie kompilacji. Hermetyczny z założenia: bez backendu, przeglądarek i Dockera, więc PR z forka nigdy nie dotyka własnej infrastruktury.",
+            "figure": "147 s · mediana 6 ostatnich"
+          },
+          "nightly": {
+            "name": "Nocny bieg pełnego stosu",
+            "trigger": "nightly-full-stack.yml · 4 shardy",
+            "what": "Cztery shardy — BDD, integracja ×2, scenariusze + sandbox — każdy z własnym PostgreSQL 16, Redis 7 i GreenMail; raporty blob scalane w jeden HTML z liczbą przejść, porażek i testów flaky. Napisany, uruchamiany na żądanie: harmonogram włączymy, gdy obrazy backendu przejdą w CI — czerwony cron, którego nikt nie widział zielonym, jest gorszy niż brak crona.",
+            "figure": "75 min budżetu"
+          },
+          "release": {
+            "name": "Wydanie",
+            "trigger": "backend: 11 workflow · demo: deploy-demo.mjs",
+            "what": "Backend: konfiguracja walidowana w trybie strict → Maven i obraz Dockera do GHCR → kopia zapasowa przed wdrożeniem → deploy-and-secure (skrypty bramkowane sha256, niezmienne) → reload-and-validate; rollback wielokrotnego użytku istnieje, jego podpięcie jest w toku. Demo: build, tar po SSH, atomowa podmiana katalogu, trzy kopie do wycofania, weryfikacja hasha na obu domenach.",
+            "figure": "atomowa podmiana"
+          },
+          "perf": {
+            "name": "Wydajność",
+            "trigger": "k6 · npm run perf:k6",
+            "what": "Skrypt k6 z progami na trasach demo — p95 czasu odpowiedzi i zerowy odsetek błędów — uruchamiany lokalnie i na żądanie w CI; ten sam skrypt trafi na k6-operator, gdy wykonywanie testów przejdzie na Kubernetes.",
+            "figure": "progi p95"
+          }
+        },
+        "note": "Czas biegu PR zmierzono 2026-09-08 poleceniem gh run list; liczby testów pochodzą z docs/testing/measured-counts.json. Backend nie ma dziś potoku testowego w GitHub Actions — jego 8 908 metod testowych biegnie lokalnie przez ./mvnw; potok testowy jest następnym krokiem, opisanym poniżej.",
+        "beWorkflows": "workflow backendu"
+      },
+      "roadmap": {
+        "tag": "W toku",
+        "title": "Co jest w toku",
+        "subtitle": "Produkt zmieścił się w zespole trzech osób bez potoku testowego w chmurze; w większej organizacji taki potok jest wymagany. Następny krok to podłoże do wykonywania testów, nie nowy hosting.",
+        "why": "Hosting zostaje na Docker Compose i systemd — dla tej skali to właściwy rozmiar. Kubernetes wchodzi wyłącznie jako miejsce wykonywania testów: efemeryczne pody runnerów, suity dzielone na shardy między maszyny, raporty scalane w jednym miejscu.",
+        "status": {
+          "progress": "w toku",
+          "next": "następne"
+        },
+        "items": {
+          "k8s": {
+            "t": "Wykonywanie testów na Kubernetes",
+            "d": "Suity Playwright i JUnit dzielone na shardy między efemeryczne runnery; raporty blob scalane po biegu; na main bieg pada przy teście flaky, na PR biegną tylko zmienione specyfikacje.",
+            "tools": "Testkube Test Workflows · GitHub ARC · playwright merge-reports · JUnit 5 parallel · Cucumber-JVM"
+          },
+          "perf": {
+            "t": "Wydajność w CI",
+            "d": "Skrypt k6 z progami już jest; na Kubernetes uruchamia go k6-operator jako TestRun z progami jako warunkiem przejścia — regresja wydajności zatrzymuje wydanie tak samo jak czerwony test.",
+            "tools": "k6 · k6-operator · Grafana"
+          },
+          "reports": {
+            "t": "Agregacja raportów i polityka flaky",
+            "d": "Jedno miejsce z historią biegów zamiast raportu na bieg: kwarantanna dla testów niestabilnych, powrót do głównej suity po 99 % przejść, klastrowanie błędów.",
+            "tools": "Allure Report → ReportPortal · JUnit XML → GitHub checks"
+          },
+          "vitals": {
+            "t": "Lighthouse CI i budżety web-vitals",
+            "d": "Dzisiejszy pomiar laboratoryjny (LCP, CLS, TBT) staje się asercją na każdym PR: najpierw ostrzeżenie, potem błąd przy p90; do tego crawl całej witryny.",
+            "tools": "Lighthouse CI · budget.json · Unlighthouse"
+          }
+        },
+        "ai": {
+          "title": "Ewaluacja AI w pętli — teraz i dalej",
+          "present": "Zbudowane: prompty jako kontrakty XML (24 dokumenty, pięć generacji), harness ewaluacji z wyrocznią exec-fp — odpowiedź porównywana z wykonaniem, nie z opinią — drabiny ewaluacji SFT/DPO oraz lokalny model, który odmawia, gdy odpowiedzi nie ma w grafie: abstencja 1,0 na pytaniach spoza grafu.",
+          "next": "Dalej: ewaluacja promptów i modeli jako bramka w CI — zestaw pytań z oczekiwaną odpowiedzią biegnie przy każdej zmianie promptu; oraz pomiar jakości systemu AI na produkcji: odsetek odpowiedzi ugruntowanych w grafie, odsetek abstencji, dryf między wersją grafu a wersją modelu.",
+          "link": "Metoda i narzędzia na GitHubie",
+          "evalLink": "Wyniki ewaluacji transferu promptów"
+        }
+      }
     }
   },
   "header": {
@@ -3498,6 +3725,12 @@
         }
       },
       "ticket_detail": {
+        "sent": {
+          "title": "Odpowiedź wysłana",
+          "body": "Trafiła do wątku, a klient dostał e-mail z tym samym numerem referencyjnym. Co dalej?",
+          "back_to_queue": "Wróć do kolejki",
+          "manage_campaigns": "Zarządzaj kampaniami"
+        },
         "title": "Szczegóły zgłoszenia",
         "description": "Opis",
         "back": "Wróć do listy",
@@ -6423,14 +6656,33 @@
         "caption": "Symulacja — na produkcji to Google Authenticator na telefonie admina."
       },
       "inbox": {
+        "greeting": "Cześć, Demo Brand!",
+        "footer": "Link działa 24 godziny. Jeśli to nie Ty, zignoruj tę wiadomość.",
         "title": "Skrzynka",
         "now": "teraz",
         "subjectVerify": "Potwierdź swój adres e-mail",
         "subjectCode": "Twój kod weryfikacyjny",
-        "bodyVerify": "Witaj w CheckItOut! Jedno kliknięcie i konto aktywuje się samo — bez czekania na człowieka.",
+        "bodyVerify": "Dane Twojej firmy są potwierdzone. Została ostatnia rzecz — jedno kliknięcie w link poniżej aktywuje konto od razu, bez czekania na człowieka.",
         "bodyCode": "Prosisz o zmianę wrażliwego ustawienia. Oto Twój jednorazowy kod — działa raz i tylko przez kilka minut.",
-        "verifyCta": "Weryfikuję mój adres",
+        "verifyCta": "Aktywuj konto",
         "caption": "Symulacja — prawdziwe maile wysyłają nasze szablony przez SMTP (testowane E2E GreenMailem)."
+      },
+      "checkout": {
+        "caption": "Symulacja — produkcja przekazuje przeglądarkę do Stripe Checkout; webhook o płatności wraca do naszego BE.",
+        "testMode": "tryb testowy",
+        "subscribeTo": "Subskrybuj",
+        "perMonth": "{{price}} zł miesięcznie",
+        "lineSubscription": "Subskrypcja miesięczna",
+        "lineVat": "VAT 23%",
+        "included": "w cenie",
+        "total": "Do zapłaty dziś",
+        "poweredBy": "Obsługuje",
+        "email": "E-mail",
+        "card": "Dane karty",
+        "expiry": "Ważność",
+        "cardholder": "Imię i nazwisko na karcie",
+        "pay": "Zapłać {{price}} zł",
+        "testCardNote": "Karta testowa Stripe 4242 4242 4242 4242 — żadne pieniądze nie zmieniają właściciela."
       },
       "fakturownia": {
         "env": "tryb testowy",
@@ -6466,6 +6718,8 @@
       "exit": "Wyjdź z sandboxa",
       "recapBadge": "Gotowe",
       "nextSandbox": "Następny sandbox",
+      "finish": "Zakończ — lista sandboxów",
+      "lastRecap": "To był ostatni sandbox. Przeszedłeś całe demo — dzięki. Wróć do listy albo zajrzyj, jak to działa w środku.",
       "openSurvey": "Jak to działa w środku",
       "backToHub": "Wszystkie sandboxy",
       "sandboxHint": "Kliknij podświetlony element — wykona ten krok w aplikacji",
@@ -6483,9 +6737,9 @@
         "proves": "Admini mają obowiązkowe TOTP; samo skradzione hasło jest bezużyteczne.",
         "steps": {
           "login": "Jesteś adminem — to standardowy ekran logowania. W sandboksie nie musisz nic wpisywać; przejdźmy do kodów.",
-          "first-code": "Serwer chce kod TOTP. W rogu masz telefon admina — wygeneruj pierwszy kod.",
-          "first-code-refused": "Kod jest na telefonie. Przyjrzyj mu się, a potem wyślij go na serwer — i zobacz, co wróci.",
-          "fresh-code": "Pierwszy kod wygasł, zanim zdążył zadziałać — tak działa prawdziwe TOTP: okno to sekundy. Wygeneruj świeży.",
+          "first-code": "Serwer chce kod TOTP. W rogu masz telefon admina — wygeneruj pierwszy kod; trafi od razu do formularza.",
+          "first-code-refused": "Kod jest w formularzu. Wyślij go na serwer — i zobacz, co wróci.",
+          "fresh-code": "Pierwszy kod wygasł, zanim zdążył zadziałać — tak działa prawdziwe TOTP: okno to sekundy. Wygeneruj świeży; podmieni tamten w formularzu.",
           "signed-in": "Ten jest aktualny. Wyślij go — okno się zamyka i admin jest w środku."
         },
         "recap": {
@@ -6500,7 +6754,8 @@
         "proves": "Step-up pilnuje akcji, które naprawdę się liczą; samej sesji nie ufamy.",
         "steps": {
           "change-email": "To ustawienia konta firmy. Wpisz dowolny nowy adres e-mail i wyślij e-mail weryfikacyjny.",
-          "enter-code": "Platforma nie ufa samej sesji — jednorazowy kod poszedł na zweryfikowany adres. Zajrzyj do skrzynki w rogu i przepisz go.",
+          "enter-code": "Platforma nie ufa samej sesji — jednorazowy kod poszedł na zweryfikowany adres. Zajrzyj do skrzynki w rogu; kod wpisze się w pole za Ciebie.",
+          "verify-code": "Kod jest w polu. Zweryfikuj go — serwer sprawdzi, czy to ten sam, który wysłał, i dopiero wtedy ruszy zmiana.",
           "saved": "Kod przeszedł, więc zmiana ruszyła: na nowy adres poszedł link potwierdzający i to on ją domknie. A oto decyzja produktowa: firmy współdzielą konta, więc codzienne akcje wymagają tylko logowania — ale wrażliwe żądają świeżego dowodu. To nasza odpowiedź na 2FA dla wspólnych kont."
         },
         "recap": {
@@ -6514,11 +6769,12 @@
         "tagline": "Utwórz kampanię, zobacz zgłoszenie influencera i zdecyduj — cały cykl z fotela firmy.",
         "proves": "Rdzeń marketplace'u: prawdziwe formularze, prawdziwe stany, jeden spójny flow.",
         "steps": {
-          "create-campaign": "Brief kampanii to jeden formularz. Wypełnij go — nazwę wewnętrzną, tytuł publiczny, adres spotkania i to, czego oczekujesz od twórcy.",
+          "create-campaign": "Brief kampanii to jeden formularz. Zacznij od góry: nazwa wewnętrzna, tytuł publiczny i adres spotkania — kliknij, a wypełnimy je za Ciebie.",
+          "complete-brief": "Niżej reszta briefu: opis, wymagania, budżet, platformy, terminy i zdjęcia. Jedno kliknięcie uzupełnia wszystko, a strona sama zjeżdża do zdjęć.",
           "publish-campaign": "Formularz jest kompletny, więc przycisk publikacji ożył. Opublikuj — kampania dostaje własną stronę.",
-          "campaign-live": "To jest opublikowana kampania: tytuł publiczny, lokalizacja i brief, dokładnie tak, jak zobaczy ją twórca.",
-          "decide-applicant": "Po publikacji kampania od razu zbiera zgłoszenia. To kandydatury Twojej kampanii: zdecyduj o zgłoszeniu Oli — przyjmij je albo odrzuć.",
-          "lifecycle": "Zaakceptowana — współpraca przeszła do W trakcie. Każdy stan, przez który właśnie przeszedłeś, to ta sama maszyna, którą rysuje survey."
+          "campaign-live": "To jest opublikowana kampania: tytuł, lokalizacja, brief i zdjęcia, dokładnie tak, jak zobaczy ją twórca. Przejdź do zgłoszeń — pierwsze już czeka.",
+          "decide-applicant": "Skrzynka zgłoszeń do Twoich kampanii. Piotra przyjąłeś tydzień temu do letniej kampanii, Ola właśnie zgłosiła się do nowej. Zdecyduj — przyjmij ją albo odrzuć.",
+          "lifecycle": "Przyjęta — Ola trafiła do współprac w trakcie, pod nową kampanią. Niżej letnia kampania z trzema twórcami, każdy w innym punkcie procesu. Każdy z tych stanów to ta sama maszyna, którą rysuje survey."
         },
         "recap": {
           "f1": "Jeden spójny cykl życia: szkic → publikacja → zgłoszenia → w trakcie — zero stanów-sierot.",
@@ -6549,11 +6805,12 @@
         "steps": {
           "nip-lookup": "Onboarding firmy zaczyna się od jednego numeru. Wpisz NIP (spróbuj 5260250995) i szukaj.",
           "company-confirmed": "Wszystko przyszło z rejestrów samo — GUS, status VAT, PKD, nawet konto bankowe. Potwierdź dane.",
-          "verify-mail": "Została jedna rzecz: dowód, że e-mail jest Twój. Brandowany mail właśnie wylądował — otwórz skrzynkę i kliknij.",
-          "activated": "Ten klik automatycznie aktywował konto — bez człowieka w pętli. Jesteś na stronie planu: zobacz limity kampanii per plan.",
+          "verify-mail": "Została jedna rzecz: dowód, że e-mail jest Twój. Brandowany mail właśnie wylądował w skrzynce po lewej — konto czeka na ten jeden klik.",
+          "account-active": "Ten klik aktywował konto sam — bez człowieka w pętli. Firma potwierdzona, e-mail zweryfikowany. Przejdź do subskrypcji: zobaczysz limity kampanii per plan.",
           "upgrade": "Potrzeba więcej miejsca? Otwórz zmianę planu — pokażemy cenę i regulamin, zanim cokolwiek potwierdzisz.",
           "upgrade-terms": "Zanim zapłacisz — regulamin subskrypcji i zgoda. Zaznacz ją; bez tego przycisk płatności zostaje wyłączony.",
-          "upgrade-confirm": "Cena, regulamin i zgoda w jednym oknie. Karta testowa jest już podpięta — potwierdź, a płatność i aktywacja pójdą same.",
+          "upgrade-confirm": "Cena, regulamin i zgoda w jednym oknie. Potwierdź — przejdziesz do kasy Stripe; w demo zamiast niej otworzy się jej symulator.",
+          "pay": "Kasa Stripe w trybie testowym: dane i karta testowa 4242 są już wpisane. Zapłać — webhook o udanej płatności aktywuje plan i uruchamia sagę rozliczeń.",
           "invoice-sent": "Płatność przeszła, więc saga rozliczeń już wystawiła fakturę w Fakturowni. Odeślij ją do KSeF — jeden klik, jedna flaga.",
           "ksef-done": "I jest — zarejestrowana w krajowym systemie e-faktur, z numerem KSeF."
         },
@@ -6568,9 +6825,10 @@
         "tagline": "Coś nie działa? Załóż ticket i zobacz, jak przychodzi odpowiedź — pętla supportu z fotela użytkownika.",
         "proves": "Support to zbudowany flow z numerami referencyjnymi i mailami — nie czarna dziura w skrzynce.",
         "steps": {
-          "ticket-created": "Coś nie gra? Opisz to i wyślij — numer referencyjny dostaniesz od ręki.",
-          "reference-issued": "To jest numer referencyjny zgłoszenia — zapisz go. W produkcji ten sam numer wychodzi mailem, więc rozmowa ma jeden identyfikator po obu stronach.",
-          "read-response": "Support już odpowiedział. To Twój widok ticketów — otwórz i przeczytaj odpowiedź. Na produkcji ląduje też mail, z tym samym numerem."
+          "describe": "Coś nie gra? Opisz to: temat i szczegóły. Kliknij, a wpiszemy przykład za Ciebie.",
+          "send": "Formularz gotowy, przycisk wysyłki ożył. Wyślij — numer referencyjny dostaniesz od ręki.",
+          "reference-issued": "To numer referencyjny zgłoszenia — zapisz go. W produkcji ten sam numer wychodzi mailem, więc rozmowa ma jeden identyfikator po obu stronach. Sprawdź status zgłoszenia.",
+          "read-response": "Support już odpowiedział. To strona statusu Twojego zgłoszenia — ten sam numer, odpowiedź w wątku. Na produkcji ląduje też mail, z tym samym numerem."
         },
         "recap": {
           "f1": "Każdy ticket ma numer referencyjny — do śledzenia nawet bez konta.",
@@ -6583,12 +6841,14 @@
         "tagline": "Przychodzi ticket; odpowiedz i przeprowadź pełną kasację kaskadową RODO — jak należy.",
         "proves": "Moderacja i prawo do bycia zapomnianym to działające flow, nie strona z polityką.",
         "steps": {
-          "admin-respond": "To kolejka admina. Otwórz ticket i odpowiedz użytkownikowi — Twoja odpowiedź trafia do wątku natychmiast.",
-          "reply-threaded": "Odpowiedź jest już w wątku — pod wiadomością klienta, z podpisem i datą. W produkcji w tej samej chwili wychodzi mail z tym samym numerem referencyjnym.",
+          "admin-open": "To kolejka admina. Otwórz zgłoszenie — w wątku czeka wiadomość od klienta.",
+          "admin-draft": "Tylko wiadomość klienta, jeszcze bez odpowiedzi. Kliknij, a wpiszemy odpowiedź do formularza.",
+          "admin-send": "Odpowiedź gotowa, przycisk ożył. Wyślij — trafi do wątku natychmiast, a klient dostanie mail z tym samym numerem referencyjnym.",
+          "to-campaigns": "Odpowiedź jest w wątku — pod wiadomością klienta, z podpisem i datą. Tak wygląda obsługa ludzi i zgłoszeń. Teraz zabieramy Cię do zarządzania współpracami.",
           "cascade-delete": "Teraz poważna sprawa: wniosek RODO o usunięcie danych. Jesteś na kampanii, której dotyczy — otwórz usunięcie kaskadowe.",
           "cascade-confirm": "Liczby w preview to realny stan bazy, nie szacunek: rekordy per system i ostrzeżenie o tym, czego cofnąć się nie da. Potwierdź — kaskada pójdzie przez wszystkie warstwy.",
           "cascade-receipt": "Tyle rekordów, ile zapowiadał preview — i wpis w archiwum audytowym, którego nikt nie skasuje. Przeczytaj potwierdzenie, zanim je zamkniesz.",
-          "by-the-book": "Kaskada przeszła przez Postgres, Firestore i Storage w jednym zorkiestrowanym flow — kampania zniknęła z marketplace'u, a ślad audytowy został. To RODO jako inżynieria."
+          "by-the-book": "Kaskada przeszła przez Postgres, Firestore i Storage w jednym zorkiestrowanym flow — kampania zniknęła z marketplace'u, a ślad audytowy został. To RODO jako inżynieria. I to był ostatni sandbox — kliknij Dalej po podsumowanie."
         },
         "recap": {
           "f1": "Odpowiedzi admina wątkują się na ticketach i powiadamiają użytkownika mailem.",

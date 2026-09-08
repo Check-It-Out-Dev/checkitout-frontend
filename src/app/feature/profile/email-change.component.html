@@ -18,7 +18,12 @@
       </button>
     </div>
   } @else if (phase() === 'sent') {
-    <div class="flex flex-col gap-2" role="status" aria-live="polite">
+    <div
+      class="flex flex-col gap-2"
+      role="status"
+      aria-live="polite"
+      data-testid="email-change-sent"
+    >
       <p class="flex items-center gap-2 text-sm font-medium text-emerald-700">
         <mat-icon class="!h-5 !w-5 !text-emerald-600">mark_email_read</mat-icon>
         {{ 'profile.email_change.sent_title' | transloco }}

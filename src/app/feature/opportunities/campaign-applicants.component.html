@@ -2,16 +2,29 @@
   <header class="mb-5 flex flex-col gap-3">
     <a
       mat-stroked-button
-      routerLink="/collaborations/my-campaigns"
+      [routerLink]="inbox() ? '/collaborations/in-progress' : '/collaborations/my-campaigns'"
       class="!w-fit"
       data-testid="applicants-back"
     >
       <mat-icon>arrow_back</mat-icon>
-      {{ 'opportunities.applicants.back' | transloco }}
+      {{
+        (inbox() ? 'opportunities.applicants.back_inbox' : 'opportunities.applicants.back')
+          | transloco
+      }}
     </a>
-    <h1 class="font-display text-4xl font-normal text-ink" data-testid="applicants-title">
-      {{ 'opportunities.applicants.title' | transloco }}
-    </h1>
+    <div>
+      <h1 class="font-display text-4xl font-normal text-ink" data-testid="applicants-title">
+        {{
+          (inbox() ? 'opportunities.applicants.inbox_title' : 'opportunities.applicants.title')
+            | transloco
+        }}
+      </h1>
+      @if (inbox()) {
+        <p class="mt-1 text-sm text-slate2" data-testid="applicants-subtitle">
+          {{ 'opportunities.applicants.inbox_subtitle' | transloco }}
+        </p>
+      }
+    </div>
   </header>
 
   @if (state() === 'loading') {
@@ -32,11 +45,7 @@
       class="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700"
     >
       {{ 'opportunities.applicants.error.load_failed' | transloco }}
-      <button
-        mat-button
-        (click)="campaignId() && load(campaignId()!)"
-        class="!ml-2 !text-coral-600"
-      >
+      <button mat-button (click)="load(campaignId())" class="!ml-2 !text-coral-600">
         {{ 'opportunities.applicants.error.retry' | transloco }}
       </button>
     </div>
@@ -49,7 +58,10 @@
         <mat-icon class="!h-8 !w-8 !text-3xl text-coral-500">people</mat-icon>
       </span>
       <p class="font-display text-2xl font-normal text-ink">
-        {{ 'opportunities.applicants.empty' | transloco }}
+        {{
+          (inbox() ? 'opportunities.applicants.inbox_empty' : 'opportunities.applicants.empty')
+            | transloco
+        }}
       </p>
     </div>
   } @else {
@@ -57,37 +69,79 @@
       @for (row of items(); track row.id) {
         <li
           [attr.data-testid]="'applicant-' + row.id"
-          class="flex flex-col gap-3 rounded-2xl border border-beige bg-white p-5 transition hover:border-coral-400 sm:flex-row sm:items-center sm:justify-between"
+          class="flex flex-col gap-4 rounded-2xl border border-beige bg-white p-5 transition hover:border-coral-400 sm:flex-row sm:items-start sm:justify-between"
         >
-          <div class="flex-1">
-            <div class="flex items-center gap-2">
-              <span class="font-display text-xl font-normal text-ink">
-                {{
-                  influencerDisplayName(row) ||
-                    ('opportunities.applicants.unknown_user' | transloco)
-                }}
-              </span>
-              <span
-                class="rounded-full px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.18em]"
-                [class]="statusBadgeClass($safeNavigationMigration(row.opportunityStatus?.value))"
-                [attr.data-testid]="'applicant-status-' + row.id"
-              >
-                {{
-                  'applied_opportunities.status.' + (row.opportunityStatus?.value || 'unknown')
-                    | transloco
-                }}
-              </span>
+          <div class="flex min-w-0 flex-1 gap-4">
+            <app-avatar [name]="influencerDisplayName(row) || '?'" size="lg" />
+            <div class="min-w-0 flex-1">
+              <div class="flex flex-wrap items-center gap-2">
+                <span
+                  class="font-display text-xl font-normal text-ink"
+                  [attr.data-testid]="'applicant-name-' + row.id"
+                >
+                  {{
+                    influencerDisplayName(row) ||
+                      ('opportunities.applicants.unknown_user' | transloco)
+                  }}
+                </span>
+                <span
+                  class="rounded-full px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.18em]"
+                  [class]="statusBadgeClass($safeNavigationMigration(row.opportunityStatus?.value))"
+                  [attr.data-testid]="'applicant-status-' + row.id"
+                >
+                  {{
+                    'applied_opportunities.status.' + (row.opportunityStatus?.value || 'unknown')
+                      | transloco
+                  }}
+                </span>
+              </div>
+
+              <!-- Which campaign the person applied to, and whether that campaign
+                   is the one just published (green) or one already running (amber). -->
+              @if (row.partnershipOpportunity; as campaign) {
+                <p class="mt-2 flex flex-wrap items-center gap-2">
+                  <span
+                    class="inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs"
+                    [class]="campaignBadgeClass(campaign)"
+                    [attr.data-testid]="'applicant-campaign-' + row.id"
+                  >
+                    <mat-icon class="!h-3.5 !w-3.5 !text-sm">campaign</mat-icon>
+                    {{ campaign.title || campaign.name }}
+                  </span>
+                  <span
+                    class="font-mono text-[10px] uppercase tracking-[0.18em]"
+                    [class]="campaignStageClass(campaign)"
+                    [attr.data-testid]="'applicant-campaign-stage-' + row.id"
+                  >
+                    {{ 'opportunities.applicants.stage.' + campaignStage(campaign) | transloco }}
+                  </span>
+                </p>
+              }
+
+              @if (row.note) {
+                <figure
+                  class="mt-3 rounded-xl border border-beige bg-cream/60 px-4 py-3"
+                  [attr.data-testid]="'applicant-note-' + row.id"
+                >
+                  <figcaption
+                    class="mb-1 flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2"
+                  >
+                    <mat-icon class="!h-3.5 !w-3.5 !text-sm">chat_bubble</mat-icon>
+                    {{ 'opportunities.applicants.from_creator' | transloco }}
+                  </figcaption>
+                  <blockquote class="whitespace-pre-line text-sm text-ink">
+                    {{ row.note }}
+                  </blockquote>
+                </figure>
+              }
+              <p class="mt-2 font-mono text-[11px] uppercase tracking-[0.18em] text-slate2">
+                {{ 'opportunities.applicants.applied_at' | transloco }}
+                {{ row.createdTime ? (row.createdTime | localizedDate: 'mediumDate') : '—' }}
+              </p>
             </div>
-            @if (row.note) {
-              <p class="mt-1 whitespace-pre-line text-sm text-slate2">{{ row.note }}</p>
-            }
-            <p class="mt-1 font-mono text-[11px] uppercase tracking-[0.18em] text-slate2">
-              {{ 'opportunities.applicants.applied_at' | transloco }}
-              {{ row.createdTime ? (row.createdTime | localizedDate: 'mediumDate') : '—' }}
-            </p>
           </div>
           @if (isAwaitingDecision(row)) {
-            <div class="flex flex-row gap-2">
+            <div class="flex flex-row gap-2 sm:pt-1">
               <button
                 mat-flat-button
                 color="primary"
@@ -112,6 +166,7 @@
           } @else {
             <a
               mat-stroked-button
+              class="sm:mt-1"
               [routerLink]="['/collaborations/applications', row.id, 'review']"
               [attr.data-testid]="'applicant-review-' + row.id"
             >

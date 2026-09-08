@@ -2,4 +2,4 @@
 // First 12 hex of sha256(en.json + pl.json). The i18n JSONs ship unhashed
 // and long-cached; this version busts the browser cache exactly when the
 // translations change. Gate: npm run check:i18n-cache-buster.
-export const I18N_VERSION = '4aed7b66a4c9';
+export const I18N_VERSION = 'c3fc4c541fff';

@@ -47,7 +47,7 @@ test.describe('Sandbox · MarketingToolbarComponent', () => {
         ).display !== 'none',
     );
 
-  test('the bar carries the six primary pages from lg upwards', async ({ page }) => {
+  test('the bar carries the seven primary pages from lg upwards', async ({ page }) => {
     for (const width of BAR_WIDTHS) {
       await landingAt(page, width);
       expect(await navShown(page), `@ ${width}px: nav should be in the bar`).toBe(true);
@@ -64,6 +64,11 @@ test.describe('Sandbox · MarketingToolbarComponent', () => {
       'href',
       '/codemap',
     );
+    // the funding disclosure was lost from the bar once; the owner wants it there
+    await expect(page.getByTestId('marketing-toolbar-nav-grants')).toHaveAttribute(
+      'href',
+      '/grants',
+    );
   });
 
   test('below lg the list moves into the menu, and nothing is lost', async ({ page }) => {
@@ -73,8 +78,8 @@ test.describe('Sandbox · MarketingToolbarComponent', () => {
       await expect(page.getByTestId('marketing-toolbar-hamburger')).toBeVisible();
     }
 
-    // `grants` and `team` were demoted out of the bar on purpose. The menu is
-    // where they went, so "demoted" must not be able to become "gone".
+    // `team` was demoted out of the bar on purpose. The menu is where it went,
+    // so "demoted" must not be able to become "gone".
     await page.getByTestId('marketing-toolbar-hamburger').click();
     for (const key of [
       'survey',

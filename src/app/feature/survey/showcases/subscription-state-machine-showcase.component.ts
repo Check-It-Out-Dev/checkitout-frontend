@@ -3,6 +3,9 @@ import { TranslocoPipe } from '@ngneat/transloco';
 import { SurveyCardComponent } from '../ui/survey-card.component';
 import { CodePanelComponent } from '../ui/code-panel.component';
 
+/** Seconds between one state lighting and the next in a replay. */
+const BEAT_S = 0.55;
+
 interface FsmNode {
   key: string;
   label: string;
@@ -70,7 +73,7 @@ interface FsmScenario {
       </div>
 
       <!-- SVG state graph (decorative aid: the legend + caption below are the accessible equivalent) -->
-      <div class="mt-3 overflow-x-auto rounded-xl bg-cream p-3 ring-1 ring-beige">
+      <div class="mt-5 overflow-x-auto rounded-xl bg-cream p-3 ring-1 ring-beige">
         <svg viewBox="0 0 720 310" class="h-auto w-full min-w-[640px]" aria-hidden="true">
           <defs>
             <marker
@@ -108,6 +111,7 @@ interface FsmScenario {
               [attr.d]="e.d"
               fill="none"
               class="fsm-edge"
+              [style.transition-delay]="edgeDelay(e)"
               [attr.stroke]="isEdgeLit(e) ? '#FF5A36' : '#E0D9C7'"
               [attr.stroke-width]="isEdgeLit(e) ? 2.5 : 1.4"
               [attr.marker-end]="isEdgeLit(e) ? 'url(#fsmArrowLit)' : 'url(#fsmArrow)'"
@@ -136,6 +140,7 @@ interface FsmScenario {
                 height="26"
                 rx="13"
                 class="fsm-node"
+                [style.transition-delay]="nodeDelay(n)"
                 [attr.fill]="isNodeLit(n) ? catFill[n.cat] : '#ffffff'"
                 [attr.stroke]="isNodeLit(n) ? catStroke[n.cat] : '#E0D9C7'"
                 stroke-width="1.5"
@@ -150,21 +155,6 @@ interface FsmScenario {
                 {{ n.label }}
               </text>
             </g>
-          }
-          <!-- traveling token (recreated on each play → restarts the motion) -->
-          @for (p of [playId]; track p) {
-            @if (active; as a) {
-              <circle r="7" fill="#FF5A36" class="fsm-token">
-                <animateMotion
-                  [attr.dur]="a.nodes.length * 0.85 + 's'"
-                  fill="freeze"
-                  [attr.path]="a.path"
-                  calcMode="spline"
-                  keyTimes="0;1"
-                  keySplines="0.4 0 0.2 1"
-                />
-              </circle>
-            }
           }
         </svg>
       </div>
@@ -228,9 +218,6 @@ interface FsmScenario {
           fill 0.3s ease,
           stroke 0.3s ease,
           stroke-width 0.3s ease;
-      }
-      .fsm-token {
-        filter: drop-shadow(0 0 5px rgba(255, 90, 54, 0.85));
       }
       .fsm-ghost {
         animation: ghostPulse 2s ease-in-out infinite;
@@ -359,11 +346,31 @@ sub.setStatus(restored);
 // then prolonged non-compliance -> ACCOUNT_DEACTIVATED.`;
 
   active: FsmScenario | null = null;
-  playId = 0;
 
+  /**
+   * A scenario plays as its states and transitions lighting up in order — the
+   * fill and the arrow are the motion. A dot used to travel the path and then
+   * sit on the last state, where it read as a marker nobody had asked for
+   * (owner, 2026-09-07). Replaying the same scenario clears it for a frame so
+   * the sequence runs again.
+   */
   select(s: FsmScenario): void {
+    if (this.active === s) {
+      this.active = null;
+      setTimeout(() => (this.active = s), 40);
+      return;
+    }
     this.active = s;
-    this.playId++;
+  }
+  /** Where a state comes in the story: 0 for the first, then one beat each. */
+  nodeDelay(n: FsmNode): string {
+    const i = this.active?.nodes.indexOf(n.key) ?? -1;
+    return i < 0 ? '0s' : `${(i * BEAT_S).toFixed(2)}s`;
+  }
+  /** A transition lights half a beat after the state it leaves. */
+  edgeDelay(e: FsmEdge): string {
+    const i = this.active?.edges.indexOf(e.from + '>' + e.to) ?? -1;
+    return i < 0 ? '0s' : `${(i * BEAT_S + BEAT_S / 2).toFixed(2)}s`;
   }
   nodeOf(key: string): FsmNode {
     return this.nodes.find((n) => n.key === key) ?? this.nodes[0];

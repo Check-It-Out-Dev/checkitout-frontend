@@ -1,39 +1,39 @@
 {
   "$comment": "Written by tools/measure-test-counts.mjs. Do not hand-edit — run `npm run measure:counts`. check-published-numbers.mjs asserts every published figure against this file.",
-  "measuredAt": "2026-09-06",
+  "measuredAt": "2026-09-08",
   "jest": {
-    "tests": 1142,
-    "suites": 131
+    "tests": 1181,
+    "suites": 135
   },
   "playwright": {
     "projects": {
       "bdd": 148,
-      "chromium-desktop": 452,
-      "mobile-chrome": 452,
-      "perf": 78,
+      "chromium-desktop": 473,
+      "mobile-chrome": 473,
+      "perf": 82,
       "mobile-safari": 41,
       "tablet-safari": 41
     },
     "tiers": {
       "integration": 222,
       "visualParity": 41,
-      "sandbox": 44,
+      "sandbox": 61,
       "scenarios": 6,
       "msw": 1,
-      "visual": 138
+      "visual": 142
     },
-    "distinct": 678
+    "distinct": 703
   },
-  "total": 1820,
-  "offline": 1403,
+  "total": 1884,
+  "offline": 1467,
   "generatedClient": {
     "models": 181,
     "services": 41
   },
   "gates": {
-    "i18nKeys": 4478,
-    "i18nTemplates": 51,
-    "visualFixtures": 140,
+    "i18nKeys": 4656,
+    "i18nTemplates": 52,
+    "visualFixtures": 144,
     "integrationSpecsCiting": 67,
     "bdd": {
       "beFeatures": 34,
@@ -48,32 +48,42 @@
   },
   "coverage": {
     "lines": {
-      "pct": 77.72,
-      "covered": 5369,
-      "total": 6908
+      "pct": 78.06,
+      "covered": 5885,
+      "total": 7539
     },
     "statements": {
-      "pct": 76.34,
-      "covered": 5983,
-      "total": 7837
+      "pct": 76.54,
+      "covered": 6558,
+      "total": 8567
     },
     "branches": {
-      "pct": 68.21,
-      "covered": 2028,
-      "total": 2973
+      "pct": 67.98,
+      "covered": 2264,
+      "total": 3330
     },
     "functions": {
-      "pct": 64.71,
-      "covered": 1269,
-      "total": 1961
+      "pct": 65.68,
+      "covered": 1378,
+      "total": 2098
+    }
+  },
+  "ci": {
+    "prRun": {
+      "workflow": "ci-tests.yml",
+      "repo": "Check-It-Out-Dev/checkitout-frontend",
+      "medianSeconds": 147,
+      "runs": 6,
+      "measuredAt": "2026-09-08",
+      "command": "gh run list -R Check-It-Out-Dev/checkitout-frontend --workflow ci-tests.yml --status success --limit 6 --json createdAt,updatedAt"
     }
   },
   "siblings": {
     "backend": {
       "repo": "https://github.com/Check-It-Out-Dev/checkitout-backend",
       "testMethods": 8908,
-      "measuredAt": "2026-09-26",
-      "command": "grep -rhE '^\\s*@Test$' src/test --include='*.java' | wc -l; and the same for @ParameterizedTest"
+      "measuredAt": "2026-09-07",
+      "command": "grep -rhE '^\\s*@Test' src/test --include='*.java' | wc -l; and the same for @ParameterizedTest"
     }
   }
 }

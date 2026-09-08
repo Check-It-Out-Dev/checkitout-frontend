@@ -37,10 +37,10 @@ const PAYOFF_MS = 1200;
 
 /** Steps whose confirmation is not a thing anyone can look at. */
 const EXEMPT = new Map<string, string>([
-  ['nip-to-ksef/upgrade-confirm', 'confirmed by the stored plan across a full page reload'],
+  ['nip-to-ksef/pay', 'confirmed by the stored plan — the webhook the simulator plays'],
   [
     'company-campaign/create-campaign',
-    'confirmed by the submit going live, which the next beat rings',
+    'confirmed by the top of the form carrying values — the form itself is what appears',
   ],
   ['nip-to-ksef/upgrade-terms', 'confirmed by the checkbox it rings being ticked'],
 ]);

@@ -12,6 +12,7 @@ import {
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
+import { DashboardPostMockComponent } from './dashboard-post-mock.component';
 
 /** Chip temperature: waiting (pending), fresh news (alert), settled (done). */
 type Tone = 'active' | 'alert' | 'pending' | 'done';
@@ -27,651 +28,180 @@ const TONES: Record<string, { brand: Tone; influencer: Tone }> = {
   publication_results: { brand: 'done', influencer: 'done' },
 };
 
+/** How long a message takes to cross from one pane to the other. The
+ * receiving pane's tiles hold their entry until it lands; the CSS keyframes
+ * carry the same number. */
+const FLIGHT_MS = 700;
+/** Having landed, the cargo dissolves into the receiver's tile over this long. */
+const ABSORB_MS = 260;
+/** The cargo's whole life: appear (105 ms), cross, land, dissolve — one animation. */
+const CARGO_MS = FLIGHT_MS + ABSORB_MS;
+/* The two inner moments as keyframe selectors, percentages of CARGO_MS.
+   Written out, not computed: a component's styles must evaluate statically,
+   and a call in the template literal leaves the compiler with the last good
+   build. The sandbox tier pins them — at 105 ms the cargo is whole and
+   unmoved, at 700 ms flush with the receiver. */
+const APPEAR_PCT = '10.9375%'; // 105 / 960
+const LAND_PCT = '72.9167%'; // 700 / 960
+
+/** The narration badge per beat: the icon, and whose move it is. */
+const BADGES: Record<string, { icon: string; actor: 'brand' | 'influencer' }> = {
+  campaign_created: { icon: 'campaign', actor: 'brand' },
+  influencer_application: { icon: 'send', actor: 'influencer' },
+  review_selection: { icon: 'fact_check', actor: 'brand' },
+  agreement_planning: { icon: 'handshake', actor: 'brand' },
+  content_creation: { icon: 'videocam', actor: 'influencer' },
+  content_approval: { icon: 'verified', actor: 'brand' },
+  publication_results: { icon: 'insights', actor: 'influencer' },
+};
+
 /**
  * Interactive dashboard preview — the landing's "watch a collaboration
- * happen" widget (ported from the legacy feature/demo build). Two modes:
+ * happen" widget. Two modes:
  *
- *   • overview   — the static tableau: all seven lifecycle steps visible at
- *     once next to the brand and influencer cards. No timers.
+ *   • overview   — the static tableau: the two panes settled on the finished
+ *     collaboration, the seven steps all done. No timers.
  *   • simulation — the guided run: it starts playing the moment the visitor
  *     opens it (owner, 2026-09-04: the presentation must run, not wait for
- *     clicks), one beat every 2.6 s, with pause/step/reset controls; the
- *     influencer card joins at the application beat and the finale swaps the
- *     stage for the success panel (7 steps / 100% / 12k reach / 4.2★ — the
- *     legacy's fictional campaign result).
+ *     clicks), one beat per hold, with pause / step / reset controls.
  *
- * Both side cards play the beat: the brand card counts applications, picks a
+ * THE STAGE. Everything renders inside one <article> whose height does not
+ * change at lg — not between beats, and not at the finale. Before this the
+ * component was a content-sized three-column grid: the middle column stacked
+ * seven steps with their descriptions and set the height of everything
+ * (~800 px, taller than a 768-px laptop with the toolbar), the controls sat at
+ * the bottom of that column, and the finale replaced the whole grid with a
+ * small card, so the section dropped by ~500 px and visitors thought the
+ * component had vanished. Now: a transport bar on top (play / pause, the seven
+ * step pills — clickable — with the countdown inside the active one, the
+ * step's action), the brand pane and the influencer pane as product windows,
+ * and a channel between them that carries the narration. The finale takes the
+ * bar's row and the channel; the panes stay on their last beat.
+ *
+ * Both panes play the beat: the brand pane counts applications, picks a
  * candidate, signs the terms, stamps the approval and closes with the result
- * tile; the influencer card joins with her profile, accepts, produces the reel
- * and ends on published metrics. Every beat block is re-created per beat (the
- * `@for` key is the beat) so its entry animation replays, and all motion is
- * dropped under `prefers-reduced-motion`.
+ * tile; the influencer pane starts with her browsing the campaign, applies,
+ * accepts, produces the reel and ends on published metrics. The beat blocks
+ * stay mounted across beats (only the tile inside is swapped), because
+ * re-creating them blinked to nothing on every beat. All motion is dropped
+ * under `prefers-reduced-motion`.
  *
- * One timeline: the progress card lists the same seven `stepKeys` the
- * narration reads, so item N is "current" exactly when beat N is on stage.
- * (Until 2026-09-04 the list came from a second, differently worded i18n
- * array and ran a beat ahead of the story.)
+ * Fitting the budget: the brand's brief shows only while the campaign is being
+ * set up and applied to (beats 0–1, and the overview), the influencer's stat
+ * tiles only until the agreement (beats 0–3, and the overview) — from there
+ * the chapter's content takes the room. `overflow-hidden` on the panes plus a
+ * sandbox assertion keep any beat from growing past the stage.
  *
- * The autoplay interval starts ONLY from click handlers, so the prerendered
+ * The autoplay timer starts ONLY from click handlers, so the prerendered
  * route never runs a timer during SSR; ngOnDestroy, every mode/reset
- * transition and a hidden tab clear it. Legacy's contact-modal CTA becomes a
- * sign-up link — the greenfield landing has no contact modal by design.
+ * transition and a hidden tab clear it.
  */
 @Component({
   selector: 'app-interactive-dashboard-preview',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatIconModule, RouterLink, TranslocoModule],
-  template: `
-    <section class="mx-auto max-w-6xl px-4 py-16 md:py-24" data-testid="landing-dashboard-preview">
-      <div class="mb-10 text-center">
-        <span class="eyebrow">{{ 'landing.dashboard_preview.subtitle' | transloco }}</span>
-        <h2 class="mt-3 font-display text-4xl font-normal text-ink sm:text-5xl">
-          {{ 'landing.dashboard_preview.title' | transloco }}
-        </h2>
-        <p class="mx-auto mt-4 max-w-2xl text-slate2">
-          {{ 'landing.dashboard_preview.description' | transloco }}
-        </p>
-
-        <!-- mode toggle -->
-        <div
-          class="mt-6 inline-flex rounded-full border border-beige bg-white p-1"
-          role="tablist"
-          data-testid="dashboard-mode-toggle"
-        >
-          <button
-            type="button"
-            role="tab"
-            [attr.aria-selected]="mode() === 'overview'"
-            (click)="setMode('overview')"
-            class="rounded-full px-4 py-1.5 text-sm font-semibold transition-colors"
-            [class]="
-              mode() === 'overview' ? 'bg-coral-700 text-white' : 'text-slate2 hover:text-ink'
-            "
-          >
-            {{ 'landing.dashboard_preview.modes.overview' | transloco }}
-          </button>
-          <button
-            type="button"
-            role="tab"
-            [attr.aria-selected]="mode() === 'simulation'"
-            (click)="setMode('simulation')"
-            class="rounded-full px-4 py-1.5 text-sm font-semibold transition-colors"
-            [class]="
-              mode() === 'simulation' ? 'bg-coral-700 text-white' : 'text-slate2 hover:text-ink'
-            "
-            data-testid="dashboard-mode-simulation"
-          >
-            {{ 'landing.dashboard_preview.modes.simulation' | transloco }}
-          </button>
-        </div>
-      </div>
-
-      @if (!done()) {
-        <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
-          <!-- brand card -->
-          <article class="flex flex-col gap-3 rounded-2xl border border-beige bg-white p-6">
-            <span
-              class="inline-flex self-start rounded-full bg-coral-50 px-2.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-coral-700"
-            >
-              {{ 'landing.dashboard_preview.cards.brand.badge' | transloco }}
-            </span>
-            <div>
-              <h3 class="font-display text-2xl text-ink">
-                {{ 'landing.dashboard_preview.cards.brand.name' | transloco }}
-              </h3>
-              <p class="text-xs text-slate2">
-                {{ 'landing.dashboard_preview.cards.brand.type' | transloco }}
-              </p>
-            </div>
-            <div class="rounded-xl border border-beige bg-cream/60 p-4">
-              <p
-                class="font-mono text-[0.6rem] font-medium uppercase tracking-[0.18em] text-slate2"
-              >
-                {{ 'landing.dashboard_preview.cards.brand.requirements.title' | transloco }}
-              </p>
-              <ul class="mt-2 flex flex-col gap-1.5">
-                @for (
-                  item of $any(
-                    'landing.dashboard_preview.cards.brand.requirements.items' | transloco
-                  );
-                  track item
-                ) {
-                  <li class="flex items-start gap-2 text-xs text-slate2">
-                    <mat-icon class="mt-0.5 !h-3.5 !w-3.5 shrink-0 !text-sm text-coral-500">
-                      check_circle
-                    </mat-icon>
-                    {{ item }}
-                  </li>
-                }
-              </ul>
-            </div>
-
-            <!-- what the brand sees at this beat. The block stays mounted so the
-                 chip and the note change in place; @switch replaces only the tile,
-                 which is what carries the entry animation. Re-creating the whole
-                 block made it blink to nothing on every beat. -->
-            <div class="flex flex-col gap-3" [attr.data-testid]="'dashboard-brand-' + beatKey()">
-              <span [class]="chipClass(brandTone())">
-                {{ 'landing.dashboard_preview.beats.' + beatKey() + '.brand.status' | transloco }}
-              </span>
-
-              @switch (beatKey()) {
-                @case ('campaign_created') {
-                  <div
-                    class="rounded-xl border border-beige bg-white p-3 text-center"
-                    [class.beat-enter]="animated()"
-                  >
-                    <p class="font-display text-3xl text-ink" data-testid="dashboard-brand-count">
-                      {{ applicationCount() }}
-                    </p>
-                    <p class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-slate2">
-                      {{ 'landing.dashboard_preview.beats.labels.applications' | transloco }}
-                    </p>
-                  </div>
-                }
-                @case ('influencer_application') {
-                  <div
-                    class="rounded-xl border border-coral-200 bg-coral-50/70 p-3 text-center"
-                    [class.beat-enter]="animated()"
-                  >
-                    <p
-                      class="font-display text-3xl text-coral-700"
-                      [class.bump]="animated()"
-                      data-testid="dashboard-brand-count"
-                    >
-                      {{ applicationCount() }}
-                    </p>
-                    <p class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-coral-700">
-                      {{ 'landing.dashboard_preview.beats.labels.applications' | transloco }}
-                    </p>
-                  </div>
-                }
-                @case ('review_selection') {
-                  <ul
-                    class="flex flex-col gap-1.5"
-                    [class.beat-enter]="animated()"
-                    data-testid="dashboard-brand-candidates"
-                  >
-                    @for (person of candidates; track person.initials; let i = $index) {
-                      <li
-                        class="flex items-center gap-2 rounded-xl border p-2"
-                        [class.beat-enter]="animated()"
-                        [style.animation-delay]="i * 90 + 'ms'"
-                        [class]="
-                          person.chosen
-                            ? 'border-coral-300 bg-coral-50/70'
-                            : 'border-beige bg-white'
-                        "
-                      >
-                        <span
-                          class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-navy-50 font-mono text-[10px] text-navy-500"
-                        >
-                          {{ person.initials }}
-                        </span>
-                        <span class="truncate text-xs text-slate2">{{ person.name }}</span>
-                        @if (person.chosen) {
-                          <mat-icon class="ml-auto !h-4 !w-4 shrink-0 !text-base text-coral-600">
-                            check_circle
-                          </mat-icon>
-                        }
-                      </li>
-                    }
-                  </ul>
-                }
-                @case ('agreement_planning') {
-                  <div
-                    class="rounded-xl border border-beige bg-cream/60 p-3"
-                    [class.beat-enter]="animated()"
-                    data-testid="dashboard-terms"
-                  >
-                    <p class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-slate2">
-                      {{ 'landing.dashboard_preview.beats.labels.terms.title' | transloco }}
-                    </p>
-                    <ul class="mt-1.5 flex flex-col gap-1">
-                      @for (
-                        term of $any(
-                          'landing.dashboard_preview.beats.labels.terms.items' | transloco
-                        );
-                        track term;
-                        let i = $index
-                      ) {
-                        <li
-                          class="flex items-center gap-1.5 text-xs text-slate2"
-                          [class.beat-enter]="animated()"
-                          [style.animation-delay]="i * 90 + 'ms'"
-                        >
-                          <mat-icon class="!h-3.5 !w-3.5 shrink-0 !text-sm text-success">
-                            check
-                          </mat-icon>
-                          {{ term }}
-                        </li>
-                      }
-                    </ul>
-                  </div>
-                }
-                @case ('content_creation') {
-                  <div
-                    class="flex items-center gap-2 rounded-xl border border-beige bg-cream/60 p-3"
-                    [class.beat-enter]="animated()"
-                    data-testid="dashboard-brand-waiting"
-                  >
-                    <mat-icon class="!h-4 !w-4 shrink-0 !text-base text-warning-strong">
-                      photo_camera
-                    </mat-icon>
-                    <span class="text-xs text-slate2">
-                      {{ 'landing.dashboard_preview.beats.labels.content' | transloco }}
-                    </span>
-                  </div>
-                }
-                @case ('content_approval') {
-                  <div
-                    class="relative rounded-xl border border-beige bg-cream/60 p-3"
-                    [class.beat-enter]="animated()"
-                    data-testid="dashboard-brand-approval"
-                  >
-                    <div class="h-14 rounded-lg bg-beige/70"></div>
-                    <span
-                      class="absolute right-4 top-4 rounded-full bg-success-soft px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.18em] text-success-strong"
-                      [class.stamp-in]="animated()"
-                    >
-                      {{ 'landing.dashboard_preview.beats.labels.approved' | transloco }}
-                    </span>
-                  </div>
-                }
-                @case ('publication_results') {
-                  <div
-                    class="grid grid-cols-2 gap-2"
-                    [class.beat-enter]="animated()"
-                    data-testid="dashboard-brand-results"
-                  >
-                    <div class="rounded-xl border border-beige bg-cream/60 p-3 text-center">
-                      <p class="font-display text-2xl text-ink">{{ fmt(reach()) }}</p>
-                      <p class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-slate2">
-                        {{ 'landing.dashboard_preview.beats.labels.reach' | transloco }}
-                      </p>
-                    </div>
-                    <div class="rounded-xl border border-beige bg-cream/60 p-3 text-center">
-                      <p class="font-display text-2xl text-ink">
-                        {{ 'landing.dashboard_preview.beats.labels.roi_value' | transloco }}
-                      </p>
-                      <p class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-slate2">
-                        {{ 'landing.dashboard_preview.beats.labels.roi' | transloco }}
-                      </p>
-                    </div>
-                  </div>
-                }
-              }
-
-              <p class="text-xs leading-relaxed text-slate2">
-                {{ 'landing.dashboard_preview.beats.' + beatKey() + '.brand.note' | transloco }}
-              </p>
-            </div>
-          </article>
-
-          <!-- progress card — the seven-step state machine -->
-          <article class="flex flex-col rounded-2xl border border-beige bg-white p-6">
-            <h3 class="font-display text-xl text-ink">
-              {{ 'landing.dashboard_preview.cards.progress.title' | transloco }}
-            </h3>
-            <ol class="mt-4 flex flex-grow flex-col gap-2.5" data-testid="dashboard-progress-steps">
-              @for (key of stepKeys; track key; let i = $index) {
-                <li class="flex items-start gap-2.5" [attr.data-testid]="'dashboard-step-' + key">
-                  @if (stepState(i) === 'done') {
-                    <mat-icon class="!h-4 !w-4 shrink-0 !text-base text-emerald-500">
-                      check_circle
-                    </mat-icon>
-                  } @else if (stepState(i) === 'current') {
-                    <span class="relative mt-0.5 flex h-3.5 w-3.5 shrink-0" aria-hidden="true">
-                      <span
-                        class="absolute inline-flex h-full w-full animate-ping rounded-full bg-coral-400 opacity-60 motion-reduce:animate-none"
-                      ></span>
-                      <span
-                        class="relative inline-flex h-3.5 w-3.5 rounded-full bg-coral-500"
-                      ></span>
-                    </span>
-                  } @else {
-                    <span
-                      class="mt-0.5 h-3.5 w-3.5 shrink-0 rounded-full border-2 border-beige"
-                      aria-hidden="true"
-                    ></span>
-                  }
-                  <div class="min-w-0">
-                    <p
-                      class="text-sm font-semibold leading-tight"
-                      [class]="stepState(i) === 'todo' ? 'text-slate2/60' : 'text-ink'"
-                    >
-                      {{ 'landing.dashboard_preview.steps.' + key + '.title' | transloco }}
-                    </p>
-                    <!-- always rendered, only faded: revealing it with @if grew
-                         the card by one line on every beat and shoved the
-                         narration, the controls and the whole page down -->
-                    <p
-                      class="text-xs leading-relaxed text-slate2 transition-opacity duration-300"
-                      [class.opacity-0]="stepState(i) === 'todo'"
-                      [attr.aria-hidden]="stepState(i) === 'todo' ? 'true' : null"
-                    >
-                      {{ 'landing.dashboard_preview.steps.' + key + '.description' | transloco }}
-                    </p>
-                  </div>
-                </li>
-              }
-            </ol>
-
-            @if (mode() === 'simulation') {
-              <!-- narration + controls for the current beat -->
-              <div class="mt-4 rounded-xl border border-beige bg-cream/60 p-4">
-                <p class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-slate2">
-                  {{ 'landing.dashboard_preview.step' | transloco }} {{ step() + 1 }}
-                  {{ 'landing.dashboard_preview.of' | transloco }} {{ stepKeys.length }}
-                </p>
-                <p class="mt-1 text-sm font-semibold text-ink">
-                  {{ 'landing.dashboard_preview.steps.' + stepKeys[step()] + '.title' | transloco }}
-                </p>
-                <p class="mt-0.5 text-xs leading-relaxed text-slate2">
-                  {{
-                    'landing.dashboard_preview.steps.' + stepKeys[step()] + '.description'
-                      | transloco
-                  }}
-                </p>
-                @if (playing()) {
-                  <!-- how long this beat still has; re-created per beat so the
-                       fill restarts (the @for key is the beat index) -->
-                  <div
-                    class="mt-2.5 h-1 overflow-hidden rounded-full bg-beige"
-                    aria-hidden="true"
-                    data-testid="dashboard-beat-progress"
-                  >
-                    @for (beat of [step()]; track beat) {
-                      <div
-                        class="beat-bar h-full rounded-full bg-coral-500"
-                        [style.animationDuration.ms]="beatMs()"
-                      ></div>
-                    }
-                  </div>
-                }
-              </div>
-              <div class="mt-3 flex items-center gap-2">
-                <button
-                  type="button"
-                  (click)="togglePlay()"
-                  class="inline-flex items-center gap-1.5 rounded-full bg-coral-700 px-4 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-coral-800"
-                  data-testid="dashboard-autoplay"
-                >
-                  <mat-icon class="!h-4 !w-4 !text-base">
-                    {{ playing() ? 'pause' : 'play_arrow' }}
-                  </mat-icon>
-                  {{
-                    (playing()
-                      ? 'landing.dashboard_preview.pause'
-                      : 'landing.dashboard_preview.autoplay'
-                    ) | transloco
-                  }}
-                </button>
-                <button
-                  type="button"
-                  (click)="advance()"
-                  class="inline-flex items-center rounded-full border border-beige bg-white px-4 py-1.5 text-sm font-semibold text-ink transition-colors hover:border-coral-300 hover:text-coral-600"
-                  data-testid="dashboard-next"
-                >
-                  {{
-                    'landing.dashboard_preview.steps.' + stepKeys[step()] + '.action' | transloco
-                  }}
-                </button>
-                <button
-                  type="button"
-                  (click)="restart()"
-                  [attr.aria-label]="'landing.dashboard_preview.reset' | transloco"
-                  [title]="'landing.dashboard_preview.reset' | transloco"
-                  class="ml-auto inline-flex h-8 w-8 items-center justify-center rounded-full text-slate2 transition-colors hover:bg-cream hover:text-ink"
-                >
-                  <mat-icon class="!h-4 !w-4 !text-base">replay</mat-icon>
-                </button>
-              </div>
-            }
-          </article>
-
-          <!-- influencer card — joins the story at the application beat -->
-          <article
-            class="flex flex-col gap-3 rounded-2xl border border-beige bg-white p-6"
-            [class.opacity-60]="mode() === 'simulation' && step() < 1"
-          >
-            <span
-              class="inline-flex self-start rounded-full bg-navy-50 px-2.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-navy-500"
-            >
-              {{ 'landing.dashboard_preview.cards.influencer.badge' | transloco }}
-            </span>
-            @if (mode() === 'overview' || step() >= 1) {
-              <div [class.beat-enter]="animated() && step() === 1">
-                <h3 class="font-display text-2xl text-ink">Ola Kowalska</h3>
-                <p class="text-xs text-slate2">
-                  {{ 'landing.dashboard_preview.cards.influencer.type' | transloco }}
-                </p>
-              </div>
-              <div class="grid grid-cols-2 gap-3">
-                <div class="rounded-xl border border-beige bg-cream/60 p-3 text-center">
-                  <p class="font-display text-2xl text-ink" data-testid="dashboard-followers">
-                    {{ fmt(followers()) }}
-                  </p>
-                  <p class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-slate2">
-                    {{ 'landing.dashboard_preview.cards.influencer.stats.followers' | transloco }}
-                  </p>
-                </div>
-                <div class="rounded-xl border border-beige bg-cream/60 p-3 text-center">
-                  <p class="font-display text-2xl text-ink">
-                    4.8
-                    <span class="text-coral-500">★</span>
-                  </p>
-                  <p class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-slate2">
-                    {{ 'landing.dashboard_preview.cards.influencer.stats.rating' | transloco }}
-                  </p>
-                </div>
-              </div>
-
-              <!-- her side of the same beat; mounted once, same as his -->
-              <div
-                class="flex flex-col gap-3"
-                [attr.data-testid]="'dashboard-influencer-' + beatKey()"
-              >
-                <span [class]="chipClass(influencerTone())">
-                  @if (beatKey() === 'review_selection') {
-                    <mat-icon class="!h-3.5 !w-3.5 !text-sm" [class.stamp-in]="animated()">
-                      check
-                    </mat-icon>
-                  }
-                  {{
-                    'landing.dashboard_preview.beats.' + beatKey() + '.influencer.status'
-                      | transloco
-                  }}
-                </span>
-
-                @switch (beatKey()) {
-                  @case ('agreement_planning') {
-                    <div
-                      class="rounded-xl border border-beige bg-cream/60 p-3"
-                      [class.beat-enter]="animated()"
-                    >
-                      <p class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-slate2">
-                        {{ 'landing.dashboard_preview.beats.labels.terms.title' | transloco }}
-                      </p>
-                      <ul class="mt-1.5 flex flex-col gap-1">
-                        @for (
-                          term of $any(
-                            'landing.dashboard_preview.beats.labels.terms.items' | transloco
-                          );
-                          track term;
-                          let i = $index
-                        ) {
-                          <li
-                            class="flex items-center gap-1.5 text-xs text-slate2"
-                            [class.beat-enter]="animated()"
-                            [style.animation-delay]="i * 90 + 'ms'"
-                          >
-                            <mat-icon class="!h-3.5 !w-3.5 shrink-0 !text-sm text-success">
-                              check
-                            </mat-icon>
-                            {{ term }}
-                          </li>
-                        }
-                      </ul>
-                    </div>
-                  }
-                  @case ('content_creation') {
-                    <div
-                      class="rounded-xl border border-beige bg-cream/60 p-3"
-                      [class.beat-enter]="animated()"
-                      data-testid="dashboard-influencer-production"
-                    >
-                      <div class="flex items-center gap-2">
-                        <mat-icon class="!h-4 !w-4 shrink-0 !text-base text-coral-500">
-                          photo_camera
-                        </mat-icon>
-                        <span class="text-xs text-slate2">
-                          {{ 'landing.dashboard_preview.beats.labels.content' | transloco }}
-                        </span>
-                      </div>
-                      <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-beige">
-                        <div class="fill-bar h-full rounded-full bg-coral-500"></div>
-                      </div>
-                    </div>
-                  }
-                  @case ('content_approval') {
-                    <div
-                      class="rounded-xl border border-beige bg-cream/60 p-3"
-                      [class.beat-enter]="animated()"
-                    >
-                      <div class="h-14 rounded-lg bg-beige/70"></div>
-                    </div>
-                  }
-                  @case ('publication_results') {
-                    <dl
-                      class="grid grid-cols-3 gap-2"
-                      [class.beat-enter]="animated()"
-                      data-testid="dashboard-influencer-metrics"
-                    >
-                      <div class="rounded-xl border border-beige bg-cream/60 p-2 text-center">
-                        <dd class="font-display text-lg text-ink">{{ fmt(reach()) }}</dd>
-                        <dt
-                          class="font-mono text-[0.55rem] uppercase tracking-[0.16em] text-slate2"
-                        >
-                          {{ 'landing.dashboard_preview.beats.labels.reach' | transloco }}
-                        </dt>
-                      </div>
-                      <div class="rounded-xl border border-beige bg-cream/60 p-2 text-center">
-                        <dd class="font-display text-lg text-ink">{{ fmt(likes()) }}</dd>
-                        <dt
-                          class="font-mono text-[0.55rem] uppercase tracking-[0.16em] text-slate2"
-                        >
-                          {{ 'landing.dashboard_preview.beats.labels.likes' | transloco }}
-                        </dt>
-                      </div>
-                      <div class="rounded-xl border border-beige bg-cream/60 p-2 text-center">
-                        <dd class="font-display text-lg text-ink">{{ fmt(comments()) }}</dd>
-                        <dt
-                          class="font-mono text-[0.55rem] uppercase tracking-[0.16em] text-slate2"
-                        >
-                          {{ 'landing.dashboard_preview.beats.labels.comments' | transloco }}
-                        </dt>
-                      </div>
-                    </dl>
-                  }
-                }
-
-                <p class="text-xs leading-relaxed text-slate2">
-                  {{
-                    'landing.dashboard_preview.beats.' + beatKey() + '.influencer.note' | transloco
-                  }}
-                </p>
-              </div>
-            } @else {
-              <!-- Simulation step 0: no applicant yet. A pulsing skeleton here
-                   read as a card that never loaded (owner, 2026-09-04); a
-                   dashed drop zone with an inbox says "waiting" instead. -->
-              <div class="flex flex-1 flex-col items-center justify-center gap-3">
-                <div
-                  aria-hidden="true"
-                  class="flex h-28 w-full max-w-[14rem] items-center justify-center rounded-2xl border-2 border-dashed border-beige text-slate2"
-                  data-testid="dashboard-preview-influencer-waiting"
-                >
-                  <mat-icon class="!h-9 !w-9 !text-4xl opacity-50">inbox</mat-icon>
-                </div>
-                <p role="status" class="text-center text-xs italic text-slate2">
-                  {{ 'landing.dashboard_preview.waiting' | transloco }}
-                </p>
-              </div>
-            }
-          </article>
-        </div>
-      } @else {
-        <!-- the finale — legacy success modal as an inline editorial panel -->
-        <div
-          class="mx-auto max-w-2xl rounded-3xl border border-beige bg-white p-8 text-center md:p-10"
-          data-testid="dashboard-success"
-        >
-          <span
-            class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-emerald-600"
-          >
-            <mat-icon class="!h-3.5 !w-3.5 !text-sm">check_circle</mat-icon>
-            {{ 'landing.dashboard_preview.success_modal.title' | transloco }}
-          </span>
-          <p class="mt-4 text-slate2">
-            {{ 'landing.dashboard_preview.success_modal.description' | transloco }}
-          </p>
-          <dl class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <div>
-              <dd class="font-display text-3xl text-ink">7</dd>
-              <dt class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-slate2">
-                {{ 'landing.dashboard_preview.success_modal.metrics.steps' | transloco }}
-              </dt>
-            </div>
-            <div>
-              <dd class="font-display text-3xl text-ink">100%</dd>
-              <dt class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-slate2">
-                {{ 'landing.dashboard_preview.success_modal.metrics.completion' | transloco }}
-              </dt>
-            </div>
-            <div>
-              <dd class="font-display text-3xl text-ink">12k</dd>
-              <dt class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-slate2">
-                {{ 'landing.dashboard_preview.success_modal.metrics.reach' | transloco }}
-              </dt>
-            </div>
-            <div>
-              <dd class="font-display text-3xl text-ink">
-                4.2
-                <span class="text-coral-500">★</span>
-              </dd>
-              <dt class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-slate2">
-                {{ 'landing.dashboard_preview.success_modal.metrics.rating' | transloco }}
-              </dt>
-            </div>
-          </dl>
-          <p class="mt-7 text-sm text-slate2">
-            {{ 'landing.dashboard_preview.success_modal.cta.description' | transloco }}
-          </p>
-          <div class="mt-4 flex flex-wrap items-center justify-center gap-3">
-            <a routerLink="/auth/sign-up/business" class="cta-primary">
-              {{ 'landing.dashboard_preview.success_modal.cta.button' | transloco }}
-              <mat-icon class="!h-5 !w-5 !text-lg">arrow_forward</mat-icon>
-            </a>
-            <button
-              type="button"
-              (click)="restart()"
-              class="inline-flex items-center gap-2 rounded-full border border-beige bg-white px-5 py-2.5 text-sm font-semibold text-ink transition-all hover:border-coral-300 hover:text-coral-600"
-              data-testid="dashboard-restart"
-            >
-              <mat-icon class="!h-4 !w-4 !text-base">replay</mat-icon>
-              {{ 'landing.dashboard_preview.success_modal.actions.restart' | transloco }}
-            </button>
-          </div>
-        </div>
-      }
-    </section>
-  `,
+  imports: [MatIconModule, RouterLink, TranslocoModule, DashboardPostMockComponent],
+  templateUrl: './interactive-dashboard-preview.component.html',
   styles: `
+    /* Tailwind's preflight is off in this app, so headings, paragraphs and
+       lists keep their user-agent margins unless something removes them. In a
+       stage with a fixed height every one of those margins is unbudgeted
+       height: a tile's <p> at 24 px carried 24 px above and below, the step
+       row's <ol> carried 16 px each way and made the bar 80 px instead of 56.
+       Measured, not guessed — see e2e-tests/sandbox/dashboard-preview.spec.ts.
+       Scoped to this component by emulated encapsulation. */
+    h1,
+    h2,
+    h3,
+    p,
+    ol,
+    ul,
+    dl,
+    dd,
+    dt {
+      margin: 0;
+    }
+    ol,
+    ul {
+      padding: 0;
+      list-style: none;
+    }
+
     /* Each beat's tile enters; staggered children add their own delay. It
-       starts part-visible on purpose — from zero it read as a blink. */
+       starts part-visible on purpose — from zero it read as a blink.
+       \`--land\` is set by the pane: the flight's length when the pane is the
+       receiver, so the tile holds its \`from\` state (fill-mode both) until
+       the cargo arrives and then enters. \`--stagger\` is per child. */
     .beat-enter {
       animation: beat-enter 200ms ease-out both;
+      animation-delay: calc(var(--land, 0ms) + var(--stagger, 0ms));
+    }
+
+    /* The cargo. The lane is a size container, so travel is written in its
+       own units — the lane's length less the cargo's — and the message lands
+       flush with the far edge whatever the channel measures. At lg the lane is
+       a strip across the channel and the message goes left or right; below lg
+       the panes stack, the lane stands on end, and it goes down (brand →
+       influencer) or up. Having landed it dissolves as the receiver's tile
+       enters: the message is consumed, not left lying on the pane. Transform
+       and opacity only.
+
+       One set of keyframes and one animation name, on purpose: the geometry
+       per direction lives in two custom properties. The dissolve used to be a
+       second name in the \`animation-name\` list, and the production build
+       scoped only the first name inside the @media block — the dev server
+       scoped both, so every test passed while the live site kept the cargo.
+       Appear, cross, land and dissolve are one animation; the fade's segment
+       carries its own timing function. */
+    .flight-lane {
+      container-type: size;
+    }
+    .flight {
+      left: 50%;
+      --at-home: translate(-50%, 0);
+      animation: cargo-flight ${CARGO_MS}ms cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+    .flight[data-direction='ltr'] {
+      top: 0;
+      --at-receiver: translate(-50%, calc(100cqh - 100%));
+    }
+    .flight[data-direction='rtl'] {
+      bottom: 0;
+      --at-receiver: translate(-50%, calc(100% - 100cqh));
+    }
+    @media (min-width: 1280px) {
+      .flight {
+        top: 0;
+        --at-home: translateX(0);
+      }
+      .flight[data-direction='ltr'] {
+        left: 0;
+        --at-receiver: translateX(calc(100cqw - 100%));
+      }
+      .flight[data-direction='rtl'] {
+        bottom: auto;
+        left: auto;
+        right: 0;
+        --at-receiver: translateX(calc(100% - 100cqw));
+      }
+    }
+    @keyframes cargo-flight {
+      from {
+        opacity: 0;
+        transform: var(--at-home) scale(0.92);
+      }
+      ${APPEAR_PCT} {
+        opacity: 1;
+        transform: var(--at-home) scale(1);
+      }
+      ${LAND_PCT} {
+        opacity: 1;
+        transform: var(--at-receiver) scale(1);
+        animation-timing-function: ease-in;
+      }
+      to {
+        opacity: 0;
+        transform: var(--at-receiver) scale(1);
+      }
     }
 
     @keyframes beat-enter {
@@ -757,6 +287,10 @@ const TONES: Record<string, { brand: Tone; influencer: Tone }> = {
       .stamp-in {
         animation: none;
       }
+      /* No flight: the receiver simply updates. */
+      .flight-lane {
+        display: none;
+      }
     }
   `,
 })
@@ -804,6 +338,34 @@ export class InteractiveDashboardPreviewComponent implements OnDestroy {
   );
   readonly brandTone = computed(() => TONES[this.beatKey()].brand);
   readonly influencerTone = computed(() => TONES[this.beatKey()].influencer);
+
+  /** The brief is the brand's card while the campaign is being set up and
+   * applied to; afterwards the chapter's own content takes its room. */
+  readonly showBrief = computed(() => this.mode() === 'overview' || this.step() <= 1);
+  /** Her stat tiles introduce her; once terms are agreed the content is the point. */
+  readonly showTiles = computed(() => this.mode() === 'overview' || this.step() <= 3);
+
+  /** Which way this beat's message travels: the brand's moves go right, to
+   * her; hers come left, to the brand. */
+  readonly direction = computed<'ltr' | 'rtl'>(() =>
+    BADGES[this.stepKeys[this.step()]].actor === 'brand' ? 'ltr' : 'rtl',
+  );
+  /** How long the cargo is in the air — the receiving pane's tiles wait this
+   * long before they enter, so the arrival and the update are one event. */
+  readonly landMs = computed(() => (this.animated() ? FLIGHT_MS : 0));
+  readonly flightClass = computed(() =>
+    BADGES[this.stepKeys[this.step()]].actor === 'brand'
+      ? 'text-coral-700 ring-coral-200'
+      : 'text-navy-500 ring-navy-500/20',
+  );
+
+  /** The narration's badge: who acts on this beat, and how. */
+  readonly badgeIcon = computed(() => BADGES[this.stepKeys[this.step()]].icon);
+  readonly badgeClass = computed(() =>
+    BADGES[this.stepKeys[this.step()]].actor === 'brand'
+      ? 'bg-coral-50 text-coral-600 ring-1 ring-coral-200'
+      : 'bg-navy-50 text-navy-500 ring-1 ring-navy-500/20',
+  );
 
   /** Jump straight to a beat with no timers — the sandbox fixtures' hook. */
   set previewBeat(index: number) {
@@ -872,6 +434,39 @@ export class InteractiveDashboardPreviewComponent implements OnDestroy {
     }
     const current = this.step();
     return index < current ? 'done' : index === current ? 'current' : 'todo';
+  }
+
+  /** The step pill's look: done is settled navy, current is coral, to-do is beige. */
+  pillClass(state: 'done' | 'current' | 'todo'): string {
+    switch (state) {
+      case 'done':
+        return 'bg-navy-50 text-navy-500';
+      case 'current':
+        return 'bg-coral-50 text-coral-700 ring-1 ring-coral-300';
+      default:
+        return 'bg-cream text-slate2/70';
+    }
+  }
+
+  /** The step's glyph, for the overview legend — the same one its channel badge and cargo carry. */
+  stepIcon(key: string): string {
+    return BADGES[key].icon;
+  }
+
+  /** Coral when the firm acts, navy when Ola does: the channel badge's colours, on the legend. */
+  stepActorClass(key: string): string {
+    return BADGES[key].actor === 'brand' ? 'text-coral-600' : 'text-navy-500';
+  }
+
+  /** A click on a step pill: jump there. Keeps playing if it was playing,
+   * with the new beat's own hold; stays paused if it was paused. */
+  goTo(index: number): void {
+    if (this.mode() !== 'simulation') return;
+    this.stopTimer();
+    this.done.set(false);
+    this.step.set(Math.min(Math.max(index, 0), this.stepKeys.length - 1));
+    this.onBeatEnter();
+    if (this.playing()) this.startTimer();
   }
 
   setMode(mode: 'overview' | 'simulation'): void {

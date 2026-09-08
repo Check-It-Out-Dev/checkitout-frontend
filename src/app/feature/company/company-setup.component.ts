@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   OnInit,
   computed,
   inject,
@@ -18,6 +19,7 @@ import { TranslocoModule } from '@ngneat/transloco';
 import type { CompanyDataConfirmResponse } from '../../api/model/company-data-confirm-response';
 import type { NipLookupResponse } from '../../api/model/nip-lookup-response';
 import { CompanyRegistryService } from '../../core/registry/registry.service';
+import { ACCOUNT_ACTIVATED, listen } from '../../core/cross-tab';
 
 type Phase = 'checking' | 'idle' | 'looking' | 'preview' | 'confirming' | 'done' | 'confirmed';
 
@@ -36,20 +38,20 @@ type Phase = 'checking' | 'idle' | 'looking' | 'preview' | 'confirming' | 'done'
  * with/without-emailVerified scenarios).
  */
 @Component({
-    selector: 'app-company-setup',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        RouterLink,
-        MatButtonModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        MatProgressSpinnerModule,
-        TranslocoModule,
-    ],
-    templateUrl: './company-setup.component.html'
+  selector: 'app-company-setup',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+    TranslocoModule,
+  ],
+  templateUrl: './company-setup.component.html',
 })
 export class CompanySetupComponent implements OnInit {
   private readonly registry = inject(CompanyRegistryService);
@@ -68,6 +70,16 @@ export class CompanySetupComponent implements OnInit {
   });
 
   readonly activated = computed(() => this.confirmResult()?.activated === true);
+
+  constructor() {
+    // The activation link opens wherever the mail client opens it. When it
+    // is pressed, this page — still saying the address is to be verified —
+    // hears about it and flips to "active" without a reload.
+    const stop = listen(ACCOUNT_ACTIVATED, () =>
+      this.confirmResult.update((r) => (r ? { ...r, activated: true } : r)),
+    );
+    inject(DestroyRef).onDestroy(stop);
+  }
 
   /** One-line address assembled from the lookup's GUS fields. */
   readonly addressLine = computed(() => {

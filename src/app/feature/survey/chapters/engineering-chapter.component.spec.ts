@@ -9,7 +9,7 @@ import { ContractPipelineShowcaseComponent } from '../showcases/contract-pipelin
 import { EngineeringChapterComponent } from './engineering-chapter.component';
 
 /**
- * Smoke-compiles the engineering chapter WITH all seven showcases (tsc
+ * Smoke-compiles the engineering chapter WITH all ten showcases (tsc
  * --noEmit does not compile inline templates — this spec proves the @for
  * bindings render) and pins the fragment anchors the hub's "Cool stuff"
  * strip deep-links to (`graph-dev`, `velocity`, `contract`,
@@ -34,9 +34,17 @@ describe('EngineeringChapterComponent', () => {
     fixture.detectChanges();
   });
 
-  it('renders all seven showcase cards behind their stable deep-link anchors', () => {
+  it('renders all ten showcase cards behind their stable deep-link anchors, the estate first', () => {
     const el: HTMLElement = fixture.nativeElement;
+    const anchors = Array.from(el.querySelectorAll('app-chapter-shell [id].scroll-mt-24')).map(
+      (a) => a.id,
+    );
+    expect(anchors[0]).toBe('estate');
+    expect(anchors.slice(-3)).toEqual(['cicd', 'roadmap', 'demo-meta']);
     for (const id of [
+      'estate',
+      'cicd',
+      'roadmap',
       'testing',
       'rewrite',
       'contract',
@@ -137,13 +145,17 @@ describe('EngineeringChapterComponent', () => {
     expect(text.match(/\b(?=[0-9a-f]*\d)[0-9a-f]{7,}\b/g)).toBeNull();
   });
 
-  it('graph-topology card encodes the NavigationMaster 3-level topology (1→15→130) and the 6-entity lens', () => {
+  it('mounts the graph map with the real namespace behind it (1→15→130) and the 6-entity lens', () => {
     const topo = fixture.debugElement.query(
       By.directive(GraphTopologyShowcaseComponent),
     ).componentInstance;
-    // the three tiers, in funnel order, carry their real CheckItOutSystem node counts
-    // (live-DB snapshot 2026-09-02: 1 master → 15 navigators → 130 impls = 146 nodes)
-    expect(topo.tiers.map((t: { count: string }) => t.count)).toEqual(['×1', '×15', '×130']);
+    // the drawing and the inspector are pinned in the showcase's own spec;
+    // here: it is the same graph the stat row counts, and the map is mounted
+    expect(topo.placed.length).toBe(15);
+    expect(topo.placed.reduce((n: number, p: { fan: number }) => n + p.fan, 0)).toBe(130);
+    expect(topo.stats.find((s: { key: string }) => s.key === 'nodes')?.value).toBe('146');
+    expect(fixture.nativeElement.querySelector('[data-testid="graphtopo-svg"]')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('[data-testid="graphtopo-inspector"]')).toBeTruthy();
     // the 6-entity behavioural lens (Controller/Config/Security/Impl/Diagnostics/Lifecycle)
     expect(topo.roles.map((r: { sym: string }) => r.sym)).toEqual(['C', 'F', 'S', 'I', 'D', 'L']);
     // the "shape of the system" query traverses the two typed edges of the topology

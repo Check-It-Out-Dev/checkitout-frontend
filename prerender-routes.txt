@@ -1,1 +1,7 @@
 /
+/technical-survey
+/technical-survey/platform
+/technical-survey/security
+/technical-survey/compliance
+/technical-survey/operations
+/technical-survey/engineering

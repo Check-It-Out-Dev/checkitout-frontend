@@ -98,11 +98,20 @@ describe('CampaignApplicantsComponent', () => {
     expect(fixture.componentInstance.items().length).toBe(2);
   }));
 
-  it('marks not-found when the route id is missing or non-numeric', () => {
+  it('marks not-found when the route id is non-numeric', () => {
     const api = new FakeApi();
     const fixture = create(api, 'abc');
     expect(fixture.componentInstance.state()).toBe('not-found');
   });
+
+  it('is the inbox without a route id: every campaign, rows still awaiting the company', fakeAsync(() => {
+    const api = new FakeApi();
+    const fixture = create(api, null);
+    tick();
+    expect(fixture.componentInstance.inbox()).toBe(true);
+    expect(api.listFilters).toEqual({ opportunityStatus: 'APPLIED,ACCEPTED_BY_COMPANY' });
+    expect(fixture.componentInstance.state()).toBe('loaded');
+  }));
 
   it('shows empty state when no applicants', fakeAsync(() => {
     const api = new FakeApi();

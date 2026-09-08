@@ -20,6 +20,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { RouterLink } from '@angular/router';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
@@ -64,6 +65,7 @@ import {
     MatCheckboxModule,
     MatFormFieldModule,
     MatIconModule,
+    RouterLink,
     MatInputModule,
     MatProgressSpinnerModule,
     MatSelectModule,
@@ -81,6 +83,8 @@ export class AdminTicketDetailComponent implements OnInit {
   readonly statusOptions = TICKET_STATUS_OPTIONS;
 
   readonly ticket = signal<SupportTicketDtoOut | null>(null);
+  /** A reply went out on this visit: the page then says what comes next. */
+  readonly replied = signal(false);
   readonly loading = signal(false);
   readonly submitting = signal(false);
   readonly errorKey = signal<string | null>(null);
@@ -155,6 +159,7 @@ export class AdminTicketDetailComponent implements OnInit {
       .subscribe({
         next: (refreshed) => {
           this.ticket.set(refreshed);
+          this.replied.set(true);
           // resetForm (not reset) also clears the directive's submitted flag.
           this.responseFormDir?.resetForm({ content: '', newStatus: null, sendEmail: true });
           this.responseForm.reset({ content: '', newStatus: null, sendEmail: true });

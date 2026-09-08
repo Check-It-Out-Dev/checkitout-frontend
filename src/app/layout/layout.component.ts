@@ -22,6 +22,8 @@ import { PublicConfigApiService } from '../core/config/public-config.service';
 import { SubscriptionApiService } from '../core/subscription/subscription.service';
 import { SubscriptionStatus } from '../core/api-frozen/hidden-models';
 import { CookieBannerComponent } from '../shared/components/cookie-banner/cookie-banner.component';
+import { isDemoMode } from '../core/demo/demo-mode';
+import { SandboxDirectorService } from '../core/demo/sandbox-director.service';
 
 type Locale = 'en' | 'pl';
 
@@ -92,6 +94,13 @@ const INFLUENCER_NAV: readonly NavEntry[] = [
 @Component({
   selector: 'app-layout',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  // Everything under this shell depends on who is signed in, and the server
+  // does not know: it renders the default persona's rows, the client renders
+  // the visitor's, and hydration then keeps the server's nodes — a status chip
+  // came through with the server's green classes AND the client's blue ones
+  // (the registrations list, 2026-09-07). The server-rendered shell is thrown
+  // away and rebuilt on the client instead; the public pages keep hydrating.
+  host: { ngSkipHydration: 'true' },
   imports: [
     RouterLink,
     RouterLinkActive,
@@ -120,6 +129,23 @@ export class LayoutComponent {
   private readonly shellStatus = inject(ShellStatusService);
   private readonly publicConfig = inject(PublicConfigApiService);
   private readonly subscriptionApi = inject(SubscriptionApiService);
+  private readonly director = inject(SandboxDirectorService);
+
+  /**
+   * Where the brand mark leads. In the app it is the front page a signed-in
+   * user lands on anyway. In the demo it is the hub, and the click also
+   * ends the sandbox: the director signs the persona out and boots there,
+   * so the hub, the landing page and the next tour start clean. Pointed at
+   * `/` it went nowhere — the landing bounces a signed-in persona straight
+   * back — and read as a dead button (owner, 2026-09-07).
+   */
+  readonly brandLink = isDemoMode() ? '/demo' : '/collaborations/list';
+
+  onBrand(event: Event): void {
+    if (!isDemoMode()) return;
+    event.preventDefault();
+    this.director.exit();
+  }
 
   /** True on handset / small tablet (<960px). */
   readonly isMobile = signal(false);

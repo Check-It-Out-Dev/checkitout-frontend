@@ -6,9 +6,18 @@
     (closedStart)="sidenavOpen.set(false)"
     class="!w-64 !border-r !border-beige !bg-cream"
   >
-    <div class="flex items-center gap-2 border-b border-beige px-5 py-5">
-      <img src="assets/brand/c-mark.svg" alt="" class="h-7 w-7" data-testid="brand-mark" />
-      <span class="font-display text-xl tracking-tight text-ink">Check It Out</span>
+    <!-- The brand mark is a way home: the app's front page, or in the demo
+         the hub — where it also ends the sandbox and signs the persona out. -->
+    <div class="border-b border-beige px-5 py-5">
+      <a
+        [routerLink]="brandLink"
+        (click)="onBrand($event)"
+        class="flex items-center gap-2 rounded text-ink no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-300"
+        data-testid="brand-home"
+      >
+        <img src="assets/brand/c-mark.svg" alt="" class="h-7 w-7" data-testid="brand-mark" />
+        <span class="font-display text-xl tracking-tight">Check It Out</span>
+      </a>
     </div>
 
     <mat-nav-list class="!px-2 !pt-3">
@@ -44,19 +53,24 @@
         >
           <mat-icon>menu</mat-icon>
         </button>
-        <img
-          src="assets/brand/c-mark.svg"
-          alt=""
-          class="h-6 w-6"
-          data-testid="brand-mark-toolbar"
-        />
-        <!-- Below `sm` the mark stands alone: the wordmark wrapped into two
-             lines between the burger and the right cluster on a 390 px phone. -->
-        <span
-          class="hidden whitespace-nowrap font-display text-lg tracking-tight text-ink sm:inline"
+        <a
+          [routerLink]="brandLink"
+          (click)="onBrand($event)"
+          class="flex items-center gap-2 rounded text-ink no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-300"
+          data-testid="brand-home-toolbar"
         >
-          Check It Out
-        </span>
+          <img
+            src="assets/brand/c-mark.svg"
+            alt=""
+            class="h-6 w-6"
+            data-testid="brand-mark-toolbar"
+          />
+          <!-- Below `sm` the mark stands alone: the wordmark wrapped into two
+               lines between the burger and the right cluster on a 390 px phone. -->
+          <span class="hidden whitespace-nowrap font-display text-lg tracking-tight sm:inline">
+            Check It Out
+          </span>
+        </a>
       }
 
       <span class="flex-1"></span>

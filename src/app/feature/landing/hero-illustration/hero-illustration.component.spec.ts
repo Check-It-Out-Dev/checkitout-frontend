@@ -45,6 +45,20 @@ describe('HeroIllustrationComponent', () => {
     ).toBeTruthy();
   });
 
+  it('gives the connection a line and two dots that carry the crossing motion', () => {
+    // jsdom has no animation engine, so this is the DOM contract only: the
+    // line exists as its own element (it used to be a 0 px flex leftover), and
+    // each dot wears the class its keyframes are bound to. Whether they move,
+    // and meet in the middle, is asserted in the browser by
+    // e2e-tests/sandbox/hero-illustration.spec.ts.
+    const el = fixture.nativeElement;
+    expect(el.querySelector('[data-testid="hero-illustration-connection-line"]')).toBeTruthy();
+    const creator = el.querySelector('[data-testid="hero-illustration-dot-creator"]');
+    const company = el.querySelector('[data-testid="hero-illustration-dot-company"]');
+    expect(creator.classList.contains('hero-dot--creator')).toBe(true);
+    expect(company.classList.contains('hero-dot--company')).toBe(true);
+  });
+
   it('renders the analytics floating card', () => {
     const analytics = fixture.nativeElement.querySelector(
       '[data-testid="hero-illustration-analytics"]',

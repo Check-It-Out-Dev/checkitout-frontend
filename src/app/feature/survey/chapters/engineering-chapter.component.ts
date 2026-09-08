@@ -7,6 +7,9 @@ import { VelocityShowcaseComponent } from '../showcases/velocity-showcase.compon
 import { GraphAssistedDevShowcaseComponent } from '../showcases/graph-assisted-dev-showcase.component';
 import { GraphTopologyShowcaseComponent } from '../showcases/graph-topology-showcase.component';
 import { DemoMetaShowcaseComponent } from '../showcases/demo-meta-showcase.component';
+import { EstateMapShowcaseComponent } from '../showcases/estate-map-showcase.component';
+import { CicdRunsShowcaseComponent } from '../showcases/cicd-runs-showcase.component';
+import { RoadmapShowcaseComponent } from '../showcases/roadmap-showcase.component';
 
 /**
  * Chapter 5/5 — Engineering practice ("How do they work?"). Ported from the
@@ -31,16 +34,22 @@ import { DemoMetaShowcaseComponent } from '../showcases/demo-meta-showcase.compo
     GraphAssistedDevShowcaseComponent,
     GraphTopologyShowcaseComponent,
     DemoMetaShowcaseComponent,
+    EstateMapShowcaseComponent,
+    CicdRunsShowcaseComponent,
+    RoadmapShowcaseComponent,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <app-chapter-shell key="engineering">
+      <div id="estate" class="scroll-mt-24"><app-estate-map-showcase /></div>
       <div id="testing" class="scroll-mt-24"><app-testing-quality-showcase /></div>
       <div id="rewrite" class="scroll-mt-24"><app-greenfield-rewrite-showcase /></div>
       <div id="contract" class="scroll-mt-24"><app-contract-pipeline-showcase /></div>
       <div id="velocity" class="scroll-mt-24"><app-velocity-showcase /></div>
       <div id="graph-dev" class="scroll-mt-24"><app-graph-assisted-dev-showcase /></div>
       <div id="graph-topology" class="scroll-mt-24"><app-graph-topology-showcase /></div>
+      <div id="cicd" class="scroll-mt-24"><app-cicd-runs-showcase /></div>
+      <div id="roadmap" class="scroll-mt-24"><app-roadmap-showcase /></div>
       <div id="demo-meta" class="scroll-mt-24"><app-demo-meta-showcase /></div>
     </app-chapter-shell>
   `,

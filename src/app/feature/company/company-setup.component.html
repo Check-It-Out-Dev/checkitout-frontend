@@ -37,15 +37,24 @@
           </div>
         </div>
         <p class="mt-4 text-slate2">{{ 'company_setup.confirmed.body' | transloco }}</p>
-        <a
-          class="mt-4"
-          color="primary"
-          mat-flat-button
-          routerLink="/collaborations/my-campaigns"
-          data-testid="company-setup-confirmed-cta"
-        >
-          {{ 'company_setup.confirmed.cta' | transloco }}
-        </a>
+        <div class="mt-5 flex flex-wrap items-center gap-3">
+          <a
+            color="primary"
+            mat-flat-button
+            routerLink="/collaborations/my-campaigns"
+            data-testid="company-setup-confirmed-cta"
+          >
+            {{ 'company_setup.confirmed.cta' | transloco }}
+          </a>
+          <a
+            mat-stroked-button
+            routerLink="/user/settings/plan-billing"
+            data-testid="company-setup-subscription"
+          >
+            <mat-icon>credit_card</mat-icon>
+            {{ 'company_setup.done.cta_subscription' | transloco }}
+          </a>
+        </div>
       </div>
     }
 
@@ -78,18 +87,36 @@
               | transloco
           }}
         </p>
-        <a
-          class="mt-4"
-          color="primary"
-          mat-flat-button
-          [routerLink]="activated() ? '/collaborations/my-campaigns' : '/user/settings/account'"
-          data-testid="company-setup-done-cta"
-        >
-          {{
-            (activated() ? 'company_setup.done.cta_campaigns' : 'company_setup.done.cta_verify')
-              | transloco
-          }}
-        </a>
+        <div class="mt-5 flex flex-wrap items-center gap-3">
+          @if (activated()) {
+            <!-- active: the subscription is the next decision; campaigns the other way on -->
+            <a
+              color="primary"
+              mat-flat-button
+              routerLink="/user/settings/plan-billing"
+              data-testid="company-setup-subscription"
+            >
+              <mat-icon>credit_card</mat-icon>
+              {{ 'company_setup.done.cta_subscription' | transloco }}
+            </a>
+            <a
+              mat-stroked-button
+              routerLink="/collaborations/my-campaigns"
+              data-testid="company-setup-done-cta"
+            >
+              {{ 'company_setup.done.cta_campaigns' | transloco }}
+            </a>
+          } @else {
+            <a
+              color="primary"
+              mat-flat-button
+              routerLink="/user/settings/account"
+              data-testid="company-setup-done-cta"
+            >
+              {{ 'company_setup.done.cta_verify' | transloco }}
+            </a>
+          }
+        </div>
       </div>
     }
 

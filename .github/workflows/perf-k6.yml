@@ -1,0 +1,72 @@
+# Performance — k6 against the demo's public routes, with thresholds that fail
+# the job.
+#
+# On demand, deliberately: the live demo sits behind Cloudflare and a single
+# VPS, so a scheduled load run would measure the edge cache as often as the
+# app. Run it by hand before and after a release, or point it at a preview
+# server. Thresholds live in the script (p95 per route, error rate < 1 %,
+# checks > 99 %); the summary JSON is kept as an artifact for 30 days so two
+# runs can be compared.
+#
+# The same script is the one meant for k6-operator on Kubernetes (a TestRun
+# with these thresholds as its pass condition) — see the engineering chapter's
+# "in progress" card.
+name: Performance (k6)
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: "Base URL to load (no trailing slash)"
+        default: "https://checkitout.app"
+        required: true
+      profile:
+        description: "smoke (1 VU, 30 s) or load (ramp to 10 VUs, 75 s)"
+        default: "smoke"
+        type: choice
+        options: [smoke, load]
+      p95_ms:
+        description: "p95 budget per route, in ms"
+        default: "1500"
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  k6:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install k6
+        run: |
+          set -euo pipefail
+          sudo gpg -k
+          sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg \
+            --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" \
+            | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq k6
+          k6 version
+
+      - name: Run
+        env:
+          BASE_URL: ${{ inputs.base_url }}
+          K6_PROFILE: ${{ inputs.profile }}
+          K6_P95: ${{ inputs.p95_ms }}
+          K6_OUT_DIR: k6-results
+        run: |
+          mkdir -p k6-results
+          k6 run e2e-tests/perf/k6/demo-routes.js
+
+      - name: Keep the summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: k6-summary-${{ inputs.profile }}
+          path: k6-results/
+          retention-days: 30
+          if-no-files-found: warn

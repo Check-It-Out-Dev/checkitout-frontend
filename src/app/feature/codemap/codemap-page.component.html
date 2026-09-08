@@ -18,6 +18,51 @@
           {{ 'landing.codemap.intro' | transloco }}
         </p>
 
+        <!-- The film, first. It used to sit behind a button in the link row and
+             open a lightbox — "nobody will ever watch this movie" (owner,
+             2026-09-07). Now the poster is the first thing under the intro with
+             one play control on it, and the capture plays right here. -->
+        <div
+          class="relative mx-auto mt-8 aspect-video w-full max-w-2xl overflow-hidden rounded-2xl bg-ink shadow-xl ring-1 ring-beige"
+          data-testid="codemap-film"
+        >
+          @if (filmPlaying()) {
+            <video
+              class="block h-full w-full"
+              [src]="filmSrc"
+              poster="assets/codemap/codemap-demo-poster.jpg"
+              controls
+              autoplay
+              playsinline
+              data-testid="codemap-film-video"
+            ></video>
+          } @else {
+            <img
+              src="assets/codemap/codemap-demo-poster.jpg"
+              alt=""
+              class="absolute inset-0 h-full w-full object-cover"
+              width="1280"
+              height="720"
+            />
+            <button
+              type="button"
+              (click)="playFilm()"
+              class="group absolute inset-0 flex appearance-none flex-col items-center justify-center gap-3 border-0 bg-ink/25 p-0 transition hover:bg-ink/35 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-coral-400/70"
+              [attr.aria-label]="'landing.codemap.links.film' | transloco"
+              data-testid="codemap-film-play"
+            >
+              <span
+                class="flex h-16 w-16 items-center justify-center rounded-full bg-coral-600 text-white shadow-2xl transition-transform duration-300 group-hover:scale-110"
+              >
+                <mat-icon class="!h-8 !w-8 !text-3xl">play_arrow</mat-icon>
+              </span>
+            </button>
+          }
+        </div>
+        <p class="mt-2 text-center text-xs text-slate2">
+          {{ 'landing.codemap.film.note' | transloco }}
+        </p>
+
         <!-- top link row: repo · film · install · contact -->
         <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
           <a
@@ -30,15 +75,6 @@
             <mat-icon class="!h-4 !w-4 !text-base">open_in_new</mat-icon>
             {{ 'landing.codemap.links.repo' | transloco }}
           </a>
-          <button
-            type="button"
-            (click)="openFilm()"
-            class="inline-flex items-center gap-2 rounded-full border border-beige bg-white px-5 py-2.5 text-sm font-semibold text-ink transition hover:border-coral-300"
-            data-testid="codemap-link-film"
-          >
-            <mat-icon class="!h-4 !w-4 !text-base text-coral-500">play_circle</mat-icon>
-            {{ 'landing.codemap.links.film' | transloco }}
-          </button>
           <a
             href="#install"
             class="inline-flex items-center gap-2 rounded-full border border-beige bg-white px-5 py-2.5 text-sm font-semibold text-ink transition hover:border-coral-300"

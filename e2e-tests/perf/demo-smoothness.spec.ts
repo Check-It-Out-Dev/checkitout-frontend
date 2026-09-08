@@ -543,4 +543,33 @@ test.describe('Demo smoothness', () => {
       expect(errors).toEqual([]);
     });
   }
+  /**
+   * The message's dissolve lives in the same keyframes as its flight because
+   * the production pipeline once lost it. Angular scopes `@keyframes` names
+   * per component; inside an `@media` block the minified build scoped only
+   * the first name of a two-name `animation-name` list, so the dev server
+   * ran both, the sandbox tier passed, and the live site left every message
+   * lying on the pane. This runs against the BUILT app, so it sees what the
+   * visitor sees: the first message is whole at some point and gone 1.3 s
+   * after it appears.
+   */
+  test("the story's first message dissolves after landing, in the built app", async ({ page }) => {
+    await page.goto(`${BASE}/`, { waitUntil: 'networkidle' });
+    await page.locator('[data-testid="dashboard-mode-simulation"]').scrollIntoViewIfNeeded();
+    await page.click('[data-testid="dashboard-mode-simulation"]');
+    const cargo = page.locator('[data-testid="dashboard-flight"]');
+    await cargo.waitFor();
+    const seen = await cargo.evaluate(async (el) => {
+      const read = () => Number(getComputedStyle(el).opacity);
+      const t0 = performance.now();
+      let peak = 0;
+      while (performance.now() - t0 < 1300) {
+        peak = Math.max(peak, read());
+        await new Promise((r) => requestAnimationFrame(r));
+      }
+      return { peak, final: read() };
+    });
+    expect(seen.peak, 'the message never became visible').toBeGreaterThanOrEqual(0.95);
+    expect(seen.final, 'the message is still lying on the pane').toBe(0);
+  });
 });

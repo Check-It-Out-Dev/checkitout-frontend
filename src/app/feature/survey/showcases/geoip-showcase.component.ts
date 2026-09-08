@@ -64,7 +64,7 @@ import { CodePanelComponent } from '../ui/code-panel.component';
           </button>
         </div>
       </div>
-      <div class="mt-2 rounded-xl bg-cream p-5 ring-1 ring-beige">
+      <div class="mt-5 rounded-xl bg-cream p-5 ring-1 ring-beige">
         <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
           <div
             class="rounded-xl bg-white p-3 text-center ring-1 transition-all duration-300"

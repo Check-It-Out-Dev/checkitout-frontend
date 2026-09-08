@@ -131,7 +131,36 @@ test.describe('Demo chaos', () => {
           await page.waitForTimeout(120);
         } else if (roll < 0.82) {
           log.push('stray-click');
-          await page.mouse.click(8 + Math.round(random() * 40), 8 + Math.round(random() * 40));
+          // A stray click is a click on nothing — never on a control. The
+          // top-left corner used to be nothing; it is the brand mark now, and
+          // the brand mark is the way out of a sandbox by design (owner,
+          // 2026-09-07). Leaving the tour on purpose is not the tour losing
+          // its way, so the click is placed where no control answers it.
+          const spot = await page.evaluate(
+            (seed) => {
+              let x = seed;
+              const rnd = (): number => {
+                x = (x * 1103515245 + 12345) % 2147483648;
+                return x / 2147483648;
+              };
+              for (let i = 0; i < 40; i++) {
+                const px = 8 + Math.round(rnd() * (window.innerWidth - 16));
+                const py = 8 + Math.round(rnd() * (window.innerHeight - 16));
+                const el = document.elementFromPoint(px, py);
+                if (!el) continue;
+                if (
+                  el.closest(
+                    'a, button, input, select, textarea, [role="button"], mat-checkbox, mat-radio-button, mat-select, [data-testid^="guide-"], app-world-sim-shell',
+                  )
+                )
+                  continue;
+                return { px, py };
+              }
+              return null;
+            },
+            Math.round(random() * 1e9),
+          );
+          if (spot) await page.mouse.click(spot.px, spot.py);
         } else {
           // and sometimes the visitor actually does what the tour asked
           log.push('advance');

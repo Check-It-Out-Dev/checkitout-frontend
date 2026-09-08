@@ -170,12 +170,14 @@ export const routes: Routes = [
       {
         path: '',
         title: 'landing.survey.title',
+        data: { description: 'landing.survey.intro' },
         loadComponent: () =>
           import('./feature/survey/survey-hub.component').then((m) => m.SurveyHubComponent),
       },
       {
         path: 'platform',
         title: 'landing.survey.chapters.platform.question',
+        data: { description: 'landing.survey.chapters.platform.intro' },
         loadComponent: () =>
           import('./feature/survey/chapters/platform-chapter.component').then(
             (m) => m.PlatformChapterComponent,
@@ -184,6 +186,7 @@ export const routes: Routes = [
       {
         path: 'security',
         title: 'landing.survey.chapters.security.question',
+        data: { description: 'landing.survey.chapters.security.intro' },
         loadComponent: () =>
           import('./feature/survey/chapters/security-chapter.component').then(
             (m) => m.SecurityChapterComponent,
@@ -192,6 +195,7 @@ export const routes: Routes = [
       {
         path: 'compliance',
         title: 'landing.survey.chapters.compliance.question',
+        data: { description: 'landing.survey.chapters.compliance.intro' },
         loadComponent: () =>
           import('./feature/survey/chapters/compliance-chapter.component').then(
             (m) => m.ComplianceChapterComponent,
@@ -200,6 +204,7 @@ export const routes: Routes = [
       {
         path: 'operations',
         title: 'landing.survey.chapters.operations.question',
+        data: { description: 'landing.survey.chapters.operations.intro' },
         loadComponent: () =>
           import('./feature/survey/chapters/operations-chapter.component').then(
             (m) => m.OperationsChapterComponent,
@@ -208,6 +213,7 @@ export const routes: Routes = [
       {
         path: 'engineering',
         title: 'landing.survey.chapters.engineering.question',
+        data: { description: 'landing.survey.chapters.engineering.intro' },
         loadComponent: () =>
           import('./feature/survey/chapters/engineering-chapter.component').then(
             (m) => m.EngineeringChapterComponent,
@@ -442,6 +448,15 @@ export const routes: Routes = [
             loadComponent: () =>
               import('./feature/applied-opportunities/content-submission.component').then(
                 (m) => m.ContentSubmissionComponent,
+              ),
+          },
+          {
+            // The company's inbox: applications to every campaign it owns.
+            path: 'applicants',
+            title: 'opportunities.applicants.inbox_title',
+            loadComponent: () =>
+              import('./feature/opportunities/campaign-applicants.component').then(
+                (m) => m.CampaignApplicantsComponent,
               ),
           },
           {

@@ -21,18 +21,34 @@ import type { AppliedOpportunityDtoOut } from '../../api/model/applied-opportuni
 import { OpportunityStatus } from '../../api/model/opportunity-status';
 import { AppliedOpportunityApiService } from '../../core/applied-opportunities/applied-opportunity.service';
 import { SessionStateService } from '../../core/auth/session-state.service';
+import { AvatarComponent } from '../../shared/components/avatar/avatar.component';
+import { campaignStage, type CampaignStage } from '../opportunities/campaign-applicants.component';
 
 type LoadState = 'loading' | 'loaded' | 'empty' | 'error';
+
+/** The company's view groups its collaborations under the campaign they belong to. */
+export interface CampaignGroup {
+  readonly id: number | string;
+  readonly title: string;
+  readonly stage: CampaignStage;
+  readonly rows: AppliedOpportunityDtoOut[];
+}
 type DashboardTab = 'in-progress' | 'finished';
 
 /**
  * Server-side status buckets — the collaboration state machine split the way
  * the legacy dashboard splits it (`getStatusFiltersForTab`, legacy
- * applied-opportunity.service.ts:508). Registrations ([APPLIED,
- * ACCEPTED_BY_COMPANY]) is the already-ported list at
+ * applied-opportunity.service.ts:508), with one deliberate difference: a row
+ * the company has accepted is in progress here. Legacy kept it under
+ * registrations until the creator counter-signed, while the statistics
+ * endpoint, the registrations list and this page's own 8-step meter
+ * (ACCEPTED_BY_COMPANY = step 2) all already treated it as under way — so the
+ * "W trakcie (4)" badge sat over a list of two. One bucket, everywhere.
+ * Registrations ([APPLIED, ACCEPTED_BY_COMPANY]) is the already-ported list at
  * /collaborations/registrations; its tab here navigates there.
  */
 const IN_PROGRESS_STATUSES: ReadonlyArray<OpportunityStatus> = [
+  OpportunityStatus.ACCEPTED_BY_COMPANY,
   OpportunityStatus.ACCEPTED_BY_INFLUENCER,
   OpportunityStatus.CONTENT_SEND_TO_ACCEPT,
   OpportunityStatus.CONTENT_APPROVED,
@@ -119,6 +135,7 @@ interface RowCta {
     MatProgressSpinnerModule,
     MatTabsModule,
     TranslocoModule,
+    AvatarComponent,
   ],
   templateUrl: './collaboration-dashboard.component.html',
 })
@@ -147,6 +164,45 @@ export class CollaborationDashboardComponent implements OnInit {
 
   private readonly role = computed(() => this.session.user()?.userType?.value ?? null);
   readonly isCompany = computed(() => this.role() === 'COMPANY');
+
+  /**
+   * Company chair: one card per campaign, the creators under it, a status
+   * each. A flat list of rows that all named the same campaign twice read as
+   * one collaboration listed twice (owner, 2026-09-07); the campaign is the
+   * thing a company thinks in, and a campaign can carry several creators.
+   * Influencers keep the flat list — their rows are all their own.
+   */
+  readonly groups = computed<CampaignGroup[] | null>(() => {
+    if (!this.isCompany()) return null;
+    const byCampaign = new Map<number | string, CampaignGroup>();
+    for (const row of this.items()) {
+      const campaign = row.partnershipOpportunity;
+      const id = campaign?.id ?? `row-${row.id}`;
+      let group = byCampaign.get(id);
+      if (!group) {
+        group = {
+          id,
+          title: campaign?.title || campaign?.name || '',
+          stage: campaign ? campaignStage(campaign) : 'running',
+          rows: [],
+        };
+        byCampaign.set(id, group);
+      }
+      group.rows.push(row);
+    }
+    return [...byCampaign.values()];
+  });
+
+  stageChipClass(stage: CampaignStage): string {
+    switch (stage) {
+      case 'new':
+        return 'border-emerald-200 bg-emerald-50 text-emerald-800';
+      case 'running':
+        return 'border-amber-200 bg-amber-50 text-amber-900';
+      default:
+        return 'border-beige bg-cream text-slate2';
+    }
+  }
 
   ngOnInit(): void {
     // Reactive route→tab binding: /collaborations/in-progress and /finished

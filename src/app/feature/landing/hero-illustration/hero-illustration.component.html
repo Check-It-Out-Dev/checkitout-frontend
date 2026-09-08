@@ -7,10 +7,13 @@
   <div
     class="relative h-72 w-full overflow-hidden rounded-3xl bg-gradient-to-br from-coral-50 via-cream to-navy-50 ring-1 ring-beige"
   >
-    <div class="flex h-full items-center justify-center gap-12 px-10">
+    <!-- The row is tight on purpose. At px-10 / gap-12 / w-20 + w-24 the card
+         (392 px at every desktop width, measured) left the connection 40 px:
+         two dots and their gaps, and 0 px for the line between them. -->
+    <div class="flex h-full items-center justify-center gap-4 px-8">
       <!-- Influencer side: round avatar mark -->
       <div
-        class="flex h-28 w-20 flex-col items-center justify-center"
+        class="flex h-28 w-16 flex-col items-center justify-center"
         data-testid="hero-illustration-influencer"
       >
         <div
@@ -21,19 +24,34 @@
         <div class="mt-2 h-10 w-12 rounded-b-full bg-coral-500/90"></div>
       </div>
 
-      <!-- Connection — dotted line with two dots -->
+      <!-- Connection — a dashed line, and two signals travelling along it.
+           The coral dot is the creator's, the navy ring the company's; they
+           set off from opposite ends, pass through each other in the middle
+           (the 12 px disc drawn inside the 16 px ring: one "match" mark for
+           a beat) and carry on to the far side. Motion lives in the
+           component's styles; vertical centring is by auto margins because
+           the animation owns `transform`. -->
       <div
-        class="flex flex-1 items-center justify-center gap-2"
+        class="hero-connection relative h-4 min-w-[6rem] flex-1"
         data-testid="hero-illustration-connection"
       >
-        <span class="h-3 w-3 rounded-full bg-coral-500"></span>
-        <span class="block h-px flex-1 border-t-2 border-dashed border-ink/30"></span>
-        <span class="h-3 w-3 rounded-full border-2 border-navy-500 bg-cream"></span>
+        <span
+          class="absolute inset-x-0 inset-y-0 my-auto h-0 border-t-2 border-dashed border-ink/30"
+          data-testid="hero-illustration-connection-line"
+        ></span>
+        <span
+          class="hero-dot hero-dot--creator absolute inset-y-0 left-0 z-10 my-auto h-3 w-3 rounded-full bg-coral-500"
+          data-testid="hero-illustration-dot-creator"
+        ></span>
+        <span
+          class="hero-dot hero-dot--company absolute inset-y-0 right-0 my-auto h-4 w-4 rounded-full border-2 border-navy-500 bg-cream"
+          data-testid="hero-illustration-dot-company"
+        ></span>
       </div>
 
       <!-- Company side: building mark -->
       <div
-        class="flex h-28 w-24 items-center justify-center"
+        class="flex h-28 w-20 items-center justify-center"
         data-testid="hero-illustration-company"
       >
         <div

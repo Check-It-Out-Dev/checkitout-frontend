@@ -25,14 +25,15 @@
  * Plus the same four security headers, because they are what a page's
  * behaviour is actually subject to.
  *
- *   npm run serve:demo              → build if needed, serve on 4300
+ *   npm run serve:demo              → build if missing or stale, serve on 4300
+ *   npm run serve:demo -- --build   → build regardless
  *   npm run serve:demo -- --port 5000 --no-build
  */
 import { createReadStream, existsSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
-import { extname, join, normalize, resolve, sep } from 'node:path';
-import { spawnSync } from 'node:child_process';
+import { extname, join, normalize, sep } from 'node:path';
 import { createGzip } from 'node:zlib';
+import { ROOT, SHELL, buildDemo, buildReason } from './demo-build.mjs';
 
 const args = process.argv.slice(2);
 const flag = (name, fallback) => {
@@ -41,8 +42,6 @@ const flag = (name, fallback) => {
 };
 
 const PORT = Number(flag('port', 4300));
-const ROOT = resolve('dist/check-it-out-fe-greenfield/browser');
-const SHELL = join(ROOT, 'index.html');
 
 const TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -76,16 +75,21 @@ const GZIP = new Set([
 
 const log = (m) => console.log(`\x1b[36m[demo] ${m}\x1b[0m`);
 
-if (!existsSync(SHELL)) {
-  if (args.includes('--no-build')) {
+if (args.includes('--no-build')) {
+  if (!existsSync(SHELL)) {
     console.error(`[demo] no build at ${ROOT} — run \`npm run build:demo\` first`);
     process.exit(1);
   }
-  log('no build found — running build:demo (about a minute)');
-  const built = spawnSync('npm', ['run', 'build:demo'], { stdio: 'inherit', shell: true });
-  if (built.status !== 0 || !existsSync(SHELL)) {
-    console.error('[demo] build failed');
-    process.exit(1);
+} else {
+  // Missing or older than src/ — the rule lives in demo-build.mjs, shared with
+  // the perf runner and the deploy, so all three agree on what "current" is.
+  const reason = buildReason({ force: args.includes('--build') });
+  if (reason) {
+    log(`build:demo — ${reason} (about a minute)`);
+    if (!buildDemo()) {
+      console.error('[demo] build failed');
+      process.exit(1);
+    }
   }
 }
 

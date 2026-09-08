@@ -2,7 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { Injectable, NgZone, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import type { GuideAction, StepDone } from './scenario-registry';
-import { scrollBehaviourFor } from './reduced-motion';
+import { glideIntoView } from './glide';
 
 const DEFAULT_TIMEOUT_MS = 4000;
 /** Safety re-check behind the observer — covers state that changes with no
@@ -244,8 +244,76 @@ export class GuideRunnerService {
         // must give way to the fresh one.
         return this.fill(el, value, false);
       }
+      case 'select': {
+        const host = await this.waitFor(action.selector);
+        if (!host) return false;
+        if (this.coveredByModal(host)) return true;
+        this.reveal(host);
+        // A panel from the select before may still be fading out; its options
+        // would answer for this one's. Let it go first.
+        const noPanel = (): boolean => !this.doc.querySelector('.cdk-overlay-container mat-option');
+        await this.waitUntil(noPanel, 1500);
+        // The host of a mat-select is not what a person presses — the trigger
+        // inside it is, and only that opens the panel.
+        (host.querySelector<HTMLElement>('.mat-mdc-select-trigger') ?? host).click();
+        if (!(await this.waitFor('.cdk-overlay-container mat-option'))) return false;
+        const wanted = new Set(action.options);
+        const options = Array.from(
+          this.doc.querySelectorAll<HTMLElement>('.cdk-overlay-container mat-option'),
+        );
+        for (const option of options) {
+          const label = option.textContent?.trim() ?? '';
+          if (!wanted.has(label) || option.getAttribute('aria-selected') === 'true') continue;
+          option.click();
+          await this.frame();
+        }
+        // A single select closes on the pick; a multiple one waits for more —
+        // the backdrop (the newest one: an older panel's may still be fading)
+        // is what the person would press to be done.
+        const backdrops = this.doc.querySelectorAll<HTMLElement>('.cdk-overlay-backdrop');
+        backdrops[backdrops.length - 1]?.click();
+        await this.waitUntil(noPanel, 1500);
+        return true;
+      }
+      case 'attach': {
+        const button = await this.waitFor(action.button);
+        if (!button) return false;
+        if (this.coveredByModal(button)) return true;
+        const input = this.doc.querySelector(action.selector);
+        if (!(input instanceof HTMLInputElement)) return false;
+        this.reveal(button);
+        for (const spec of action.files) {
+          const file = await this.fetchFile(spec);
+          if (!file) return false;
+          const transfer = new DataTransfer();
+          transfer.items.add(file);
+          input.files = transfer.files;
+          input.dispatchEvent(new Event('change', { bubbles: true }));
+          // The next file waits for this one's preview to be in the form, or
+          // the handler drops it while the upload is still running. Counting
+          // images beats probing the button's disabled state: an upload the
+          // fixtures answer at once never shows it, and a probe with a
+          // timeout cost 400 ms per file for nothing.
+          const form = input.closest('form') ?? this.doc.body;
+          const before = form.querySelectorAll('img').length;
+          if (!(await this.waitUntil(() => form.querySelectorAll('img').length > before)))
+            return false;
+        }
+        return true;
+      }
       default:
         return false;
+    }
+  }
+
+  /** A file from the app's own assets, the way a picker would hand it over. */
+  private async fetchFile(spec: { url: string; name: string; type: string }): Promise<File | null> {
+    try {
+      const res = await fetch(spec.url);
+      if (!res.ok) return null;
+      return new File([await res.blob()], spec.name, { type: spec.type });
+    } catch {
+      return null;
     }
   }
 
@@ -264,7 +332,9 @@ export class GuideRunnerService {
     const hadFocus = this.doc.activeElement === el;
     if (!hadFocus) {
       this.reveal(el);
-      el.focus();
+      // The glide above owns the scroll; a focus that also scrolls would jump
+      // ahead of it and then be pulled back — a visible stutter on long forms.
+      el.focus({ preventScroll: true });
     }
     const proto =
       el instanceof HTMLTextAreaElement
@@ -311,7 +381,7 @@ export class GuideRunnerService {
       const height = view?.innerHeight ?? 0;
       const width = view?.innerWidth ?? 0;
       if (box.top >= 0 && box.left >= 0 && box.bottom <= height && box.right <= width) return;
-      el.scrollIntoView({ block: 'center', behavior: scrollBehaviourFor(view) });
+      this.zone.runOutsideAngular(() => glideIntoView(el));
     } catch {
       /* jsdom has no layout — nothing to reveal */
     }

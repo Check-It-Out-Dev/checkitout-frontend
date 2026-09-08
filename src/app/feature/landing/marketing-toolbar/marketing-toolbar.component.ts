@@ -61,28 +61,29 @@ export class MarketingToolbarComponent {
    * toolbar and nothing in the footer led to it. A visitor who judged the page
    * from the first screen never learned it existed.
    *
-   * Six, not eight. All eight fit — measured at 1280 px in Polish, which has the
-   * longer labels, with 67 px to spare — so this is a priority list and not a
-   * width constraint. A bar is read left to right and its right-hand end is
-   * where attention has already gone; a disclosure page and an about-us do not
-   * earn a place in front of the product and the engineering case. Both are one
-   * click away in the menu and in the footer, and `e2e-tests/sandbox/
-   * marketing-toolbar.spec.ts` fails if either disappears from there. */
+   * Seven, not eight. All eight fit (measured at 1280 px in Polish, which has
+   * the longer labels, with 67 px to spare), so this is a priority list and not
+   * a width constraint. A bar is read left to right and its right-hand end is
+   * where attention has already gone. The EU-funding disclosure earns its place:
+   * the owner asked for it back in the bar (2026-09-07); it is an obligation of
+   * the grant and a page visitors are sent to. The about-us does not, and stays
+   * one click away in the menu and in the footer, where
+   * `e2e-tests/sandbox/marketing-toolbar.spec.ts` fails if it disappears. */
   readonly navItems: readonly NavItem[] = [
     { id: 'how-it-works', key: 'header.nav.how_it_works', anchor: 'how-it-works' },
     { id: 'pricing', key: 'header.nav.pricing', anchor: 'pricing' },
     { id: 'survey', key: 'header.nav.survey', route: '/technical-survey' },
     { id: 'codemap', key: 'header.nav.codemap', route: '/codemap' },
+    { id: 'grants', key: 'header.nav.grants', route: '/grants' },
     { id: 'faq', key: 'header.nav.faq', anchor: 'faq' },
     { id: 'contact', key: 'header.nav.contact', anchor: 'contact' },
   ];
 
-  /** The menu's list: the bar's, plus the two that were demoted from it. The
+  /** The menu's list: the bar's, plus the one that was demoted from it. The
    * menu carries everything, because below `lg` it is the only navigation
    * there is. */
   readonly menuItems: readonly NavItem[] = [
     ...this.navItems,
-    { id: 'grants', key: 'header.nav.grants', route: '/grants' },
     { id: 'team', key: 'header.nav.team', route: '/team' },
   ];
 

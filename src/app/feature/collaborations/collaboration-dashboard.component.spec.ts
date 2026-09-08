@@ -107,6 +107,7 @@ describe('CollaborationDashboardComponent', () => {
     expect(api.lastPage).toBe(0);
     expect(api.lastFilters?.['opportunityStatus']).toBe(
       [
+        OpportunityStatus.ACCEPTED_BY_COMPANY,
         OpportunityStatus.ACCEPTED_BY_INFLUENCER,
         OpportunityStatus.CONTENT_SEND_TO_ACCEPT,
         OpportunityStatus.CONTENT_APPROVED,
