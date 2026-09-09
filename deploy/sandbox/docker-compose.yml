@@ -40,6 +40,11 @@ services:
       SPRING_DATASOURCE_DATABASE: ${POSTGRES_DB:-postgres}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-postgres}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-admin}
+      # dev-lite's LocalDatabaseInitializer opens a second, superuser connection from its own properties
+      # (postgres.superuser.*, default postgres/admin). With a real password in .env the first deploy on the
+      # host crash-looped on "password authentication failed for user postgres" until these two were passed.
+      POSTGRES_SUPERUSER_USERNAME: ${POSTGRES_USER:-postgres}
+      POSTGRES_SUPERUSER_PASSWORD: ${POSTGRES_PASSWORD:-admin}
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: "6379"
       SPRING_LIQUIBASE_CONTEXTS: dev,local,dev-lite

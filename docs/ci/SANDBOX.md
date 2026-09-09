@@ -246,6 +246,14 @@ guard holds), and the code is verified where the code is verified.
   nothing else.
 - Uploads are capped at 2 GB and reset nightly; the rate limits cap request volume; Cloudflare in front
   absorbs the rest.
+- The first deploy has no rollback target: `rollback` restores the previous tags, and on a fresh host
+  those are the same images with the same environment, so it fails the same way and says "the stack needs
+  a human". The first run on gvps (2026-09-09 18:23) did exactly that: dev-lite's `LocalDatabaseInitializer`
+  opens a superuser connection from its own `postgres.superuser.*` properties (default `postgres`/`admin`),
+  the host's `.env` had a real password, and the backend crash-looped on "password authentication failed
+  for user postgres" while the rehearsal on the dev box, with `admin` on both sides, had never shown it.
+  The compose file now hands `POSTGRES_PASSWORD` to `POSTGRES_SUPERUSER_PASSWORD` too; rehearse with a
+  random password, not the default.
 - A red deploy leaves the previous tags running (`rollback` is automatic); a red reseed leaves the
   backend stopped and needs a human, which the timer's failure shows in `systemctl status`.
 
