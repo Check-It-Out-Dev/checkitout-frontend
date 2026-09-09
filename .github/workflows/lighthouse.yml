@@ -46,7 +46,7 @@ jobs:
           uploadArtifacts: false
           temporaryPublicStorage: false
       - name: Scores
-        run: node tools/ci/lighthouse-summary.mjs lhci-report --json lhci-report/lighthouse.json | tee -a "$GITHUB_STEP_SUMMARY"
+        run: set -o pipefail; node tools/ci/lighthouse-summary.mjs lhci-report --json lhci-report/lighthouse.json | tee -a "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
