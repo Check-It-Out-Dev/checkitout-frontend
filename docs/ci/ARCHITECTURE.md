@@ -130,6 +130,30 @@ Until the backend image is published (`build-image.yml` in the backend repositor
 `checkItOut-be2` with `docker build -f docker/instagram-platform/Dockerfile -t ghcr.io/check-it-out-dev/checkitout-backend:main .`
 and `kind load` it like the others.
 
+### The cluster's lifetime, and how to take it down
+
+In CI the cluster is created inside the job and dies with the runner: `helm/kind-action` builds it in
+about a minute, the manifests apply, the tests run, the artifacts are uploaded, and the runner is
+destroyed. Nothing persists, nothing bills, nothing has to be torn down; every run starts from a known
+state. That is the right shape for a free hosted runner. What it costs is provisioning time, three to
+four minutes of the 25-minute budget, spent almost entirely on images: the Playwright image (about
+2 GB), the backend image from ghcr.io, Postgres and Redis. The job keeps that down by pulling the
+backend from GitHub's own registry, building the test image on the runner with the layer cache
+(`cache-from: type=gha`), and pulling the base images in parallel with the cluster's start. A cluster kept
+alive between runs would save those minutes and cost a machine that is idle six days out of seven; for
+this estate the ephemeral cluster wins.
+
+On the dev box the cluster is a convenience that stays until you delete it. Three levels:
+
+```bash
+kubectl delete -k deploy/k8s/base -n checkitout       # the stack only; the cluster and its loaded images stay (seconds to bring back)
+kind delete cluster --name checkitout-ci              # the whole cluster; recreating it and loading images takes 2–3 min
+docker image rm checkitout-tests:ci checkitout-frontend:ci   # the local images too (the test image is 4.6 GB)
+```
+
+`kubectl get pods -A` and `docker ps` tell you which level you are at. Reports in `./ci-reports/` are
+files on the host and survive all three.
+
 ## 4 · Rehearsed on the dev box, 2026-09-09
 
 The manifests were run end to end on a kind cluster under Docker Desktop before any workflow existed,
