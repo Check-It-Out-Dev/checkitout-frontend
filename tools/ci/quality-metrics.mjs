@@ -9,6 +9,7 @@
 //   --jest results.json                 `jest --json --outputFile=results.json`; tier "jest"
 //   --coverage coverage-summary.json    Jest json-summary (lines, statements, branches, functions)
 //   --playwright merged.json            `playwright merge-reports --reporter json`; tiers from the spec path
+//   --verdict summary.json              k8s-summary.mjs output; carries `status` green|incomplete|red
 //   --junit "glob:tier"                 JUnit XML files (surefire, failsafe, pytest), repeatable
 //   --jacoco jacoco.xml                 line coverage from a JaCoCo report
 //   --k6 "glob"                         k6 handleSummary JSON, one per runner
@@ -233,10 +234,15 @@ for (const spec of multi.copy) {
 writeFileSync(join(out, 'metrics', 'tests', `${runNumber}.json`), JSON.stringify({ run: runNumber, tests }));
 const { list: flaky } = flakyList(join(out, 'metrics', 'tests'), windowRuns);
 
+// A run whose jobs did not all finish is `incomplete`: its counts are partial and it must never be read,
+// on the dashboard or in the history, as a green run (k8s-summary.mjs decides this).
+const verdict = opt.verdict && existsSync(opt.verdict) ? readJson(opt.verdict) : null;
+const runStatus = (verdict && verdict.status) || null;
+
 const metrics = {
   schema: 1,
   repo,
-  run: { number: runNumber, id: runId, sha, branch, workflow, startedAt, durationSec, url: `${server}/${repo}/actions/runs/${runId}` },
+  run: { number: runNumber, id: runId, sha, branch, workflow, startedAt, durationSec, url: `${server}/${repo}/actions/runs/${runId}`, ...(runStatus ? { status: runStatus } : {}) },
   tests: {
     ...totals,
     passRate: r4(scoredCount ? totals.passed / scoredCount : 1),
@@ -256,6 +262,7 @@ writeFileSync(join(out, 'quality-metrics.json'), JSON.stringify(metrics, null, 2
 
 const line = {
   run: runNumber, id: runId, sha, at: startedAt, workflow, durationSec,
+  ...(runStatus ? { status: runStatus } : {}),
   total: totals.total, passed: totals.passed, failed: totals.failed, flaky: totals.flaky, skipped: totals.skipped,
   passRate: metrics.tests.passRate, flakyRate: metrics.tests.flakyRate,
   ...(coverage ? { coverageLines: coverage.lines } : {}),
