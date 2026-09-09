@@ -1,0 +1,165 @@
+# Test execution on Kubernetes, inside one GitHub-hosted runner: a kind cluster is created in the job,
+# the application stack (backend on dev-lite from ghcr.io, Postgres, Redis, the frontend behind nginx) is
+# applied from deploy/k8s/base, the browser tiers run as an Indexed Job of four Playwright shards, and k6
+# generates load from inside the cluster through the k6-operator. Reports land on the runner as plain
+# files through a kind extraMount; the cluster dies with the runner. The design and the local rehearsal
+# are in docs/ci/ARCHITECTURE.md §2–§4; the verdict comes from tools/ci/k8s-summary.mjs.
+name: k8s-test-execution
+
+on:
+  schedule:
+    - cron: "0 3 * * 0"
+  workflow_dispatch:
+    inputs:
+      backend_tag:
+        description: Backend image tag on ghcr.io
+        type: string
+        default: main
+      shards:
+        description: Playwright shards (pods)
+        type: number
+        default: 4
+
+concurrency:
+  group: k8s-test-execution
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  NG_CLI_ANALYTICS: "false"
+  NODE_OPTIONS: "--max-old-space-size=4096"
+  KIND_CLUSTER: checkitout-ci
+  BACKEND_TAG: ${{ inputs.backend_tag || 'main' }}
+  SHARDS: ${{ inputs.shards || 4 }}
+
+jobs:
+  cluster:
+    name: kind cluster, 4 shards, 2 k6 runners
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --prefer-offline --no-audit --loglevel=error
+
+      # ---- images: the frontend from the production build, the test image from the pinned Playwright base ----
+      - run: npm run build
+      - uses: docker/setup-buildx-action@v3
+      - name: Frontend image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: deploy/k8s/frontend/Dockerfile
+          load: true
+          tags: checkitout-frontend:ci
+      - name: Playwright version
+        id: pw
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+      - name: Test image (layers cached between runs)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: deploy/k8s/tests/Dockerfile.playwright
+          build-args: PW_VERSION=${{ steps.pw.outputs.version }}
+          load: true
+          tags: checkitout-tests:ci
+          cache-from: type=gha,scope=tests-image
+          cache-to: type=gha,scope=tests-image,mode=max
+
+      # ---- the cluster ----
+      - name: Render the kind config (reports mount)
+        run: |
+          mkdir -p ci-reports
+          CI_REPORTS_DIR="$GITHUB_WORKSPACE/ci-reports" envsubst < deploy/k8s/kind-config.yaml > kind-config.rendered.yaml
+      - uses: helm/kind-action@v1
+        with:
+          cluster_name: ${{ env.KIND_CLUSTER }}
+          config: kind-config.rendered.yaml
+      - name: k6-operator
+        run: |
+          kubectl apply -f https://raw.githubusercontent.com/grafana/k6-operator/main/bundle.yaml
+          kubectl -n k6-operator-system rollout status deploy/k6-operator-controller-manager --timeout=180s
+      - name: Load the local images into the node
+        run: kind load docker-image checkitout-frontend:ci checkitout-tests:ci --name "$KIND_CLUSTER"
+
+      # ---- the stack ----
+      - name: Apply the stack (backend ${{ env.BACKEND_TAG }})
+        run: |
+          sed -i "s|newTag: main|newTag: $BACKEND_TAG|" deploy/k8s/base/kustomization.yaml
+          kubectl apply -k deploy/k8s/base
+          kubectl -n checkitout rollout status deploy/postgres --timeout=180s
+          kubectl -n checkitout rollout status deploy/backend --timeout=600s
+          kubectl -n checkitout rollout status deploy/frontend --timeout=180s
+      - name: Smoke the origin the shards will use (cookies without Secure over plain http)
+        run: |
+          kubectl -n checkitout run smoke --rm -i --restart=Never --image=curlimages/curl:8.10.1 -- sh -c '
+            set -e
+            FE=http://frontend.checkitout.svc
+            curl -fsS -o /dev/null $FE/healthz && echo "healthz ok"
+            curl -fsS $FE/api/actuator/health | grep -q "\"UP\"" && echo "backend UP"
+            curl -sS -D /tmp/h -o /dev/null -X POST $FE/api/test/auth/mock-session -H "Content-Type: application/json" -d "{\"email\":\"smoke@checkitout.app\",\"role\":\"COMPANY\"}"
+            grep -i "^set-cookie: session=" /tmp/h | grep -qiv "secure" && echo "session cookie without Secure: sign-in will work in the shards"
+            C=$(grep -i "^set-cookie" /tmp/h | sed "s/^[Ss]et-[Cc]ookie: //" | cut -d";" -f1 | tr "\r\n" ";")
+            curl -fsS -o /dev/null -H "Cookie: $C" $FE/api/users/me && echo "/users/me ok"
+          '
+
+      # ---- browser tiers as an Indexed Job ----
+      - name: Playwright shards
+        run: |
+          sed -i -e "s/completions: 4/completions: $SHARDS/" -e "s/parallelism: 4/parallelism: $SHARDS/" -e "s#--shard=\${SHARD}/4#--shard=\${SHARD}/$SHARDS#" deploy/k8s/tests/playwright-indexed-job.yaml
+          kubectl apply -f deploy/k8s/tests/playwright-indexed-job.yaml
+          kubectl -n checkitout wait --for=condition=complete job/playwright-shards --timeout=40m
+          ls -la ci-reports
+
+      # ---- k6 from inside the cluster ----
+      - name: k6 TestRun (2 runners)
+        run: |
+          kubectl -n checkitout create configmap k6-scripts --from-file=e2e-tests/perf/k6/
+          sed -i "s/value: \"local\"/value: \"$GITHUB_RUN_NUMBER\"/" deploy/k8s/tests/k6-testrun.yaml
+          kubectl apply -f deploy/k8s/tests/k6-testrun.yaml
+          for i in $(seq 1 120); do
+            st=$(kubectl -n checkitout get testrun k6-api-journeys -o jsonpath='{.status.stage}' 2>/dev/null || true)
+            [ "$st" = "finished" ] && break
+            [ "$st" = "error" ] && { echo "k6-operator reported error"; break; }
+            sleep 5
+          done
+          echo "TestRun stage: $st"
+          mkdir -p ci-reports/k6-logs
+          for p in $(kubectl -n checkitout get pods -o name | grep 'k6-api-journeys-[0-9]-'); do
+            kubectl -n checkitout logs "$p" > "ci-reports/k6-logs/$(basename "$p").log" 2>&1 || true
+          done
+
+      # ---- merge, verdict, artifacts ----
+      - name: Merge the shard reports
+        run: |
+          mkdir -p ci-reports/blobs
+          cp ci-reports/blob-*/*.zip ci-reports/blobs/
+          PLAYWRIGHT_HTML_OUTPUT_DIR=ci-reports/merged PLAYWRIGHT_HTML_REPORT=ci-reports/merged PLAYWRIGHT_JSON_OUTPUT_NAME=ci-reports/merged.json \
+            npx playwright merge-reports --reporter html,json ci-reports/blobs
+      - name: Verdict
+        run: node tools/ci/k8s-summary.mjs ci-reports --json ci-reports/k8s-summary.json | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Cluster state on failure
+        if: failure()
+        run: |
+          mkdir -p ci-reports/cluster
+          kubectl get events -A --sort-by=.lastTimestamp > ci-reports/cluster/events.txt || true
+          kubectl -n checkitout get pods -o wide > ci-reports/cluster/pods.txt || true
+          kubectl -n checkitout describe pods > ci-reports/cluster/describe.txt || true
+          for p in $(kubectl -n checkitout get pods -o name); do kubectl -n checkitout logs "$p" --all-containers > "ci-reports/cluster/$(basename "$p").log" 2>&1 || true; done
+          kubectl describe nodes > ci-reports/cluster/nodes.txt || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: k8s-reports-${{ github.run_number }}
+          path: |
+            ci-reports
+            !ci-reports/blobs
+          retention-days: 30
+      - name: Delete the cluster (the runner is ephemeral; deleting keeps the logs honest)
+        if: always()
+        run: kind delete cluster --name "$KIND_CLUSTER" || true

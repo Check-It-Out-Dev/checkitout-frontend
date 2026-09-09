@@ -100,3 +100,6 @@ deployment/vps/cutover-log-*.txt
 
 # k6 summaries (one JSON per run)
 e2e-tests/perf/k6/results/
+
+# Reports written by the Kubernetes test-execution substrate (deploy/k8s), collected through the kind mount
+ci-reports/

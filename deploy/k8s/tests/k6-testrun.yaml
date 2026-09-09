@@ -1,0 +1,43 @@
+# k6 traffic generated INSIDE the cluster against the app INSIDE the cluster: the k6-operator
+# splits the script's execution segments over `parallelism` runner pods, each hitting the
+# frontend Service by DNS. Install the operator once per cluster:
+#   kubectl apply -f https://raw.githubusercontent.com/grafana/k6-operator/main/bundle.yaml
+# The script ConfigMap is created by the workflow from the repo:
+#   kubectl -n checkitout create configmap k6-scripts --from-file=e2e-tests/perf/k6/
+# Results: the runner pods log the end-of-test summary; handleSummary writes JSON + HTML to
+# /reports (the same hostPath as the Playwright shards). With the Grafana Cloud secrets present
+# the workflow appends `--out experimental-prometheus-rw` and the K6_PROMETHEUS_RW_* env from
+# the k6-remote-write Secret, and the run also lands on the public dashboard.
+apiVersion: k6.io/v1alpha1
+kind: TestRun
+metadata:
+  name: k6-api-journeys
+  namespace: checkitout
+spec:
+  parallelism: 2
+  script:
+    configMap:
+      name: k6-scripts
+      file: api-journeys.js
+  # No --summary-export here: with parallelism > 1 every runner would overwrite the same file. The
+  # script's handleSummary writes one timestamped JSON per runner into K6_OUT_DIR instead.
+  arguments: --tag testid=ci
+  runner:
+    env:
+      - { name: BASE_URL, value: "http://frontend.checkitout.svc" }
+      - { name: BE_URL, value: "http://backend.checkitout.svc:8080" }
+      - { name: K6_PROFILE, value: "load" }
+      - { name: K6_DNS_POLICY, value: "preferIPv4" }
+      - { name: K6_OUT_DIR, value: "/reports" }
+      # The workflow replaces "local" with the run number so both runners' summaries share one run id.
+      - { name: K6_RUN_ID, value: "local" }
+    resources:
+      requests: { cpu: 250m, memory: 256Mi }
+      limits: { memory: 512Mi }
+    volumes:
+      - name: reports
+        hostPath:
+          path: /var/lib/ci-reports
+          type: DirectoryOrCreate
+    volumeMounts:
+      - { name: reports, mountPath: /reports }

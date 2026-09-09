@@ -1,0 +1,65 @@
+# nginx for the frontend image, used by the kind cluster (deploy/k8s) and the sandbox (deploy/sandbox).
+# The official image renders this template with envsubst at start-up; two variables decide the environment:
+#   BACKEND_UPSTREAM  host:port of the backend (backend.checkitout.svc:8080 in kind, backend:8080 in compose)
+#   COOKIE_FLAGS      re-flagging of the backend's cookies: `nosecure samesite=lax` for plain-http kind, where the
+#                     Secure flag would make the browser drop the session cookie and every test would fail at
+#                     sign-in; `secure samesite=lax` behind TLS on the sandbox.
+# Three rules mirror the production site: prerendered pages are served from their own index.html and everything
+# else falls back to the SPA shell (the try_files form that never 301s to a trailing slash); /api is proxied so
+# the browser sees one origin; the actuator is public only for health.
+
+log_format sandbox_json escape=json '{"time":"$time_iso8601","status":$status,"method":"$request_method",'
+    '"path":"$uri","bytes":$body_bytes_sent,"ms":$request_time,"upstream_ms":"$upstream_response_time",'
+    '"ua":"$http_user_agent","correlationId":"$upstream_http_x_correlation_id"}';
+
+server {
+    listen 80;
+    server_name _;
+    root /usr/share/nginx/html;
+    index index.html;
+    access_log /var/log/nginx/access.log sandbox_json;
+    # The dev-lite profile receives uploads through /api/dev-lite/upload; the upload tier sends 5 MB.
+    client_max_body_size 25m;
+
+    gzip on;
+    gzip_types text/plain text/css application/javascript application/json image/svg+xml;
+
+    location = /healthz {
+        access_log off;
+        return 200 "ok\n";
+        add_header Content-Type text/plain;
+    }
+
+    # Health is public (probes, smoke tests); every other actuator endpoint stays inside the network.
+    location ~ ^/api/actuator/health(/|$) {
+        proxy_pass http://${BACKEND_UPSTREAM};
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+    }
+    location /api/actuator/ {
+        return 404;
+    }
+
+    location /api/ {
+        proxy_pass http://${BACKEND_UPSTREAM};
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 120s;
+        proxy_cookie_domain ~.* $host;
+        proxy_cookie_flags ~ ${COOKIE_FLAGS};
+    }
+
+    location ~* \.(?:js|css|woff2?|png|jpg|jpeg|gif|svg|ico|webp|mp4)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+        try_files $uri =404;
+    }
+
+    location / {
+        add_header Cache-Control "no-cache";
+        try_files $uri $uri/index.html /index.html;
+    }
+}
