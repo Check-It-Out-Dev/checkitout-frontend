@@ -354,9 +354,12 @@
         fetch(`${BASE}/metrics/history.jsonl`, { cache: 'no-cache' }).then((r) => (r.ok ? r.text() : '')).then(parseJsonl).catch(() => []),
       ]);
       const repoUrl = renderMast(m);
-      renderVerdict(m, history);
-      renderRibbon(history, repoUrl);
-      renderTiles(m, history);
+      // One site, several workflows, and run numbers that restart per workflow: the trend and the streak
+      // only mean something within one workflow's own series.
+      const mine = history.filter((h) => !h.workflow || !m.run.workflow || h.workflow === m.run.workflow);
+      renderVerdict(m, mine);
+      renderRibbon(mine, repoUrl);
+      renderTiles(m, mine);
       renderTiers(m);
       renderK6(m);
       renderFlaky(m);

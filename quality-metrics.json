@@ -2,14 +2,14 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 11,
-    "id": 34388602326,
-    "sha": "e389330",
+    "number": 14,
+    "id": 34389212231,
+    "sha": "89cb0de",
     "branch": "main",
     "workflow": "browser-tiers",
-    "startedAt": "2026-09-09T18:22:31Z",
-    "durationSec": 360,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34388602326",
+    "startedAt": "2026-09-09T18:28:26Z",
+    "durationSec": 296,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34389212231",
     "status": "incomplete"
   },
   "tests": {
@@ -21,7 +21,7 @@
     "passRate": 1,
     "flakyRate": 0,
     "durationMeanSec": 0.14,
-    "durationP95Sec": 0.89,
+    "durationP95Sec": 0.88,
     "tiers": {
       "jest": {
         "total": 1183,
@@ -29,7 +29,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
-        "durationSec": 57
+        "durationSec": 66
       },
       "msw": {
         "total": 2,
@@ -45,7 +45,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 22,
-        "durationSec": 125
+        "durationSec": 120
       }
     }
   },
@@ -62,111 +62,8 @@
     "bestPractices": 100,
     "seo": 92
   },
-  "flaky": [
-    {
-      "title": "Demo smoothness › a simulator that never fires holds the step instead of narrating it [perf]",
-      "file": "perf/demo-smoothness.spec.ts",
-      "window": 7,
-      "runsFlaky": 2,
-      "runsFailed": 0,
-      "lastSeen": 10,
-      "history": [
-        "absent",
-        "absent",
-        "flaky",
-        "pass",
-        "pass",
-        "flaky",
-        "absent"
-      ]
-    },
-    {
-      "title": "@account-activation-e2e — port of account-activation-e2e.feature › @ntf-003 @company COMPANY receives ACCOUNT_ACTIVATED notification after confirm-data auto-activation [chromium-desktop]",
-      "file": "integration/flows/account-activation-e2e.spec.ts",
-      "window": 7,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 2,
-      "history": [
-        "absent",
-        "fail",
-        "absent",
-        "absent",
-        "absent",
-        "absent",
-        "absent"
-      ]
-    },
-    {
-      "title": "@magic-link-errors — port of magic-link-errors.feature › @tier-2 confirm-password-reset rejects garbage oobCode with invalid_action_code [chromium-desktop]",
-      "file": "integration/flows/magic-link-errors.spec.ts",
-      "window": 7,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 2,
-      "history": [
-        "absent",
-        "fail",
-        "absent",
-        "absent",
-        "absent",
-        "absent",
-        "absent"
-      ]
-    },
-    {
-      "title": "@magic-link-errors — port of magic-link-errors.feature › @tier-2 verify-reset-code rejects garbage oobCode with invalid_action_code [chromium-desktop]",
-      "file": "integration/flows/magic-link-errors.spec.ts",
-      "window": 7,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 2,
-      "history": [
-        "absent",
-        "fail",
-        "absent",
-        "absent",
-        "absent",
-        "absent",
-        "absent"
-      ]
-    },
-    {
-      "title": "Sandbox · CookieBannerComponent › clicking accept-all hides the banner [chromium-desktop]",
-      "file": "sandbox/cookie-banner.spec.ts",
-      "window": 7,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 2,
-      "history": [
-        "absent",
-        "fail",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "Sandbox · CookieBannerComponent › clicking necessary-only hides the banner [chromium-desktop]",
-      "file": "sandbox/cookie-banner.spec.ts",
-      "window": 7,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 2,
-      "history": [
-        "absent",
-        "fail",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass"
-      ]
-    }
-  ],
+  "flaky": [],
   "reports": {
-    "playwright": "playwright/11/"
+    "playwright": "playwright/14/"
   }
 }
