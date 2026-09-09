@@ -100,13 +100,20 @@ jobs:
           ssh -i ~/.ssh/sandbox -o BatchMode=yes -o IdentitiesOnly=yes -o ConnectTimeout=15 \
             "deploy@${{ secrets.SANDBOX_HOST }}" "deploy $FE_TAG $BE_TAG $GITHUB_SHA"
 
+      # From the outside, but not through Cloudflare: the zone runs Bot Fight Mode, which answers a
+      # datacentre curl with 403 whatever the sandbox is doing. Run 34382570406 rolled a healthy release
+      # back on that 403. Pinning the hostname to the origin keeps the public name, the public certificate,
+      # the host nginx and the whole application under test, and drops only the edge.
       - name: Smoke from the outside
+        env:
+          SMOKE_RESOLVE: sandbox.checkitout.app:443:${{ secrets.SANDBOX_ORIGIN_IP }}
         run: bash deploy/sandbox/smoke.sh "$SANDBOX_URL"
 
       - uses: grafana/setup-k6-action@v1
       - name: k6, sandbox profile (the persona only, one virtual user, low rate)
         env:
           BASE_URL: ${{ env.SANDBOX_URL }}
+          K6_ORIGIN_IP: ${{ secrets.SANDBOX_ORIGIN_IP }}
           K6_PROFILE: sandbox
           K6_PERSONA_ONLY: "1"
           K6_P95_BROWSE: "1500"

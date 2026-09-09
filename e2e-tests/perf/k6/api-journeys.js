@@ -49,8 +49,15 @@ const BROWSE = {
   },
 };
 
+// K6_ORIGIN_IP pins the public hostname to the origin address, for the same reason smoke.sh takes
+// SMOKE_RESOLVE: Cloudflare's Bot Fight Mode refuses a datacentre client, and this load is ours to
+// measure against our own server, not against the edge's opinion of the caller.
+const ORIGIN_IP = __ENV.K6_ORIGIN_IP;
+const HOST_PIN = ORIGIN_IP ? { hosts: { [new URL(BASE).hostname]: ORIGIN_IP } } : {};
+
 export const options = {
   insecureSkipTLSVerify: true,
+  ...HOST_PIN,
   // k6 empties every VU's cookie jar at the start of each iteration by default; the session minted in
   // iteration 0 must survive, otherwise every later call is anonymous (401).
   noCookiesReset: true,
