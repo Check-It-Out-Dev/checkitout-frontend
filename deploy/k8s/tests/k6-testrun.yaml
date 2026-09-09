@@ -19,13 +19,15 @@ spec:
     configMap:
       name: k6-scripts
       file: api-journeys.js
-  arguments: --tag testid=ci --summary-export=/reports/k6-summary.json
+  # No --summary-export here: with parallelism > 1 every runner would overwrite the same file. The
+  # script's handleSummary writes one timestamped JSON per runner into K6_OUT_DIR instead.
+  arguments: --tag testid=ci
   runner:
     env:
       - { name: BASE_URL, value: "http://frontend.checkitout.svc" }
       - { name: BE_URL, value: "http://backend.checkitout.svc:8080" }
       - { name: K6_PROFILE, value: "load" }
-      - { name: K6_DNS, value: "preferIPv4" }
+      - { name: K6_DNS_POLICY, value: "preferIPv4" }
       - { name: K6_OUT_DIR, value: "/reports" }
     resources:
       requests: { cpu: 250m, memory: 256Mi }
