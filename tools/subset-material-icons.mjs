@@ -61,8 +61,12 @@ const FONT_URL_RE =
 // ?v=<hash> or the preloaded URL never matches the CSS request → a
 // "preloaded but not used" console warning (caught by route-smoke) plus a
 // wasted double-fetch. Stamp + gate it exactly like the styles.scss url().
+// The href is ROOT-ABSOLUTE because the url() above is: under a <base href>
+// other than "/" (the sandbox build serves at /sandbox/) a relative preload
+// resolves against the base while the stylesheet's absolute url() does not,
+// so the two name different files and the preload never pairs.
 const PRELOAD_URL_RE =
-  /href="assets\/fonts\/materialicons_v145_subset\.woff2(?:\?v=[a-f0-9]+)?"/;
+  /href="\/assets\/fonts\/materialicons_v145_subset\.woff2(?:\?v=[a-f0-9]+)?"/;
 
 function fontHash() {
   return createHash('sha256').update(readFileSync(OUT_FONT)).digest('hex').slice(0, 12);
@@ -75,7 +79,7 @@ function readStamp() {
 
 function readPreloadStamp() {
   const m = readFileSync(INDEX_HTML, 'utf8').match(
-    /href="assets\/fonts\/materialicons_v145_subset\.woff2\?v=([a-f0-9]+)"/,
+    /href="\/assets\/fonts\/materialicons_v145_subset\.woff2\?v=([a-f0-9]+)"/,
   );
   return m ? m[1] : null;
 }
@@ -94,7 +98,7 @@ function stampIndex(hash) {
   const html = readFileSync(INDEX_HTML, 'utf8');
   const next = html.replace(
     PRELOAD_URL_RE,
-    `href="assets/fonts/materialicons_v145_subset.woff2?v=${hash}"`,
+    `href="/assets/fonts/materialicons_v145_subset.woff2?v=${hash}"`,
   );
   if (next !== html) writeFileSync(INDEX_HTML, next);
   return next !== html;

@@ -28,8 +28,8 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -52,7 +52,7 @@ jobs:
         run: npx --yes @lhci/cli@0.15.1 upload --config=./lighthouserc.json
       - name: Scores
         run: set -o pipefail; node tools/ci/lighthouse-summary.mjs lhci-report --json lhci-report/lighthouse.json | tee -a "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: always()
         with:
           name: lighthouse-${{ github.run_number }}
@@ -61,7 +61,7 @@ jobs:
             serve-demo.log
           retention-days: 30
       - name: Pages site (previous state)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: gh-pages
           path: site
