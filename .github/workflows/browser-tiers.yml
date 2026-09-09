@@ -75,6 +75,9 @@ jobs:
       - run: npm run test:perf -- --reporter=blob --shard=${{ matrix.shard }}/3
         env:
           PLAYWRIGHT_BLOB_OUTPUT_DIR: blob-report
+          # Absolute frame-timing budgets are measured and reported here, never asserted: a shared
+          # runner's 67 ms frame is the runner's (ARCHITECTURE.md §4). Structural budgets stay hard.
+          PERF_TIMING: report
         continue-on-error: true
       - uses: actions/upload-artifact@v4
         if: always()
