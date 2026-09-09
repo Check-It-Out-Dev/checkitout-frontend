@@ -78,9 +78,6 @@ jobs:
 
   visual:
     name: visual (pinned container)
-    # Activates once the Linux baseline set is committed (the ADR's one-time migration); until then the
-    # win32 set is the dev box's and a Linux rasteriser would only produce noise.
-    if: ${{ hashFiles('e2e-tests/visual/**/*-linux.png') != '' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     container:
@@ -88,14 +85,27 @@ jobs:
       options: --ipc=host
     steps:
       - uses: actions/checkout@v4
-      - run: npm ci --prefer-offline --no-audit --loglevel=error
-      - run: npx playwright test e2e-tests/visual --project=chromium-desktop --project=mobile-chrome --reporter=blob
+      # Activates once the Linux baseline set is committed (the ADR's one-time migration); until then the
+      # win32 set is the dev box's and a Linux rasteriser would only produce noise. (hashFiles is not
+      # available in a job-level `if`, hence a step decides.)
+      - id: baselines
+        run: |
+          if ls e2e-tests/visual/*-snapshots/*-linux.png >/dev/null 2>&1; then
+            echo "linux=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "linux=false" >> "$GITHUB_OUTPUT"
+            echo "No Linux visual baselines yet: the visual tier waits for the migration in docs/ci/ADR-visual-baselines.md." >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - if: steps.baselines.outputs.linux == 'true'
+        run: npm ci --prefer-offline --no-audit --loglevel=error
+      - if: steps.baselines.outputs.linux == 'true'
+        run: npx playwright test e2e-tests/visual --project=chromium-desktop --project=mobile-chrome --reporter=blob
         env:
           PLAYWRIGHT_BLOB_OUTPUT_DIR: blob-report
           HOME: /root
         continue-on-error: true
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: steps.baselines.outputs.linux == 'true'
         with:
           name: browser-blob-visual
           path: blob-report
