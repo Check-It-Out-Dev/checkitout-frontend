@@ -2,26 +2,26 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 17,
-    "id": 34392173770,
-    "sha": "95084d5",
+    "number": 18,
+    "id": 34392850540,
+    "sha": "bb29cb1",
     "branch": "main",
     "workflow": "browser-tiers",
-    "startedAt": "2026-09-09T18:57:36Z",
-    "durationSec": 469,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34392173770",
-    "status": "incomplete"
+    "startedAt": "2026-09-09T19:04:19Z",
+    "durationSec": 1230,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34392850540",
+    "status": "green"
   },
   "tests": {
-    "total": 1313,
-    "passed": 1289,
+    "total": 1395,
+    "passed": 1370,
     "failed": 0,
-    "flaky": 0,
+    "flaky": 1,
     "skipped": 24,
-    "passRate": 1,
-    "flakyRate": 0,
-    "durationMeanSec": 0.15,
-    "durationP95Sec": 0.9,
+    "passRate": 0.9993,
+    "flakyRate": 0.0007,
+    "durationMeanSec": 1.6,
+    "durationP95Sec": 4.02,
     "tiers": {
       "jest": {
         "total": 1183,
@@ -45,7 +45,15 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 22,
-        "durationSec": 122
+        "durationSec": 125
+      },
+      "perf": {
+        "total": 82,
+        "passed": 81,
+        "failed": 0,
+        "flaky": 1,
+        "skipped": 0,
+        "durationSec": 1991
       }
     }
   },
@@ -64,9 +72,24 @@
   },
   "flaky": [
     {
+      "title": "Demo smoothness › a simulator that never fires holds the step instead of narrating it [perf]",
+      "file": "perf/demo-smoothness.spec.ts",
+      "window": 5,
+      "runsFlaky": 2,
+      "runsFailed": 0,
+      "lastSeen": 18,
+      "history": [
+        "absent",
+        "flaky",
+        "pass",
+        "absent",
+        "flaky"
+      ]
+    },
+    {
       "title": "Demo smoothness › the admin-ops tour advances promptly at every step [perf]",
       "file": "perf/demo-smoothness.spec.ts",
-      "window": 4,
+      "window": 5,
       "runsFlaky": 0,
       "runsFailed": 1,
       "lastSeen": 16,
@@ -74,25 +97,12 @@
         "absent",
         "pass",
         "fail",
-        "absent"
-      ]
-    },
-    {
-      "title": "Demo smoothness › a simulator that never fires holds the step instead of narrating it [perf]",
-      "file": "perf/demo-smoothness.spec.ts",
-      "window": 4,
-      "runsFlaky": 1,
-      "runsFailed": 0,
-      "lastSeen": 15,
-      "history": [
         "absent",
-        "flaky",
-        "pass",
-        "absent"
+        "pass"
       ]
     }
   ],
   "reports": {
-    "playwright": "playwright/17/"
+    "playwright": "playwright/18/"
   }
 }
