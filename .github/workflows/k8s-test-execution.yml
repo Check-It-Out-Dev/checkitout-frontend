@@ -199,6 +199,22 @@ jobs:
           ref: gh-pages
           path: site
         continue-on-error: true
+      # Allure reads the SAME blobs a second time, through allure-playwright, so the report carries the
+      # Playwright steps, attachments and retries rather than a JUnit summary. Allure 3 keeps history in a
+      # single history.jsonl named by allurerc.mjs - there is no history/ directory any more - so the file
+      # is carried on the Pages site, one per workflow: browser-tiers and k8s run different suites and a
+      # shared history would call every test of the other suite "new" on every run.
+      - name: Allure 3 (the same blobs, history from the site)
+        # The report is a nice-to-have; the verdict below is what decides the job. A failure here
+        # must never stop the dashboard and the metrics from being published.
+        continue-on-error: true
+        if: always()
+        run: |
+          set -o pipefail
+          cp "site/allure/history-k8s-test-execution.jsonl" history.jsonl 2>/dev/null || true
+          npx playwright merge-reports --reporter allure-playwright ci-reports/blobs
+          npx --yes allure generate --config allurerc.mjs ./allure-results --output allure-report
+          mkdir -p site/allure && cp history.jsonl "site/allure/history-k8s-test-execution.jsonl"
       - name: Quality metrics into the site
         if: always()
         env:
@@ -212,7 +228,7 @@ jobs:
           DURATION=$(( $(date +%s) - $(date -d "$STARTED_AT" +%s) ))
           node tools/ci/quality-metrics.mjs --out site --workflow k8s-test-execution --started-at "$STARTED_AT" --duration-sec "$DURATION" \
             --playwright ci-reports/merged.json --verdict ci-reports/k8s-summary.json --k6 'ci-reports/api-*.json' --kubernetes "{\"shards\":$SHARDS,\"wallSec\":$WALL,\"k6Runners\":2}" --copy playwright=ci-reports/merged --copy k6=ci-reports/k6 \
-            --jest site/jest/latest.json --coverage site/coverage/latest.json --lighthouse site/lighthouse/latest.json | tee -a "$GITHUB_STEP_SUMMARY"
+            --jest site/jest/latest.json --coverage site/coverage/latest.json --lighthouse site/lighthouse/latest.json --copy allure=allure-report | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Publish
         if: always()
         uses: peaceiris/actions-gh-pages@v4
