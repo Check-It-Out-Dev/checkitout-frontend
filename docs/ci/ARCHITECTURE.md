@@ -187,6 +187,15 @@ Defects the rehearsal caught before they cost a CI round-trip, each now fixed in
 - Two upload tests asserted a Google Cloud Storage URL and one asserted GeoIP data; all three now
   recognise the credential-less profile (local sink paths, `known:false` lookups) and skip or accept.
 - The four "legacy ≡ greenfield" parity captures need a retired frontend on :4200 and are excluded by title.
+- Three integration tests are excluded by the tag `@needs-firebase`, in the cluster and in the nightly, and
+  this is why. The backend image both of them run comes from the public mirror, where
+  `src/main/resources/service-account.json` is gitignored, so `GoogleCredentialsProvider` falls back to
+  synthetic offline credentials and every call to Google's identity toolkit fails: `verify-reset-code` and
+  `confirm-password-reset` answer 503 where the test expects Firebase's own 400, and the account-activation
+  path's role-claim write answers 401. The three assert Firebase's behaviour, not ours, and they still run
+  wherever real credentials exist. `@tier-2 apply-action-code` deliberately stays in every tier: our own
+  Redis-backed one-shot check refuses that code, with no Firebase involved, so it is ours to prove.
+  An exclusion without a written reason is a deletion; these are the only two in the estate.
 
 Left as found, on purpose: `Sandbox · CookieBannerComponent › clicking accept-all hides the banner` was flaky
 in one run and red in the next inside the cluster (the banner stays after the click for 5 s). That is the

@@ -96,7 +96,10 @@ test.describe('@account-activation-e2e — port of account-activation-e2e.featur
   // Single mega-scenario: NTF-003 ACCOUNT_ACTIVATED notification fires
   // when a COMPANY auto-activates via confirmCompanyData().
   // --------------------------------------------------------------------
-  test('@ntf-003 @company COMPANY receives ACCOUNT_ACTIVATED notification after confirm-data auto-activation', async ({
+  // Auto-activation writes the role claim through Firebase Auth, so this one needs real credentials:
+  // without them the claim write is refused with 401. Tagged @needs-firebase, excluded where credentials
+  // are absent (docs/ci/ARCHITECTURE.md §4).
+  test('@ntf-003 @company @needs-firebase COMPANY receives ACCOUNT_ACTIVATED notification after confirm-data auto-activation', async ({
     page,
   }) => {
     // Phase 0: reset registry stubs (idempotent)

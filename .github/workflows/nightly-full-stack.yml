@@ -61,12 +61,16 @@ jobs:
           - shard: 1
             queue: bdd
             command: npx bddgen && npx playwright test --project=bdd --workers=1 --reporter=blob
+          # Same two exclusions as the cluster (deploy/k8s/tests/playwright-indexed-job.yaml), for the same
+          # reasons, written down in docs/ci/ARCHITECTURE.md §4: the legacy parity captures need a retired
+          # frontend on :4200, and three tests assert Firebase's own behaviour, which a public runner has no
+          # credentials for.
           - shard: 2
             queue: integration-a
-            command: npx playwright test e2e-tests/integration --project=chromium-desktop --shard=1/2 --workers=1 --reporter=blob
+            command: npx playwright test e2e-tests/integration --project=chromium-desktop --shard=1/2 --workers=1 --reporter=blob --grep-invert="legacy|@needs-firebase"
           - shard: 3
             queue: integration-b
-            command: npx playwright test e2e-tests/integration --project=chromium-desktop --shard=2/2 --workers=1 --reporter=blob
+            command: npx playwright test e2e-tests/integration --project=chromium-desktop --shard=2/2 --workers=1 --reporter=blob --grep-invert="legacy|@needs-firebase"
           - shard: 4
             queue: scenarios+sandbox
             command: npx playwright test e2e-tests/scenarios e2e-tests/sandbox --project=chromium-desktop --workers=1 --reporter=blob
