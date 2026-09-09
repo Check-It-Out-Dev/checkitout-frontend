@@ -78,6 +78,11 @@ jobs:
       - name: Render the kind config (reports mount)
         run: |
           mkdir -p ci-reports
+          # The node mounts this directory and pods write their reports into it. The Playwright image runs
+          # as root, but the k6 runner does not, and on a runner this directory belongs to uid 1001: every
+          # k6 summary was lost to "permission denied" until this chmod (run 34380876130). The runner is
+          # ephemeral and holds nothing but the checkout.
+          chmod 0777 ci-reports
           CI_REPORTS_DIR="$GITHUB_WORKSPACE/ci-reports" envsubst < deploy/k8s/kind-config.yaml > kind-config.rendered.yaml
       - uses: helm/kind-action@v1
         with:
