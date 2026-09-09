@@ -87,28 +87,43 @@ jobs:
           retention-days: 7
 
   visual:
-    name: visual (pinned container)
+    name: visual (pinned rasteriser)
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    container:
-      image: mcr.microsoft.com/playwright:v1.59.1-noble
-      options: --ipc=host
     steps:
       - uses: actions/checkout@v5
-      # The baselines are the container's own output (docs/ci/ADR-visual-baselines.md): captured here by
-      # tools/visual-docker.mjs on the dev box, compared here on the runner, one rasteriser for both. The
-      # image ships Node 24.14 and Angular 22's CLI refuses anything below 24.15, so the webServer that
-      # serves the app would exit 3 before the first screenshot; setup-node puts the pinned version on PATH
-      # inside the container.
-      - uses: actions/setup-node@v5
-        with:
-          node-version-file: .nvmrc
-      - run: npm ci --prefer-offline --no-audit --loglevel=error
-      - run: npx playwright test e2e-tests/visual --project=chromium-desktop --project=mobile-chrome --reporter=blob
-        env:
-          PLAYWRIGHT_BLOB_OUTPUT_DIR: blob-report
-          HOME: /root
+      # The baselines are this image's own output (docs/ci/ADR-visual-baselines.md): captured by
+      # tools/visual-docker.mjs on the dev box, compared here, one rasteriser for both.
+      #
+      # `docker run` rather than a `container:` job, and mounted at the workspace's own path. A container
+      # job puts the workspace at /__w/<repo>/<repo> while the shards beside it see
+      # /home/runner/work/<repo>/<repo>; Playwright records the absolute test directory in every blob, and
+      # merge-reports refuses a set that disagrees: "Blob reports being merged were recorded with
+      # different test directories". Mounting at $GITHUB_WORKSPACE makes every blob in the run agree.
+      #
+      # The image ships Node 24.14 and Angular 22's CLI refuses anything below 24.15 - it exits 3 before
+      # serving and Playwright reports only that the webServer would not start - so the version in .nvmrc
+      # is installed first. gzip is present in the image, xz is not.
+      - name: Visual tier inside the pinned Playwright image
         continue-on-error: true
+        run: |
+          docker run --rm --ipc=host \
+            -v "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE" -w "$GITHUB_WORKSPACE" \
+            -e CI=1 -e HOME=/root -e PLAYWRIGHT_BLOB_OUTPUT_DIR=blob-report \
+            mcr.microsoft.com/playwright:v1.59.1-noble bash -lc '
+              set -e
+              want=$(tr -d "\r\n" < .nvmrc)
+              if [ "$(node -p "process.versions.node")" != "$want" ]; then
+                curl -fsSL "https://nodejs.org/dist/v$want/node-v$want-linux-x64.tar.gz" \
+                  | tar -xz -C /usr/local --strip-components=1
+              fi
+              npm ci --prefer-offline --no-audit --loglevel=error
+              npx playwright test e2e-tests/visual --project=chromium-desktop --project=mobile-chrome --reporter=blob
+            '
+      # The container writes as root; the upload step and everything after it run as the runner user.
+      - name: Hand the report back to the runner user
+        if: always()
+        run: sudo chown -R "$(id -u):$(id -g)" blob-report 2>/dev/null || true
       - uses: actions/upload-artifact@v6
         if: always()
         with:
