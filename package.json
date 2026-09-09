@@ -61,6 +61,7 @@
     "check:icon-subset": "node tools/subset-material-icons.mjs --check",
     "start:demo": "ng serve --configuration demo --ssl",
     "build:demo": "ng build --configuration demo",
+    "build:sandbox": "ng build --configuration production,sandbox",
     "serve:demo": "node tools/serve-demo.mjs",
     "deploy:demo": "node tools/deploy-demo.mjs"
   },

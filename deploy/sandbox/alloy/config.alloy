@@ -1,0 +1,80 @@
+// Grafana Alloy on the sandbox host: every container's logs to Grafana Cloud Loki, the backend's
+// Prometheus endpoint to Grafana Cloud Metrics. Endpoints and tokens come from the host .env through the
+// compose file; nothing here is secret. Public dashboard: docs/ci/SANDBOX.md §5.
+
+discovery.docker "sandbox" {
+  host = "unix:///var/run/docker.sock"
+  filter {
+    name   = "label"
+    values = ["com.docker.compose.project=checkitout-sandbox"]
+  }
+}
+
+discovery.relabel "sandbox" {
+  targets = discovery.docker.sandbox.targets
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_service"]
+    target_label  = "service"
+  }
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex         = "/(.*)"
+    target_label  = "container"
+  }
+  rule {
+    target_label = "env"
+    replacement  = "sandbox"
+  }
+}
+
+loki.source.docker "sandbox" {
+  host       = "unix:///var/run/docker.sock"
+  targets    = discovery.relabel.sandbox.output
+  forward_to = [loki.process.sandbox.receiver]
+  labels     = { app = "checkitout" }
+}
+
+loki.process "sandbox" {
+  // The backend logs ECS JSON under the sandbox profile (Spring Boot structured logging); nginx logs JSON
+  // through the access_log format in the frontend image. Plain lines pass through untouched.
+  stage.json {
+    expressions = {
+      level       = "\"log.level\"",
+      logger      = "\"log.logger\"",
+      correlation = "correlationId",
+      status      = "status",
+      path        = "path",
+    }
+  }
+  stage.labels {
+    values = { level = "" }
+  }
+  forward_to = [loki.write.cloud.receiver]
+}
+
+loki.write "cloud" {
+  endpoint {
+    url = env("LOKI_URL")
+    basic_auth {
+      username = env("LOKI_USER")
+      password = env("LOKI_TOKEN")
+    }
+  }
+}
+
+prometheus.scrape "backend" {
+  targets         = [{ __address__ = "backend:8080", job = "checkitout-backend", env = "sandbox" }]
+  metrics_path    = "/api/actuator/prometheus"
+  scrape_interval = "30s"
+  forward_to      = [prometheus.remote_write.cloud.receiver]
+}
+
+prometheus.remote_write "cloud" {
+  endpoint {
+    url = env("PROM_URL")
+    basic_auth {
+      username = env("PROM_USER")
+      password = env("PROM_TOKEN")
+    }
+  }
+}

@@ -1,0 +1,143 @@
+# The public sandbox rollout: build the frontend image for the sandbox configuration, deploy it with a
+# backend image from ghcr.io to the VPS through a deploy key that can run nothing but rollout.sh, smoke the
+# result from the outside, run the k6 sandbox profile against it, and roll back on any failure.
+# Design of record: docs/ci/SANDBOX.md. Secrets live in the `sandbox` environment (owner = required reviewer).
+name: deploy-sandbox
+
+on:
+  workflow_dispatch:
+    inputs:
+      backend_tag:
+        description: Backend image tag on ghcr.io (main, or a short sha)
+        type: string
+        default: main
+      frontend_tag:
+        description: Frontend image tag to deploy; leave empty to build one from this ref
+        type: string
+        default: ""
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "public/**"
+      - "angular.json"
+      - "package-lock.json"
+      - "deploy/sandbox/**"
+      - "deploy/k8s/frontend/**"
+      - ".github/workflows/deploy-sandbox.yml"
+
+concurrency:
+  group: sandbox
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  IMAGE: ghcr.io/check-it-out-dev/checkitout-frontend
+  SANDBOX_URL: https://sandbox.checkitout.app
+
+jobs:
+  image:
+    name: Frontend image (production,sandbox)
+    if: ${{ github.event_name == 'push' || inputs.frontend_tag == '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      tag: ${{ steps.meta.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build:sandbox
+      - id: meta
+        run: echo "tag=sandbox-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: deploy/k8s/frontend/Dockerfile
+          push: true
+          tags: |
+            ${{ env.IMAGE }}:${{ steps.meta.outputs.tag }}
+            ${{ env.IMAGE }}:sandbox
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    name: Roll out, smoke, k6
+    needs: [image]
+    if: ${{ always() && (needs.image.result == 'success' || needs.image.result == 'skipped') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment:
+      name: sandbox
+      url: ${{ env.SANDBOX_URL }}
+    env:
+      FE_TAG: ${{ inputs.frontend_tag || needs.image.outputs.tag }}
+      BE_TAG: ${{ inputs.backend_tag || 'main' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy key (forced command on the host, see deploy/sandbox/rollout.sh)
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "${{ secrets.SANDBOX_SSH_KEY }}" > ~/.ssh/sandbox
+          printf '%s\n' "${{ secrets.SANDBOX_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/sandbox ~/.ssh/known_hosts
+
+      - name: Roll out on the host
+        run: |
+          ssh -i ~/.ssh/sandbox -o BatchMode=yes -o IdentitiesOnly=yes -o ConnectTimeout=15 \
+            "deploy@${{ secrets.SANDBOX_HOST }}" "deploy $FE_TAG $BE_TAG $GITHUB_SHA"
+
+      - name: Smoke from the outside
+        run: bash deploy/sandbox/smoke.sh "$SANDBOX_URL"
+
+      - uses: grafana/setup-k6-action@v1
+      - name: k6, sandbox profile (the persona only, one virtual user, low rate)
+        env:
+          BASE_URL: ${{ env.SANDBOX_URL }}
+          K6_PROFILE: sandbox
+          K6_PERSONA_ONLY: "1"
+          K6_P95_BROWSE: "1500"
+          K6_P95_APPLY: "2500"
+          K6_OUT_DIR: k6-out
+          K6_RUN_ID: ${{ github.run_number }}
+        run: |
+          mkdir -p k6-out
+          k6 run e2e-tests/perf/k6/api-journeys.js
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sandbox-k6-${{ github.run_number }}
+          path: k6-out
+          retention-days: 30
+
+      - name: Roll back
+        if: failure()
+        run: |
+          ssh -i ~/.ssh/sandbox -o BatchMode=yes -o IdentitiesOnly=yes "deploy@${{ secrets.SANDBOX_HOST }}" rollback
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### Sandbox rollout"
+            echo
+            echo "| frontend | backend | bundle | result |"
+            echo "| --- | --- | --- | --- |"
+            echo "| \`$FE_TAG\` | \`$BE_TAG\` | \`${GITHUB_SHA::7}\` | ${{ job.status }} |"
+            echo
+            echo "Live: $SANDBOX_URL · OpenAPI: $SANDBOX_URL/api/v3/api-docs · Swagger UI: $SANDBOX_URL/api/swagger-ui/index.html"
+          } >> "$GITHUB_STEP_SUMMARY"
