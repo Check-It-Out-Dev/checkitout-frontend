@@ -110,6 +110,8 @@ export class CicdRunsShowcaseComponent {
   /** One row per pipeline; the figure strings live in i18n and are gated by G15. */
   readonly runs = [
     { k: 'pr', icon: 'bolt', badge: 'bg-coral-500 text-white' },
+    { k: 'browser', icon: 'grid_view', badge: 'bg-coral-500 text-white' },
+    { k: 'kubernetes', icon: 'hub', badge: 'bg-navy-900 text-white' },
     { k: 'nightly', icon: 'dark_mode', badge: 'bg-navy-900 text-white' },
     { k: 'release', icon: 'rocket_launch', badge: 'bg-ink text-white' },
     { k: 'perf', icon: 'speed', badge: 'border border-beige bg-cream text-ink' },

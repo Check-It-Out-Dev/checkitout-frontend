@@ -3300,7 +3300,7 @@
       },
       "pipelines": {
         "title": "Co uruchamia się na każdy push, co nocą, a co przy wydaniu",
-        "subtitle": "Cztery potoki, które istnieją w repozytoriach dziś — z czasem trwania zmierzonym, a nie zadeklarowanym.",
+        "subtitle": "Sześć pipeline’ów, które istnieją dziś w repozytoriach — z czasami zmierzonymi, nie zadeklarowanymi.",
         "runs": {
           "pr": {
             "name": "Każdy push i pull request",
@@ -3308,9 +3308,21 @@
             "what": "Jedenaście bramek statycznych, dwa typechecki, ng build ze strictTemplates, 1 181 testów Jest z pokryciem i asercje kontraktu L0 w czasie kompilacji. Hermetyczny z założenia: bez backendu, przeglądarek i Dockera, więc PR z forka nigdy nie dotyka własnej infrastruktury.",
             "figure": "147 s · mediana 6 ostatnich"
           },
+          "browser": {
+            "name": "Warstwy przeglądarkowe",
+            "trigger": "browser-tiers.yml · 9 maszyn",
+            "what": "Sandbox i MSW na czterech shardach, warstwa płynności na trzech (po jednym workerze), warstwa wizualna w przypiętym obrazie Playwrighta. Raporty scalane w jeden werdykt — a anulowany shard publikuje „niekompletny”, nigdy zielony.",
+            "figure": "~20 min"
+          },
+          "kubernetes": {
+            "name": "Kubernetes",
+            "trigger": "k8s-test-execution.yml · kind",
+            "what": "Klaster na maszynie CI: PostgreSQL, Redis, obraz backendu, frontend za nginx. Playwright jako Indexed Job w czterech podach, k6-operator jako TestRun w dwóch — ruch generowany wewnątrz klastra, metryki wysyłane do Grafana Cloud.",
+            "figure": "11 min · 4 + 2 pody"
+          },
           "nightly": {
             "name": "Nocny bieg pełnego stosu",
-            "trigger": "nightly-full-stack.yml · 4 shardy",
+            "trigger": "nightly-full-stack.yml · 02:00 UTC · 4 shardy",
             "what": "Cztery shardy — BDD, integracja ×2, scenariusze + sandbox — każdy z własnym PostgreSQL 16, Redis 7 i GreenMail; raporty blob scalane w jeden HTML z liczbą przejść, porażek i testów flaky. Napisany, uruchamiany na żądanie: harmonogram włączymy, gdy obrazy backendu przejdą w CI — czerwony cron, którego nikt nie widział zielonym, jest gorszy niż brak crona.",
             "figure": "75 min budżetu"
           },
@@ -3327,7 +3339,7 @@
             "figure": "progi p95"
           }
         },
-        "note": "Czas biegu PR zmierzono 2026-09-08 poleceniem gh run list; liczby testów pochodzą z docs/testing/measured-counts.json. Backend nie ma dziś potoku testowego w GitHub Actions — jego 8 908 metod testowych biegnie lokalnie przez ./mvnw; potok testowy jest następnym krokiem, opisanym poniżej.",
+        "note": "Czas przebiegu PR zmierzono 2026-09-08 przez gh run list; liczby testów pochodzą z docs/testing/measured-counts.json. Backend ma dziś własny pipeline testowy — jednostkowe i integracyjne przy każdym pushu, warstwa Cucumber nocą na emulatorach Firebase — a każdy przebieg publikuje dashboard jakości na GitHub Pages z raportem Allure i listą testów niestabilnych z ostatnich dziesięciu przebiegów.",
         "beWorkflows": "workflow backendu"
       },
       "roadmap": {
@@ -3803,8 +3815,14 @@
       "notice": "To publiczny sandbox: prawdziwa aplikacja na danych demonstracyjnych, z dwoma wspólnymi kontami. Ktoś inny może z nich właśnie korzystać.",
       "resets": "Wszystko resetuje się co noc o 03:00 UTC.",
       "persona": {
-        "company": { "name": "Firma", "blurb": "Prowadzi kampanie, czyta zgłoszenia, ocenia influencerów." },
-        "influencer": { "name": "Influencer", "blurb": "Przegląda kampanie, zgłasza się, przesyła materiały." }
+        "company": {
+          "name": "Firma",
+          "blurb": "Prowadzi kampanie, czyta zgłoszenia, ocenia influencerów."
+        },
+        "influencer": {
+          "name": "Influencer",
+          "blurb": "Przegląda kampanie, zgłasza się, przesyła materiały."
+        }
       },
       "persona_only": "Ten sandbox przyjmuje tylko dwa konta demonstracyjne.",
       "failed": "Sandbox nie odpowiedział. Spróbuj ponownie za chwilę."

@@ -182,7 +182,7 @@ claim('docs/README.md', 'docs index Jest', /the ([\d,]+) Jest tests and the gate
 if (m.ci?.prRun) {
   // The CI/CD table rounds to the nearest ten seconds - a median that moves by four seconds is not a
   // change anyone should have to edit a README for - so the gate rounds the measured value the same way.
-  claim('README.md', 'PR run duration', /\| ~(\d+) s \|/, String(Math.round(m.ci.prRun.medianSeconds / 10) * 10));
+  claim('README.md', 'PR run duration', /\|\s*~(\d+) s\s*\|/, String(Math.round(m.ci.prRun.medianSeconds / 10) * 10));
 }
 
 // ── The live site. Numbers appear in both locales and must agree with the repo,

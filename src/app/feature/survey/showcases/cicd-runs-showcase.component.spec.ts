@@ -27,10 +27,12 @@ describe('CicdRunsShowcaseComponent', () => {
     el = fixture.nativeElement;
   });
 
-  it('renders the PR run, the nightly run, the release chain and the k6 run, in that order', () => {
+  it('renders the six pipelines in order: gates, browser tiers, Kubernetes, nightly, release, k6', () => {
     const rows = el.querySelectorAll('[data-testid="cicd-runs"] [data-run]');
     expect(Array.from(rows).map((r) => r.getAttribute('data-run'))).toEqual([
       'pr',
+      'browser',
+      'kubernetes',
       'nightly',
       'release',
       'perf',

@@ -3300,17 +3300,29 @@
       },
       "pipelines": {
         "title": "What runs on every push, what at night, and what on release",
-        "subtitle": "Four pipelines that exist in the repositories today — with durations measured, not declared.",
+        "subtitle": "Six pipelines that exist in the repositories today — with durations measured, not declared.",
         "runs": {
           "pr": {
             "name": "Every push and pull request",
             "trigger": "ci-tests.yml · ubuntu-latest",
-            "what": "Eleven static gates, two typechecks, ng build with strictTemplates, 1,181 Jest tests with coverage and the L0 contract assertions at compile time. Hermetic by design: no backend, no browsers, no Docker, so a fork’s PR never touches the self-hosted infrastructure.",
+            "what": "Eleven static gates, two typechecks, ng build with strictTemplates, 1,181 Jest tests with coverage and the L0 contract proofs. Hermetic: no backend, no browsers, no Docker.",
             "figure": "147 s · median of the last 6"
+          },
+          "browser": {
+            "name": "Browser tiers",
+            "trigger": "browser-tiers.yml · 9 runners",
+            "what": "Sandbox and MSW over four shards, the smoothness tier over three with one worker each, and the visual tier inside the pinned Playwright image. Blob reports merged into one report and one verdict — and a cancelled shard publishes \"incomplete\", never green.",
+            "figure": "~20 min"
+          },
+          "kubernetes": {
+            "name": "Kubernetes",
+            "trigger": "k8s-test-execution.yml · kind",
+            "what": "A cluster on the runner: PostgreSQL, Redis, the backend image, the frontend behind nginx. Playwright runs as an Indexed Job of four pods and k6-operator as a TestRun of two, generating load against the in-cluster services and remote-writing to Grafana Cloud.",
+            "figure": "11 min · 4 + 2 pods"
           },
           "nightly": {
             "name": "Nightly full-stack run",
-            "trigger": "nightly-full-stack.yml · 4 shards",
+            "trigger": "nightly-full-stack.yml · 02:00 UTC · 4 shards",
             "what": "Four shards — BDD, integration ×2, scenarios + sandbox — each with its own PostgreSQL 16, Redis 7 and GreenMail; blob reports merged into one HTML report with pass, fail and flaky counts. Written, run on demand: the schedule goes live once the backend images have run in CI — a red cron nobody has seen green is worse than no cron.",
             "figure": "75 min budget"
           },
@@ -3327,7 +3339,7 @@
             "figure": "p95 thresholds"
           }
         },
-        "note": "The PR run time was measured on 2026-09-08 with gh run list; the test counts come from docs/testing/measured-counts.json. The backend has no test pipeline in GitHub Actions today — its 8,908 test methods run locally through ./mvnw; the test pipeline is the next step, described below.",
+        "note": "The PR run time was measured on 2026-09-08 with gh run list; the test counts come from docs/testing/measured-counts.json. The backend has its own test pipeline now — unit and integration on every push, the Cucumber tier nightly against the Firebase emulators — and every run publishes to a quality dashboard on GitHub Pages with an Allure report and a flaky list over the last ten runs.",
         "beWorkflows": "backend workflows"
       },
       "roadmap": {
@@ -3803,8 +3815,14 @@
       "notice": "This is the public sandbox: the real application on demo data, with two shared accounts. Someone else may be using them right now.",
       "resets": "Everything resets every night at 03:00 UTC.",
       "persona": {
-        "company": { "name": "The company", "blurb": "Runs campaigns, reads applications, rates influencers." },
-        "influencer": { "name": "The influencer", "blurb": "Browses campaigns, applies, submits content." }
+        "company": {
+          "name": "The company",
+          "blurb": "Runs campaigns, reads applications, rates influencers."
+        },
+        "influencer": {
+          "name": "The influencer",
+          "blurb": "Browses campaigns, applies, submits content."
+        }
       },
       "persona_only": "This sandbox admits only its two demo accounts.",
       "failed": "The sandbox did not answer. Try again in a moment."
