@@ -2,25 +2,25 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 2,
-    "id": 34380876130,
+    "number": 9,
+    "id": 34380322374,
     "sha": "89cbf81",
     "branch": "main",
-    "workflow": "k8s-test-execution",
-    "startedAt": "2026-09-09T17:06:28Z",
-    "durationSec": 665,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34380876130"
+    "workflow": "browser-tiers",
+    "startedAt": "2026-09-09T17:01:06Z",
+    "durationSec": 1143,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34380322374"
   },
   "tests": {
-    "total": 1471,
-    "passed": 1432,
-    "failed": 5,
+    "total": 1395,
+    "passed": 1371,
+    "failed": 0,
     "flaky": 0,
-    "skipped": 34,
-    "passRate": 0.9965,
+    "skipped": 24,
+    "passRate": 1,
     "flakyRate": 0,
-    "durationMeanSec": 0.26,
-    "durationP95Sec": 1,
+    "durationMeanSec": 1.57,
+    "durationP95Sec": 3.92,
     "tiers": {
       "jest": {
         "total": 1183,
@@ -30,29 +30,29 @@
         "skipped": 0,
         "durationSec": 78
       },
-      "integration": {
-        "total": 218,
-        "passed": 183,
-        "failed": 3,
-        "flaky": 0,
-        "skipped": 32,
-        "durationSec": 175
-      },
-      "sandbox": {
-        "total": 64,
-        "passed": 60,
-        "failed": 2,
+      "msw": {
+        "total": 2,
+        "passed": 0,
+        "failed": 0,
         "flaky": 0,
         "skipped": 2,
-        "durationSec": 108
+        "durationSec": 0
       },
-      "scenarios": {
-        "total": 6,
-        "passed": 6,
+      "sandbox": {
+        "total": 128,
+        "passed": 106,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 22,
+        "durationSec": 132
+      },
+      "perf": {
+        "total": 82,
+        "passed": 82,
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
-        "durationSec": 10
+        "durationSec": 1943
       }
     }
   },
@@ -69,16 +69,11 @@
     "bestPractices": 100,
     "seo": 92
   },
-  "kubernetes": {
-    "shards": 4,
-    "wallSec": 135,
-    "k6Runners": 2
-  },
   "flaky": [
     {
       "title": "Demo smoothness › a simulator that never fires holds the step instead of narrating it [perf]",
       "file": "perf/demo-smoothness.spec.ts",
-      "window": 4,
+      "window": 5,
       "runsFlaky": 1,
       "runsFailed": 0,
       "lastSeen": 7,
@@ -86,19 +81,21 @@
         "absent",
         "absent",
         "flaky",
+        "pass",
         "pass"
       ]
     },
     {
       "title": "@account-activation-e2e — port of account-activation-e2e.feature › @ntf-003 @company COMPANY receives ACCOUNT_ACTIVATED notification after confirm-data auto-activation [chromium-desktop]",
       "file": "integration/flows/account-activation-e2e.spec.ts",
-      "window": 4,
+      "window": 5,
       "runsFlaky": 0,
       "runsFailed": 1,
       "lastSeen": 2,
       "history": [
         "absent",
         "fail",
+        "absent",
         "absent",
         "absent"
       ]
@@ -106,13 +103,14 @@
     {
       "title": "@magic-link-errors — port of magic-link-errors.feature › @tier-2 confirm-password-reset rejects garbage oobCode with invalid_action_code [chromium-desktop]",
       "file": "integration/flows/magic-link-errors.spec.ts",
-      "window": 4,
+      "window": 5,
       "runsFlaky": 0,
       "runsFailed": 1,
       "lastSeen": 2,
       "history": [
         "absent",
         "fail",
+        "absent",
         "absent",
         "absent"
       ]
@@ -120,13 +118,14 @@
     {
       "title": "@magic-link-errors — port of magic-link-errors.feature › @tier-2 verify-reset-code rejects garbage oobCode with invalid_action_code [chromium-desktop]",
       "file": "integration/flows/magic-link-errors.spec.ts",
-      "window": 4,
+      "window": 5,
       "runsFlaky": 0,
       "runsFailed": 1,
       "lastSeen": 2,
       "history": [
         "absent",
         "fail",
+        "absent",
         "absent",
         "absent"
       ]
@@ -134,13 +133,14 @@
     {
       "title": "Sandbox · CookieBannerComponent › clicking accept-all hides the banner [chromium-desktop]",
       "file": "sandbox/cookie-banner.spec.ts",
-      "window": 4,
+      "window": 5,
       "runsFlaky": 0,
       "runsFailed": 1,
       "lastSeen": 2,
       "history": [
         "absent",
         "fail",
+        "pass",
         "pass",
         "pass"
       ]
@@ -148,7 +148,7 @@
     {
       "title": "Sandbox · CookieBannerComponent › clicking necessary-only hides the banner [chromium-desktop]",
       "file": "sandbox/cookie-banner.spec.ts",
-      "window": 4,
+      "window": 5,
       "runsFlaky": 0,
       "runsFailed": 1,
       "lastSeen": 2,
@@ -156,12 +156,12 @@
         "absent",
         "fail",
         "pass",
+        "pass",
         "pass"
       ]
     }
   ],
   "reports": {
-    "playwright": "playwright/2/",
-    "k6": "k6/2/"
+    "playwright": "playwright/9/"
   }
 }
