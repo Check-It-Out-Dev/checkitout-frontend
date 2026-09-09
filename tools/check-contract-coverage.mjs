@@ -45,6 +45,7 @@ const CLIENT_SIDE = {
   'auth/location-redirect.service': 'client-side post-login redirect resolver; no generated-API surface',
   'auth/social-auth.service': 'drives OAuth via window.location + auth-api.service; imports no generated model',
   'auth/social-platform-config.service': 'static social-platform config map; no generated-API surface',
+  'auth/sandbox-auth.service': 'the public sandbox sign-in: posts to the dev-lite test-session endpoint, which is not part of the OpenAPI contract by design; no generated model at the boundary',
   'consent/consent.service': 'reads consent signals routed through other wrappers; imports no generated model',
   'demo/sandbox-director.service': 'demo/sandbox harness infra, not a production API wrapper',
   'demo/guide-runner.service': 'demo/sandbox harness infra: runs a tour step recipe against the DOM; no generated-API surface',
