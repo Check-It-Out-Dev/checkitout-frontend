@@ -145,7 +145,9 @@ container's stdout through the Docker socket, parses the backend's ECS JSON (`lo
 `correlationId`) and the frontend's JSON access log (`status`, `path`, `ms`, `correlationId`), labels them
 `service`, `container`, `env=sandbox`, `level`, and pushes to Loki; it scrapes `/api/actuator/prometheus`
 every 30 s and remote-writes to Grafana Cloud Metrics, where the k6 series from `ARCHITECTURE.md` already
-land. One public dashboard, "checkitout sandbox", shows requests per minute and error rate from nginx,
+land. One public dashboard, "checkitout sandbox"
+(<https://checkitoutapp.grafana.net/public-dashboards/f48c40b8b3244bdfa019117fa9fdcbbe>, no login), shows
+requests per minute and error rate from nginx,
 p95 by endpoint from the backend's `http_server_requests`, JVM memory against the 1.5 GB limit, the
 Liquibase reseed marker at 03:00, and a logs panel filtered `level=ERROR`. The correlation id ties one
 nginx line to one backend line to one user report.
