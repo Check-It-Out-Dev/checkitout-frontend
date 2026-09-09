@@ -39,6 +39,9 @@ jobs:
     name: kind cluster, 4 shards, 2 k6 runners
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    # Holds the K6_PROMETHEUS_RW_* secrets (no reviewer): with them the k6 runners also remote-write to the
+    # public Grafana Cloud dashboard; without them the run is summaries-only and says so.
+    environment: grafana-cloud
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -117,10 +120,28 @@ jobs:
           ls -la ci-reports
 
       # ---- k6 from inside the cluster ----
+      - name: k6 remote write to Grafana Cloud (when the environment has the secrets)
+        env:
+          RW_URL: ${{ secrets.K6_PROMETHEUS_RW_SERVER_URL }}
+          RW_USER: ${{ secrets.K6_PROMETHEUS_RW_USERNAME }}
+          RW_PASS: ${{ secrets.K6_PROMETHEUS_RW_PASSWORD }}
+        run: |
+          if [ -z "$RW_PASS" ] || [ -z "$RW_URL" ]; then
+            echo "k6: no Grafana Cloud secrets in the grafana-cloud environment; summaries only" | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          kubectl -n checkitout create secret generic k6-remote-write             --from-literal=K6_PROMETHEUS_RW_SERVER_URL="$RW_URL"             --from-literal=K6_PROMETHEUS_RW_USERNAME="$RW_USER"             --from-literal=K6_PROMETHEUS_RW_PASSWORD="$RW_PASS"
+          echo "K6_REMOTE_WRITE=1" >> "$GITHUB_ENV"
+          echo "k6: remote write on, testid=run-$GITHUB_RUN_NUMBER on the public dashboard" | tee -a "$GITHUB_STEP_SUMMARY"
       - name: k6 TestRun (2 runners)
         run: |
           kubectl -n checkitout create configmap k6-scripts --from-file=e2e-tests/perf/k6/
-          sed -i "s/value: \"local\"/value: \"$GITHUB_RUN_NUMBER\"/" deploy/k8s/tests/k6-testrun.yaml
+          sed -i "s/testid=local/testid=run-$GITHUB_RUN_NUMBER/; s/value: \"local\"/value: \"$GITHUB_RUN_NUMBER\"/" deploy/k8s/tests/k6-testrun.yaml
+          if [ "${K6_REMOTE_WRITE:-0}" = "1" ]; then
+            sed -i "s|testid=run-$GITHUB_RUN_NUMBER$|testid=run-$GITHUB_RUN_NUMBER --out experimental-prometheus-rw|" deploy/k8s/tests/k6-testrun.yaml
+            awk '{print} /^  runner:$/{print "    envFrom:"; print "      - secretRef: { name: k6-remote-write }"}' deploy/k8s/tests/k6-testrun.yaml > /tmp/k6-testrun.yaml && mv /tmp/k6-testrun.yaml deploy/k8s/tests/k6-testrun.yaml
+          fi
+          grep -n "arguments:\|envFrom\|secretRef\|K6_RUN_ID" -A0 deploy/k8s/tests/k6-testrun.yaml
           kubectl apply -f deploy/k8s/tests/k6-testrun.yaml
           for i in $(seq 1 120); do
             st=$(kubectl -n checkitout get testrun k6-api-journeys -o jsonpath='{.status.stage}' 2>/dev/null || true)
