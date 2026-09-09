@@ -3396,6 +3396,7 @@
   },
   "footer": {
     "tagline": "Platforma łącząca firmy z influencerami.",
+    "sandbox_notice": "Publiczny sandbox: dwa wspólne konta demonstracyjne, wszystko resetuje się co noc o 03:00 UTC.",
     "nav": {
       "about": "O nas",
       "faq": "FAQ",
@@ -3796,6 +3797,17 @@
           "description": "Połącz ze swoim kontem Instagram"
         }
       }
+    },
+    "sandbox": {
+      "title": "Wypróbuj jako jedno z dwóch kont",
+      "notice": "To publiczny sandbox: prawdziwa aplikacja na danych demonstracyjnych, z dwoma wspólnymi kontami. Ktoś inny może z nich właśnie korzystać.",
+      "resets": "Wszystko resetuje się co noc o 03:00 UTC.",
+      "persona": {
+        "company": { "name": "Firma", "blurb": "Prowadzi kampanie, czyta zgłoszenia, ocenia influencerów." },
+        "influencer": { "name": "Influencer", "blurb": "Przegląda kampanie, zgłasza się, przesyła materiały." }
+      },
+      "persona_only": "Ten sandbox przyjmuje tylko dwa konta demonstracyjne.",
+      "failed": "Sandbox nie odpowiedział. Spróbuj ponownie za chwilę."
     },
     "sign_in": {
       "title": "Zaloguj się",

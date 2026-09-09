@@ -15,6 +15,8 @@ import { AuthApiService } from '../../../core/auth/auth-api.service';
 import { SessionStateService } from '../../../core/auth/session-state.service';
 import { SocialAuthService } from '../../../core/auth/social-auth.service';
 import { currentDemoRole, isDemoMode } from '../../../core/demo/demo-mode';
+import { isSandboxMode } from '../../../core/sandbox/sandbox-mode';
+import { SandboxPersonaPickerComponent } from './sandbox-persona-picker.component';
 import { TwoFactorVerifyDialogComponent } from '../../../shared/components/two-factor-verify-dialog/two-factor-verify-dialog.component';
 
 interface SignInForm {
@@ -45,6 +47,7 @@ interface SignInForm {
   selector: 'app-sign-in',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    SandboxPersonaPickerComponent,
     ReactiveFormsModule,
     RouterLink,
     MatButtonModule,
@@ -59,6 +62,8 @@ interface SignInForm {
   styleUrl: './sign-in.component.scss',
 })
 export class SignInComponent {
+  /** The public sandbox shows the persona picker instead of the Firebase form (docs/ci/SANDBOX.md). */
+  protected readonly sandbox = isSandboxMode();
   private readonly auth = inject(AuthApiService);
   private readonly session = inject(SessionStateService);
   private readonly socialAuth = inject(SocialAuthService);

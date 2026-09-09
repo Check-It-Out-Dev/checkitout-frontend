@@ -1,5 +1,6 @@
 import { Provider, Type } from '@angular/core';
 import { ACCOUNT_DELETION_FIXTURES } from './fixtures/account-deletion.fixture';
+import { SANDBOX_PERSONA_PICKER_FIXTURES } from './fixtures/sandbox-persona-picker.fixture';
 import { REJECT_APPLICANT_FIXTURES } from './fixtures/reject-applicant.fixture';
 import { ACTION_ROUTER_FIXTURES } from './fixtures/action-router.fixture';
 import { ADDRESSES_FIXTURES } from './fixtures/addresses.fixture';
@@ -99,6 +100,7 @@ export interface SandboxFixture {
  */
 export const SANDBOX_REGISTRY: readonly SandboxFixture[] = [
   ...SIGN_IN_FIXTURES,
+  ...SANDBOX_PERSONA_PICKER_FIXTURES,
   ...FORGOT_PASSWORD_FIXTURES,
   ...RESET_PASSWORD_FIXTURES,
   ...SIGN_OUT_FIXTURES,

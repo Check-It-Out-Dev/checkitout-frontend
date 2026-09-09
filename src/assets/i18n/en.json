@@ -3396,6 +3396,7 @@
   },
   "footer": {
     "tagline": "Platform connecting companies with influencers.",
+    "sandbox_notice": "Public sandbox: two shared demo accounts, everything resets nightly at 03:00 UTC.",
     "nav": {
       "about": "About us",
       "faq": "FAQ",
@@ -3796,6 +3797,17 @@
           "description": "Connect with your Instagram account"
         }
       }
+    },
+    "sandbox": {
+      "title": "Try it as one of two accounts",
+      "notice": "This is the public sandbox: the real application on demo data, with two shared accounts. Someone else may be using them right now.",
+      "resets": "Everything resets every night at 03:00 UTC.",
+      "persona": {
+        "company": { "name": "The company", "blurb": "Runs campaigns, reads applications, rates influencers." },
+        "influencer": { "name": "The influencer", "blurb": "Browses campaigns, applies, submits content." }
+      },
+      "persona_only": "This sandbox admits only its two demo accounts.",
+      "failed": "The sandbox did not answer. Try again in a moment."
     },
     "sign_in": {
       "title": "Sign in",

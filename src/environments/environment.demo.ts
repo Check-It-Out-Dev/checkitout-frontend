@@ -7,4 +7,5 @@
  */
 export const environment = {
   demo: true,
+  sandbox: false,
 };
