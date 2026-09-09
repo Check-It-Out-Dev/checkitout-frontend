@@ -2,26 +2,26 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 27,
-    "id": 34414648104,
-    "sha": "4fdcfc0",
+    "number": 28,
+    "id": 34415780482,
+    "sha": "31d3b89",
     "branch": "main",
     "workflow": "browser-tiers",
-    "startedAt": "2026-09-09T22:56:43Z",
-    "durationSec": 942,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34414648104",
-    "status": "incomplete"
+    "startedAt": "2026-09-09T23:11:16Z",
+    "durationSec": 1263,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34415780482",
+    "status": "red"
   },
   "tests": {
-    "total": 1737,
-    "passed": 1658,
-    "failed": 0,
+    "total": 1761,
+    "passed": 1680,
+    "failed": 2,
     "flaky": 0,
     "skipped": 79,
-    "passRate": 1,
+    "passRate": 0.9988,
     "flakyRate": 0,
-    "durationMeanSec": 0.94,
-    "durationP95Sec": 1.66,
+    "durationMeanSec": 1.55,
+    "durationP95Sec": 2.31,
     "tiers": {
       "jest": {
         "total": 1183,
@@ -33,11 +33,11 @@
       },
       "visual": {
         "total": 284,
-        "passed": 283,
-        "failed": 0,
+        "passed": 281,
+        "failed": 2,
         "flaky": 0,
         "skipped": 1,
-        "durationSec": 441
+        "durationSec": 451
       },
       "visual-parity": {
         "total": 82,
@@ -61,15 +61,15 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 22,
-        "durationSec": 122
+        "durationSec": 124
       },
       "perf": {
-        "total": 58,
-        "passed": 58,
+        "total": 82,
+        "passed": 82,
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
-        "durationSec": 915
+        "durationSec": 1946
       }
     }
   },
@@ -88,9 +88,49 @@
   },
   "flaky": [
     {
+      "title": "Visual snapshots · Sandbox fixtures › fixture survey-cicd-runs [chromium-desktop]",
+      "file": "visual/sandbox-snapshots.spec.ts",
+      "window": 10,
+      "runsFlaky": 0,
+      "runsFailed": 1,
+      "lastSeen": 28,
+      "history": [
+        "absent",
+        "absent",
+        "absent",
+        "absent",
+        "absent",
+        "absent",
+        "pass",
+        "absent",
+        "pass",
+        "fail"
+      ]
+    },
+    {
+      "title": "Visual snapshots · Sandbox fixtures › fixture survey-cicd-runs [mobile-chrome]",
+      "file": "visual/sandbox-snapshots.spec.ts",
+      "window": 10,
+      "runsFlaky": 0,
+      "runsFailed": 1,
+      "lastSeen": 28,
+      "history": [
+        "absent",
+        "absent",
+        "absent",
+        "absent",
+        "absent",
+        "absent",
+        "pass",
+        "absent",
+        "pass",
+        "fail"
+      ]
+    },
+    {
       "title": "Demo smoothness › a simulator that never fires holds the step instead of narrating it [perf]",
       "file": "perf/demo-smoothness.spec.ts",
-      "window": 9,
+      "window": 10,
       "runsFlaky": 3,
       "runsFailed": 0,
       "lastSeen": 25,
@@ -103,13 +143,14 @@
         "pass",
         "flaky",
         "pass",
+        "pass",
         "pass"
       ]
     },
     {
       "title": "Demo smoothness › the admin-ops tour advances promptly at every step [perf]",
       "file": "perf/demo-smoothness.spec.ts",
-      "window": 9,
+      "window": 10,
       "runsFlaky": 0,
       "runsFailed": 1,
       "lastSeen": 16,
@@ -122,12 +163,13 @@
         "pass",
         "pass",
         "pass",
+        "pass",
         "pass"
       ]
     }
   ],
   "reports": {
-    "playwright": "playwright/27/",
-    "allure": "allure/27/"
+    "playwright": "playwright/28/",
+    "allure": "allure/28/"
   }
 }
