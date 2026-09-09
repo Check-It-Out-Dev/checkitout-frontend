@@ -34,18 +34,18 @@ spec:
             - { name: SPRING_DATA_REDIS_PORT, value: "6379" }
             - { name: SPRING_LIQUIBASE_CONTEXTS, value: "dev,local,dev-lite" }
             - { name: SERVER_PORT, value: "8080" }
-            # The image sizes the heap from the container limit; 2 Gi gives ~1.4 Gi of heap.
-            - { name: JAVA_TOOL_OPTIONS, value: "-XX:MaxRAMPercentage=70.0 -XX:+UseSerialGC" }
+            # The image already sets G1 and MaxRAMPercentage=70 in JAVA_OPTS; a 2 Gi limit gives ~1.4 Gi of heap.
+            # Do not add a second collector through JAVA_TOOL_OPTIONS: the JVM refuses to start.
           # Liquibase seeds ~26 campaigns on first boot: five minutes before liveness counts.
           startupProbe:
-            httpGet: { path: /actuator/health, port: http }
+            httpGet: { path: /api/actuator/health, port: http }
             periodSeconds: 5
             failureThreshold: 60
           readinessProbe:
-            httpGet: { path: /actuator/health/readiness, port: http }
+            httpGet: { path: /api/actuator/health/readiness, port: http }
             periodSeconds: 5
           livenessProbe:
-            httpGet: { path: /actuator/health/liveness, port: http }
+            httpGet: { path: /api/actuator/health/liveness, port: http }
             periodSeconds: 15
           resources:
             requests: { cpu: 800m, memory: 1Gi }

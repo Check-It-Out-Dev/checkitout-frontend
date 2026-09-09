@@ -122,7 +122,9 @@ test.describe('@file-upload @signed-url — port of file-upload-signed-url.featu
       test.skip(true, 'upload controller absent (no Firebase Storage in this profile)');
     }
     expect(upload!.uploadId, 'confirm returned a tracked uploadId').toBeTruthy();
-    expect(upload!.publicUrl, 'BE mints the public URL').toMatch(/^https:\/\//);
+    // A signed cloud URL in the real profiles; the dev-lite profile routes uploads to its local
+    // sink and answers with the sink's own path, which is the same contract without the cloud.
+    expect(upload!.publicUrl, 'BE mints the public URL').toMatch(/^(https:\/\/|\/api\/dev-lite\/files\/)/);
   });
 
   // ====================================================================
@@ -181,8 +183,10 @@ test.describe('@file-upload @signed-url — port of file-upload-signed-url.featu
     expect(body, 'response contains uploadUrl').toHaveProperty('uploadUrl');
     expect(body, 'response contains publicUrl').toHaveProperty('publicUrl');
     expect(body, 'response contains uploadId').toHaveProperty('uploadId');
-    expect(String(body.uploadUrl), 'uploadUrl should start with storage.googleapis.com').toMatch(
-      /^https:\/\/storage\.googleapis\.com/,
+    // Google Cloud Storage in the real profiles; the dev-lite profile hands out its local sink's
+    // upload path instead — same contract, no cloud.
+    expect(String(body.uploadUrl), 'uploadUrl is a GCS signed URL or the dev-lite sink').toMatch(
+      /^(https:\/\/storage\.googleapis\.com|\/api\/dev-lite\/upload\/)/,
     );
   });
 

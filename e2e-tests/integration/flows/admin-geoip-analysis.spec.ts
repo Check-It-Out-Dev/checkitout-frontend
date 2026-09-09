@@ -69,7 +69,15 @@ async function probeGeoIpAvailability(page: Page): Promise<boolean> {
   const lookup = await authGet(page, '/admin/geoip/lookup/8.8.8.8');
   if (lookup.status() !== 200) return false;
   const body = await lookup.json().catch(() => null);
-  return body !== null && typeof body === 'object' && 'country' in body;
+  // Without a MaxMind database the lookup still answers 200, with country "Unknown",
+  // countryCode "XX", zero coordinates and known:false — the shape is there, the data is not.
+  return (
+    body !== null &&
+    typeof body === 'object' &&
+    'country' in body &&
+    body['known'] !== false &&
+    body['countryCode'] !== 'XX'
+  );
 }
 
 test.describe('@admin-geoip-analysis — port of admin-geoip-analysis.feature', () => {

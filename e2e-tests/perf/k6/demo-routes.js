@@ -11,7 +11,7 @@
 //   K6_PROFILE=load npm run perf:k6      # ramp to 10 VUs for a minute
 //   BASE_URL=https://checkitout.app npm run perf:k6
 //   K6_P95=1 npm run perf:k6             # plant a defect: an impossible budget must fail the run
-//   K6_DNS=preferIPv4 npm run perf:k6    # a dev server bound to 127.0.0.1 only
+//   K6_DNS_POLICY=preferIPv4 npm run perf:k6    # a dev server bound to 127.0.0.1 only
 //
 // Budgets are in ms and deliberately loose for the dev server (`ng serve` is
 // not the production build); the workflow overrides them for the live demo.
@@ -48,8 +48,8 @@ const PROFILES = {
 export const options = {
   insecureSkipTLSVerify: true,
   // `ng serve` on Node 24 binds `localhost` to ::1 first; k6's resolver would
-  // otherwise dial 127.0.0.1 and be refused. Override with K6_DNS=preferIPv4.
-  dns: { policy: __ENV.K6_DNS || 'preferIPv6', ttl: '5m', select: 'first' },
+  // otherwise dial 127.0.0.1 and be refused. Override with K6_DNS_POLICY=preferIPv4 (K6_DNS itself is reserved by k6).
+  dns: { policy: __ENV.K6_DNS_POLICY || 'preferIPv6', ttl: '5m', select: 'first' },
   ...PROFILES[PROFILE],
   thresholds: {
     http_req_failed: ['rate<0.01'],
