@@ -2,26 +2,26 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 15,
-    "id": 34389629514,
-    "sha": "7192e15",
+    "number": 16,
+    "id": 34390982711,
+    "sha": "649eeb5",
     "branch": "main",
     "workflow": "browser-tiers",
-    "startedAt": "2026-09-09T18:32:30Z",
-    "durationSec": 867,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34389629514",
+    "startedAt": "2026-09-09T18:45:39Z",
+    "durationSec": 795,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34390982711",
     "status": "incomplete"
   },
   "tests": {
     "total": 1371,
     "passed": 1346,
-    "failed": 0,
-    "flaky": 1,
+    "failed": 1,
+    "flaky": 0,
     "skipped": 24,
     "passRate": 0.9993,
-    "flakyRate": 0.0007,
-    "durationMeanSec": 0.86,
-    "durationP95Sec": 1.47,
+    "flakyRate": 0,
+    "durationMeanSec": 0.83,
+    "durationP95Sec": 1.37,
     "tiers": {
       "jest": {
         "total": 1183,
@@ -45,15 +45,15 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 22,
-        "durationSec": 124
+        "durationSec": 121
       },
       "perf": {
         "total": 58,
         "passed": 57,
-        "failed": 0,
-        "flaky": 1,
+        "failed": 1,
+        "flaky": 0,
         "skipped": 0,
-        "durationSec": 957
+        "durationSec": 925
       }
     }
   },
@@ -72,19 +72,33 @@
   },
   "flaky": [
     {
+      "title": "Demo smoothness › the admin-ops tour advances promptly at every step [perf]",
+      "file": "perf/demo-smoothness.spec.ts",
+      "window": 3,
+      "runsFlaky": 0,
+      "runsFailed": 1,
+      "lastSeen": 16,
+      "history": [
+        "absent",
+        "pass",
+        "fail"
+      ]
+    },
+    {
       "title": "Demo smoothness › a simulator that never fires holds the step instead of narrating it [perf]",
       "file": "perf/demo-smoothness.spec.ts",
-      "window": 2,
+      "window": 3,
       "runsFlaky": 1,
       "runsFailed": 0,
       "lastSeen": 15,
       "history": [
         "absent",
-        "flaky"
+        "flaky",
+        "pass"
       ]
     }
   ],
   "reports": {
-    "playwright": "playwright/15/"
+    "playwright": "playwright/16/"
   }
 }
