@@ -4,4 +4,5 @@
  */
 export const environment = {
   demo: false,
+  sandbox: false,
 };

@@ -34,6 +34,10 @@ const PLATFORMS = ['win32', 'linux', 'darwin'];
 // visual FIXTURES list. Add an entry here (with a reason) to silence
 // the gate for a fixture that doesn't need a visual baseline.
 const EXCLUDED = new Set([
+  // The public sandbox's persona picker exists only in the sandbox build; its baseline belongs to the
+  // container-rasterised set of docs/ci/ADR-visual-baselines.md, not to the win32 set this list guards.
+  'sandbox-persona-picker',
+  'sandbox-persona-picker-refused',
   // example: 'fixture-id', // reason it doesn't need a visual snapshot
   'company-setup-preview-interactive', // interactive stub for manual sandbox exploration; initial render duplicates company-setup-idle
   'company-setup-duplicate-interactive', // interactive stub (form-driven 409 path); initial render duplicates company-setup-idle

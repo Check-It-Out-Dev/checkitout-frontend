@@ -9,6 +9,7 @@ import { HeroIllustrationComponent } from './hero-illustration/hero-illustration
 import { InteractiveDashboardPreviewComponent } from './interactive-dashboard-preview/interactive-dashboard-preview.component';
 import { MarketingToolbarComponent } from './marketing-toolbar/marketing-toolbar.component';
 import { OssStorySectionComponent } from './oss-story-section/oss-story-section.component';
+import { isSandboxMode } from '../../core/sandbox/sandbox-mode';
 
 interface FeatureCard {
   readonly icon: string;
@@ -128,6 +129,8 @@ export class LandingComponent {
   private readonly transloco = inject(TranslocoService);
 
   readonly currentYear = new Date().getFullYear();
+  /** The public sandbox says so in the footer (docs/ci/SANDBOX.md §1). */
+  readonly sandbox = isSandboxMode();
 
   /** The legacy CTA video is a Polish-language walkthrough — PL sessions only. */
   readonly lang = toSignal(this.transloco.langChanges$, {

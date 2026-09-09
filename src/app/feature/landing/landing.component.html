@@ -73,6 +73,11 @@
           <span class="whitespace-nowrap">{{ 'landing.hero.cta.secondary2' | transloco }}</span>
         </a>
       </div>
+      @if (sandbox) {
+        <p class="mt-4 text-center text-sm text-cream/60 sm:text-left" data-testid="landing-footer-sandbox">
+          {{ 'footer.sandbox_notice' | transloco }}
+        </p>
+      }
     </div>
 
     <!-- Right: illustration (md+) -->

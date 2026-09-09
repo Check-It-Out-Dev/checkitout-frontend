@@ -1,4 +1,7 @@
 <section class="flex w-full items-start justify-center px-4">
+  @if (sandbox) {
+    <app-sandbox-persona-picker />
+  } @else {
   <form
     [formGroup]="form"
     (ngSubmit)="submit()"
@@ -177,4 +180,5 @@
       </div>
     </div>
   </form>
+  }
 </section>

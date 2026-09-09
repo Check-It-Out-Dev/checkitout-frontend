@@ -1,0 +1,31 @@
+<div class="flex w-full max-w-sm flex-col gap-3" data-testid="sandbox-persona-picker">
+  <h1 class="mb-1 text-left font-display text-5xl font-normal text-ink">{{ 'auth.sandbox.title' | transloco }}</h1>
+  <p class="mb-3 text-sm text-ink/70" data-testid="sandbox-notice">{{ 'auth.sandbox.notice' | transloco }}</p>
+
+  @for (persona of personas; track persona.key) {
+    <button
+      type="button"
+      mat-stroked-button
+      class="!h-auto !justify-start !rounded-lg !px-4 !py-3 !text-left"
+      [disabled]="pending() !== null"
+      [attr.data-testid]="'sandbox-persona-' + persona.key"
+      (click)="choose(persona)"
+    >
+      <span class="flex w-full items-center gap-3">
+        <span class="flex flex-col">
+          <span class="font-medium">{{ 'auth.sandbox.persona.' + persona.key + '.name' | transloco }}</span>
+          <span class="text-sm font-normal text-ink/70">{{ 'auth.sandbox.persona.' + persona.key + '.blurb' | transloco }}</span>
+        </span>
+        @if (pending() === persona.key) {
+          <mat-progress-spinner class="ml-auto shrink-0" mode="indeterminate" diameter="20" data-testid="sandbox-persona-pending" />
+        }
+      </span>
+    </button>
+  }
+
+  @if (errorKey(); as key) {
+    <p role="alert" class="text-sm text-red-700" data-testid="sandbox-persona-error">{{ key | transloco }}</p>
+  }
+
+  <p class="mt-4 text-xs text-ink/60">{{ 'auth.sandbox.resets' | transloco }}</p>
+</div>
