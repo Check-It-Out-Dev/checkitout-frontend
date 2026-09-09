@@ -1,0 +1,101 @@
+# The contract, live: boot the newest backend on a runner, take its OpenAPI document from the running
+# server, regenerate the frontend's typed client from it, and compile. If the backend moved and the
+# frontend still compiles, the drift is reported with the diff; if it no longer compiles, the job is red:
+# a contract break is a build error, not a production surprise. Design: docs/ci/ARCHITECTURE.md §6.
+name: contract-check
+
+on:
+  schedule:
+    - cron: "30 4 * * *"
+  workflow_dispatch:
+    inputs:
+      backend_ref:
+        description: Backend ref to take the contract from
+        type: string
+        default: main
+  repository_dispatch:
+    types: [backend-published]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: contract-check
+  cancel-in-progress: true
+
+jobs:
+  contract:
+    name: Spec from a booted backend → codegen → compile
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      BACKEND_REF: ${{ inputs.backend_ref || github.event.client_payload.sha || 'main' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: frontend
+      - uses: actions/checkout@v4
+        with:
+          repository: Check-It-Out-Dev/checkitout-backend
+          ref: ${{ env.BACKEND_REF }}
+          path: backend
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Testcontainers on Linux
+        # The repository pins the Windows named-pipe strategy for the dev box; auto-detection is right here.
+        run: sed -i '/ClientProviderStrategy/d' backend/src/test/resources/testcontainers.properties
+
+      - name: Take the OpenAPI document from a running backend (Testcontainers Postgres)
+        working-directory: backend
+        run: |
+          ./mvnw -B -ntp verify -Pintegration -DskipPmd=true \
+            -Dfailsafe.includes='**/OpenApiSpecGeneratorTest.java'
+          test -s docs/openapi/openapi.json
+          echo "backend_sha=$(git rev-parse --short HEAD)" >> "$GITHUB_ENV"
+
+      - name: Compare with the frontend's committed contract
+        id: diff
+        run: |
+          if cmp -s backend/docs/openapi/openapi.json frontend/docs/openapi/openapi.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "The contract is unchanged: the frontend's copy equals the document of backend $backend_sha." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            mkdir -p out
+            diff -u frontend/docs/openapi/openapi.json backend/docs/openapi/openapi.json > out/openapi.diff || true
+            cp backend/docs/openapi/openapi.json frontend/docs/openapi/openapi.json
+            echo "The contract moved (backend $backend_sha): $(grep -c '^[-+][^-+]' out/openapi.diff) changed lines." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Regenerate the client and compile against it
+        if: steps.diff.outputs.changed == 'true'
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run openapi:gen
+          git diff --stat -- src/app/api | tail -1 | sed 's/^/generated client: /' >> "$GITHUB_STEP_SUMMARY"
+          npm run typecheck
+          npx bddgen
+          npm run typecheck:e2e
+          npm run build:check
+          npm run check:contract-coverage
+          echo "The frontend compiles against the new contract. Commit the spec and the regenerated client (the three-commit repair flow)." >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: contract-${{ github.run_number }}
+          path: |
+            backend/docs/openapi/openapi.json
+            out/openapi.diff
+          if-no-files-found: ignore
+          retention-days: 30

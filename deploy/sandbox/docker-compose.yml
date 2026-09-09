@@ -1,0 +1,123 @@
+# The public sandbox: the same images the kind cluster runs (deploy/k8s), on one VPS, behind the host's
+# nginx. Rolled out by rollout.sh (bundle at a pinned sha → pull → up --wait → health → smoke; the previous
+# tags are kept for an instant rollback). Everything a visitor can change lives in `pgdata` and `uploads`,
+# both recreated by the nightly reseed. Design of record: docs/ci/SANDBOX.md.
+#
+# Local rehearsal from a checkout with the images built for kind:
+#   FE_IMAGE=checkitout-frontend FE_TAG=ci BE_TAG=main BE_PROFILES=dev-lite \
+#   docker compose -f deploy/sandbox/docker-compose.yml up -d --wait
+name: checkitout-sandbox
+
+services:
+  frontend:
+    image: ${FE_IMAGE:-ghcr.io/check-it-out-dev/checkitout-frontend}:${FE_TAG:-sandbox}
+    environment:
+      BACKEND_UPSTREAM: backend:8080
+      # Behind Cloudflare the cookies keep Secure; the kind cluster (plain http) strips it.
+      COOKIE_FLAGS: ${COOKIE_FLAGS:-secure samesite=lax}
+    ports:
+      - "127.0.0.1:${SANDBOX_PORT:-8090}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+    restart: unless-stopped
+    mem_limit: 64m
+    logging: &json-logs
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+  backend:
+    image: ${BE_IMAGE:-ghcr.io/check-it-out-dev/checkitout-backend}:${BE_TAG:-main}
+    environment:
+      SPRING_PROFILES_ACTIVE: ${BE_PROFILES:-dev-lite,sandbox}
+      SPRING_DATASOURCE_HOST: postgres
+      SPRING_DATASOURCE_PORT: "5432"
+      SPRING_DATASOURCE_DATABASE: ${POSTGRES_DB:-postgres}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-admin}
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: "6379"
+      SPRING_LIQUIBASE_CONTEXTS: dev,local,dev-lite
+      SERVER_PORT: "8080"
+      FILE_UPLOAD_LOCALSINK_DIR: /data/uploads
+      TZ: UTC
+    volumes:
+      - ${UPLOADS_DIR:-./uploads}:/data/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    # The image is alpine: busybox wget asks the readiness group the way the kind probe does.
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8080/api/actuator/health/readiness | grep -q '\"UP\"'"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 40s
+    restart: unless-stopped
+    mem_limit: ${BACKEND_MEM:-1536m}
+    stop_grace_period: 30s
+    logging: *json-logs
+
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-postgres}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+    mem_limit: 256m
+    shm_size: 128m
+    logging: *json-logs
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--maxmemory", "48mb", "--maxmemory-policy", "allkeys-lru", "--save", ""]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+    mem_limit: 64m
+    logging: *json-logs
+
+  # Logs and metrics to Grafana Cloud. Started only with `--profile logging`, once the host .env carries the
+  # Loki and Prometheus endpoints and tokens (owner-managed, never in the repository).
+  alloy:
+    image: grafana/alloy:v1.9.2
+    profiles: ["logging"]
+    command: ["run", "--server.http.listen-addr=127.0.0.1:12345", "--storage.path=/var/lib/alloy/data", "/etc/alloy/config.alloy"]
+    environment:
+      LOKI_URL: ${LOKI_URL:-}
+      LOKI_USER: ${LOKI_USER:-}
+      LOKI_TOKEN: ${LOKI_TOKEN:-}
+      PROM_URL: ${PROM_URL:-}
+      PROM_USER: ${PROM_USER:-}
+      PROM_TOKEN: ${PROM_TOKEN:-}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./bundle/deploy/sandbox/alloy/config.alloy:/etc/alloy/config.alloy:ro
+      - alloydata:/var/lib/alloy/data
+    depends_on:
+      - backend
+    restart: unless-stopped
+    mem_limit: 160m
+    logging: *json-logs
+
+volumes:
+  pgdata:
+  alloydata:

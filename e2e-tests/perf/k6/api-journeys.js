@@ -18,6 +18,7 @@
 //   BASE_URL=http://frontend.checkitout.svc    # inside the cluster (deploy/k8s/tests/k6-testrun.yaml)
 //   K6_DNS_POLICY=preferIPv4                   # a server bound to 127.0.0.1 only (K6_DNS itself is reserved by k6)
 //   K6_P95_BROWSE=800 K6_P95_APPLY=1500        # per-journey p95 budgets in ms
+//   K6_PROFILE=sandbox K6_PERSONA_ONLY=1       # the public sandbox: only the seeded persona may sign in, 1 VU, low rate
 import http from 'k6/http';
 import { check, group, sleep } from 'k6';
 import { Counter } from 'k6/metrics';
@@ -31,11 +32,15 @@ const P95_BROWSE = Number(__ENV.K6_P95_BROWSE || 800);
 const P95_APPLY = Number(__ENV.K6_P95_APPLY || 1500);
 const RUN = __ENV.K6_RUN_ID || new Date().toISOString().replace(/[:.]/g, '-');
 const SEEDED_INFLUENCER = __ENV.K6_INFLUENCER || 'test.influencer@test.com';
+// The public sandbox admits only its personas (docs/ci/SANDBOX.md), so browse signs in as the seeded
+// influencer too and paces itself under that one account's 60-a-minute budget.
+const PERSONA_ONLY = __ENV.K6_PERSONA_ONLY === '1';
 
 const applySkipped = new Counter('apply_skipped');
 
 const BROWSE = {
   smoke: { executor: 'constant-vus', vus: 1, duration: '30s' },
+  sandbox: { executor: 'constant-vus', vus: 1, duration: '45s' },
   load: {
     executor: 'ramping-vus',
     startVUs: 0,
@@ -52,7 +57,7 @@ export const options = {
   dns: { policy: __ENV.K6_DNS_POLICY || 'preferIPv6', ttl: '5m', select: 'first' },
   scenarios: {
     browse: { ...BROWSE[PROFILE], exec: 'browse', tags: { journey: 'browse' } },
-    apply: { executor: 'per-vu-iterations', vus: 1, iterations: PROFILE === 'load' ? 5 : 2, maxDuration: '2m', exec: 'apply', tags: { journey: 'apply' } },
+    apply: { executor: 'per-vu-iterations', vus: 1, iterations: PROFILE === 'load' ? 5 : PROFILE === 'sandbox' ? 1 : 2, maxDuration: '2m', exec: 'apply', tags: { journey: 'apply' } },
   },
   thresholds: {
     http_req_failed: ['rate<0.01'],
@@ -99,14 +104,15 @@ export function browse() {
   const journey = 'browse';
   group('influencer browses the catalogue', () => {
     if (!browseSignedIn) {
-      browseSignedIn = signIn(`perf.browse.${RUN}.vu${__VU}@checkitout.app`, 'INFLUENCER', journey);
+      browseSignedIn = signIn(PERSONA_ONLY ? SEEDED_INFLUENCER : `perf.browse.${RUN}.vu${__VU}@checkitout.app`, 'INFLUENCER', journey);
       if (!browseSignedIn) return;
     }
     const list = activeCampaigns(journey, 10);
     if (list.length) campaignDetail(list[Math.floor(Math.random() * list.length)].id, journey);
   });
-  // Two requests per iteration; the per-user budget is 60 a minute, so an iteration takes ≥ 2.5 s.
-  sleep(2.5);
+  // Two requests per iteration; the per-user budget is 60 a minute, so an iteration takes ≥ 2.5 s
+  // (3 s when the apply journey shares the same persona account).
+  sleep(PERSONA_ONLY ? 3 : 2.5);
 }
 
 let applySignedIn = false;
@@ -118,7 +124,20 @@ function me(journey) {
   const res = http.get(`${API}/users/me`, { tags: { journey, endpoint: 'me' } });
   check(res, { 'me 200': (r) => r.status === 200 });
   const connections = res.status === 200 ? res.json('socialConnections') || [] : [];
-  return connections.reduce((sum, c) => sum + (c.followersCount || 0), 0);
+  const status = res.status === 200 ? res.json('accountStatus.value') : null;
+  return { followers: connections.reduce((sum, c) => sum + (c.followersCount || 0), 0), active: status === 'ACTIVE' };
+}
+
+// The seed creates every influencer as IN_VALIDATION (awaiting the admin's check), and only an ACTIVE
+// account may apply. dev-lite's test controller can flip it; the sandbox guard does the same at persona
+// sign-in, so there the account is already active and this call never happens.
+function activate(email, journey) {
+  const res = http.post(`${API}/test/auth/set-account-status`, JSON.stringify({ email, status: 'ACTIVE' }), {
+    headers: JSON_HEADERS,
+    tags: { journey, endpoint: 'set-account-status' },
+  });
+  check(res, { 'account activated': (r) => r.status === 200 });
+  return res.status === 200;
 }
 
 function qualifies(campaign, followerCount) {
@@ -131,7 +150,9 @@ export function apply() {
     if (!applySignedIn) {
       applySignedIn = signIn(SEEDED_INFLUENCER, 'INFLUENCER', journey);
       if (!applySignedIn) return;
-      followers = me(journey);
+      let who = me(journey);
+      if (!who.active && activate(SEEDED_INFLUENCER, journey)) who = me(journey);
+      followers = who.followers;
     }
     const mine = http.get(`${API}/applied-opportunity/paged?page=0&size=100`, { tags: { journey, endpoint: 'applied-paged' } });
     check(mine, { 'applied list 200': (r) => r.status === 200 });

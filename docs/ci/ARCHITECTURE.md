@@ -38,6 +38,10 @@ request execute on the machine. Speed comes from sharding across runners, never 
 | `nightly-full-stack.yml` | 02:00 UTC, dispatch | ~15 min (75) | backend image from GHCR with the dev-lite profile; bdd + integration + scenarios |
 | `k8s-test-execution.yml` | weekly, dispatch | ~20–25 min (40) | everything in §2 |
 | `deploy-demo.yml` | push main (environment `demo`) | ~3 min | tar over ssh, atomic swap, hash verified on both domains |
+| `deploy-sandbox.yml` | push main, dispatch (environment `sandbox`) | ~6 min (25) | frontend image to ghcr; `rollout.sh deploy` over a forced-command key; smoke + the k6 persona profile from the outside; rollback on failure (`SANDBOX.md`) |
+| `contract-check.yml` | daily 04:30 UTC, dispatch, `backend-published` | ~8 min (30) | the OpenAPI document taken from a booted backend equals the frontend's copy, or the regenerated client compiles (§6) |
+| BE `ci-tests.yml` | PR, push, nightly | unit ~2.5 / integration ~4 / e2e ~10 min | JUnit XML from every tier to Allure 3 with history on Pages |
+| BE `build-image.yml` | push main / greenfield | ~4 min | `ghcr.io/…/checkitout-backend:<sha>`, `:<branch>`, `:latest`; asks the frontend to check the contract when the dispatch token exists |
 
 ## 2 · The Kubernetes substrate (`deploy/k8s/`)
 
@@ -188,3 +192,52 @@ runners at 100 % checks, 0 % failed requests, thresholds green; p95 in-cluster 6
   error rate per journey, and the pod resource peaks that justify the requests above.
 - The README's "In progress" rows for Kubernetes test execution and k6 flip from planned to running, with
   the run link; the entry page's CI/CD card shows the same numbers through the published-numbers gate.
+
+## 6 · The testing methodology, for the agent that executes it
+
+**Where each tier runs, and why there.** Unit tests run anywhere. Integration tests run on the runner
+with Testcontainers. Browser tiers run against a fresh dev-lite stack created inside the job (service
+containers, or the kind cluster weekly) because they mint hundreds of throw-away accounts. The Cucumber
+end-to-end suite runs in-process nightly. The public sandbox is verified as a deployment only (nine smoke
+checks and the k6 persona profile after every rollout) and never used to measure code: a public host is
+the wrong place to measure anything.
+
+**Gates by trigger.** A pull request runs what is fast and deterministic: the frontend's static gates,
+typecheck, build and Jest (about 2.5 min) and the backend's unit profile (about 2.5 min). A push to main
+adds the sharded browser tiers, the backend's integration profile, both image builds, and the sandbox
+rollout, which verifies itself. Nightly runs the full stack, the end-to-end suite and the contract check.
+Weekly runs the kind cluster. A job that needs more than 4 vCPU gets one more shard, never a larger
+runner.
+
+**The contract.** `contract-check.yml` boots the newest backend on the runner, takes its OpenAPI
+document through `OpenApiSpecGeneratorTest` (a real server on Testcontainers Postgres, the same test the
+local `openapi:cycle` runs), and compares it with the frontend's committed copy. Unchanged: one line in
+the summary. Changed: the client is regenerated with `openapi:gen`, then `typecheck`, `bddgen`,
+`typecheck:e2e`, `build:check` and `check:contract-coverage` decide. A compile failure is the job
+failing: a contract break is a build error. The repair is the three-commit flow the repository already
+uses: backend fix, spec diff, frontend codegen.
+
+**Reading a red run.** The step summary first (counts, the failing names, the k6 budget that was
+crossed), then Allure (`allure/<run>/`, with the test's history across runs), then the artifact
+(traces for Playwright, the JUnit XML, the k6 JSON). Re-run one shard with the same `--grep` and
+`--shard=n/4`; re-run one k6 runner with `K6_PROFILE=smoke` locally against the same target.
+
+**Flaky.** A test is flaky when it failed and then passed on a retry in the same run. It is listed on
+the dashboard for ten runs (`METRICS.md` §4). At three flaky or failed runs out of ten it gets
+`test.fixme` with an issue link, and stays in the report; nothing is deleted to make a run green. The
+cookie-banner sandbox test is the first entry, on purpose.
+
+**Backend, if O1 has not landed yet.** The commands below were run on the dev box on 2026-09-09 and are
+the ones the workflow uses:
+
+| Tier | Command | Measured |
+| --- | --- | --- |
+| unit | `./mvnw -B -ntp test -Ptest -DskipITs` | 2 min 21 s, green |
+| integration | `./mvnw -B -ntp verify -Pintegration -DskipPmd=true` (Testcontainers; delete the two `ClientProviderStrategy` lines of `testcontainers.properties` on Linux) | ≈ 4 min per the earlier estate audit |
+| end to end | `./mvnw -B -ntp verify -Pe2e -DskipPmd=true` (Firebase steps must `assumeTrue` themselves away without credentials) | ≈ 9–10 min |
+| the contract | `./mvnw -B -ntp verify -Pintegration -DskipPmd=true -Dfailsafe.includes='**/OpenApiSpecGeneratorTest.java'` | ≈ 1 min after the boot |
+
+The report job feeds every tier's JUnit XML to Allure 3 (`npx allure generate`), copies the previous
+`allure/latest/history` in first, and publishes `allure/<run>/` and `allure/latest/` on `gh-pages`;
+the first run is where the JUnit reader and the history copy are verified, then `quality-metrics`
+(O7) hangs off the same job.
