@@ -2,25 +2,25 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 9,
-    "id": 34380322374,
-    "sha": "89cbf81",
+    "number": 10,
+    "id": 34382570310,
+    "sha": "e7d05c0",
     "branch": "main",
     "workflow": "browser-tiers",
-    "startedAt": "2026-09-09T17:01:06Z",
-    "durationSec": 1143,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34380322374"
+    "startedAt": "2026-09-09T17:23:06Z",
+    "durationSec": 1161,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34382570310"
   },
   "tests": {
     "total": 1395,
-    "passed": 1371,
+    "passed": 1370,
     "failed": 0,
-    "flaky": 0,
+    "flaky": 1,
     "skipped": 24,
-    "passRate": 1,
-    "flakyRate": 0,
-    "durationMeanSec": 1.57,
-    "durationP95Sec": 3.92,
+    "passRate": 0.9993,
+    "flakyRate": 0.0007,
+    "durationMeanSec": 1.59,
+    "durationP95Sec": 3.93,
     "tiers": {
       "jest": {
         "total": 1183,
@@ -28,7 +28,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
-        "durationSec": 78
+        "durationSec": 63
       },
       "msw": {
         "total": 2,
@@ -44,15 +44,15 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 22,
-        "durationSec": 132
+        "durationSec": 127
       },
       "perf": {
         "total": 82,
-        "passed": 82,
+        "passed": 81,
         "failed": 0,
-        "flaky": 0,
+        "flaky": 1,
         "skipped": 0,
-        "durationSec": 1943
+        "durationSec": 1991
       }
     }
   },
@@ -73,28 +73,30 @@
     {
       "title": "Demo smoothness › a simulator that never fires holds the step instead of narrating it [perf]",
       "file": "perf/demo-smoothness.spec.ts",
-      "window": 5,
-      "runsFlaky": 1,
+      "window": 6,
+      "runsFlaky": 2,
       "runsFailed": 0,
-      "lastSeen": 7,
+      "lastSeen": 10,
       "history": [
         "absent",
         "absent",
         "flaky",
         "pass",
-        "pass"
+        "pass",
+        "flaky"
       ]
     },
     {
       "title": "@account-activation-e2e — port of account-activation-e2e.feature › @ntf-003 @company COMPANY receives ACCOUNT_ACTIVATED notification after confirm-data auto-activation [chromium-desktop]",
       "file": "integration/flows/account-activation-e2e.spec.ts",
-      "window": 5,
+      "window": 6,
       "runsFlaky": 0,
       "runsFailed": 1,
       "lastSeen": 2,
       "history": [
         "absent",
         "fail",
+        "absent",
         "absent",
         "absent",
         "absent"
@@ -103,13 +105,14 @@
     {
       "title": "@magic-link-errors — port of magic-link-errors.feature › @tier-2 confirm-password-reset rejects garbage oobCode with invalid_action_code [chromium-desktop]",
       "file": "integration/flows/magic-link-errors.spec.ts",
-      "window": 5,
+      "window": 6,
       "runsFlaky": 0,
       "runsFailed": 1,
       "lastSeen": 2,
       "history": [
         "absent",
         "fail",
+        "absent",
         "absent",
         "absent",
         "absent"
@@ -118,13 +121,14 @@
     {
       "title": "@magic-link-errors — port of magic-link-errors.feature › @tier-2 verify-reset-code rejects garbage oobCode with invalid_action_code [chromium-desktop]",
       "file": "integration/flows/magic-link-errors.spec.ts",
-      "window": 5,
+      "window": 6,
       "runsFlaky": 0,
       "runsFailed": 1,
       "lastSeen": 2,
       "history": [
         "absent",
         "fail",
+        "absent",
         "absent",
         "absent",
         "absent"
@@ -133,13 +137,14 @@
     {
       "title": "Sandbox · CookieBannerComponent › clicking accept-all hides the banner [chromium-desktop]",
       "file": "sandbox/cookie-banner.spec.ts",
-      "window": 5,
+      "window": 6,
       "runsFlaky": 0,
       "runsFailed": 1,
       "lastSeen": 2,
       "history": [
         "absent",
         "fail",
+        "pass",
         "pass",
         "pass",
         "pass"
@@ -148,7 +153,7 @@
     {
       "title": "Sandbox · CookieBannerComponent › clicking necessary-only hides the banner [chromium-desktop]",
       "file": "sandbox/cookie-banner.spec.ts",
-      "window": 5,
+      "window": 6,
       "runsFlaky": 0,
       "runsFailed": 1,
       "lastSeen": 2,
@@ -157,11 +162,12 @@
         "fail",
         "pass",
         "pass",
+        "pass",
         "pass"
       ]
     }
   ],
   "reports": {
-    "playwright": "playwright/9/"
+    "playwright": "playwright/10/"
   }
 }
