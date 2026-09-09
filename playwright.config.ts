@@ -66,7 +66,11 @@ export default defineConfig({
   // dev server dies on `tls.getCACertificates` and takes the whole run with it.
   // The tier then reports nothing at all, which is worse than reporting a
   // regression.
-  webServer: process.env['PERF_TIER']
+  //
+  // PW_EXTERNAL_SERVER is the same opt-out for a server this process does not
+  // own: the Kubernetes shards (deploy/k8s/tests/playwright-indexed-job.yaml)
+  // point PW_BASE_URL at the frontend Service and must not boot ng serve.
+  webServer: process.env['PERF_TIER'] || process.env['PW_EXTERNAL_SERVER']
     ? undefined
     : {
         command: 'npm run start -- --port=4201',

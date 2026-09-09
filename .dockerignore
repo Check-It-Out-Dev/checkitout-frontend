@@ -1,0 +1,13 @@
+# Build context for deploy/k8s/frontend/Dockerfile and deploy/k8s/tests/Dockerfile.playwright.
+# The frontend image needs dist/ and the test image needs the sources; neither needs these.
+node_modules
+.angular
+coverage
+test-results
+playwright-report
+blob-report
+ci-reports
+qa-shots
+qa-film
+.git
+*.log

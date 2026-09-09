@@ -1,0 +1,19 @@
+# kubectl apply -k deploy/k8s/base
+# Image tags belong to the caller: the workflow pins the backend to the SHA it built
+# (kustomize edit set image ghcr.io/check-it-out-dev/checkitout-backend=...:sha-abc1234)
+# and the frontend to the image it loaded into kind.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: checkitout
+resources:
+  - namespace.yaml
+  - postgres.yaml
+  - redis.yaml
+  - backend.yaml
+  - frontend.yaml
+  - ingress.yaml
+images:
+  - name: ghcr.io/check-it-out-dev/checkitout-backend
+    newTag: main
+  - name: checkitout-frontend
+    newTag: ci

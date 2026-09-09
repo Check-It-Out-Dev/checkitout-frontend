@@ -1,0 +1,39 @@
+# The frontend as a static site behind nginx, built in the job from the production configuration,
+# not the demo build: the demo interceptor answers /api from fixtures, and this cluster exists to
+# hit the real backend. nginx proxies /api to the backend Service, so the browser sees one origin:
+# no CORS, and cookies re-flagged for plain HTTP (deploy/k8s/frontend/nginx.conf).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: checkitout
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: frontend }
+  template:
+    metadata:
+      labels: { app: frontend }
+    spec:
+      containers:
+        - name: nginx
+          image: checkitout-frontend:ci   # built in the job, then `kind load docker-image`
+          imagePullPolicy: IfNotPresent
+          ports:
+            - { containerPort: 80, name: http }
+          readinessProbe:
+            httpGet: { path: /healthz, port: http }
+            periodSeconds: 5
+          resources:
+            requests: { cpu: 100m, memory: 64Mi }
+            limits: { memory: 192Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: checkitout
+spec:
+  selector: { app: frontend }
+  ports:
+    - { port: 80, targetPort: http }
