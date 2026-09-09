@@ -1,0 +1,1 @@
+  company-campaign: create-campaign: exempt — confirmed by the top of the form carrying values — the form itself is what appears · complete-brief: 3369 ms · publish-campaign: 2573 ms · campaign-live: 2746 ms · decide-applicant: nothing on screen to hold (storage or absence) · lifecycle: nothing on screen to hold (no done)
