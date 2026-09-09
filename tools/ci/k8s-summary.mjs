@@ -4,20 +4,54 @@
 // and exits 1 when a shard reported unexpected tests or a k6 runner crossed a threshold. Flaky tests are
 // counted and named, never failed on: the dashboard's flaky list is where they are watched.
 //
-//   node tools/ci/k8s-summary.mjs [ci-reports] [--json out.json]
+// Three verdicts, not two. A run whose shards did not all finish cannot be called green: its numbers cover
+// only what ran. Pass the workflow's own needs context (--needs '${{ toJSON(needs) }}') or the shard count
+// the job expected (--expect-shards 4) and a cancelled or missing shard makes the verdict `incomplete`.
+// Without that, a push that cancels an in-flight run publishes a green verdict from partial blobs — which
+// is what happened on main at 16:15 on 2026-09-09.
+//
+//   node tools/ci/k8s-summary.mjs [ci-reports] [--json out.json] [--needs <json>] [--expect-shards <n>]
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const args = process.argv.slice(2);
 const dir = args.find((a) => !a.startsWith('--')) || 'ci-reports';
-const jsonOut = args.includes('--json') ? args[args.indexOf('--json') + 1] : null;
+const flag = (name) => {
+  const i = args.indexOf(`--${name}`);
+  return i >= 0 && args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : null;
+};
+const jsonOut = flag('json');
+const needsRaw = flag('needs');
+const expectShards = Number(flag('expect-shards') || 0);
 const lines = [];
 const say = (s = '') => lines.push(s);
 let red = false;
+let incomplete = false;
+const missing = [];
+
+// ---- did every job this verdict speaks for actually finish? ----
+if (needsRaw) {
+  let needs = null;
+  try {
+    needs = JSON.parse(needsRaw);
+  } catch {
+    // An unreadable needs context must never be read as "nothing was cancelled".
+    incomplete = true;
+    missing.push('the needs context could not be parsed');
+  }
+  for (const [job, v] of Object.entries(needs || {})) {
+    const result = (v && v.result) || 'unknown';
+    if (result === 'cancelled' || result === 'skipped') {
+      incomplete = true;
+      missing.push(`job ${job} was ${result}`);
+    }
+  }
+}
 
 // ---- Playwright: merged.json + shard-<n>.exit ----
 const mergedPath = join(dir, 'merged.json');
 const tests = { expected: 0, unexpected: 0, flaky: 0, skipped: 0, durationSec: 0, unexpectedTitles: [], flakyTitles: [] };
+const timings = [];
 if (existsSync(mergedPath)) {
   const merged = JSON.parse(readFileSync(mergedPath, 'utf8'));
   const stats = merged.stats || {};
@@ -32,6 +66,17 @@ if (existsSync(mergedPath)) {
         const title = [...path, spec.title].join(' › ');
         if (t.status === 'unexpected') tests.unexpectedTitles.push(`${suite.file || ''} › ${title}`);
         if (t.status === 'flaky') tests.flakyTitles.push(`${suite.file || ''} › ${title}`);
+        // Budgets the tier measured but did not assert (PERF_TIMING=report on a shared runner). They belong
+        // in the report or they are invisible: a number nobody reads is the same as a number nobody took.
+        // Playwright mirrors annotations onto the test from its LAST result only, so a retried test would
+        // lose the earlier readings; read both places and de-duplicate.
+        const seen = new Set();
+        for (const a of [...(t.annotations || []), ...(t.results || []).flatMap((r) => r.annotations || [])]) {
+          if (!a || a.type !== 'timing' || !a.description || seen.has(a.description)) continue;
+          seen.add(a.description);
+          const [name, reading] = a.description.split(/:\s(.+)/);
+          timings.push({ test: title, name, reading: reading ?? a.description });
+        }
       }
     }
     for (const s of suite.suites || []) walk(s, [...path, s.title]);
@@ -51,6 +96,10 @@ if (existsSync(mergedPath)) {
   say(`| ${tests.expected} | ${tests.unexpected} | ${tests.flaky} | ${tests.skipped} | ${tests.durationSec} s |`);
   say();
   if (shards.length) say(`Shards: ${shards.map((s) => `${s.shard} → exit ${s.exit}`).join(', ')}.`);
+  if (expectShards && shards.length < expectShards) {
+    incomplete = true;
+    missing.push(`${expectShards - shards.length} of ${expectShards} shards left no exit file`);
+  }
   if (tests.unexpectedTitles.length) {
     red = true;
     say();
@@ -61,6 +110,14 @@ if (existsSync(mergedPath)) {
     say();
     say('Flaky (passed on retry, listed on the dashboard):');
     for (const t of tests.flakyTitles) say(`- ${t}`);
+  }
+  if (timings.length) {
+    say();
+    say('Measured, not asserted — these budgets belong to the machine, not to the application:');
+    say();
+    say('| test | reading |');
+    say('| --- | --- |');
+    for (const t of timings) say(`| ${t.test} · ${t.name} | ${t.reading} |`);
   }
 } else {
   red = true;
@@ -100,9 +157,16 @@ if (k6.length) {
   }
 }
 
+const status = incomplete ? 'incomplete' : red ? 'red' : 'green';
 say();
-say(red ? '**Verdict: red.**' : '**Verdict: green.**');
+if (incomplete) {
+  say(`**Verdict: incomplete.** ${missing.join('; ')} — the numbers above cover only what finished, so this run`);
+  say('is not a green run and is not published as one.');
+  if (red) say('It is red as well: the unexpected tests above did run and did fail.');
+} else {
+  say(red ? '**Verdict: red.**' : '**Verdict: green.**');
+}
 const out = lines.join('\n') + '\n';
 process.stdout.write(out);
-if (jsonOut) writeFileSync(jsonOut, JSON.stringify({ red, tests, shards, k6 }, null, 2));
-process.exit(red ? 1 : 0);
+if (jsonOut) writeFileSync(jsonOut, JSON.stringify({ status, red, incomplete, missing, tests, shards, k6, timings }, null, 2));
+process.exit(status === 'green' ? 0 : 1);

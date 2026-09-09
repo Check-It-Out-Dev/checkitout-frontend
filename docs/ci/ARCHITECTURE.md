@@ -26,6 +26,12 @@ GR  ci (test_app, MCP)  ─────┘                                      
    metrics/history.jsonl   one line per run       badges/*.json   shields endpoints for the READMEs
 ```
 
+Two dashboards live outside Pages, on Grafana Cloud, public without a login: the k6 API journeys
+(<https://checkitoutapp.grafana.net/public-dashboards/bc4987ccdb234296a33afd3a794f1f4e>, the whole time
+range with one weekly cluster run in view, fed by the runners' remote write when the `grafana-cloud`
+environment holds the `K6_PROMETHEUS_RW_*` secrets; `docs/ci/grafana/k6.json` is the source) and the sandbox
+(<https://checkitoutapp.grafana.net/public-dashboards/f48c40b8b3244bdfa019117fa9fdcbbe>, `SANDBOX.md` §5).
+
 Every job runs on GitHub-hosted `ubuntu-latest` (4 vCPU, 16 GB, free and unlimited for public
 repositories). Nothing runs on a self-hosted runner: on a public repository that would let any pull
 request execute on the machine. Speed comes from sharding across runners, never from a larger one.
@@ -186,6 +192,18 @@ Left as found, on purpose: `Sandbox · CookieBannerComponent › clicking accept
 in one run and red in the next inside the cluster (the banner stays after the click for 5 s). That is the
 first entry for the flaky list the quality dashboard exists to show, not something the harness should hide.
 
+Frame-timing budgets on shared runners: the smoothness tier's absolute timings (slow frames in the
+landing story, long animation frames and blocking time through a tour) failed on `ubuntu-latest` with
+readings that belong to the runner, not the application: one or two 67 ms frames under 4x throttle in
+a twenty-second story, 10 to 14 long frames through a tour where the dev box reads 8, blamed on the
+mocked XHR's `onload`. The same tier on the dev box, the same afternoon, on the same commit: 81 of 82 in
+32 minutes, the one failure being blocking time 401 ms against a 400 ms budget on a box also running
+Docker, kind and a compose stack. So `browser-tiers.yml` runs the tier with `PERF_TIMING=report`: those
+five budgets are measured and written to the report as `timing` annotations, never asserted, while the
+structural budgets (card heights, opacity, beat tempo, a way forward at every step) stay hard. The
+timings are asserted where the clock is quiet: `npm run test:perf` on the dev box before a deploy. A
+dedicated runner would let CI assert them too.
+
 ### The k6 API journeys, rehearsed the same afternoon
 
 `e2e-tests/perf/k6/api-journeys.js` drives the backend through nginx the way a browser would: `browse`
@@ -208,6 +226,15 @@ runners at 100 % checks, 0 % failed requests, thresholds green; p95 in-cluster 6
   as `apply_skipped`, not as a failure.
 - With `parallelism > 1` the runners need one run id to share: the TestRun passes `K6_RUN_ID` (the
   workflow substitutes the run number), and each runner appends its pod name to the summary file names.
+- Remote write to Grafana Cloud (`--out experimental-prometheus-rw`, credentials from the `grafana-cloud`
+  environment into a `k6-remote-write` Secret) exports durations in **seconds** and, by default, only
+  p(99) of each trend. The TestRun sets `K6_PROMETHEUS_RW_TREND_STATS=p(95),p(99),max` so the dashboard's
+  p95 series exist, and the dashboard's units are `s`. Rehearsed on the dev box's kind cluster: 203
+  requests under `testid=run-rehearsal-1707` landed and rendered.
+- An externally shared Grafana dashboard supports no variables at all (a query containing one returns
+  nothing, without an error), and instant queries at "now" find no run that ended minutes ago. The public
+  k6 dashboard therefore has no run picker and every panel reads the whole time range (14 days by
+  default, one weekly run in view); `testid` stays on every series for Explore.
 
 ## 5 · What "done" means for the cluster run
 

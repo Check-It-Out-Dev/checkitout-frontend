@@ -177,8 +177,14 @@ jobs:
           find fragments -name '*.zip' -exec cp {} ci-reports/blobs/ \;
           PLAYWRIGHT_HTML_OUTPUT_DIR=ci-reports/merged PLAYWRIGHT_HTML_REPORT=ci-reports/merged PLAYWRIGHT_JSON_OUTPUT_NAME=ci-reports/merged.json \
             npx playwright merge-reports --reporter html,json ci-reports/blobs
+      # The verdict is recorded here but does not stop the job: a red or an incomplete run must still publish
+      # its numbers, or the dashboard can only ever show the last green run. The job is failed at the very end.
       - name: Verdict
-        run: node tools/ci/k8s-summary.mjs ci-reports --json ci-reports/summary.json | tee -a "$GITHUB_STEP_SUMMARY"
+        id: verdict
+        continue-on-error: true
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        run: set -o pipefail; node tools/ci/k8s-summary.mjs ci-reports --needs "$NEEDS" --json ci-reports/summary.json | tee -a "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -197,11 +203,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          set -o pipefail
           mkdir -p site && rm -rf site/.git
           STARTED_AT=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" --jq .run_started_at)
           DURATION=$(( $(date +%s) - $(date -d "$STARTED_AT" +%s) ))
           node tools/ci/quality-metrics.mjs --out site --workflow nightly-full-stack --started-at "$STARTED_AT" --duration-sec "$DURATION" \
-            --playwright ci-reports/merged.json --copy playwright=ci-reports/merged \
+            --playwright ci-reports/merged.json --verdict ci-reports/summary.json --copy playwright=ci-reports/merged \
             --jest site/jest/latest.json --coverage site/coverage/latest.json --lighthouse site/lighthouse/latest.json | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Publish
         uses: peaceiris/actions-gh-pages@v4
@@ -210,3 +217,9 @@ jobs:
           publish_dir: site
           keep_files: false
           commit_message: "nightly-full-stack run ${{ github.run_number }}"
+      - name: The verdict decides the job
+        if: always() && steps.verdict.outcome == 'failure'
+        run: |
+          STATUS=$(node -p "try{require('./ci-reports/summary.json').status}catch{'red'}")
+          echo "Verdict: $STATUS. The report was published; the job is failed so nothing reads it as green." >&2
+          exit 1

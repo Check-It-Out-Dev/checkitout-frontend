@@ -39,6 +39,9 @@ jobs:
     name: kind cluster, 4 shards, 2 k6 runners
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    # Holds the K6_PROMETHEUS_RW_* secrets (no reviewer): with them the k6 runners also remote-write to the
+    # public Grafana Cloud dashboard; without them the run is summaries-only and says so.
+    environment: grafana-cloud
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -75,6 +78,11 @@ jobs:
       - name: Render the kind config (reports mount)
         run: |
           mkdir -p ci-reports
+          # The node mounts this directory and pods write their reports into it. The Playwright image runs
+          # as root, but the k6 runner does not, and on a runner this directory belongs to uid 1001: every
+          # k6 summary was lost to "permission denied" until this chmod (run 34380876130). The runner is
+          # ephemeral and holds nothing but the checkout.
+          chmod 0777 ci-reports
           CI_REPORTS_DIR="$GITHUB_WORKSPACE/ci-reports" envsubst < deploy/k8s/kind-config.yaml > kind-config.rendered.yaml
       - uses: helm/kind-action@v1
         with:
@@ -117,10 +125,28 @@ jobs:
           ls -la ci-reports
 
       # ---- k6 from inside the cluster ----
+      - name: k6 remote write to Grafana Cloud (when the environment has the secrets)
+        env:
+          RW_URL: ${{ secrets.K6_PROMETHEUS_RW_SERVER_URL }}
+          RW_USER: ${{ secrets.K6_PROMETHEUS_RW_USERNAME }}
+          RW_PASS: ${{ secrets.K6_PROMETHEUS_RW_PASSWORD }}
+        run: |
+          if [ -z "$RW_PASS" ] || [ -z "$RW_URL" ]; then
+            echo "k6: no Grafana Cloud secrets in the grafana-cloud environment; summaries only" | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          kubectl -n checkitout create secret generic k6-remote-write             --from-literal=K6_PROMETHEUS_RW_SERVER_URL="$RW_URL"             --from-literal=K6_PROMETHEUS_RW_USERNAME="$RW_USER"             --from-literal=K6_PROMETHEUS_RW_PASSWORD="$RW_PASS"
+          echo "K6_REMOTE_WRITE=1" >> "$GITHUB_ENV"
+          echo "k6: remote write on, testid=run-$GITHUB_RUN_NUMBER on the public dashboard" | tee -a "$GITHUB_STEP_SUMMARY"
       - name: k6 TestRun (2 runners)
         run: |
           kubectl -n checkitout create configmap k6-scripts --from-file=e2e-tests/perf/k6/
-          sed -i "s/value: \"local\"/value: \"$GITHUB_RUN_NUMBER\"/" deploy/k8s/tests/k6-testrun.yaml
+          sed -i "s/testid=local/testid=run-$GITHUB_RUN_NUMBER/; s/value: \"local\"/value: \"$GITHUB_RUN_NUMBER\"/" deploy/k8s/tests/k6-testrun.yaml
+          if [ "${K6_REMOTE_WRITE:-0}" = "1" ]; then
+            sed -i "s|testid=run-$GITHUB_RUN_NUMBER$|testid=run-$GITHUB_RUN_NUMBER --out experimental-prometheus-rw|" deploy/k8s/tests/k6-testrun.yaml
+            awk '{print} /^  runner:$/{print "    envFrom:"; print "      - secretRef: { name: k6-remote-write }"}' deploy/k8s/tests/k6-testrun.yaml > /tmp/k6-testrun.yaml && mv /tmp/k6-testrun.yaml deploy/k8s/tests/k6-testrun.yaml
+          fi
+          grep -n "arguments:\|envFrom\|secretRef\|K6_RUN_ID" -A0 deploy/k8s/tests/k6-testrun.yaml
           kubectl apply -f deploy/k8s/tests/k6-testrun.yaml
           for i in $(seq 1 120); do
             st=$(kubectl -n checkitout get testrun k6-api-journeys -o jsonpath='{.status.stage}' 2>/dev/null || true)
@@ -141,8 +167,14 @@ jobs:
           cp ci-reports/blob-*/*.zip ci-reports/blobs/
           PLAYWRIGHT_HTML_OUTPUT_DIR=ci-reports/merged PLAYWRIGHT_HTML_REPORT=ci-reports/merged PLAYWRIGHT_JSON_OUTPUT_NAME=ci-reports/merged.json \
             npx playwright merge-reports --reporter html,json ci-reports/blobs
+      # The verdict is recorded here but does not stop the job: a red or an incomplete run must still publish
+      # its numbers, or the dashboard can only ever show the last green run. The job is failed at the very end.
       - name: Verdict
-        run: node tools/ci/k8s-summary.mjs ci-reports --json ci-reports/k8s-summary.json | tee -a "$GITHUB_STEP_SUMMARY"
+        id: verdict
+        continue-on-error: true
+        # There is one job here, so the shard count is the completeness signal: fewer exit files than pods
+        # means the report covers less than the run claimed to run.
+        run: set -o pipefail; node tools/ci/k8s-summary.mjs ci-reports --expect-shards "$SHARDS" --json ci-reports/k8s-summary.json | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Cluster state on failure
         if: failure()
         run: |
@@ -172,13 +204,14 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          set -o pipefail
           mkdir -p site && rm -rf site/.git
           mkdir -p ci-reports/k6 && cp ci-reports/api-*.json ci-reports/api-*.html ci-reports/k6/ 2>/dev/null || true
           WALL=$(node -p "try{require('./ci-reports/k8s-summary.json').tests.durationSec}catch{0}")
           STARTED_AT=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" --jq .run_started_at)
           DURATION=$(( $(date +%s) - $(date -d "$STARTED_AT" +%s) ))
           node tools/ci/quality-metrics.mjs --out site --workflow k8s-test-execution --started-at "$STARTED_AT" --duration-sec "$DURATION" \
-            --playwright ci-reports/merged.json --k6 'ci-reports/api-*.json' --kubernetes "{\"shards\":$SHARDS,\"wallSec\":$WALL,\"k6Runners\":2}" --copy playwright=ci-reports/merged --copy k6=ci-reports/k6 \
+            --playwright ci-reports/merged.json --verdict ci-reports/k8s-summary.json --k6 'ci-reports/api-*.json' --kubernetes "{\"shards\":$SHARDS,\"wallSec\":$WALL,\"k6Runners\":2}" --copy playwright=ci-reports/merged --copy k6=ci-reports/k6 \
             --jest site/jest/latest.json --coverage site/coverage/latest.json --lighthouse site/lighthouse/latest.json | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Publish
         if: always()
@@ -191,3 +224,9 @@ jobs:
       - name: Delete the cluster (the runner is ephemeral; deleting keeps the logs honest)
         if: always()
         run: kind delete cluster --name "$KIND_CLUSTER" || true
+      - name: The verdict decides the job
+        if: always() && steps.verdict.outcome == 'failure'
+        run: |
+          STATUS=$(node -p "try{require('./ci-reports/k8s-summary.json').status}catch{'red'}")
+          echo "Verdict: $STATUS. The report was published; the job is failed so nothing reads it as green." >&2
+          exit 1

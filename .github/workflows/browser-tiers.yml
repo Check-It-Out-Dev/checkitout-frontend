@@ -53,9 +53,16 @@ jobs:
           retention-days: 7
 
   perf:
-    name: smoothness (served demo build)
+    # One worker per runner (two workers on one machine drop frames in each other's measurements), so the
+    # tier is spread over three runners instead: the film spec alone records fourteen tours at 27 to 120 s
+    # each, and the whole tier ran past 30 minutes on a single ubuntu-latest runner.
+    name: smoothness, shard ${{ matrix.shard }}/3
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -65,22 +72,22 @@ jobs:
       - run: npm ci --prefer-offline --no-audit --loglevel=error
       - run: npx playwright install --with-deps chromium
       # tools/run-perf.mjs builds the demo, serves it on 4300 and runs the perf project against it.
-      - run: npm run test:perf -- --reporter=blob
+      - run: npm run test:perf -- --reporter=blob --shard=${{ matrix.shard }}/3
         env:
           PLAYWRIGHT_BLOB_OUTPUT_DIR: blob-report
+          # Absolute frame-timing budgets are measured and reported here, never asserted: a shared
+          # runner's 67 ms frame is the runner's (ARCHITECTURE.md §4). Structural budgets stay hard.
+          PERF_TIMING: report
         continue-on-error: true
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: browser-blob-perf
+          name: browser-blob-perf-${{ matrix.shard }}
           path: blob-report
           retention-days: 7
 
   visual:
     name: visual (pinned container)
-    # Activates once the Linux baseline set is committed (the ADR's one-time migration); until then the
-    # win32 set is the dev box's and a Linux rasteriser would only produce noise.
-    if: ${{ hashFiles('e2e-tests/visual/**/*-linux.png') != '' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     container:
@@ -88,14 +95,27 @@ jobs:
       options: --ipc=host
     steps:
       - uses: actions/checkout@v4
-      - run: npm ci --prefer-offline --no-audit --loglevel=error
-      - run: npx playwright test e2e-tests/visual --project=chromium-desktop --project=mobile-chrome --reporter=blob
+      # Activates once the Linux baseline set is committed (the ADR's one-time migration); until then the
+      # win32 set is the dev box's and a Linux rasteriser would only produce noise. (hashFiles is not
+      # available in a job-level `if`, hence a step decides.)
+      - id: baselines
+        run: |
+          if ls e2e-tests/visual/*-snapshots/*-linux.png >/dev/null 2>&1; then
+            echo "linux=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "linux=false" >> "$GITHUB_OUTPUT"
+            echo "No Linux visual baselines yet: the visual tier waits for the migration in docs/ci/ADR-visual-baselines.md." >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - if: steps.baselines.outputs.linux == 'true'
+        run: npm ci --prefer-offline --no-audit --loglevel=error
+      - if: steps.baselines.outputs.linux == 'true'
+        run: npx playwright test e2e-tests/visual --project=chromium-desktop --project=mobile-chrome --reporter=blob
         env:
           PLAYWRIGHT_BLOB_OUTPUT_DIR: blob-report
           HOME: /root
         continue-on-error: true
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: steps.baselines.outputs.linux == 'true'
         with:
           name: browser-blob-visual
           path: blob-report
@@ -127,8 +147,15 @@ jobs:
           find fragments -name '*.zip' -exec cp {} ci-reports/blobs/ \;
           PLAYWRIGHT_HTML_OUTPUT_DIR=ci-reports/merged PLAYWRIGHT_HTML_REPORT=ci-reports/merged PLAYWRIGHT_JSON_OUTPUT_NAME=ci-reports/merged.json \
             npx playwright merge-reports --reporter html,json ci-reports/blobs
+      # The verdict is recorded here but does not stop the job: a red or an incomplete run must still publish
+      # its numbers, or the dashboard can only ever show the last green run. The job is failed at the very end.
       - name: Verdict
-        run: node tools/ci/k8s-summary.mjs ci-reports --json ci-reports/summary.json | tee -a "$GITHUB_STEP_SUMMARY"
+        id: verdict
+        continue-on-error: true
+        env:
+          # Every job this verdict speaks for: a cancelled shard makes the run incomplete, never green.
+          NEEDS: ${{ toJSON(needs) }}
+        run: set -o pipefail; node tools/ci/k8s-summary.mjs ci-reports --needs "$NEEDS" --json ci-reports/summary.json | tee -a "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -149,11 +176,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          set -o pipefail
           mkdir -p site && rm -rf site/.git
           STARTED_AT=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" --jq .run_started_at)
           DURATION=$(( $(date +%s) - $(date -d "$STARTED_AT" +%s) ))
           node tools/ci/quality-metrics.mjs --out site --workflow browser-tiers --started-at "$STARTED_AT" --duration-sec "$DURATION" \
-            --playwright ci-reports/merged.json --copy playwright=ci-reports/merged \
+            --playwright ci-reports/merged.json --verdict ci-reports/summary.json --copy playwright=ci-reports/merged \
             --jest site/jest/latest.json --coverage site/coverage/latest.json --lighthouse site/lighthouse/latest.json | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Publish
         if: github.event_name != 'pull_request'
@@ -163,3 +191,9 @@ jobs:
           publish_dir: site
           keep_files: false
           commit_message: "browser-tiers run ${{ github.run_number }}"
+      - name: The verdict decides the job
+        if: always() && steps.verdict.outcome == 'failure'
+        run: |
+          STATUS=$(node -p "try{require('./ci-reports/summary.json').status}catch{'red'}")
+          echo "Verdict: $STATUS. The report was published; the job is failed so nothing reads it as green." >&2
+          exit 1

@@ -5,9 +5,10 @@
 # The script ConfigMap is created by the workflow from the repo:
 #   kubectl -n checkitout create configmap k6-scripts --from-file=e2e-tests/perf/k6/
 # Results: the runner pods log the end-of-test summary; handleSummary writes JSON + HTML to
-# /reports (the same hostPath as the Playwright shards). With the Grafana Cloud secrets present
-# the workflow appends `--out experimental-prometheus-rw` and the K6_PROMETHEUS_RW_* env from
-# the k6-remote-write Secret, and the run also lands on the public dashboard.
+# /reports (the same hostPath as the Playwright shards). When the `grafana-cloud` environment holds the
+# K6_PROMETHEUS_RW_* secrets, the workflow creates the `k6-remote-write` Secret in the namespace, appends
+# `--out experimental-prometheus-rw` to the arguments and `envFrom` the Secret into the runners, and the run
+# lands on the public dashboard (docs/ci/grafana/k6.json) under testid=run-<run number>.
 apiVersion: k6.io/v1alpha1
 kind: TestRun
 metadata:
@@ -21,14 +22,18 @@ spec:
       file: api-journeys.js
   # No --summary-export here: with parallelism > 1 every runner would overwrite the same file. The
   # script's handleSummary writes one timestamped JSON per runner into K6_OUT_DIR instead.
-  arguments: --tag testid=ci
+  # The workflow replaces "local" with run-<run number> (the dashboard's `run` variable).
+  arguments: --tag testid=local
   runner:
+    # The workflow inserts `envFrom: [secretRef k6-remote-write]` right below this line when the secrets exist.
     env:
       - { name: BASE_URL, value: "http://frontend.checkitout.svc" }
       - { name: BE_URL, value: "http://backend.checkitout.svc:8080" }
       - { name: K6_PROFILE, value: "load" }
       - { name: K6_DNS_POLICY, value: "preferIPv4" }
       - { name: K6_OUT_DIR, value: "/reports" }
+      # Remote write exports p(95) by default only as p(99): the dashboard reads p95, p99 and max per series.
+      - { name: K6_PROMETHEUS_RW_TREND_STATS, value: "p(95),p(99),max" }
       # The workflow replaces "local" with the run number so both runners' summaries share one run id.
       - { name: K6_RUN_ID, value: "local" }
     resources:

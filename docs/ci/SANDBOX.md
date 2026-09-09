@@ -145,7 +145,9 @@ container's stdout through the Docker socket, parses the backend's ECS JSON (`lo
 `correlationId`) and the frontend's JSON access log (`status`, `path`, `ms`, `correlationId`), labels them
 `service`, `container`, `env=sandbox`, `level`, and pushes to Loki; it scrapes `/api/actuator/prometheus`
 every 30 s and remote-writes to Grafana Cloud Metrics, where the k6 series from `ARCHITECTURE.md` already
-land. One public dashboard, "checkitout sandbox", shows requests per minute and error rate from nginx,
+land. One public dashboard, "checkitout sandbox"
+(<https://checkitoutapp.grafana.net/public-dashboards/f48c40b8b3244bdfa019117fa9fdcbbe>, no login), shows
+requests per minute and error rate from nginx,
 p95 by endpoint from the backend's `http_server_requests`, JVM memory against the 1.5 GB limit, the
 Liquibase reseed marker at 03:00, and a logs panel filtered `level=ERROR`. The correlation id ties one
 nginx line to one backend line to one user report.
@@ -201,7 +203,8 @@ sudo install -o deploy -g deploy -m 750 rollout.sh /opt/checkitout-sandbox/rollo
 sudo install -o deploy -g deploy -m 600 .env /opt/checkitout-sandbox/.env        # from .env.example, with a real POSTGRES_PASSWORD
 # a 2 GB cap on uploads
 sudo fallocate -l 2G /opt/checkitout-sandbox/uploads.img && sudo mkfs.ext4 -q /opt/checkitout-sandbox/uploads.img
-echo '/opt/checkitout-sandbox/uploads.img /opt/checkitout-sandbox/uploads ext4 loop,nosuid,nodev 0 0' | sudo tee -a /etc/fstab && sudo mount -a && sudo chown deploy:deploy /opt/checkitout-sandbox/uploads
+echo '/opt/checkitout-sandbox/uploads.img /opt/checkitout-sandbox/uploads ext4 loop,nosuid,nodev 0 0' | sudo tee -a /etc/fstab && sudo mount -a && sudo chown 1002:1005 /opt/checkitout-sandbox/uploads && sudo chmod 775 /opt/checkitout-sandbox/uploads
+# 1002:1005 is the backend image's container user (Dockerfile CONTAINER_USER_ID/GROUP_ID): the sink must be writable by it.
 # the deploy key: one line in /home/deploy/.ssh/authorized_keys
 command="/opt/checkitout-sandbox/rollout.sh",no-port-forwarding,no-agent-forwarding,no-pty,no-X11-forwarding ssh-ed25519 AAAA… github-deploy-sandbox
 # the nightly reseed
@@ -244,6 +247,23 @@ guard holds), and the code is verified where the code is verified.
   nothing else.
 - Uploads are capped at 2 GB and reset nightly; the rate limits cap request volume; Cloudflare in front
   absorbs the rest.
+- The first deploy has no rollback target: `rollback` restores the previous tags, and on a fresh host
+  those are the same images with the same environment, so it fails the same way and says "the stack needs
+  a human". The first run on gvps (2026-09-09 18:23) did exactly that: dev-lite's `LocalDatabaseInitializer`
+  opens a superuser connection from its own `postgres.superuser.*` properties (default `postgres`/`admin`),
+  the host's `.env` had a real password, and the backend crash-looped on "password authentication failed
+  for user postgres" while the rehearsal on the dev box, with `admin` on both sides, had never shown it.
+  The compose file now hands `POSTGRES_PASSWORD` to `POSTGRES_SUPERUSER_PASSWORD` too; rehearse with a
+  random password, not the default.
+- Overall health is stricter than readiness, and a component nobody uses can hold it DOWN: the second
+  deploy (18:30) came up healthy for Compose (readiness) and red for `rollout.sh` (overall), because the
+  CI-built image's upload-system indicator probed a Google bucket dev-lite never uses, through synthetic
+  offline credentials. Fixed in the backend (the indicator reports the local sink that serves uploads);
+  the Kubernetes probes use the readiness and liveness groups, and `rollout.sh` keeps the strict gate.
+- The uploads mount must belong to the container user (1002:1005), not to `deploy`: the fourth deploy
+  (19:12) stayed red because the upload sink was not writable inside the container, which the fixed health
+  indicator now reports honestly, and which would have failed every upload silently before. Fixed on the
+  host 19:22; the §7 recipe says so.
 - A red deploy leaves the previous tags running (`rollback` is automatic); a red reseed leaves the
   backend stopped and needs a human, which the timer's failure shows in `systemctl status`.
 

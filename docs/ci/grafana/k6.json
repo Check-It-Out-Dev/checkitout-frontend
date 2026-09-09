@@ -1,6 +1,11 @@
 {
   "__inputs": [
-    { "name": "DS_PROMETHEUS", "label": "Prometheus (k6 remote write)", "type": "datasource", "pluginId": "prometheus" }
+    {
+      "name": "DS_PROMETHEUS",
+      "label": "Prometheus (k6 remote write)",
+      "type": "datasource",
+      "pluginId": "prometheus"
+    }
   ],
   "__notes": [
     "k6 → Prometheus remote write (`--out experimental-prometheus-rw`) with",
@@ -14,87 +19,391 @@
   "version": 1,
   "editable": true,
   "graphTooltip": 1,
-  "time": { "from": "now-1h", "to": "now" },
+  "time": {
+    "from": "now-14d",
+    "to": "now"
+  },
   "refresh": "30s",
-  "tags": ["k6", "checkitout", "ci"],
+  "tags": [
+    "k6",
+    "checkitout",
+    "ci"
+  ],
   "templating": {
-    "list": [
-      {
-        "name": "testid", "label": "run", "type": "query", "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
-        "query": "label_values(k6_http_reqs_total, testid)", "refresh": 2, "includeAll": true, "multi": false,
-        "current": { "text": "All", "value": "$__all" }, "sort": 4
-      },
-      {
-        "name": "journey", "label": "journey", "type": "query", "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
-        "query": "label_values(k6_http_reqs_total{testid=~\"$testid\"}, journey)", "refresh": 2, "includeAll": true, "multi": true,
-        "current": { "text": "All", "value": "$__all" }
-      }
-    ]
+    "list": []
   },
   "panels": [
     {
-      "type": "stat", "title": "requests", "gridPos": { "x": 0, "y": 0, "w": 4, "h": 4 },
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
-      "targets": [{ "refId": "A", "expr": "sum(max_over_time(k6_http_reqs_total{testid=~\"$testid\", journey=~\"$journey\"}[$__range]))" }],
-      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "none", "graphMode": "none" },
-      "fieldConfig": { "defaults": { "unit": "short" } }
-    },
-    {
-      "type": "stat", "title": "failed", "gridPos": { "x": 4, "y": 0, "w": 4, "h": 4 },
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
-      "targets": [{ "refId": "A", "expr": "max(k6_http_req_failed_rate{testid=~\"$testid\", journey=~\"$journey\"})" }],
-      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "none" },
-      "fieldConfig": { "defaults": { "unit": "percentunit", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "red", "value": 0.01 } ] } } }
-    },
-    {
-      "type": "stat", "title": "checks passed", "gridPos": { "x": 8, "y": 0, "w": 4, "h": 4 },
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
-      "targets": [{ "refId": "A", "expr": "min(k6_checks_rate{testid=~\"$testid\", journey=~\"$journey\"})" }],
-      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "none" },
-      "fieldConfig": { "defaults": { "unit": "percentunit", "thresholds": { "mode": "absolute", "steps": [ { "color": "red", "value": null }, { "color": "green", "value": 0.99 } ] } } }
-    },
-    {
-      "type": "stat", "title": "p95 · all journeys", "gridPos": { "x": 12, "y": 0, "w": 6, "h": 4 },
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
-      "targets": [{ "refId": "A", "expr": "max(k6_http_req_duration_p95{testid=~\"$testid\", journey=~\"$journey\"})" }],
-      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area" },
-      "fieldConfig": { "defaults": { "unit": "ms", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "orange", "value": 800 }, { "color": "red", "value": 1500 } ] } } }
-    },
-    {
-      "type": "stat", "title": "virtual users", "gridPos": { "x": 18, "y": 0, "w": 6, "h": 4 },
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
-      "targets": [{ "refId": "A", "expr": "sum(k6_vus{testid=~\"$testid\"})" }],
-      "options": { "reduceOptions": { "calcs": ["max"] }, "colorMode": "none", "graphMode": "area" },
-      "fieldConfig": { "defaults": { "unit": "short" } }
-    },
-    {
-      "type": "timeseries", "title": "p95 by journey", "gridPos": { "x": 0, "y": 4, "w": 12, "h": 8 },
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
-      "targets": [{ "refId": "A", "expr": "max by (journey) (k6_http_req_duration_p95{testid=~\"$testid\", journey=~\"$journey\"})", "legendFormat": "{{journey}}" }],
-      "fieldConfig": { "defaults": { "unit": "ms", "custom": { "lineWidth": 2, "fillOpacity": 10 } } },
-      "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["max", "last"] } }
-    },
-    {
-      "type": "timeseries", "title": "requests per second by journey", "gridPos": { "x": 12, "y": 4, "w": 12, "h": 8 },
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
-      "targets": [{ "refId": "A", "expr": "sum by (journey) (rate(k6_http_reqs_total{testid=~\"$testid\", journey=~\"$journey\"}[1m]))", "legendFormat": "{{journey}}" }],
-      "fieldConfig": { "defaults": { "unit": "reqps", "custom": { "lineWidth": 2, "fillOpacity": 10 } } },
-      "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean", "max"] } }
-    },
-    {
-      "type": "table", "title": "endpoints · p95 / p99 / max", "gridPos": { "x": 0, "y": 12, "w": 24, "h": 9 },
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "type": "stat",
+      "title": "requests",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "targets": [
-        { "refId": "p95", "expr": "max by (endpoint) (k6_http_req_duration_p95{testid=~\"$testid\", journey=~\"$journey\", endpoint!=\"\"})", "format": "table", "instant": true },
-        { "refId": "p99", "expr": "max by (endpoint) (k6_http_req_duration_p99{testid=~\"$testid\", journey=~\"$journey\", endpoint!=\"\"})", "format": "table", "instant": true },
-        { "refId": "max", "expr": "max by (endpoint) (k6_http_req_duration_max{testid=~\"$testid\", journey=~\"$journey\", endpoint!=\"\"})", "format": "table", "instant": true }
+        {
+          "refId": "A",
+          "expr": "sum(max_over_time(k6_http_reqs_total[$__range]))"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "none",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "id": 1
+    },
+    {
+      "type": "stat",
+      "title": "failed",
+      "gridPos": {
+        "x": 4,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "max(k6_http_req_failed_rate)"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 0.01
+              }
+            ]
+          }
+        }
+      },
+      "id": 2
+    },
+    {
+      "type": "stat",
+      "title": "checks passed",
+      "gridPos": {
+        "x": 8,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "min(k6_checks_rate)"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 0.99
+              }
+            ]
+          }
+        }
+      },
+      "id": 3
+    },
+    {
+      "type": "stat",
+      "title": "p95 · all journeys",
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "max(k6_http_req_duration_p95)"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 0.8
+              },
+              {
+                "color": "red",
+                "value": 1.5
+              }
+            ]
+          }
+        }
+      },
+      "id": 4
+    },
+    {
+      "type": "stat",
+      "title": "peak virtual users",
+      "gridPos": {
+        "x": 18,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "max(max_over_time(k6_vus[$__range]))"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "max"
+          ]
+        },
+        "colorMode": "none",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "id": 5
+    },
+    {
+      "type": "timeseries",
+      "title": "p95 by journey",
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "max by (journey) (k6_http_req_duration_p95)",
+          "legendFormat": "{{journey}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10
+          }
+        }
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "max",
+            "last"
+          ]
+        }
+      },
+      "id": 6
+    },
+    {
+      "type": "timeseries",
+      "title": "requests per second by journey",
+      "gridPos": {
+        "x": 12,
+        "y": 4,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (journey) (rate(k6_http_reqs_total[1m]))",
+          "legendFormat": "{{journey}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10
+          }
+        }
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "mean",
+            "max"
+          ]
+        }
+      },
+      "id": 7
+    },
+    {
+      "type": "table",
+      "title": "endpoints · p95 / p99 / max",
+      "gridPos": {
+        "x": 0,
+        "y": 12,
+        "w": 24,
+        "h": 9
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "targets": [
+        {
+          "refId": "p95",
+          "expr": "max by (endpoint) (max_over_time(k6_http_req_duration_p95{endpoint!=\"\"}[$__range]))",
+          "format": "table",
+          "instant": true
+        },
+        {
+          "refId": "p99",
+          "expr": "max by (endpoint) (max_over_time(k6_http_req_duration_p99{endpoint!=\"\"}[$__range]))",
+          "format": "table",
+          "instant": true
+        },
+        {
+          "refId": "max",
+          "expr": "max by (endpoint) (max_over_time(k6_http_req_duration_max{endpoint!=\"\"}[$__range]))",
+          "format": "table",
+          "instant": true
+        }
       ],
       "transformations": [
-        { "id": "merge", "options": {} },
-        { "id": "organize", "options": { "excludeByName": { "Time": true }, "renameByName": { "Value #p95": "p95 ms", "Value #p99": "p99 ms", "Value #max": "max ms" } } },
-        { "id": "sortBy", "options": { "sort": [{ "field": "p95 ms", "desc": true }] } }
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "renameByName": {
+              "Value #p95": "p95",
+              "Value #p99": "p99",
+              "Value #max": "max"
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "sort": [
+              {
+                "field": "p95",
+                "desc": true
+              }
+            ]
+          }
+        }
       ],
-      "fieldConfig": { "defaults": { "unit": "ms", "decimals": 1 } }
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "decimals": 3
+        }
+      },
+      "id": 8
     }
-  ]
+  ],
+  "description": "k6 API journeys generated inside the kind cluster by the k8s-test-execution workflow (two runner pods, remote write). Externally shared dashboards cannot use variables, so every panel covers the whole time range; each series still carries testid=run-<GitHub run number> for Explore."
 }

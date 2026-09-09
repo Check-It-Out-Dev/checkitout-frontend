@@ -9,6 +9,7 @@
 //   --jest results.json                 `jest --json --outputFile=results.json`; tier "jest"
 //   --coverage coverage-summary.json    Jest json-summary (lines, statements, branches, functions)
 //   --playwright merged.json            `playwright merge-reports --reporter json`; tiers from the spec path
+//   --verdict summary.json              k8s-summary.mjs output; carries `status` green|incomplete|red
 //   --junit "glob:tier"                 JUnit XML files (surefire, failsafe, pytest), repeatable
 //   --jacoco jacoco.xml                 line coverage from a JaCoCo report
 //   --k6 "glob"                         k6 handleSummary JSON, one per runner
@@ -149,6 +150,30 @@ for (const spec of multi.junit) {
   }
 }
 
+// Zero tests read from artifacts that were explicitly named is never a true statement about a run: it is
+// a glob that missed. The backend's site published "0 tests, pass rate 100 %" for six runs because
+// `results/unit-results/TEST-*.xml` was one directory short of `results/unit-results/surefire-reports/`.
+if (tests.length === 0) {
+  const inputs = [
+    ...multi.junit.map((j) => `--junit ${j}`),
+    ...(opt.jest ? [`--jest ${opt.jest}`] : []),
+    ...(opt.playwright ? [`--playwright ${opt.playwright}`] : []),
+  ];
+  if (inputs.length) {
+    const tree = (dir, depth = 0) => {
+      if (depth > 2 || !existsSync(dir)) return [];
+      return readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
+        e.isDirectory() ? [`${'  '.repeat(depth)}${e.name}/`, ...tree(join(dir, e.name), depth + 1)] : [`${'  '.repeat(depth)}${e.name}`],
+      );
+    };
+    const roots = [...new Set(inputs.map((i) => i.split(' ')[1].split(/[/\\]/)[0]).filter((r) => r && !r.startsWith('-')))];
+    die(
+      `not one test was read, so there is nothing to publish. Inputs given:\n  ${inputs.join('\n  ')}\n` +
+        roots.map((r) => `What is actually under ${r}/:\n${tree(r).slice(0, 60).map((l) => '  ' + l).join('\n') || '  (nothing)'}`).join('\n'),
+    );
+  }
+}
+
 const scored = tests.filter((t) => t.status !== 'skipped');
 const durations = scored.map((t) => t.durationSec).sort((a, b) => a - b);
 const p95 = durations.length ? durations[Math.min(durations.length - 1, Math.floor(durations.length * 0.95))] : 0;
@@ -230,13 +255,22 @@ for (const spec of multi.copy) {
   }
 }
 
-writeFileSync(join(out, 'metrics', 'tests', `${runNumber}.json`), JSON.stringify({ run: runNumber, tests }));
-const { list: flaky } = flakyList(join(out, 'metrics', 'tests'), windowRuns);
+// Run numbers are per workflow: browser-tiers 10 and k8s-test-execution 10 are different runs of different
+// suites. Without the prefix they share one file name, one history line and one flaky window — the second
+// one to publish deletes the first, and "the last ten runs" mixes two suites.
+const runKey = `${workflow}-${runNumber}`;
+writeFileSync(join(out, 'metrics', 'tests', `${runKey}.json`), JSON.stringify({ run: runNumber, workflow, tests }));
+const { list: flaky } = flakyList(join(out, 'metrics', 'tests'), windowRuns, workflow);
+
+// A run whose jobs did not all finish is `incomplete`: its counts are partial and it must never be read,
+// on the dashboard or in the history, as a green run (k8s-summary.mjs decides this).
+const verdict = opt.verdict && existsSync(opt.verdict) ? readJson(opt.verdict) : null;
+const runStatus = (verdict && verdict.status) || null;
 
 const metrics = {
   schema: 1,
   repo,
-  run: { number: runNumber, id: runId, sha, branch, workflow, startedAt, durationSec, url: `${server}/${repo}/actions/runs/${runId}` },
+  run: { number: runNumber, id: runId, sha, branch, workflow, startedAt, durationSec, url: `${server}/${repo}/actions/runs/${runId}`, ...(runStatus ? { status: runStatus } : {}) },
   tests: {
     ...totals,
     passRate: r4(scoredCount ? totals.passed / scoredCount : 1),
@@ -256,6 +290,7 @@ writeFileSync(join(out, 'quality-metrics.json'), JSON.stringify(metrics, null, 2
 
 const line = {
   run: runNumber, id: runId, sha, at: startedAt, workflow, durationSec,
+  ...(runStatus ? { status: runStatus } : {}),
   total: totals.total, passed: totals.passed, failed: totals.failed, flaky: totals.flaky, skipped: totals.skipped,
   passRate: metrics.tests.passRate, flakyRate: metrics.tests.flakyRate,
   ...(coverage ? { coverageLines: coverage.lines } : {}),
@@ -264,7 +299,14 @@ const line = {
 };
 const historyPath = join(out, 'metrics', 'history.jsonl');
 const existing = existsSync(historyPath) ? readFileSync(historyPath, 'utf8').split('\n').filter(Boolean) : [];
-const kept = existing.filter((l) => { try { return JSON.parse(l).run !== runNumber; } catch { return false; } });
+const kept = existing.filter((l) => {
+  try {
+    const h = JSON.parse(l);
+    return !(h.run === runNumber && (h.workflow || workflow) === workflow);
+  } catch {
+    return false;
+  }
+});
 writeFileSync(historyPath, kept.concat(JSON.stringify(line)).join('\n') + '\n');
 
 const badge = (name, label, message, color) => writeFileSync(join(out, 'badges', `${name}.json`), JSON.stringify({ schemaVersion: 1, label, message, color }));
@@ -281,13 +323,18 @@ for (const f of ['index.html', 'styles.css', 'dashboard.js']) cpSync(join(here, 
 writeFileSync(join(out, '.nojekyll'), '');
 
 // Prune: keep the newest N run directories per report kind and N outcome files; history.jsonl stays.
-const prune = (dir, isRun) => {
+const prune = (dir, isRun, numberOf = (f) => Number(f.replace('.json', ''))) => {
   if (!existsSync(dir)) return;
-  const runs = readdirSync(dir).filter(isRun).map((f) => ({ f, n: Number(f.replace('.json', '')) })).filter((x) => Number.isFinite(x.n)).sort((a, b) => b.n - a.n);
+  const runs = readdirSync(dir).filter(isRun).map((f) => ({ f, n: numberOf(f) })).filter((x) => Number.isFinite(x.n)).sort((a, b) => b.n - a.n);
   for (const x of runs.slice(keep)) rmSync(join(dir, x.f), { recursive: true, force: true });
 };
 for (const name of ['allure', 'playwright', 'k6', 'lighthouse']) prune(join(out, name), (f) => /^\d+$/.test(f) && statSync(join(out, name, f)).isDirectory());
-prune(join(out, 'metrics', 'tests'), (f) => /^\d+\.json$/.test(f));
+// Per workflow, so a busy workflow cannot prune away another one's window. Files with no prefix are the
+// pre-namespace ones: they cannot be attributed to a workflow, so they go.
+prune(join(out, 'metrics', 'tests'), (f) => new RegExp(`^${workflow}-\\d+\\.json$`).test(f), (f) => Number(f.slice(workflow.length + 1).replace('.json', '')));
+for (const f of existsSync(join(out, 'metrics', 'tests')) ? readdirSync(join(out, 'metrics', 'tests')) : []) {
+  if (/^\d+\.json$/.test(f)) rmSync(join(out, 'metrics', 'tests', f), { force: true });
+}
 
 /* ---------- step summary ---------- */
 const lines = [];
