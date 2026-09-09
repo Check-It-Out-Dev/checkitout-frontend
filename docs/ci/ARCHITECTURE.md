@@ -32,7 +32,7 @@ request execute on the machine. Speed comes from sharding across runners, never 
 
 | Workflow | Trigger | Wall time (budget) | What must be true |
 | --- | --- | --- | --- |
-| `ci-tests.yml` | PR, push main | ~2.5 min (25) | static gates, typecheck, build, Jest; measured median in `docs/testing/measured-counts.json` |
+| `ci-tests.yml` | PR, push main | ~2.5 min (25) | static gates, typecheck, build, Jest; measured median in `docs/testing/measured-counts.json`; on push the newest unit results and coverage go to the Pages site |
 | `browser-tiers.yml` | PR, push main | ~6 min (20) | sandbox, msw, perf, visual across 4 shards; blob reports merged; Allure with history |
 | `lighthouse.yml` | push main | ~4 min (10) | demo build served on 4300; assertions warn, budgets error later |
 | `nightly-full-stack.yml` | 02:00 UTC, dispatch | ~15 min (75) | backend image from GHCR with the dev-lite profile; bdd + integration + scenarios |
@@ -42,6 +42,7 @@ request execute on the machine. Speed comes from sharding across runners, never 
 | `contract-check.yml` | daily 04:30 UTC, dispatch, `backend-published` | ~8 min (30) | the OpenAPI document taken from a booted backend equals the frontend's copy, or the regenerated client compiles (§6) |
 | BE `ci-tests.yml` | PR, push, nightly | unit ~2.5 / integration ~4 / e2e ~10 min | JUnit XML from every tier to Allure 3 with history on Pages |
 | BE `build-image.yml` | push main / greenfield | ~4 min | `ghcr.io/…/checkitout-backend:<sha>`, `:<branch>`, `:latest`; asks the frontend to check the contract when the dispatch token exists |
+| graph `ci.yml` | PR, push main, weekly | ~5 min | the two MCP servers' pytest suites with the model mocked (CPU torch wheels), the CodeMap engine check when its pack exists; JUnit XML into the same metrics tool and Pages |
 
 ## 2 · The Kubernetes substrate (`deploy/k8s/`)
 
