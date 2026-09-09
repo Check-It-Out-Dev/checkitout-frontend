@@ -29,6 +29,19 @@ import { installRingRule } from './walk';
 
 const BASE = process.env['PERF_BASE_URL'] ?? 'http://localhost:4300';
 
+// Frame-timing budgets are asserted where the clock is quiet: this box, or a dedicated
+// runner. On a shared CI runner (PERF_TIMING=report, set by browser-tiers.yml) the same
+// numbers are measured and written to the report as `timing` annotations, never asserted:
+// one or two 67 ms frames in a twenty-second story under 4x throttle, or 10 to 14 long
+// frames through a tour where this box reads 8, are the runner, not the application
+// (both measured on the same commit, 2026-09-09). Structural budgets, such as card
+// heights, opacity, beat tempo and a way forward at every step, stay hard everywhere.
+const REPORT_ONLY = process.env['PERF_TIMING'] === 'report';
+function timing(name: string, reading: string, assert: () => void): void {
+  test.info().annotations.push({ type: 'timing', description: `${name}: ${reading}` });
+  if (!REPORT_ONLY) assert();
+}
+
 /** How long each beat of the landing story holds, in play order. */
 const BEATS = [2400, 2800, 3400, 3000, 2800, 2400, 3600];
 
@@ -223,8 +236,12 @@ test.describe('Demo smoothness', () => {
     expect(seen.heightSpread).toBeLessThanOrEqual(4);
     // the beat block used to be destroyed and rebuilt, blinking to nothing
     expect(seen.minOpacity).toBeGreaterThanOrEqual(0.2);
-    expect(seen.slowFrames, `worst frame ${seen.worstFrame} ms`).toBe(0);
-    expect(seen.switchFrame).toBeLessThanOrEqual(120);
+    timing('slow frames', `${seen.slowFrames} over 50 ms, worst ${seen.worstFrame} ms`, () =>
+      expect(seen.slowFrames, `worst frame ${seen.worstFrame} ms`).toBe(0),
+    );
+    timing('switch frame', `${seen.switchFrame} ms`, () =>
+      expect(seen.switchFrame).toBeLessThanOrEqual(120),
+    );
     // each beat holds for its own length, not one metronomic 2.6 s
     for (const [i, gap] of seen.gaps.entries()) {
       if (i >= BEATS.length - 1) break;
@@ -453,13 +470,15 @@ test.describe('Demo smoothness', () => {
     // that costs every frame — the kind that once put 144 hit tests into a
     // single scroll — shows up as MORE long frames and more blocking, not as one
     // unlucky long one.
-    expect(
-      seen.frames,
-      `${String(seen.frames)} long frames, worst ${String(seen.worst)} ms, blamed on ${seen.blame}`,
-    ).toBeLessThanOrEqual(8);
-    expect(seen.blocking).toBeLessThanOrEqual(400);
+    const reading = `${String(seen.frames)} long frames, worst ${String(seen.worst)} ms, blamed on ${seen.blame}`;
+    timing('long frames', reading, () => expect(seen.frames, reading).toBeLessThanOrEqual(8));
+    timing('blocking', `${String(seen.blocking)} ms`, () =>
+      expect(seen.blocking).toBeLessThanOrEqual(400),
+    );
     // the "good" threshold for interaction latency
-    expect(seen.worstEvent).toBeLessThanOrEqual(200);
+    timing('worst event', `${String(seen.worstEvent)} ms`, () =>
+      expect(seen.worstEvent).toBeLessThanOrEqual(200),
+    );
   });
 
   for (const key of TOURS) {
