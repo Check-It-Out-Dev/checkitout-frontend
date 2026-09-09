@@ -150,6 +150,30 @@ for (const spec of multi.junit) {
   }
 }
 
+// Zero tests read from artifacts that were explicitly named is never a true statement about a run: it is
+// a glob that missed. The backend's site published "0 tests, pass rate 100 %" for six runs because
+// `results/unit-results/TEST-*.xml` was one directory short of `results/unit-results/surefire-reports/`.
+if (tests.length === 0) {
+  const inputs = [
+    ...multi.junit.map((j) => `--junit ${j}`),
+    ...(opt.jest ? [`--jest ${opt.jest}`] : []),
+    ...(opt.playwright ? [`--playwright ${opt.playwright}`] : []),
+  ];
+  if (inputs.length) {
+    const tree = (dir, depth = 0) => {
+      if (depth > 2 || !existsSync(dir)) return [];
+      return readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
+        e.isDirectory() ? [`${'  '.repeat(depth)}${e.name}/`, ...tree(join(dir, e.name), depth + 1)] : [`${'  '.repeat(depth)}${e.name}`],
+      );
+    };
+    const roots = [...new Set(inputs.map((i) => i.split(' ')[1].split(/[/\\]/)[0]).filter((r) => r && !r.startsWith('-')))];
+    die(
+      `not one test was read, so there is nothing to publish. Inputs given:\n  ${inputs.join('\n  ')}\n` +
+        roots.map((r) => `What is actually under ${r}/:\n${tree(r).slice(0, 60).map((l) => '  ' + l).join('\n') || '  (nothing)'}`).join('\n'),
+    );
+  }
+}
+
 const scored = tests.filter((t) => t.status !== 'skipped');
 const durations = scored.map((t) => t.durationSec).sort((a, b) => a - b);
 const p95 = durations.length ? durations[Math.min(durations.length - 1, Math.floor(durations.length * 0.95))] : 0;
