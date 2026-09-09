@@ -53,9 +53,16 @@ jobs:
           retention-days: 7
 
   perf:
-    name: smoothness (served demo build)
+    # One worker per runner (two workers on one machine drop frames in each other's measurements), so the
+    # tier is spread over three runners instead: the film spec alone records fourteen tours at 27 to 120 s
+    # each, and the whole tier ran past 30 minutes on a single ubuntu-latest runner.
+    name: smoothness, shard ${{ matrix.shard }}/3
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -65,14 +72,14 @@ jobs:
       - run: npm ci --prefer-offline --no-audit --loglevel=error
       - run: npx playwright install --with-deps chromium
       # tools/run-perf.mjs builds the demo, serves it on 4300 and runs the perf project against it.
-      - run: npm run test:perf -- --reporter=blob
+      - run: npm run test:perf -- --reporter=blob --shard=${{ matrix.shard }}/3
         env:
           PLAYWRIGHT_BLOB_OUTPUT_DIR: blob-report
         continue-on-error: true
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: browser-blob-perf
+          name: browser-blob-perf-${{ matrix.shard }}
           path: blob-report
           retention-days: 7
 
