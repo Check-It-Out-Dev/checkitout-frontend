@@ -25,6 +25,8 @@ jobs:
     name: Demo build, three pages
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -53,4 +55,22 @@ jobs:
             lhci-report
             serve-demo.log
           retention-days: 30
-      # O7 publishes lhci-report as lighthouse/<run>/ on Pages and feeds lighthouse.json into quality-metrics.
+      - name: Pages site (previous state)
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: site
+        continue-on-error: true
+      - name: This run's report and the latest scores into the site
+        run: |
+          mkdir -p site/lighthouse && rm -rf site/.git "site/lighthouse/$GITHUB_RUN_NUMBER"
+          cp -r lhci-report "site/lighthouse/$GITHUB_RUN_NUMBER"
+          cp lhci-report/lighthouse.json site/lighthouse/latest.json
+          ls -d site/lighthouse/[0-9]* | sort -t/ -k3 -n | head -n -30 | xargs -r rm -rf
+      - name: Publish
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: site
+          keep_files: false
+          commit_message: "lighthouse run ${{ github.run_number }}"

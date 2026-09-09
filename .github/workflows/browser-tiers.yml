@@ -107,6 +107,8 @@ jobs:
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -135,4 +137,29 @@ jobs:
             ci-reports
             !ci-reports/blobs
           retention-days: 30
-      # O7 adds tools/ci/quality-metrics here: quality-metrics.json, history.jsonl, Allure with history, Pages.
+      - name: Pages site (previous state)
+        if: github.event_name != 'pull_request'
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: site
+        continue-on-error: true
+      - name: Quality metrics into the site
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p site && rm -rf site/.git
+          STARTED_AT=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" --jq .run_started_at)
+          DURATION=$(( $(date +%s) - $(date -d "$STARTED_AT" +%s) ))
+          node tools/ci/quality-metrics.mjs --out site --workflow browser-tiers --started-at "$STARTED_AT" --duration-sec "$DURATION" \
+            --playwright ci-reports/merged.json --copy playwright=ci-reports/merged \
+            --jest site/jest/latest.json --coverage site/coverage/latest.json --lighthouse site/lighthouse/latest.json | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Publish
+        if: github.event_name != 'pull_request'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: site
+          keep_files: false
+          commit_message: "browser-tiers run ${{ github.run_number }}"
