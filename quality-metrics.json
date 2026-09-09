@@ -2,26 +2,26 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 26,
-    "id": 34414000566,
-    "sha": "d552a01",
+    "number": 27,
+    "id": 34414648104,
+    "sha": "4fdcfc0",
     "branch": "main",
     "workflow": "browser-tiers",
-    "startedAt": "2026-09-09T22:48:20Z",
-    "durationSec": 563,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34414000566",
+    "startedAt": "2026-09-09T22:56:43Z",
+    "durationSec": 942,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34414648104",
     "status": "incomplete"
   },
   "tests": {
-    "total": 1343,
-    "passed": 1319,
+    "total": 1737,
+    "passed": 1658,
     "failed": 0,
     "flaky": 0,
-    "skipped": 24,
+    "skipped": 79,
     "passRate": 1,
     "flakyRate": 0,
-    "durationMeanSec": 0.45,
-    "durationP95Sec": 1.01,
+    "durationMeanSec": 0.94,
+    "durationP95Sec": 1.66,
     "tiers": {
       "jest": {
         "total": 1183,
@@ -30,6 +30,22 @@
         "flaky": 0,
         "skipped": 0,
         "durationSec": 78
+      },
+      "visual": {
+        "total": 284,
+        "passed": 283,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "durationSec": 441
+      },
+      "visual-parity": {
+        "total": 82,
+        "passed": 28,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 54,
+        "durationSec": 85
       },
       "msw": {
         "total": 2,
@@ -45,15 +61,15 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 22,
-        "durationSec": 124
+        "durationSec": 122
       },
       "perf": {
-        "total": 30,
-        "passed": 30,
+        "total": 58,
+        "passed": 58,
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
-        "durationSec": 387
+        "durationSec": 915
       }
     }
   },
@@ -65,7 +81,7 @@
   },
   "lighthouse": {
     "url": "/",
-    "performance": 100,
+    "performance": 99,
     "accessibility": 97,
     "bestPractices": 100,
     "seo": 92
@@ -74,7 +90,7 @@
     {
       "title": "Demo smoothness › a simulator that never fires holds the step instead of narrating it [perf]",
       "file": "perf/demo-smoothness.spec.ts",
-      "window": 8,
+      "window": 9,
       "runsFlaky": 3,
       "runsFailed": 0,
       "lastSeen": 25,
@@ -86,13 +102,14 @@
         "flaky",
         "pass",
         "flaky",
+        "pass",
         "pass"
       ]
     },
     {
       "title": "Demo smoothness › the admin-ops tour advances promptly at every step [perf]",
       "file": "perf/demo-smoothness.spec.ts",
-      "window": 8,
+      "window": 9,
       "runsFlaky": 0,
       "runsFailed": 1,
       "lastSeen": 16,
@@ -104,12 +121,13 @@
         "pass",
         "pass",
         "pass",
+        "pass",
         "pass"
       ]
     }
   ],
   "reports": {
-    "playwright": "playwright/26/",
-    "allure": "allure/26/"
+    "playwright": "playwright/27/",
+    "allure": "allure/27/"
   }
 }
