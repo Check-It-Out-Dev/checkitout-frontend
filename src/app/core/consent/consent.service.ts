@@ -1,4 +1,5 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { PLATFORM_ID, Injectable, computed, inject, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { LegalApiService } from '../legal/legal-api.service';
 
 export interface ConsentRecord {
@@ -30,14 +31,24 @@ const STORAGE_KEY = 'cio.consent.v1';
 @Injectable({ providedIn: 'root' })
 export class ConsentService {
   private readonly legalApi = inject(LegalApiService);
+  private readonly platformId = inject(PLATFORM_ID);
 
   private readonly _record = signal<ConsentRecord | null>(this.read());
 
   /** Reactive consent record — null when the user hasn't decided yet. */
   readonly record = this._record.asReadonly();
 
-  /** True when no decision has been made; used by the banner's *ngIf. */
-  readonly needsDecision = computed(() => this._record() === null);
+  /**
+   * True when no decision has been made; used by the banner's *ngIf.
+   *
+   * False on the server, always. The decision lives in localStorage, which does not exist there, so a
+   * server render would show the banner to everyone — including in the prerendered index.html that the
+   * static host serves as the SPA fallback for every route. That HTML then reaches the browser with
+   * three buttons on it that nothing is listening to yet, and a click in the first second of the page's
+   * life is swallowed: the banner stays up, and the visitor clicks again. It is the defect the cluster's
+   * cookie-banner tests kept catching, and it was ours, not theirs.
+   */
+  readonly needsDecision = computed(() => isPlatformBrowser(this.platformId) && this._record() === null);
 
   /** Accept all categories. */
   acceptAll(): void {
