@@ -119,7 +119,8 @@
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.sandbox.ts"
                 }
-              ]
+              ],
+              "baseHref": "/sandbox/"
             }
           },
           "defaultConfiguration": "production"

@@ -260,6 +260,18 @@ guard holds), and the code is verified where the code is verified.
   CI-built image's upload-system indicator probed a Google bucket dev-lite never uses, through synthetic
   offline credentials. Fixed in the backend (the indicator reports the local sink that serves uploads);
   the Kubernetes probes use the readiness and liveness groups, and `rollout.sh` keeps the strict gate.
+- **Cloudflare stands between CI and the sandbox.** The zone runs Bot Fight Mode (`fight_mode: true`,
+  `enable_js: true`), which answers a datacentre client with 403 no matter what the origin would say. Every
+  check in `smoke.sh` failed that way from a GitHub runner on 2026-09-09 while the sandbox was healthy, and
+  two guard checks — which assert a 4xx — printed `ok` on the edge's 403, so the workflow rolled a good
+  release back believing it had verified something. The zone is on the free plan, where Bot Fight Mode has
+  no skip rule, and turning it off for the estate to please a robot is the wrong trade. CI therefore pins
+  the hostname to the origin address (`SMOKE_RESOLVE`, `K6_ORIGIN_IP`, from the `SANDBOX_ORIGIN_IP` secret):
+  the public name, the public certificate, the host nginx and the application all stay under test, and only
+  the edge is skipped — then the public name is probed once more and reported, never asserted.
+- **A check that asserts only a status code can be answered by anything.** The guard checks now require the
+  application's own body (`"path":"/api/test/auth/mock-session"`), and the actuator check requires that the
+  response is not Prometheus exposition. This is the lesson the 403 taught, and it is general.
 - The uploads mount must belong to the container user (1002:1005), not to `deploy`: the fourth deploy
   (19:12) stayed red because the upload sink was not writable inside the container, which the fixed health
   indicator now reports honestly, and which would have failed every upload silently before. Fixed on the

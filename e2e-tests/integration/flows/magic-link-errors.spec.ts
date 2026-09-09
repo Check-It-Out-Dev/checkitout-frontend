@@ -222,7 +222,11 @@ test.describe('@magic-link-errors — port of magic-link-errors.feature', () => 
     ).toBe(true);
   });
 
-  test('@tier-2 verify-reset-code rejects garbage oobCode with invalid_action_code', async ({
+  // The two below reach Firebase's identity toolkit to reject the code, so they need real credentials.
+  // apply-action-code above does not — it is refused by our own Redis-backed one-shot check — which is
+  // why it stays in every tier. Tagged @needs-firebase and excluded where credentials are absent
+  // (docs/ci/ARCHITECTURE.md §4); the tag is on the title so a grep can find it without parsing.
+  test('@tier-2 @needs-firebase verify-reset-code rejects garbage oobCode with invalid_action_code', async ({
     page,
   }) => {
     const res = await postJson(page, VERIFY_RESET_CODE, { oobCode: GARBAGE });
@@ -231,7 +235,7 @@ test.describe('@magic-link-errors — port of magic-link-errors.feature', () => 
     expect(body.messageKey).toBe('error.auth.invalid_action_code');
   });
 
-  test('@tier-2 confirm-password-reset rejects garbage oobCode with invalid_action_code', async ({
+  test('@tier-2 @needs-firebase confirm-password-reset rejects garbage oobCode with invalid_action_code', async ({
     page,
   }) => {
     const res = await postJson(page, CONFIRM_PASSWORD_RESET, {

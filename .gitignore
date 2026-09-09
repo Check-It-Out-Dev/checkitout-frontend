@@ -103,3 +103,8 @@ e2e-tests/perf/k6/results/
 
 # Reports written by the Kubernetes test-execution substrate (deploy/k8s), collected through the kind mount
 ci-reports/
+# Allure 3: results merged out of the Playwright blobs, the generated report, and the history file
+# the CI jobs carry on the Pages site. All three are build output.
+allure-results/
+allure-report/
+history.jsonl

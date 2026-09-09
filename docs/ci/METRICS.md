@@ -14,14 +14,16 @@ Each public repository publishes one GitHub Pages site from its `gh-pages` branc
 /metrics/history.jsonl     one line per run, append-only, the scalar subset of quality-metrics.json
 /metrics/tests/<run>.json  per-test outcomes of that run (for the flaky list); last 30 runs kept
 /badges/<name>.json        shields.io endpoint badges (tests, coverage, k6, lighthouse, flaky)
-/allure/<run>/  /allure/latest/          Allure 3 with history; `latest` is a copy of the newest run
+/allure/<run>/  /allure/latest/          Allure 3 report; `latest` is a copy of the newest run
+/allure/history-<workflow>.jsonl         Allure 3 history, one file per workflow (see 8)
 /playwright/<run>/                       merged Playwright HTML report
 /k6/<run>/                               k6 HTML summaries (one per runner) + JSON
 /lighthouse/<run>/                       Lighthouse CI HTML
 ```
 
 `<run>` is the workflow run number. Runs older than 30 are pruned from `allure/`, `playwright/`, `k6/`,
-`lighthouse/` and `metrics/tests/`; `history.jsonl` is never pruned. Artifacts (90 days) are the backup.
+`lighthouse/` and `metrics/tests/`; `history.jsonl` and the Allure history files are never pruned
+(the prune only removes numeric run directories). Artifacts (90 days) are the backup.
 
 ## 2 · `quality-metrics.json` (schema 1)
 
@@ -30,39 +32,91 @@ Each public repository publishes one GitHub Pages site from its `gh-pages` branc
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 45, "id": 987654321, "sha": "2d305c6", "branch": "main", "workflow": "browser-tiers",
-    "startedAt": "2026-09-10T02:00:11Z", "durationSec": 362,
+    "number": 45,
+    "id": 987654321,
+    "sha": "2d305c6",
+    "branch": "main",
+    "workflow": "browser-tiers",
+    "startedAt": "2026-09-10T02:00:11Z",
+    "durationSec": 362,
     "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/987654321"
   },
   "tests": {
-    "total": 1884, "passed": 1870, "failed": 0, "flaky": 2, "skipped": 12,
-    "passRate": 0.9989, "flakyRate": 0.0011,
-    "durationMeanSec": 2.1, "durationP95Sec": 12.3,
+    "total": 1884,
+    "passed": 1870,
+    "failed": 0,
+    "flaky": 2,
+    "skipped": 12,
+    "passRate": 0.9989,
+    "flakyRate": 0.0011,
+    "durationMeanSec": 2.1,
+    "durationP95Sec": 12.3,
     "tiers": {
-      "jest":        { "total": 1181, "passed": 1181, "failed": 0, "flaky": 0, "skipped": 0, "durationSec": 21 },
-      "sandbox":     { "total": 61,  "passed": 59,   "failed": 0, "flaky": 2, "skipped": 0, "durationSec": 96 },
-      "integration": { "total": 222, "passed": 210,  "failed": 0, "flaky": 0, "skipped": 12, "durationSec": 118 }
+      "jest": {
+        "total": 1181,
+        "passed": 1181,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "durationSec": 21
+      },
+      "sandbox": {
+        "total": 61,
+        "passed": 59,
+        "failed": 0,
+        "flaky": 2,
+        "skipped": 0,
+        "durationSec": 96
+      },
+      "integration": {
+        "total": 222,
+        "passed": 210,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 12,
+        "durationSec": 118
+      }
     }
   },
   "coverage": { "lines": 78.06, "statements": 77.9, "branches": 66.4, "functions": 74.8 },
   "perf": {
     "k6": {
-      "profile": "load", "requests": 203, "failedRate": 0, "p95Ms": 118.4, "thresholdsOk": true,
+      "profile": "load",
+      "requests": 203,
+      "failedRate": 0,
+      "p95Ms": 118.4,
+      "thresholdsOk": true,
       "journeys": {
-        "browse": { "p95Ms": 64.8, "p99Ms": 92.8, "budgetMs": 800,  "ok": true },
-        "apply":  { "p95Ms": 151.2, "p99Ms": 256.3, "budgetMs": 1500, "ok": true }
+        "browse": { "p95Ms": 64.8, "p99Ms": 92.8, "budgetMs": 800, "ok": true },
+        "apply": { "p95Ms": 151.2, "p99Ms": 256.3, "budgetMs": 1500, "ok": true }
       }
     }
   },
-  "lighthouse": { "url": "/", "performance": 100, "accessibility": 100, "bestPractices": 100, "seo": 100 },
+  "lighthouse": {
+    "url": "/",
+    "performance": 100,
+    "accessibility": 100,
+    "bestPractices": 100,
+    "seo": 100
+  },
   "kubernetes": { "shards": 4, "wallSec": 116, "k6Runners": 2 },
   "flaky": [
-    { "title": "Sandbox · CookieBannerComponent › clicking accept-all hides the banner",
-      "file": "e2e-tests/sandbox/cookie-banner.spec.ts", "window": 10, "runsFlaky": 2, "runsFailed": 1,
+    {
+      "title": "Sandbox · CookieBannerComponent › clicking accept-all hides the banner",
+      "file": "e2e-tests/sandbox/cookie-banner.spec.ts",
+      "window": 10,
+      "runsFlaky": 2,
+      "runsFailed": 1,
       "lastSeen": 45,
-      "history": ["pass", "pass", "fail", "pass", "pass", "pass", "flaky", "pass", "pass", "flaky"] }
+      "history": ["pass", "pass", "fail", "pass", "pass", "pass", "flaky", "pass", "pass", "flaky"]
+    }
   ],
-  "reports": { "allure": "allure/45/", "playwright": "playwright/45/", "k6": "k6/45/", "lighthouse": "lighthouse/45/" }
+  "reports": {
+    "allure": "allure/45/",
+    "playwright": "playwright/45/",
+    "k6": "k6/45/",
+    "lighthouse": "lighthouse/45/"
+  }
 }
 ```
 
@@ -83,9 +137,26 @@ Rules:
 One JSON object per line, appended after every run, in this shape:
 
 ```json
-{"run":45,"id":987654321,"sha":"2d305c6","at":"2026-09-10T02:00:11Z","workflow":"browser-tiers","durationSec":362,
- "total":1884,"passed":1870,"failed":0,"flaky":2,"skipped":12,"passRate":0.9989,"flakyRate":0.0011,
- "coverageLines":78.06,"k6P95Ms":118.4,"k6FailedRate":0,"lhPerformance":100,"lhAccessibility":100}
+{
+  "run": 45,
+  "id": 987654321,
+  "sha": "2d305c6",
+  "at": "2026-09-10T02:00:11Z",
+  "workflow": "browser-tiers",
+  "durationSec": 362,
+  "total": 1884,
+  "passed": 1870,
+  "failed": 0,
+  "flaky": 2,
+  "skipped": 12,
+  "passRate": 0.9989,
+  "flakyRate": 0.0011,
+  "coverageLines": 78.06,
+  "k6P95Ms": 118.4,
+  "k6FailedRate": 0,
+  "lhPerformance": 100,
+  "lhAccessibility": 100
+}
 ```
 
 The dashboard draws its ribbon and sparklines from the last 30 lines; `id` is the workflow run id, so every bar
@@ -94,10 +165,17 @@ links to its run. Missing keys mean "this run did not measure that".
 ## 4 · `metrics/tests/<run>.json` and the flaky list
 
 ```json
-{"run":45,"tests":[
-  {"id":"e2e-tests/sandbox/cookie-banner.spec.ts › Sandbox · CookieBannerComponent › clicking accept-all hides the banner",
-   "status":"flaky","durationSec":6.2,"retries":1}
-]}
+{
+  "run": 45,
+  "tests": [
+    {
+      "id": "e2e-tests/sandbox/cookie-banner.spec.ts › Sandbox · CookieBannerComponent › clicking accept-all hides the banner",
+      "status": "flaky",
+      "durationSec": 6.2,
+      "retries": 1
+    }
+  ]
+}
 ```
 
 `id` is `file › full title`, stable across runs; Playwright entries end in ` [project]` (`chromium-desktop`,
@@ -111,13 +189,13 @@ runs, never by being deleted from the report.
 
 ## 5 · Badges (`badges/<name>.json`, shields.io endpoint format)
 
-| File | label | message | colour rule |
-| --- | --- | --- | --- |
-| `tests.json` | tests | `1870 passed · 2 flaky` | green when failed = 0, yellow when flaky > 0, red when failed > 0 |
-| `coverage.json` | coverage | `78.1 %` | green ≥ 75, yellow ≥ 60, red below |
-| `k6.json` | k6 p95 | `118 ms · 0 % failed` | green when thresholds ok, red otherwise |
-| `lighthouse.json` | lighthouse | `100 · 100 · 100 · 100` | green when all ≥ 90, yellow ≥ 75, red below |
-| `flaky.json` | flaky (10 runs) | `1 test` | green at 0, yellow ≤ 3, red above |
+| File              | label           | message                 | colour rule                                                       |
+| ----------------- | --------------- | ----------------------- | ----------------------------------------------------------------- |
+| `tests.json`      | tests           | `1870 passed · 2 flaky` | green when failed = 0, yellow when flaky > 0, red when failed > 0 |
+| `coverage.json`   | coverage        | `78.1 %`                | green ≥ 75, yellow ≥ 60, red below                                |
+| `k6.json`         | k6 p95          | `118 ms · 0 % failed`   | green when thresholds ok, red otherwise                           |
+| `lighthouse.json` | lighthouse      | `100 · 100 · 100 · 100` | green when all ≥ 90, yellow ≥ 75, red below                       |
+| `flaky.json`      | flaky (10 runs) | `1 test`                | green at 0, yellow ≤ 3, red above                                 |
 
 README usage: `![tests](https://img.shields.io/endpoint?url=https://check-it-out-dev.github.io/checkitout-frontend/badges/tests.json)`.
 
@@ -165,3 +243,42 @@ also copies the dashboard into the site root, appends the history line, writes t
 flaky list (via `flaky-report.mjs`), the badges, and prunes to the last 30 runs. Rehearsed on 2026-09-09
 against real artifacts: 40 Jest tests, the 285-test cluster report, two k6 runners, and the backend's 2,410
 surefire files.
+
+## 8 · Allure history, and why it is one file per workflow
+
+Allure 3 does not write the `history/` directory Allure 2 put inside the report. History is a single
+JSON-lines file, named by `historyPath` in `allurerc.mjs`; `allure generate` reads it to mark new,
+retried and flaky tests and to draw the trend, then appends the run to it. A job that only copies an old
+`history/` directory into the results, as the backend job did until 2026-09-09, silently produces a
+report with no history at all — the symptom is every test reported as new on every run.
+
+Each publishing workflow therefore carries its own file on the Pages site:
+
+| Workflow                      | File                                      |
+| ----------------------------- | ----------------------------------------- |
+| frontend `browser-tiers`      | `allure/history-browser-tiers.jsonl`      |
+| frontend `nightly-full-stack` | `allure/history-nightly-full-stack.jsonl` |
+| frontend `k8s-test-execution` | `allure/history-k8s-test-execution.jsonl` |
+| backend `ci-tests`            | `allure/history-ci-tests.jsonl`           |
+
+One file per workflow for the same reason the metrics files carry a workflow prefix: these workflows run
+different suites, and a shared history would report every test of the other suite as new, every run.
+
+The Playwright tiers reach Allure through the blobs, not through JUnit XML: the merge job runs
+`playwright merge-reports --reporter allure-playwright` over the same blob archives it merges into the
+HTML report, so the Allure report carries the Playwright steps, attachments and retries. The results land
+in `./allure-results` (the reporter's default; the CLI cannot pass reporter options).
+
+### The Cucumber tag-filter duplicates
+
+The backend runs one Failsafe execution per suite, and every suite boots the whole feature corpus and
+reports **every** scenario — the ones its tags select as executed, the rest as skipped. Fifteen suites
+therefore emit fifteen results per scenario, and JUnit tells them apart only by `<testsuite name>`:
+`classname` is the Gherkin feature. Allure keys on classname plus name, so a 277-scenario corpus was
+published as 165 tests with 165 retries, and the dashboard counted 2,804 e2e tests.
+
+`tools/ci/junit-collapse-tag-skips.mjs` runs over the e2e results before both readers and drops a
+`<testcase>` only when it is skipped **and** the same test is executed in another file of the same tree —
+exactly the tag-filter duplicate — fixing the `<testsuite>` counters as it goes. A scenario skipped in
+every suite is a real skip and is kept. Measured on the 2026-09-09 credential-free run: 2,516 duplicates
+dropped, 288 results kept, 277 executed, retries down from 165 to 14.

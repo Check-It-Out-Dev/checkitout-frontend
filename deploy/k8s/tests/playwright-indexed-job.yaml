@@ -44,7 +44,10 @@ spec:
             - { name: PW_TEST_DIRS, value: "e2e-tests/integration e2e-tests/scenarios e2e-tests/sandbox" }
             # The four "legacy ≡ greenfield" parity captures replay a retired frontend on :4200; no
             # environment after the cutover has one, so they are excluded by title.
-            - { name: PW_EXTRA_ARGS, value: "--grep-invert=legacy" }
+            # No spaces: the value is expanded unquoted inside a bash -c script, so `|` is a literal
+            # alternation for --grep-invert and not a pipe. Both exclusions are explained in
+            # docs/ci/ARCHITECTURE.md §4 — a test excluded without a written reason is a test deleted.
+            - { name: PW_EXTRA_ARGS, value: "--grep-invert=legacy|@needs-firebase" }
           resources:
             requests: { cpu: 400m, memory: 1Gi }
             limits: { memory: 1536Mi }

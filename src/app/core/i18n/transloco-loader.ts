@@ -19,6 +19,8 @@ export class HttpTranslocoLoader implements TranslocoLoader {
   private readonly http = inject(HttpClient);
 
   getTranslation(lang: string) {
-    return this.http.get<Translation>(`/assets/i18n/${lang}.json?v=${I18N_VERSION}`);
+    // Relative, so it resolves against <base href> — under /sandbox/ an absolute path would quietly
+    // fetch the demo's copy of the translations from the same host.
+    return this.http.get<Translation>(`assets/i18n/${lang}.json?v=${I18N_VERSION}`);
   }
 }

@@ -33,8 +33,8 @@ jobs:
       matrix:
         shard: [1, 2, 3, 4]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -45,7 +45,7 @@ jobs:
         env:
           PLAYWRIGHT_BLOB_OUTPUT_DIR: blob-report
         continue-on-error: true
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: always()
         with:
           name: browser-blob-sandbox-${{ matrix.shard }}
@@ -64,8 +64,8 @@ jobs:
       matrix:
         shard: [1, 2, 3]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -79,7 +79,7 @@ jobs:
           # runner's 67 ms frame is the runner's (ARCHITECTURE.md §4). Structural budgets stay hard.
           PERF_TIMING: report
         continue-on-error: true
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: always()
         with:
           name: browser-blob-perf-${{ matrix.shard }}
@@ -94,7 +94,7 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.59.1-noble
       options: --ipc=host
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       # Activates once the Linux baseline set is committed (the ADR's one-time migration); until then the
       # win32 set is the dev box's and a Linux rasteriser would only produce noise. (hashFiles is not
       # available in a job-level `if`, hence a step decides.)
@@ -114,7 +114,7 @@ jobs:
           PLAYWRIGHT_BLOB_OUTPUT_DIR: blob-report
           HOME: /root
         continue-on-error: true
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: steps.baselines.outputs.linux == 'true'
         with:
           name: browser-blob-visual
@@ -130,13 +130,13 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci --prefer-offline --no-audit --loglevel=error
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           pattern: browser-blob-*
           path: fragments
@@ -156,7 +156,7 @@ jobs:
           # Every job this verdict speaks for: a cancelled shard makes the run incomplete, never green.
           NEEDS: ${{ toJSON(needs) }}
         run: set -o pipefail; node tools/ci/k8s-summary.mjs ci-reports --needs "$NEEDS" --json ci-reports/summary.json | tee -a "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: always()
         with:
           name: browser-report-${{ github.run_number }}
@@ -166,11 +166,27 @@ jobs:
           retention-days: 30
       - name: Pages site (previous state)
         if: github.event_name != 'pull_request'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: gh-pages
           path: site
         continue-on-error: true
+      # Allure reads the SAME blobs a second time, through allure-playwright, so the report carries the
+      # Playwright steps, attachments and retries rather than a JUnit summary. Allure 3 keeps history in a
+      # single history.jsonl named by allurerc.mjs - there is no history/ directory any more - so the file
+      # is carried on the Pages site, one per workflow: browser-tiers and k8s run different suites and a
+      # shared history would call every test of the other suite "new" on every run.
+      - name: Allure 3 (the same blobs, history from the site)
+        # The report is a nice-to-have; the verdict below is what decides the job. A failure here
+        # must never stop the dashboard and the metrics from being published.
+        continue-on-error: true
+        if: github.event_name != 'pull_request'
+        run: |
+          set -o pipefail
+          cp "site/allure/history-browser-tiers.jsonl" history.jsonl 2>/dev/null || true
+          npx playwright merge-reports --reporter allure-playwright ci-reports/blobs
+          npx --yes allure generate --config allurerc.mjs ./allure-results --output allure-report
+          mkdir -p site/allure && cp history.jsonl "site/allure/history-browser-tiers.jsonl"
       - name: Quality metrics into the site
         if: github.event_name != 'pull_request'
         env:
@@ -182,7 +198,7 @@ jobs:
           DURATION=$(( $(date +%s) - $(date -d "$STARTED_AT" +%s) ))
           node tools/ci/quality-metrics.mjs --out site --workflow browser-tiers --started-at "$STARTED_AT" --duration-sec "$DURATION" \
             --playwright ci-reports/merged.json --verdict ci-reports/summary.json --copy playwright=ci-reports/merged \
-            --jest site/jest/latest.json --coverage site/coverage/latest.json --lighthouse site/lighthouse/latest.json | tee -a "$GITHUB_STEP_SUMMARY"
+            --jest site/jest/latest.json --coverage site/coverage/latest.json --lighthouse site/lighthouse/latest.json --copy allure=allure-report | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Publish
         if: github.event_name != 'pull_request'
         uses: peaceiris/actions-gh-pages@v4

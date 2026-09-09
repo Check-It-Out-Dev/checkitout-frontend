@@ -35,14 +35,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci --prefer-offline --no-audit --loglevel=error
       - run: npm run build
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: browser-dist
           path: dist/check-it-out-fe-greenfield/browser
@@ -61,12 +61,16 @@ jobs:
           - shard: 1
             queue: bdd
             command: npx bddgen && npx playwright test --project=bdd --workers=1 --reporter=blob
+          # Same two exclusions as the cluster (deploy/k8s/tests/playwright-indexed-job.yaml), for the same
+          # reasons, written down in docs/ci/ARCHITECTURE.md §4: the legacy parity captures need a retired
+          # frontend on :4200, and three tests assert Firebase's own behaviour, which a public runner has no
+          # credentials for.
           - shard: 2
             queue: integration-a
-            command: npx playwright test e2e-tests/integration --project=chromium-desktop --shard=1/2 --workers=1 --reporter=blob
+            command: npx playwright test e2e-tests/integration --project=chromium-desktop --shard=1/2 --workers=1 --reporter=blob --grep-invert="legacy|@needs-firebase"
           - shard: 3
             queue: integration-b
-            command: npx playwright test e2e-tests/integration --project=chromium-desktop --shard=2/2 --workers=1 --reporter=blob
+            command: npx playwright test e2e-tests/integration --project=chromium-desktop --shard=2/2 --workers=1 --reporter=blob --grep-invert="legacy|@needs-firebase"
           - shard: 4
             queue: scenarios+sandbox
             command: npx playwright test e2e-tests/scenarios e2e-tests/sandbox --project=chromium-desktop --workers=1 --reporter=blob
@@ -105,14 +109,14 @@ jobs:
           --health-cmd "wget -qO- http://127.0.0.1:8080/api/actuator/health/readiness | grep -q UP"
           --health-interval 10s --health-timeout 5s --health-retries 40 --health-start-period 60s
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci --prefer-offline --no-audit --loglevel=error
       - run: npx playwright install --with-deps chromium
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: browser-dist
           path: dist/check-it-out-fe-greenfield/browser
@@ -141,7 +145,7 @@ jobs:
       - name: Backend log on failure
         if: failure()
         run: docker logs ${{ job.services.backend.id }} > backend-${{ matrix.shard }}.log 2>&1 || true
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: always()
         with:
           name: nightly-blob-${{ matrix.shard }}
@@ -160,13 +164,13 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci --prefer-offline --no-audit --loglevel=error
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           pattern: nightly-blob-*
           path: fragments
@@ -185,7 +189,7 @@ jobs:
         env:
           NEEDS: ${{ toJSON(needs) }}
         run: set -o pipefail; node tools/ci/k8s-summary.mjs ci-reports --needs "$NEEDS" --json ci-reports/summary.json | tee -a "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: always()
         with:
           name: nightly-report-${{ github.run_number }}
@@ -194,11 +198,26 @@ jobs:
             !ci-reports/blobs
           retention-days: 30
       - name: Pages site (previous state)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: gh-pages
           path: site
         continue-on-error: true
+      # Allure reads the SAME blobs a second time, through allure-playwright, so the report carries the
+      # Playwright steps, attachments and retries rather than a JUnit summary. Allure 3 keeps history in a
+      # single history.jsonl named by allurerc.mjs - there is no history/ directory any more - so the file
+      # is carried on the Pages site, one per workflow: browser-tiers and k8s run different suites and a
+      # shared history would call every test of the other suite "new" on every run.
+      - name: Allure 3 (the same blobs, history from the site)
+        # The report is a nice-to-have; the verdict below is what decides the job. A failure here
+        # must never stop the dashboard and the metrics from being published.
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          cp "site/allure/history-nightly-full-stack.jsonl" history.jsonl 2>/dev/null || true
+          npx playwright merge-reports --reporter allure-playwright ci-reports/blobs
+          npx --yes allure generate --config allurerc.mjs ./allure-results --output allure-report
+          mkdir -p site/allure && cp history.jsonl "site/allure/history-nightly-full-stack.jsonl"
       - name: Quality metrics into the site
         env:
           GH_TOKEN: ${{ github.token }}
@@ -209,7 +228,7 @@ jobs:
           DURATION=$(( $(date +%s) - $(date -d "$STARTED_AT" +%s) ))
           node tools/ci/quality-metrics.mjs --out site --workflow nightly-full-stack --started-at "$STARTED_AT" --duration-sec "$DURATION" \
             --playwright ci-reports/merged.json --verdict ci-reports/summary.json --copy playwright=ci-reports/merged \
-            --jest site/jest/latest.json --coverage site/coverage/latest.json --lighthouse site/lighthouse/latest.json | tee -a "$GITHUB_STEP_SUMMARY"
+            --jest site/jest/latest.json --coverage site/coverage/latest.json --lighthouse site/lighthouse/latest.json --copy allure=allure-report | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Publish
         uses: peaceiris/actions-gh-pages@v4
         with:
