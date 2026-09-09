@@ -1,0 +1,50 @@
+# Playwright shards as a Kubernetes Indexed Job: four pods, pod index -> --shard=N/4, every pod
+# writes a blob report to the node's /var/lib/ci-reports (= the runner's ./ci-reports via kind's
+# extraMounts). The workflow then runs `npx playwright merge-reports` over ./ci-reports/blob-*.
+# JOB_COMPLETION_INDEX is injected by Kubernetes for Indexed Jobs; no downward API needed.
+# backoffLimit 0: a red shard stays red and keeps its report; retries happen inside Playwright.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: playwright-shards
+  namespace: checkitout
+spec:
+  completionMode: Indexed
+  completions: 4
+  parallelism: 4
+  backoffLimit: 0
+  activeDeadlineSeconds: 2400
+  template:
+    metadata:
+      labels: { app: playwright-shards }
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: playwright
+          image: checkitout-tests:ci
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              set -o pipefail
+              SHARD=$((JOB_COMPLETION_INDEX + 1))
+              export PLAYWRIGHT_BLOB_OUTPUT_DIR=/reports/blob-${SHARD}
+              echo "shard ${SHARD}/4 against ${PW_BASE_URL} (api ${BE_URL})"
+              npx playwright test ${PW_TEST_DIRS} --project=chromium-desktop \
+                --shard=${SHARD}/4 --workers=1 --reporter=blob 2>&1 | tee /reports/shard-${SHARD}.log
+          env:
+            - { name: PW_BASE_URL, value: "http://frontend.checkitout.svc" }
+            - { name: BE_URL, value: "http://backend.checkitout.svc:8080" }
+            - { name: PW_EXTERNAL_SERVER, value: "1" }
+            - { name: CI, value: "1" }
+            - { name: PW_TEST_DIRS, value: "e2e-tests/integration e2e-tests/scenarios e2e-tests/sandbox" }
+          resources:
+            requests: { cpu: 400m, memory: 1Gi }
+            limits: { memory: 1536Mi }
+          volumeMounts:
+            - { name: reports, mountPath: /reports }
+      volumes:
+        - name: reports
+          hostPath:
+            path: /var/lib/ci-reports
+            type: DirectoryOrCreate

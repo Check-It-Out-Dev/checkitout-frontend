@@ -1,0 +1,14 @@
+# The test image: the pinned Playwright base (browsers and OS deps preinstalled) plus this repo
+# with its dependencies and the generated BDD specs. PW_VERSION must equal @playwright/test in
+# package.json (the workflow reads it: node -p "require('@playwright/test/package.json').version").
+#   docker build -f deploy/k8s/tests/Dockerfile.playwright --build-arg PW_VERSION=1.59.1 -t checkitout-tests:ci .
+#   kind load docker-image checkitout-tests:ci --name checkitout-ci
+ARG PW_VERSION=1.59.1
+FROM mcr.microsoft.com/playwright:v${PW_VERSION}-noble
+ENV CI=1 NG_CLI_ANALYTICS=false
+WORKDIR /work
+COPY package.json package-lock.json .nvmrc ./
+RUN npm ci --prefer-offline --no-audit --loglevel=error
+COPY . .
+# bddgen turns the Cucumber corpus into Playwright specs; the bdd project's testDir is its output.
+RUN npx bddgen

@@ -1,0 +1,48 @@
+# PostgreSQL 17: the same image and superuser as docker-compose-dev-redis.yml, because the
+# backend's dev profile (pulled in by dev-lite) runs LocalDatabaseInitializer with the compose
+# superuser to create the app database, user and extensions. Ephemeral by design: every run
+# starts from Liquibase contexts dev,local,dev-lite, the seeded demo world.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: checkitout
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: postgres }
+  template:
+    metadata:
+      labels: { app: postgres }
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:17-alpine
+          env:
+            - { name: POSTGRES_DB, value: postgres }
+            - { name: POSTGRES_USER, value: postgres }
+            - { name: POSTGRES_PASSWORD, value: admin }
+            - { name: PGDATA, value: /var/lib/postgresql/data/pgdata }
+          ports:
+            - { containerPort: 5432, name: pg }
+          readinessProbe:
+            exec: { command: ["pg_isready", "-U", "postgres"] }
+            periodSeconds: 5
+          resources:
+            requests: { cpu: 250m, memory: 256Mi }
+            limits: { memory: 512Mi }
+          volumeMounts:
+            - { name: data, mountPath: /var/lib/postgresql/data }
+      volumes:
+        - name: data
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: checkitout
+spec:
+  selector: { app: postgres }
+  ports:
+    - { port: 5432, targetPort: pg }

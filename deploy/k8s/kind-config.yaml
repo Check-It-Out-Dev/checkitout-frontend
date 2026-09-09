@@ -1,0 +1,25 @@
+# kind cluster for the test-execution substrate (docs/ci/ARCHITECTURE.md).
+# One control-plane node = the whole GitHub runner (4 vCPU / 16 GB). Two hooks matter:
+#   extraMounts       pods write reports to /var/lib/ci-reports on the node, which IS the
+#                     runner's ./ci-reports directory, so nothing has to be copied out of a pod.
+#                     hostPath must be absolute: the workflow renders CI_REPORTS_DIR into this file.
+#   extraPortMappings the ingress-nginx controller's :80 becomes localhost:8081 on the runner,
+#                     for the deploy hash check and for a human with kubectl on the same box.
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: checkitout-ci
+nodes:
+  - role: control-plane
+    kubeadmConfigPatches:
+      - |
+        kind: InitConfiguration
+        nodeRegistration:
+          kubeletExtraArgs:
+            node-labels: "ingress-ready=true"
+    extraPortMappings:
+      - containerPort: 80
+        hostPort: 8081
+        protocol: TCP
+    extraMounts:
+      - hostPath: ${CI_REPORTS_DIR}
+        containerPath: /var/lib/ci-reports

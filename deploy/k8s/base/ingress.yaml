@@ -1,0 +1,22 @@
+# Host access only: the runner's localhost:8081 through kind's port mapping. The test pods and
+# the k6 runners talk to the Services directly (http://frontend.checkitout.svc), so the ingress
+# serves the deploy hash check and a human with kubectl, never the test path.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app
+  namespace: checkitout
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 20m
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: app.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port: { number: 80 }
