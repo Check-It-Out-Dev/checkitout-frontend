@@ -1,0 +1,163 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: integration/flows/magic-link-errors.spec.ts >> @magic-link-errors — port of magic-link-errors.feature >> @tier-2 verify-reset-code rejects garbage oobCode with invalid_action_code
+- Location: e2e-tests/integration/flows/magic-link-errors.spec.ts:225:7
+
+# Error details
+
+```
+Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 400
+Received: 503
+```
+
+# Test source
+
+```ts
+  129 |   });
+  130 | 
+  131 |   test('@tier-1 confirm-password-reset rejects blank newPassword (400)', async ({ page }) => {
+  132 |     const res = await postJson(page, CONFIRM_PASSWORD_RESET, { oobCode: 'x', newPassword: '' });
+  133 |     expect(res.status()).toBe(400);
+  134 |   });
+  135 | 
+  136 |   test('@tier-1 confirm-password-reset rejects missing newPassword (400)', async ({ page }) => {
+  137 |     const res = await postJson(page, CONFIRM_PASSWORD_RESET, { oobCode: 'x' });
+  138 |     expect(res.status()).toBe(400);
+  139 |   });
+  140 | 
+  141 |   test('@tier-1 confirm-password-reset rejects password too short (400)', async ({ page }) => {
+  142 |     const res = await postJson(page, CONFIRM_PASSWORD_RESET, {
+  143 |       oobCode: 'x',
+  144 |       newPassword: 'Ab1',
+  145 |     });
+  146 |     expect(res.status()).toBe(400);
+  147 |   });
+  148 | 
+  149 |   test('@tier-1 confirm-password-reset rejects password with no digits (400)', async ({ page }) => {
+  150 |     const res = await postJson(page, CONFIRM_PASSWORD_RESET, {
+  151 |       oobCode: 'x',
+  152 |       newPassword: 'abcdefgh',
+  153 |     });
+  154 |     expect(res.status()).toBe(400);
+  155 |   });
+  156 | 
+  157 |   test('@tier-1 confirm-password-reset rejects password with no letters (400)', async ({
+  158 |     page,
+  159 |   }) => {
+  160 |     const res = await postJson(page, CONFIRM_PASSWORD_RESET, {
+  161 |       oobCode: 'x',
+  162 |       newPassword: '12345678',
+  163 |     });
+  164 |     expect(res.status()).toBe(400);
+  165 |   });
+  166 | 
+  167 |   test('@tier-1 confirm-password-reset rejects password over max length (400)', async ({
+  168 |     page,
+  169 |   }) => {
+  170 |     // Max is typically 128; use 200 to be safely over.
+  171 |     const oversized = 'A1' + 'a'.repeat(200);
+  172 |     const res = await postJson(page, CONFIRM_PASSWORD_RESET, {
+  173 |       oobCode: 'x',
+  174 |       newPassword: oversized,
+  175 |     });
+  176 |     expect(res.status()).toBe(400);
+  177 |   });
+  178 | 
+  179 |   test('@tier-1 confirm-password-reset rejects empty body (400 on BOTH fields)', async ({
+  180 |     page,
+  181 |   }) => {
+  182 |     const res = await postJson(page, CONFIRM_PASSWORD_RESET, {});
+  183 |     expect(res.status()).toBe(400);
+  184 |     const body = (await res.json()) as ApiErrorResponse;
+  185 |     const errs = body.validationErrors ?? body.errors ?? {};
+  186 |     // Both fields should appear in the validation-errors map.
+  187 |     expect(
+  188 |       typeof errs['oobCode'] === 'string' || typeof errs['newPassword'] === 'string',
+  189 |       `empty body should report both oobCode + newPassword errors; got ${JSON.stringify(body)}`,
+  190 |     ).toBe(true);
+  191 |   });
+  192 | 
+  193 |   // --------------------------------------------------------------------
+  194 |   // Tier 1: Malformed JSON
+  195 |   // --------------------------------------------------------------------
+  196 |   test('@tier-1 apply-action-code rejects malformed JSON (400)', async ({ page }) => {
+  197 |     const res = await postRaw(page, APPLY_ACTION_CODE, '{invalid json');
+  198 |     expect(res.status()).toBe(400);
+  199 |   });
+  200 | 
+  201 |   test('@tier-1 confirm-password-reset rejects malformed JSON (400)', async ({ page }) => {
+  202 |     const res = await postRaw(page, CONFIRM_PASSWORD_RESET, 'not json');
+  203 |     expect(res.status()).toBe(400);
+  204 |   });
+  205 | 
+  206 |   // --------------------------------------------------------------------
+  207 |   // Tier 2: Garbage oobCode rejected by all 3 endpoints with
+  208 |   // messageKey "error.auth.invalid_action_code"
+  209 |   // --------------------------------------------------------------------
+  210 |   const GARBAGE = 'GARBAGE_E2E_INVALID_CODE_12345';
+  211 | 
+  212 |   test('@tier-2 apply-action-code rejects garbage oobCode with invalid_action_code', async ({
+  213 |     page,
+  214 |   }) => {
+  215 |     const res = await postJson(page, APPLY_ACTION_CODE, { oobCode: GARBAGE });
+  216 |     expect(res.status()).toBe(400);
+  217 |     const body = (await res.json()) as ApiErrorResponse;
+  218 |     expect(body.messageKey).toBe('error.auth.invalid_action_code');
+  219 |     expect(
+  220 |       typeof body.requestId === 'string' && body.requestId.length > 0,
+  221 |       `response should include a non-empty requestId, got ${body.requestId}`,
+  222 |     ).toBe(true);
+  223 |   });
+  224 | 
+  225 |   test('@tier-2 verify-reset-code rejects garbage oobCode with invalid_action_code', async ({
+  226 |     page,
+  227 |   }) => {
+  228 |     const res = await postJson(page, VERIFY_RESET_CODE, { oobCode: GARBAGE });
+> 229 |     expect(res.status()).toBe(400);
+      |                          ^ Error: expect(received).toBe(expected) // Object.is equality
+  230 |     const body = (await res.json()) as ApiErrorResponse;
+  231 |     expect(body.messageKey).toBe('error.auth.invalid_action_code');
+  232 |   });
+  233 | 
+  234 |   test('@tier-2 confirm-password-reset rejects garbage oobCode with invalid_action_code', async ({
+  235 |     page,
+  236 |   }) => {
+  237 |     const res = await postJson(page, CONFIRM_PASSWORD_RESET, {
+  238 |       oobCode: GARBAGE,
+  239 |       newPassword: 'ValidPass1',
+  240 |     });
+  241 |     expect(res.status()).toBe(400);
+  242 |     const body = (await res.json()) as ApiErrorResponse;
+  243 |     expect(body.messageKey).toBe('error.auth.invalid_action_code');
+  244 |   });
+  245 | 
+  246 |   // --------------------------------------------------------------------
+  247 |   // Tiers 3-5: oobCode lifecycle (single-use + cross-endpoint misuse)
+  248 |   // --------------------------------------------------------------------
+  249 |   test.fixme('@tier-3 apply-action-code rejects already-used verification oobCode', () => {
+  250 |     /* Needs real Firebase login + test-only oobCode-generation endpoint
+  251 |      * (@Profile("e2e")). Blocked on T1. */
+  252 |   });
+  253 | 
+  254 |   test.fixme('@tier-4 verify-reset-code + confirm-password-reset reject already-consumed reset oobCode', () => {
+  255 |     /* Same blockers as Tier 3. */
+  256 |   });
+  257 | 
+  258 |   test.fixme('@tier-5 verification oobCode rejected by password-reset endpoints', () => {
+  259 |     /* Same blockers. */
+  260 |   });
+  261 | 
+  262 |   test.fixme('@tier-5 password-reset oobCode rejected by apply-action-code', () => {
+  263 |     /* Same blockers. */
+  264 |   });
+  265 | });
+  266 | 
+```

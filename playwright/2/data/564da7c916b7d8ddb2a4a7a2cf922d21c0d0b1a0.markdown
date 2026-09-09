@@ -1,0 +1,113 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: sandbox/cookie-banner.spec.ts >> Sandbox · CookieBannerComponent >> clicking necessary-only hides the banner
+- Location: e2e-tests/sandbox/cookie-banner.spec.ts:50:7
+
+# Error details
+
+```
+Error: expect(locator).toHaveCount(expected) failed
+
+Locator:  getByTestId('cookie-banner')
+Expected: 0
+Received: 1
+Timeout:  5000ms
+
+Call log:
+  - Expect "toHaveCount" with timeout 5000ms
+  - waiting for getByTestId('cookie-banner')
+    8 × locator resolved to 1 element
+      - unexpected value "1"
+
+```
+
+# Page snapshot
+
+```yaml
+- region "Używamy plików cookie" [ref=e2]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - strong [ref=e6]: Używamy plików cookie
+      - text: Używamy ściśle niezbędnych plików cookie do działania serwisu oraz opcjonalnych plików analitycznych i marketingowych, jeśli wyrazisz zgodę. Możesz zmienić swój wybór w dowolnym momencie.
+    - generic [ref=e7]:
+      - button "Dostosuj" [ref=e8] [cursor=pointer]:
+        - generic [ref=e9]: Dostosuj
+      - button "Tylko niezbędne" [ref=e12] [cursor=pointer]:
+        - generic [ref=e13]: Tylko niezbędne
+      - button "Akceptuj wszystkie" [ref=e16] [cursor=pointer]:
+        - generic [ref=e17]: Akceptuj wszystkie
+```
+
+# Test source
+
+```ts
+  1  | import { expect, test } from '@playwright/test';
+  2  | 
+  3  | const STORAGE_KEY = 'cio.consent.v1';
+  4  | 
+  5  | test.describe('Sandbox · CookieBannerComponent', () => {
+  6  |   test('renders banner with both CTAs when consent is pending (clean state)', async ({ page }) => {
+  7  |     await page.addInitScript(
+  8  |       ({ key }) => {
+  9  |         window.localStorage.removeItem(key);
+  10 |       },
+  11 |       { key: STORAGE_KEY },
+  12 |     );
+  13 |     await page.goto('/__sandbox/cookie-banner');
+  14 |     await expect(page.getByTestId('cookie-banner')).toBeVisible();
+  15 |     await expect(page.getByTestId('cookie-banner-accept-all')).toBeVisible();
+  16 |     await expect(page.getByTestId('cookie-banner-necessary')).toBeVisible();
+  17 |   });
+  18 | 
+  19 |   test('hidden when consent has already been decided', async ({ page }) => {
+  20 |     await page.addInitScript(
+  21 |       ({ key }) => {
+  22 |         window.localStorage.setItem(
+  23 |           key,
+  24 |           JSON.stringify({
+  25 |             necessary: true,
+  26 |             analytics: true,
+  27 |             marketing: true,
+  28 |             decidedAt: '2026-05-08T00:00:00.000Z',
+  29 |           }),
+  30 |         );
+  31 |       },
+  32 |       { key: STORAGE_KEY },
+  33 |     );
+  34 |     await page.goto('/__sandbox/cookie-banner');
+  35 |     await expect(page.getByTestId('cookie-banner')).toHaveCount(0);
+  36 |   });
+  37 | 
+  38 |   test('clicking accept-all hides the banner', async ({ page }) => {
+  39 |     await page.addInitScript(
+  40 |       ({ key }) => {
+  41 |         window.localStorage.removeItem(key);
+  42 |       },
+  43 |       { key: STORAGE_KEY },
+  44 |     );
+  45 |     await page.goto('/__sandbox/cookie-banner');
+  46 |     await page.getByTestId('cookie-banner-accept-all').click();
+  47 |     await expect(page.getByTestId('cookie-banner')).toHaveCount(0);
+  48 |   });
+  49 | 
+  50 |   test('clicking necessary-only hides the banner', async ({ page }) => {
+  51 |     await page.addInitScript(
+  52 |       ({ key }) => {
+  53 |         window.localStorage.removeItem(key);
+  54 |       },
+  55 |       { key: STORAGE_KEY },
+  56 |     );
+  57 |     await page.goto('/__sandbox/cookie-banner');
+  58 |     await page.getByTestId('cookie-banner-necessary').click();
+> 59 |     await expect(page.getByTestId('cookie-banner')).toHaveCount(0);
+     |                                                     ^ Error: expect(locator).toHaveCount(expected) failed
+  60 |   });
+  61 | });
+  62 | 
+```
