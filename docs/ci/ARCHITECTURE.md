@@ -157,6 +157,29 @@ Left as found, on purpose: `Sandbox · CookieBannerComponent › clicking accept
 in one run and red in the next inside the cluster (the banner stays after the click for 5 s). That is the
 first entry for the flaky list the quality dashboard exists to show, not something the harness should hide.
 
+### The k6 API journeys, rehearsed the same afternoon
+
+`e2e-tests/perf/k6/api-journeys.js` drives the backend through nginx the way a browser would: `browse`
+(one signed-in influencer per virtual user reading the catalogue) and `apply` (the seeded influencer
+applying to campaigns it has not applied to yet). The TestRun with `parallelism: 2` finished with both
+runners at 100 % checks, 0 % failed requests, thresholds green; p95 in-cluster 65–150 ms per runner
+(the backend on 800 m CPU, real Postgres queries). The rules the script had to learn, kept on by design:
+
+- Rate limits stay on in the cluster. The standard profile allows 60 requests a minute per **user** on
+  most endpoints (120 on the paged campaign list), the auth profile 50 a minute per **IP**, and
+  `POST /api/applied-opportunity` 20 an hour per user. So every browse VU gets its own mock-session
+  account and signs in once; sharing one account across VUs measures the limiter, not the app.
+- k6 empties every VU's cookie jar at the start of each iteration unless `noCookiesReset: true` is set.
+  Without it every call after the first iteration is anonymous and the run is a wall of 401s that look
+  like a broken proxy. That option is now in the script's options.
+- Only an account with a social connection, an active status and the influencer role may apply; a fresh
+  mock-session account is refused with 403. The `apply` journey therefore uses the seeded
+  `test.influencer@test.com`, reads its follower count from `/api/users/me`, and applies only to campaigns
+  whose follower band it fits and which it has not applied to yet; when none is left the iteration counts
+  as `apply_skipped`, not as a failure.
+- With `parallelism > 1` the runners need one run id to share: the TestRun passes `K6_RUN_ID` (the
+  workflow substitutes the run number), and each runner appends its pod name to the summary file names.
+
 ## 5 · What "done" means for the cluster run
 
 - One green run on `ubuntu-latest` inside 25 minutes, all four shards complete, the TestRun finished with

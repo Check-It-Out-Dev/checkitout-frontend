@@ -29,6 +29,8 @@ spec:
       - { name: K6_PROFILE, value: "load" }
       - { name: K6_DNS_POLICY, value: "preferIPv4" }
       - { name: K6_OUT_DIR, value: "/reports" }
+      # The workflow replaces "local" with the run number so both runners' summaries share one run id.
+      - { name: K6_RUN_ID, value: "local" }
     resources:
       requests: { cpu: 250m, memory: 256Mi }
       limits: { memory: 512Mi }
