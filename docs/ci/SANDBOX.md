@@ -254,6 +254,11 @@ guard holds), and the code is verified where the code is verified.
   for user postgres" while the rehearsal on the dev box, with `admin` on both sides, had never shown it.
   The compose file now hands `POSTGRES_PASSWORD` to `POSTGRES_SUPERUSER_PASSWORD` too; rehearse with a
   random password, not the default.
+- Overall health is stricter than readiness, and a component nobody uses can hold it DOWN: the second
+  deploy (18:30) came up healthy for Compose (readiness) and red for `rollout.sh` (overall), because the
+  CI-built image's upload-system indicator probed a Google bucket dev-lite never uses, through synthetic
+  offline credentials. Fixed in the backend (the indicator reports the local sink that serves uploads);
+  the Kubernetes probes use the readiness and liveness groups, and `rollout.sh` keeps the strict gate.
 - A red deploy leaves the previous tags running (`rollback` is automatic); a red reseed leaves the
   backend stopped and needs a human, which the timer's failure shows in `systemctl status`.
 

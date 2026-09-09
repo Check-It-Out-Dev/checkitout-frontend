@@ -37,8 +37,12 @@ spec:
             # The image already sets G1 and MaxRAMPercentage=70 in JAVA_OPTS; a 2 Gi limit gives ~1.4 Gi of heap.
             # Do not add a second collector through JAVA_TOOL_OPTIONS: the JVM refuses to start.
           # Liquibase seeds ~26 campaigns on first boot: five minutes before liveness counts.
+          # The probes use the two groups the application defines for Kubernetes (readiness: db, redis,
+          # diskSpace, uploadSystem; liveness: ping, application), never the overall health: that one also
+          # carries optional components, and the first cluster run on the CI-built image sat at 503 for
+          # ten minutes on one of them (the upload system probing a bucket dev-lite never uses).
           startupProbe:
-            httpGet: { path: /api/actuator/health, port: http }
+            httpGet: { path: /api/actuator/health/readiness, port: http }
             periodSeconds: 5
             failureThreshold: 60
           readinessProbe:
