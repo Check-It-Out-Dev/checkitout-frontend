@@ -203,7 +203,8 @@ sudo install -o deploy -g deploy -m 750 rollout.sh /opt/checkitout-sandbox/rollo
 sudo install -o deploy -g deploy -m 600 .env /opt/checkitout-sandbox/.env        # from .env.example, with a real POSTGRES_PASSWORD
 # a 2 GB cap on uploads
 sudo fallocate -l 2G /opt/checkitout-sandbox/uploads.img && sudo mkfs.ext4 -q /opt/checkitout-sandbox/uploads.img
-echo '/opt/checkitout-sandbox/uploads.img /opt/checkitout-sandbox/uploads ext4 loop,nosuid,nodev 0 0' | sudo tee -a /etc/fstab && sudo mount -a && sudo chown deploy:deploy /opt/checkitout-sandbox/uploads
+echo '/opt/checkitout-sandbox/uploads.img /opt/checkitout-sandbox/uploads ext4 loop,nosuid,nodev 0 0' | sudo tee -a /etc/fstab && sudo mount -a && sudo chown 1002:1005 /opt/checkitout-sandbox/uploads && sudo chmod 775 /opt/checkitout-sandbox/uploads
+# 1002:1005 is the backend image's container user (Dockerfile CONTAINER_USER_ID/GROUP_ID): the sink must be writable by it.
 # the deploy key: one line in /home/deploy/.ssh/authorized_keys
 command="/opt/checkitout-sandbox/rollout.sh",no-port-forwarding,no-agent-forwarding,no-pty,no-X11-forwarding ssh-ed25519 AAAA… github-deploy-sandbox
 # the nightly reseed
@@ -259,6 +260,10 @@ guard holds), and the code is verified where the code is verified.
   CI-built image's upload-system indicator probed a Google bucket dev-lite never uses, through synthetic
   offline credentials. Fixed in the backend (the indicator reports the local sink that serves uploads);
   the Kubernetes probes use the readiness and liveness groups, and `rollout.sh` keeps the strict gate.
+- The uploads mount must belong to the container user (1002:1005), not to `deploy`: the fourth deploy
+  (19:12) stayed red because the upload sink was not writable inside the container, which the fixed health
+  indicator now reports honestly, and which would have failed every upload silently before. Fixed on the
+  host 19:22; the §7 recipe says so.
 - A red deploy leaves the previous tags running (`rollback` is automatic); a red reseed leaves the
   backend stopped and needs a human, which the timer's failure shows in `systemctl status`.
 
