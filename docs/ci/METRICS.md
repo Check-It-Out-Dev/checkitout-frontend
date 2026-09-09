@@ -36,7 +36,7 @@ Each public repository publishes one GitHub Pages site from its `gh-pages` branc
   },
   "tests": {
     "total": 1884, "passed": 1870, "failed": 0, "flaky": 2, "skipped": 12,
-    "passRate": 0.9926, "flakyRate": 0.0011,
+    "passRate": 0.9989, "flakyRate": 0.0011,
     "durationMeanSec": 2.1, "durationP95Sec": 12.3,
     "tiers": {
       "jest":        { "total": 1181, "passed": 1181, "failed": 0, "flaky": 0, "skipped": 0, "durationSec": 21 },
@@ -47,10 +47,10 @@ Each public repository publishes one GitHub Pages site from its `gh-pages` branc
   "coverage": { "lines": 78.06, "statements": 77.9, "branches": 66.4, "functions": 74.8 },
   "perf": {
     "k6": {
-      "profile": "load", "requests": 816, "failedRate": 0, "p95Ms": 0.66, "thresholdsOk": true,
+      "profile": "load", "requests": 203, "failedRate": 0, "p95Ms": 118.4, "thresholdsOk": true,
       "journeys": {
-        "browse": { "p95Ms": 41.2, "p99Ms": 78.0, "budgetMs": 800,  "ok": true },
-        "apply":  { "p95Ms": 96.5, "p99Ms": 140.3, "budgetMs": 1500, "ok": true }
+        "browse": { "p95Ms": 64.8, "p99Ms": 92.8, "budgetMs": 800,  "ok": true },
+        "apply":  { "p95Ms": 151.2, "p99Ms": 256.3, "budgetMs": 1500, "ok": true }
       }
     }
   },
@@ -59,7 +59,8 @@ Each public repository publishes one GitHub Pages site from its `gh-pages` branc
   "flaky": [
     { "title": "Sandbox · CookieBannerComponent › clicking accept-all hides the banner",
       "file": "e2e-tests/sandbox/cookie-banner.spec.ts", "window": 10, "runsFlaky": 2, "runsFailed": 1,
-      "lastSeen": 45 }
+      "lastSeen": 45,
+      "history": ["pass", "pass", "fail", "pass", "pass", "pass", "flaky", "pass", "pass", "flaky"] }
   ],
   "reports": { "allure": "allure/45/", "playwright": "playwright/45/", "k6": "k6/45/", "lighthouse": "lighthouse/45/" }
 }
@@ -82,12 +83,13 @@ Rules:
 One JSON object per line, appended after every run, in this shape:
 
 ```json
-{"run":45,"sha":"2d305c6","at":"2026-09-10T02:00:11Z","workflow":"browser-tiers","durationSec":362,
- "total":1884,"passed":1870,"failed":0,"flaky":2,"skipped":12,"passRate":0.9926,"flakyRate":0.0011,
- "coverageLines":78.06,"k6P95Ms":0.66,"k6FailedRate":0,"lhPerformance":100,"lhAccessibility":100}
+{"run":45,"id":987654321,"sha":"2d305c6","at":"2026-09-10T02:00:11Z","workflow":"browser-tiers","durationSec":362,
+ "total":1884,"passed":1870,"failed":0,"flaky":2,"skipped":12,"passRate":0.9989,"flakyRate":0.0011,
+ "coverageLines":78.06,"k6P95Ms":118.4,"k6FailedRate":0,"lhPerformance":100,"lhAccessibility":100}
 ```
 
-The dashboard draws its sparklines from the last 30 lines. Missing keys mean "this run did not measure that".
+The dashboard draws its ribbon and sparklines from the last 30 lines; `id` is the workflow run id, so every bar
+links to its run. Missing keys mean "this run did not measure that".
 
 ## 4 · `metrics/tests/<run>.json` and the flaky list
 
@@ -100,8 +102,10 @@ The dashboard draws its sparklines from the last 30 lines. Missing keys mean "th
 
 `id` is `file › full title`, stable across runs. `tools/ci/flaky-report.mjs` reads the last 10 of these files
 and lists every `id` whose status was `flaky` or `failed` in at least one of them, with counts and the last
-run it appeared in. That list is `flaky` in `quality-metrics.json` and the table on the dashboard. A test
-leaves the list by being green for 10 consecutive runs, never by being deleted from the report.
+run it appeared in, plus `history`: the test's status in each of those runs, oldest first, one of `pass`,
+`flaky`, `fail`, `skipped`, `absent`. That list is `flaky` in `quality-metrics.json` and the table on the
+dashboard (the strip of ten squares is `history`). A test leaves the list by being green for 10 consecutive
+runs, never by being deleted from the report.
 
 ## 5 · Badges (`badges/<name>.json`, shields.io endpoint format)
 
@@ -109,7 +113,7 @@ leaves the list by being green for 10 consecutive runs, never by being deleted f
 | --- | --- | --- | --- |
 | `tests.json` | tests | `1870 passed · 2 flaky` | green when failed = 0, yellow when flaky > 0, red when failed > 0 |
 | `coverage.json` | coverage | `78.1 %` | green ≥ 75, yellow ≥ 60, red below |
-| `k6.json` | k6 p95 | `0.7 ms · 0 % failed` | green when thresholds ok, red otherwise |
+| `k6.json` | k6 p95 | `118 ms · 0 % failed` | green when thresholds ok, red otherwise |
 | `lighthouse.json` | lighthouse | `100 · 100 · 100 · 100` | green when all ≥ 90, yellow ≥ 75, red below |
 | `flaky.json` | flaky (10 runs) | `1 test` | green at 0, yellow ≤ 3, red above |
 
@@ -117,8 +121,22 @@ README usage: `![tests](https://img.shields.io/endpoint?url=https://check-it-out
 
 ## 6 · What the dashboard shows (`tools/ci/pages/`)
 
-Top: the five badges' numbers as tiles with a 30-run sparkline each (pass rate, flaky, coverage, k6 p95,
-Lighthouse performance). Middle: the tiers table of the latest run and the k6 journeys table. Bottom: the
-flaky list with links into the Allure report of the last run it appeared in, and links to every report of
-the latest run. No framework, no build step: one HTML file, one stylesheet, one script that fetches the
-three JSON files above. Light and dark follow the viewer's theme.
+Built in F4 (2026-09-09), previewable with fixture data: serve `tools/ci/pages/` statically and open
+`index.html?data=fixtures`. Top to bottom:
+
+1. **The verdict**, one sentence in the estate's serif: "1,870 of 1,872 tests passed on main, run 45: two
+   flaky, none failed.", with the start time, duration, skipped count and the green streak under it.
+2. **The ribbon**: the last 30 runs as bars, newest on the right; colour is the outcome (green, amber for
+   flaky, coral for failed), height is the run's duration against the slowest in the window. Pointing at or
+   focusing a bar writes that run's numbers into the caption; each bar links to its workflow run.
+3. **Tiles**: pass rate, flaky-or-failing count over the last ten runs, line coverage, k6 p95, Lighthouse
+   performance, each with its 30-run sparkline; the tile's colour follows the badge rule of §5.
+4. **Run by tier** (the `tiers` table plus a totals row, the p95 test duration and the Kubernetes line) and
+   **k6 journeys** (p95, p99, budget per journey).
+5. **Flaky and failing tests, last ten runs**: title, file, the ten-run strip from `history`, counts, and a
+   link to the Allure report of the run it was last seen in.
+6. **Reports of the run**: Allure, Playwright, k6, Lighthouse, the workflow run, and the two data files.
+
+No framework, no build step: `index.html`, `styles.css`, `dashboard.js`, fetching `quality-metrics.json` and
+`metrics/history.jsonl`. Light and dark follow the viewer's theme; optional sections disappear when the run
+did not produce them; with no run published yet the page says so instead of showing zeros.
