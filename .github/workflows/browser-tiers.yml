@@ -1,0 +1,138 @@
+# The browser tiers that need no backend, on every pull request and push: sandbox and MSW across four
+# runners against the dev server the Playwright config boots, the smoothness tier against a served demo
+# build, and the visual tier inside the pinned Playwright container once the Linux baseline set exists
+# (docs/ci/ADR-visual-baselines.md). Every job writes a blob report; the merge job makes one report and one
+# verdict with tools/ci/k8s-summary.mjs. The gate wall (static checks, typecheck, Jest) stays in ci-tests.yml.
+name: browser-tiers
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: browser-tiers-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  NG_CLI_ANALYTICS: "false"
+  NODE_OPTIONS: "--max-old-space-size=4096"
+  CI: "1"
+
+jobs:
+  sandbox-msw:
+    name: sandbox + msw, shard ${{ matrix.shard }}/4
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --prefer-offline --no-audit --loglevel=error
+      - run: npx playwright install --with-deps chromium
+      # The config's webServer boots `npm run start -- --port=4201` (prestart mints the dev certificate).
+      - run: npx playwright test e2e-tests/sandbox e2e-tests/msw --project=chromium-desktop --project=mobile-chrome --shard=${{ matrix.shard }}/4 --reporter=blob
+        env:
+          PLAYWRIGHT_BLOB_OUTPUT_DIR: blob-report
+        continue-on-error: true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-blob-sandbox-${{ matrix.shard }}
+          path: blob-report
+          retention-days: 7
+
+  perf:
+    name: smoothness (served demo build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --prefer-offline --no-audit --loglevel=error
+      - run: npx playwright install --with-deps chromium
+      # tools/run-perf.mjs builds the demo, serves it on 4300 and runs the perf project against it.
+      - run: npm run test:perf -- --reporter=blob
+        env:
+          PLAYWRIGHT_BLOB_OUTPUT_DIR: blob-report
+        continue-on-error: true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-blob-perf
+          path: blob-report
+          retention-days: 7
+
+  visual:
+    name: visual (pinned container)
+    # Activates once the Linux baseline set is committed (the ADR's one-time migration); until then the
+    # win32 set is the dev box's and a Linux rasteriser would only produce noise.
+    if: ${{ hashFiles('e2e-tests/visual/**/*-linux.png') != '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    container:
+      image: mcr.microsoft.com/playwright:v1.59.1-noble
+      options: --ipc=host
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci --prefer-offline --no-audit --loglevel=error
+      - run: npx playwright test e2e-tests/visual --project=chromium-desktop --project=mobile-chrome --reporter=blob
+        env:
+          PLAYWRIGHT_BLOB_OUTPUT_DIR: blob-report
+          HOME: /root
+        continue-on-error: true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-blob-visual
+          path: blob-report
+          retention-days: 7
+
+  merge:
+    name: One report, one verdict
+    needs: [sandbox-msw, perf, visual]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --prefer-offline --no-audit --loglevel=error
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: browser-blob-*
+          path: fragments
+          merge-multiple: true
+      - name: Merge
+        run: |
+          mkdir -p ci-reports/blobs
+          find fragments -name '*.zip' -exec cp {} ci-reports/blobs/ \;
+          PLAYWRIGHT_HTML_OUTPUT_DIR=ci-reports/merged PLAYWRIGHT_HTML_REPORT=ci-reports/merged PLAYWRIGHT_JSON_OUTPUT_NAME=ci-reports/merged.json \
+            npx playwright merge-reports --reporter html,json ci-reports/blobs
+      - name: Verdict
+        run: node tools/ci/k8s-summary.mjs ci-reports --json ci-reports/summary.json | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-report-${{ github.run_number }}
+          path: |
+            ci-reports
+            !ci-reports/blobs
+          retention-days: 30
+      # O7 adds tools/ci/quality-metrics here: quality-metrics.json, history.jsonl, Allure with history, Pages.
