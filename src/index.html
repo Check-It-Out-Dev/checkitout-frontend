@@ -37,6 +37,12 @@
       as="fetch"
       crossorigin="anonymous"
     />
+    <!-- The font hrefs are absolute on purpose, unlike the i18n one above. @font-face in styles.scss
+         emits url(/assets/fonts/…) absolute, and a preload only pairs with a request when the two
+         resolve to the same URL. The sandbox build is served under <base href="/sandbox/">, where a
+         relative preload resolves to /sandbox/assets/… and the CSS still asks for /assets/… — the
+         double-fetch this file warns about below, on every font. The translations are the opposite
+         case: their loader is relative, so their preload stays relative and both follow the base. -->
     <!-- ALL EIGHT above-the-fold fonts are preloaded (iter-107): serif
          roman+italic (h1 + highlight), Albert Sans latin+latin-ext (body,
          PL diacritics: ź/ę/…), JetBrains Mono latin+latin-ext (eyebrows,
@@ -48,49 +54,49 @@
          guarantees they win the optional first-render window. -->
     <link
       rel="preload"
-      href="assets/fonts/instrumentserif_v5_jizBRFtNs2ka5fXjeivQ4LroWlx-6zsTjmbI.woff2"
+      href="/assets/fonts/instrumentserif_v5_jizBRFtNs2ka5fXjeivQ4LroWlx-6zsTjmbI.woff2"
       as="font"
       type="font/woff2"
       crossorigin="anonymous"
     />
     <link
       rel="preload"
-      href="assets/fonts/instrumentserif_v5_jizBRFtNs2ka5fXjeivQ4LroWlx-6zUTjg.woff2"
+      href="/assets/fonts/instrumentserif_v5_jizBRFtNs2ka5fXjeivQ4LroWlx-6zUTjg.woff2"
       as="font"
       type="font/woff2"
       crossorigin="anonymous"
     />
     <link
       rel="preload"
-      href="assets/fonts/albertsans_v4_i7dOIFdwYjGaAMFtZd_QA1ZVYFeCGg.woff2"
+      href="/assets/fonts/albertsans_v4_i7dOIFdwYjGaAMFtZd_QA1ZVYFeCGg.woff2"
       as="font"
       type="font/woff2"
       crossorigin="anonymous"
     />
     <link
       rel="preload"
-      href="assets/fonts/albertsans_v4_i7dOIFdwYjGaAMFtZd_QA1ZbYFc.woff2"
+      href="/assets/fonts/albertsans_v4_i7dOIFdwYjGaAMFtZd_QA1ZbYFc.woff2"
       as="font"
       type="font/woff2"
       crossorigin="anonymous"
     />
     <link
       rel="preload"
-      href="assets/fonts/instrumentserif_v5_jizHRFtNs2ka5fXjeivQ4LroWlx-6zAjjH7M.woff2"
+      href="/assets/fonts/instrumentserif_v5_jizHRFtNs2ka5fXjeivQ4LroWlx-6zAjjH7M.woff2"
       as="font"
       type="font/woff2"
       crossorigin="anonymous"
     />
     <link
       rel="preload"
-      href="assets/fonts/jetbrainsmono_v24_tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwg.woff2"
+      href="/assets/fonts/jetbrainsmono_v24_tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwg.woff2"
       as="font"
       type="font/woff2"
       crossorigin="anonymous"
     />
     <link
       rel="preload"
-      href="assets/fonts/jetbrainsmono_v24_tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx7cwhsk.woff2"
+      href="/assets/fonts/jetbrainsmono_v24_tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx7cwhsk.woff2"
       as="font"
       type="font/woff2"
       crossorigin="anonymous"
@@ -106,7 +112,7 @@
          double-fetch. tools/subset-material-icons.mjs stamps + gates both. -->
     <link
       rel="preload"
-      href="assets/fonts/materialicons_v145_subset.woff2?v=04c1eed33669"
+      href="/assets/fonts/materialicons_v145_subset.woff2?v=04c1eed33669"
       as="font"
       type="font/woff2"
       crossorigin="anonymous"

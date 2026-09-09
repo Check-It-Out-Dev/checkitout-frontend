@@ -9,6 +9,8 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { TRANSLOCO_LOADER, TranslocoService, provideTransloco } from '@ngneat/transloco';
 import { firstValueFrom } from 'rxjs';
 import { Configuration as ApiConfiguration } from './api/configuration';
+import { BASE_PATH } from './api/variables';
+import { environment } from '../environments/environment';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { languageInterceptor } from './core/interceptors/language.interceptor';
 import { rateLimitInterceptor } from './core/interceptors/rate-limit-cache.interceptor';
@@ -126,14 +128,16 @@ export const appConfig: ApplicationConfig = {
       },
       deps: [TranslocoService],
     },
-    // Generated OpenAPI client — basePath '/api' lines up with the dev-server
-    // proxy in proxy.conf.js (`/api` → `https://localhost:8080`). Production
-    // builds keep the same base path; the absolute origin is whichever host
-    // serves the FE bundle.
+    // Generated OpenAPI client — the base lines up with the dev-server proxy in proxy.conf.js
+    // (`/api` → `https://localhost:8080`), and the absolute origin is whichever host serves the bundle.
+    // The sandbox build overrides it to '/sandbox/api' because it shares checkitout.app with the demo.
     {
       provide: ApiConfiguration,
-      useValue: new ApiConfiguration({ basePath: '/api', withCredentials: true }),
+      useValue: new ApiConfiguration({ basePath: environment.apiBase, withCredentials: true }),
     },
+    // The frozen payments client (core/api-frozen) reads this token instead of ApiConfiguration, and
+    // falls back to its own '/api' when nothing provides it — which under a path prefix is the demo's.
+    { provide: BASE_PATH, useValue: environment.apiBase },
     // withEventReplay: clicks that land between first paint and hydration
     // completion are captured and replayed once listeners attach. Without it
     // an early click on the SSR'd authed shell (e.g. the user menu right

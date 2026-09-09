@@ -4,6 +4,7 @@ import { Observable, switchMap } from 'rxjs';
 import type { UserDtoOut } from '../../api/model/user-dto-out';
 import type { SandboxPersona } from './sandbox-personas';
 import { SessionStateService } from './session-state.service';
+import { environment } from '../../../environments/environment';
 
 /**
  * Sign-in for the public sandbox: the backend's test-session endpoint mints the persona's HttpOnly
@@ -18,7 +19,7 @@ export class SandboxAuthService {
 
   signInAs(persona: SandboxPersona): Observable<UserDtoOut | null> {
     return this.http
-      .post<unknown>('/api/test/auth/mock-session', { email: persona.email, role: persona.role }, { withCredentials: true })
+      .post<unknown>(`${environment.apiBase}/test/auth/mock-session`, { email: persona.email, role: persona.role }, { withCredentials: true })
       .pipe(switchMap(() => this.session.probe()));
   }
 }

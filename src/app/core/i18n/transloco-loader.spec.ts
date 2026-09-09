@@ -9,6 +9,11 @@ import { HttpTranslocoLoader } from './transloco-loader';
 // translation footgun) fails here, not in a returning user's browser.
 const v = `?v=${I18N_VERSION}`;
 
+// The URL is RELATIVE, and that is the assertion. It resolves against <base href>, which is "/" for the
+// demo and "/sandbox/" for the sandbox build served under a path prefix on the same host. An absolute
+// "/assets/i18n/…" would quietly fetch the demo's translations into the sandbox — same host, different
+// build, different content hash — so a leading slash here is a bug, not a style choice.
+
 describe('HttpTranslocoLoader', () => {
   let loader: HttpTranslocoLoader;
   let httpMock: HttpTestingController;
@@ -25,11 +30,11 @@ describe('HttpTranslocoLoader', () => {
     httpMock.verify();
   });
 
-  it('GETs /assets/i18n/{lang}.json (cache-busted) for the requested locale', () => {
+  it('GETs assets/i18n/{lang}.json, relative to the base href, cache-busted', () => {
     let received: unknown;
     loader.getTranslation('pl').subscribe((t) => (received = t));
 
-    const req = httpMock.expectOne(`/assets/i18n/pl.json${v}`);
+    const req = httpMock.expectOne(`assets/i18n/pl.json${v}`);
     expect(req.request.method).toBe('GET');
 
     const payload = { greeting: 'Cześć' };
@@ -44,7 +49,7 @@ describe('HttpTranslocoLoader', () => {
     // is preserved AND that no extra path-segment is injected.
     loader.getTranslation('en-US').subscribe();
 
-    const req = httpMock.expectOne(`/assets/i18n/en-US.json${v}`);
+    const req = httpMock.expectOne(`assets/i18n/en-US.json${v}`);
     req.flush({});
   });
 
@@ -54,9 +59,9 @@ describe('HttpTranslocoLoader', () => {
     // memoisation here, it would conflict with Transloco's own cache
     // semantics (e.g. force-refresh, dynamic locale add).
     loader.getTranslation('pl').subscribe();
-    httpMock.expectOne(`/assets/i18n/pl.json${v}`).flush({});
+    httpMock.expectOne(`assets/i18n/pl.json${v}`).flush({});
 
     loader.getTranslation('pl').subscribe();
-    httpMock.expectOne(`/assets/i18n/pl.json${v}`).flush({});
+    httpMock.expectOne(`assets/i18n/pl.json${v}`).flush({});
   });
 });
