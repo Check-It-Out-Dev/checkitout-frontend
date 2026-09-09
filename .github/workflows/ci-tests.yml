@@ -43,6 +43,8 @@ jobs:
     name: Gate wall (G1..G14)
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    permissions:
+      contents: write
 
     steps:
       - name: 📥 Checkout repository
@@ -78,7 +80,7 @@ jobs:
       # is a ratchet set two points under the measured figure — it exists to
       # catch a slide, not to be admired.
       - name: 🧪 Unit tests + coverage threshold (G14)
-        run: npm test -- --bail --ci --coverage
+        run: npm test -- --bail --ci --coverage --json --outputFile=jest-results.json
 
       # No escape sequences anywhere in this script on purpose: it lives inside a
       # YAML block scalar inside a single-quoted shell string, and a backslash-n
@@ -126,3 +128,27 @@ jobs:
               echo "❌ Gate wall failed — run 'npm run check:full' locally;"
               echo "   every gate prints its own fix hint."
           fi
+
+      # The newest unit results and coverage go to the Pages site, where the browser-tier runs fold them
+      # into the run they publish (docs/ci/METRICS.md section 7). Pushes only: a fork's pull request has no token.
+      - name: Pages site (previous state)
+        if: github.event_name == 'push'
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: site
+        continue-on-error: true
+      - name: The latest unit results and coverage into the site
+        if: github.event_name == 'push'
+        run: |
+          mkdir -p site/jest site/coverage && rm -rf site/.git
+          cp jest-results.json site/jest/latest.json
+          cp coverage/coverage-summary.json site/coverage/latest.json
+      - name: Publish
+        if: github.event_name == 'push'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: site
+          keep_files: false
+          commit_message: "ci-tests run ${{ github.run_number }}: unit results and coverage"

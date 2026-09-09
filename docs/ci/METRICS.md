@@ -1,8 +1,8 @@
 # Quality metrics — the files every CI run publishes, and what the dashboard reads
 
 _Schema of record for `tools/ci/quality-metrics.mjs`, `tools/ci/flaky-report.mjs` and the dashboard in
-`tools/ci/pages/`. The same shape is produced by the backend (a Maven exec step) and the graph repository
-(a Python twin); only the `tiers` keys differ per repository._
+`tools/ci/pages/`. The backend and the graph repository run the same Node tool from a sparse checkout of
+this repository (`tools/ci`) on their JUnit XML; only the `tiers` keys differ per repository._
 
 ## 1 · Where the files live
 
@@ -100,7 +100,9 @@ links to its run. Missing keys mean "this run did not measure that".
 ]}
 ```
 
-`id` is `file › full title`, stable across runs. `tools/ci/flaky-report.mjs` reads the last 10 of these files
+`id` is `file › full title`, stable across runs; Playwright entries end in ` [project]` (`chromium-desktop`,
+`mobile-chrome`, `bdd`) because the same title runs once per project, Jest entries are `src/… › full name`,
+JUnit entries `class › method`. `tools/ci/flaky-report.mjs` reads the last 10 of these files
 and lists every `id` whose status was `flaky` or `failed` in at least one of them, with counts and the last
 run it appeared in, plus `history`: the test's status in each of those runs, oldest first, one of `pass`,
 `flaky`, `fail`, `skipped`, `absent`. That list is `flaky` in `quality-metrics.json` and the table on the
@@ -140,3 +142,26 @@ Built in F4 (2026-09-09), previewable with fixture data: serve `tools/ci/pages/`
 No framework, no build step: `index.html`, `styles.css`, `dashboard.js`, fetching `quality-metrics.json` and
 `metrics/history.jsonl`. Light and dark follow the viewer's theme; optional sections disappear when the run
 did not produce them; with no run published yet the page says so instead of showing zeros.
+
+## 7 · The tool that writes all of it (`tools/ci/quality-metrics.mjs`)
+
+One Node script, no dependencies, run by the merge or report job of every workflow against the checked-out
+`gh-pages` branch (`site/`), then published back with `peaceiris/actions-gh-pages` (`keep_files: false`,
+the directory is the whole state):
+
+```
+node tools/ci/quality-metrics.mjs --out site --workflow browser-tiers   --started-at "$STARTED_AT" --duration-sec "$DURATION"   --playwright ci-reports/merged.json --copy playwright=ci-reports/merged   --k6 'ci-reports/api-*.json'      --copy k6=ci-reports/k6   --jest site/jest/latest.json --coverage site/coverage/latest.json --lighthouse site/lighthouse/latest.json
+```
+
+Readers: `--jest` (`jest --json`), `--coverage` (json-summary), `--playwright` (merged JSON, tiers from the
+spec path), `--junit "glob:tier"` (surefire, failsafe, pytest; `flakyFailure` counts as flaky), `--jacoco`,
+`--k6` (one JSON per runner: requests summed, failed rate weighted, p95 the worst runner, budgets read from
+the threshold names), `--lighthouse` (the JSON of `lighthouse-summary.mjs`), `--kubernetes` (a literal).
+Inputs that do not exist are skipped, so a workflow can always ask for "the latest" of another workflow's
+output: the gate wall (`ci-tests.yml`) publishes `jest/latest.json` and `coverage/latest.json`,
+`lighthouse.yml` publishes `lighthouse/<run>/` and `lighthouse/latest.json`, and the browser-tier runs
+fold those into the run they publish. The run identity comes from the `GITHUB_*` environment. The tool
+also copies the dashboard into the site root, appends the history line, writes the per-run outcomes, the
+flaky list (via `flaky-report.mjs`), the badges, and prunes to the last 30 runs. Rehearsed on 2026-09-09
+against real artifacts: 40 Jest tests, the 285-test cluster report, two k6 runners, and the backend's 2,410
+surefire files.

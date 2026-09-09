@@ -25,7 +25,7 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: read
+  contents: write
 
 env:
   NG_CLI_ANALYTICS: "false"
@@ -160,6 +160,34 @@ jobs:
             ci-reports
             !ci-reports/blobs
           retention-days: 30
+      - name: Pages site (previous state)
+        if: always()
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: site
+        continue-on-error: true
+      - name: Quality metrics into the site
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p site && rm -rf site/.git
+          mkdir -p ci-reports/k6 && cp ci-reports/api-*.json ci-reports/api-*.html ci-reports/k6/ 2>/dev/null || true
+          WALL=$(node -p "try{require('./ci-reports/k8s-summary.json').tests.durationSec}catch{0}")
+          STARTED_AT=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" --jq .run_started_at)
+          DURATION=$(( $(date +%s) - $(date -d "$STARTED_AT" +%s) ))
+          node tools/ci/quality-metrics.mjs --out site --workflow k8s-test-execution --started-at "$STARTED_AT" --duration-sec "$DURATION" \
+            --playwright ci-reports/merged.json --k6 'ci-reports/api-*.json' --kubernetes "{\"shards\":$SHARDS,\"wallSec\":$WALL,\"k6Runners\":2}" --copy playwright=ci-reports/merged --copy k6=ci-reports/k6 \
+            --jest site/jest/latest.json --coverage site/coverage/latest.json --lighthouse site/lighthouse/latest.json | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Publish
+        if: always()
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: site
+          keep_files: false
+          commit_message: "k8s-test-execution run ${{ github.run_number }}"
       - name: Delete the cluster (the runner is ephemeral; deleting keeps the logs honest)
         if: always()
         run: kind delete cluster --name "$KIND_CLUSTER" || true
