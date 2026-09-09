@@ -48,6 +48,10 @@ services:
       TZ: UTC
     volumes:
       - ${UPLOADS_DIR:-./uploads}:/data/uploads
+    # The image's JAVA_OPTS pins the actuator exposure to health,info,metrics as a JVM system property, which
+    # beats every profile file; the sandbox needs prometheus for Alloy, so the same property is repeated
+    # after it on the command line (the last -D wins). The image and production stay as they are.
+    command: ["sh", "-c", "exec java $$JAVA_OPTS -Dmanagement.endpoints.web.exposure.include=health,info,prometheus -jar app.jar"]
     depends_on:
       postgres:
         condition: service_healthy
