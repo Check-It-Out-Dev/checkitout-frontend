@@ -36,7 +36,8 @@ permissions:
 
 env:
   IMAGE: ghcr.io/check-it-out-dev/checkitout-frontend
-  SANDBOX_URL: https://sandbox.checkitout.app
+  # One public address for the demo and the real stack; sandbox.checkitout.app redirects here.
+  SANDBOX_URL: https://checkitout.app/sandbox
 
 jobs:
   image:
@@ -106,7 +107,7 @@ jobs:
       # the host nginx and the whole application under test, and drops only the edge.
       - name: Smoke from the outside
         env:
-          SMOKE_RESOLVE: sandbox.checkitout.app:443:${{ secrets.SANDBOX_ORIGIN_IP }}
+          SMOKE_RESOLVE: checkitout.app:443:${{ secrets.SANDBOX_ORIGIN_IP }}
         run: bash deploy/sandbox/smoke.sh "$SANDBOX_URL"
 
       - uses: grafana/setup-k6-action@v1

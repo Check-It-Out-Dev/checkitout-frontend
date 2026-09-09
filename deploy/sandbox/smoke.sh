@@ -27,7 +27,11 @@ RESOLVE=()
 # rejection, and that is not hypothetical: the public sandbox answered 403 "Invalid CORS request" to every
 # browser POST from the day it went live, because the dev-lite profile allows loopback origins only —
 # while this script, sending no Origin at all, reported ten green checks.
-ORIGIN=${SMOKE_ORIGIN:-$BASE}
+# An Origin is a scheme, host and port — never a path. The base URL now carries one (/sandbox), and
+# sending it whole earns a flat "Invalid CORS request" that looks exactly like the bug above.
+_scheme=${BASE%%://*}
+_rest=${BASE#*://}
+ORIGIN=${SMOKE_ORIGIN:-$_scheme://${_rest%%/*}}
 code() { curl -sS -m 15 ${RESOLVE[@]+"${RESOLVE[@]}"} -H "Origin: $ORIGIN" -o "${2:-/dev/null}" -w '%{http_code}' -b "$JAR" -c "$JAR" "${@:3}" "$1"; }
 
 c=$(code "$BASE/healthz");                          [[ $c == 200 ]] && ok "frontend /healthz $c" || bad "frontend /healthz $c"
