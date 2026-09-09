@@ -2,26 +2,26 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 14,
-    "id": 34389212231,
-    "sha": "89cb0de",
+    "number": 15,
+    "id": 34389629514,
+    "sha": "7192e15",
     "branch": "main",
     "workflow": "browser-tiers",
-    "startedAt": "2026-09-09T18:28:26Z",
-    "durationSec": 296,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34389212231",
+    "startedAt": "2026-09-09T18:32:30Z",
+    "durationSec": 867,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34389629514",
     "status": "incomplete"
   },
   "tests": {
-    "total": 1313,
-    "passed": 1289,
+    "total": 1371,
+    "passed": 1346,
     "failed": 0,
-    "flaky": 0,
+    "flaky": 1,
     "skipped": 24,
-    "passRate": 1,
-    "flakyRate": 0,
-    "durationMeanSec": 0.14,
-    "durationP95Sec": 0.88,
+    "passRate": 0.9993,
+    "flakyRate": 0.0007,
+    "durationMeanSec": 0.86,
+    "durationP95Sec": 1.47,
     "tiers": {
       "jest": {
         "total": 1183,
@@ -29,7 +29,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
-        "durationSec": 66
+        "durationSec": 71
       },
       "msw": {
         "total": 2,
@@ -45,7 +45,15 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 22,
-        "durationSec": 120
+        "durationSec": 124
+      },
+      "perf": {
+        "total": 58,
+        "passed": 57,
+        "failed": 0,
+        "flaky": 1,
+        "skipped": 0,
+        "durationSec": 957
       }
     }
   },
@@ -57,13 +65,26 @@
   },
   "lighthouse": {
     "url": "/",
-    "performance": 100,
+    "performance": 99,
     "accessibility": 97,
     "bestPractices": 100,
     "seo": 92
   },
-  "flaky": [],
+  "flaky": [
+    {
+      "title": "Demo smoothness › a simulator that never fires holds the step instead of narrating it [perf]",
+      "file": "perf/demo-smoothness.spec.ts",
+      "window": 2,
+      "runsFlaky": 1,
+      "runsFailed": 0,
+      "lastSeen": 15,
+      "history": [
+        "absent",
+        "flaky"
+      ]
+    }
+  ],
   "reports": {
-    "playwright": "playwright/14/"
+    "playwright": "playwright/15/"
   }
 }
