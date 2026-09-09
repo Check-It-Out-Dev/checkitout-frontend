@@ -1,0 +1,56 @@
+# Lighthouse against the served demo build: three runs per page, desktop preset, the category scores
+# asserted at warn level (they become errors once the history shows what the p90 is), HTML reports as an
+# artifact and a scores table in the step summary via tools/ci/lighthouse-summary.mjs. Configuration in
+# lighthouserc.json at the repository root.
+name: lighthouse
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: lighthouse-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  NG_CLI_ANALYTICS: "false"
+  NODE_OPTIONS: "--max-old-space-size=4096"
+
+jobs:
+  lighthouse:
+    name: Demo build, three pages
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --prefer-offline --no-audit --loglevel=error
+      - run: npm run build:demo
+      - name: Serve the demo build on 4300
+        run: |
+          nohup node tools/serve-demo.mjs --no-build --port 4300 > serve-demo.log 2>&1 &
+          for i in $(seq 1 30); do curl -fsS -o /dev/null http://localhost:4300/ && break; sleep 1; done
+          curl -fsS -o /dev/null http://localhost:4300/ && echo "demo served"
+      - uses: treosh/lighthouse-ci-action@v12
+        with:
+          configPath: ./lighthouserc.json
+          uploadArtifacts: false
+          temporaryPublicStorage: false
+      - name: Scores
+        run: node tools/ci/lighthouse-summary.mjs lhci-report --json lhci-report/lighthouse.json | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-${{ github.run_number }}
+          path: |
+            lhci-report
+            serve-demo.log
+          retention-days: 30
+      # O7 publishes lhci-report as lighthouse/<run>/ on Pages and feeds lighthouse.json into quality-metrics.
