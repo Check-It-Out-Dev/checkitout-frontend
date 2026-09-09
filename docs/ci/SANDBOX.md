@@ -113,19 +113,29 @@ Code, all inside `auth/controller` and `config`:
 - Rate limits unchanged: 60 a minute per user on the standard profile, 120 on the paged campaign list,
   50 a minute per IP on auth, 20 an hour on apply. They are the load ceiling of the sandbox by design.
 - The actuator: the compose nginx already answers 404 for everything under `/api/actuator/` except
-  `health`; the exposure list above is the second wall. Alloy scrapes `prometheus` on the internal
-  network.
+  `health`; the exposure list above is the second wall, and the main security chain's ADMIN rule on
+  `/actuator/**` the third (verified: `env` and `beans` answer 401 even from inside the network). Alloy
+  scrapes `prometheus` on the internal network through `SandboxActuatorSecurity`, a sandbox-only filter
+  chain that permits that one path; the backend port is never published. One trap, found on 2026-09-09:
+  the image's `JAVA_OPTS` carries `-Dmanagement.endpoints.web.exposure.include=health,info,metrics`, a JVM
+  system property that beats every profile file, so the yml above alone exposes nothing new; the compose
+  file repeats the property after it on the command line (the last `-D` wins) and the image stays as it is.
 - Structured logs: `logback-spring.xml` gains a `<springProfile name="sandbox">` whose console appender
   uses Spring Boot's `StructuredLogEncoder` with `format=ecs` (Spring Boot 3.4), so the property above
   takes effect under the custom logback file too.
 - Uploads: the sink is a bind mount of a 2 GB ext4 image file (§7), so a visitor who uploads until the
   disk is full fills 2 GB and gets a 500 on the next upload; the host and the database are untouched,
   and the nightly reseed empties it.
-- Tests: `SandboxGuardTest` (web slice): persona → 200, unknown e-mail → 403, persona with the wrong
-  role → 403, `ensure-user` → 404; `ActuatorExposureTest` under the sandbox profile: `/env` → 404.
+- Tests: `SandboxPersonaPolicyTest` (the allow-list: persona admitted, case and whitespace forgiven;
+  unknown e-mail, wrong role, admin, nulls refused with 403) and `SandboxGuardFilterTest` (the two doors
+  pass, eight closed helpers answer 404 as JSON, the context path is stripped). The end-to-end proof is
+  `SANDBOX_GUARD=1 smoke.sh` against the compose stack, green on 2026-09-09.
 
-Backend slice order: properties + guard + tests (one commit), logging profile (one commit), the Docker
-image is unchanged.
+Landed on 2026-09-09 (backend `greenfield`): `auth/sandbox/` (`SandboxProperties`, `SandboxConfig`,
+`SandboxPersonaPolicy`, `SandboxGuardFilter`, `SandboxActuatorSecurity`), the persona check and activation
+in `TestAuthController.createMockSession`, `application-sandbox.yml`, the `sandbox` block in
+`logback-spring.xml`, the message key in both languages, the two unit tests. The Docker image is
+unchanged; the profile is chosen by `SPRING_PROFILES_ACTIVE=dev-lite,sandbox`.
 
 ## 5 · Logging and metrics
 
