@@ -1,0 +1,62 @@
+# Dependabot version updates.
+#
+# Security alerts were already on — they are what opened the wave of advisory pull requests — but
+# nothing was updating dependencies on a schedule, and nothing at all was updating the actions.
+# That matters more now that every action is pinned to a commit sha rather than a tag: a sha does not
+# move, which is the point, and also means it never gets a fix unless something rewrites it.
+# Dependabot rewrites both the sha and the `# v5` comment beside it.
+#
+# Grouped and weekly on purpose. Ungrouped daily updates on a repository with this many devDependencies
+# produce a wall of pull requests nobody reads, and a wall nobody reads is indistinguishable from no
+# updates at all.
+version: 2
+
+updates:
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      github-official:
+        patterns:
+          - "actions/*"
+          - "github/*"
+      # Somebody else's code running with this repository's token: reviewed separately rather than
+      # swept into the same merge as a checkout bump.
+      third-party-actions:
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "actions/*"
+          - "github/*"
+
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 8
+    groups:
+      # Angular releases as a set; one package at a time does not build.
+      angular:
+        patterns:
+          - "@angular/*"
+          - "@angular-devkit/*"
+          - "ng-packagr"
+      # The tiers, which move together and are reviewed by whether the tiers still pass.
+      test-tooling:
+        patterns:
+          - "@playwright/*"
+          - "playwright*"
+          - "jest*"
+          - "@types/jest"
+          - "jest-preset-angular"
+          - "@stryker-mutator/*"
+          - "allure*"
+      types:
+        patterns:
+          - "@types/*"
+        exclude-patterns:
+          - "@types/jest"

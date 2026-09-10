@@ -44,8 +44,8 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444  # v5
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -56,7 +56,7 @@ jobs:
           nohup node tools/serve-demo.mjs --no-build --port 4300 > serve-demo.log 2>&1 &
           for i in $(seq 1 30); do curl -fsS -o /dev/null http://localhost:4300/ && break; sleep 1; done
           curl -fsS -o /dev/null http://localhost:4300/ && echo "demo served"
-      - uses: treosh/lighthouse-ci-action@v12
+      - uses: treosh/lighthouse-ci-action@3e7e23fb74242897f95c0ba9cabad3d0227b9b18  # v12
         with:
           configPath: ./lighthouserc.json
           uploadArtifacts: false
@@ -68,7 +68,7 @@ jobs:
         run: npx --yes @lhci/cli@0.15.1 upload --config=./lighthouserc.json
       - name: Scores
         run: set -o pipefail; node tools/ci/lighthouse-summary.mjs lhci-report --json lhci-report/lighthouse.json | tee -a "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6
         if: always()
         with:
           name: lighthouse-${{ github.run_number }}
@@ -77,7 +77,7 @@ jobs:
             serve-demo.log
           retention-days: 30
       - name: Pages site (previous state)
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
         with:
           ref: gh-pages
           path: site

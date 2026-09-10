@@ -50,8 +50,8 @@ jobs:
       matrix:
         shard: [1, 2, 3, 4]
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444  # v5
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -62,7 +62,7 @@ jobs:
         env:
           PLAYWRIGHT_BLOB_OUTPUT_DIR: blob-report
         continue-on-error: true
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6
         if: always()
         with:
           name: browser-blob-sandbox-${{ matrix.shard }}
@@ -83,8 +83,8 @@ jobs:
       matrix:
         shard: [1, 2, 3]
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444  # v5
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -98,7 +98,7 @@ jobs:
           # runner's 67 ms frame is the runner's (ARCHITECTURE.md §4). Structural budgets stay hard.
           PERF_TIMING: report
         continue-on-error: true
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6
         if: always()
         with:
           name: browser-blob-perf-${{ matrix.shard }}
@@ -112,7 +112,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
       # The baselines are this image's own output (docs/ci/ADR-visual-baselines.md): captured by
       # tools/visual-docker.mjs on the dev box, compared here, one rasteriser for both.
       #
@@ -145,7 +145,7 @@ jobs:
       - name: Hand the report back to the runner user
         if: always()
         run: sudo chown -R "$(id -u):$(id -g)" blob-report 2>/dev/null || true
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6
         if: always()
         with:
           name: browser-blob-visual
@@ -161,13 +161,13 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444  # v5
         with:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci --prefer-offline --no-audit --loglevel=error
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131  # v7
         with:
           pattern: browser-blob-*
           path: fragments
@@ -187,7 +187,7 @@ jobs:
           # Every job this verdict speaks for: a cancelled shard makes the run incomplete, never green.
           NEEDS: ${{ toJSON(needs) }}
         run: set -o pipefail; node tools/ci/k8s-summary.mjs ci-reports --needs "$NEEDS" --optional perf,visual --json ci-reports/summary.json | tee -a "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6
         if: always()
         with:
           name: browser-report-${{ github.run_number }}
@@ -197,7 +197,7 @@ jobs:
           retention-days: 30
       - name: Pages site (previous state)
         if: github.event_name != 'pull_request'
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
         with:
           ref: gh-pages
           path: site

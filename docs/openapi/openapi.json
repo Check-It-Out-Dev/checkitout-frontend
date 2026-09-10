@@ -5477,6 +5477,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "active-cooperation-controller" ]
@@ -5524,6 +5530,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "active-cooperation-controller" ]
@@ -5571,6 +5583,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "active-cooperation-controller" ]
@@ -5605,6 +5623,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "active-cooperation-controller" ]
@@ -5639,6 +5663,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "active-cooperation-controller" ]
@@ -5679,6 +5709,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -5718,6 +5751,9 @@
               }
             },
             "description" : "Addresses returned successfully"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -5783,6 +5819,9 @@
             },
             "description" : "Address created successfully"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -5832,6 +5871,9 @@
               }
             },
             "description" : "Primary address returned successfully"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -5890,6 +5932,9 @@
               }
             },
             "description" : "Addresses returned successfully"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -5954,6 +5999,9 @@
               }
             },
             "description" : "Successful search"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -6027,6 +6075,12 @@
               }
             },
             "description" : "Addresses found successfully"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "summary" : "Search for reusable addresses",
@@ -6050,6 +6104,12 @@
               }
             },
             "description" : "Address types returned successfully"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "summary" : "Get all address types",
@@ -6080,6 +6140,9 @@
               }
             },
             "description" : "Addresses returned successfully"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -6145,6 +6208,9 @@
             },
             "description" : "Address created successfully"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -6194,6 +6260,9 @@
               }
             },
             "description" : "Primary address returned successfully"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -6253,6 +6322,9 @@
             },
             "description" : "Addresses returned successfully"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -6307,6 +6379,9 @@
           "400" : {
             "description" : "Invalid request (empty ID list or too many IDs)"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "description" : "User not authorized to delete one or more addresses"
           }
@@ -6338,6 +6413,9 @@
               }
             },
             "description" : "Address found successfully"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -6409,6 +6487,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -6476,6 +6557,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -6525,6 +6609,9 @@
               }
             },
             "description" : "Address set as primary successfully"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -6583,6 +6670,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "admin-cascade-delete-controller" ]
@@ -6610,6 +6703,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "admin-cascade-delete-controller" ]
@@ -6646,6 +6745,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "admin-cascade-delete-controller" ]
@@ -6679,6 +6784,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "admin-cascade-delete-controller" ]
@@ -6716,6 +6827,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "admin-cascade-delete-controller" ]
@@ -6743,6 +6860,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "admin-cascade-delete-controller" ]
@@ -6783,6 +6906,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "admin-cascade-delete-controller" ]
@@ -6810,6 +6939,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "admin-cascade-delete-controller" ]
@@ -6837,6 +6972,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "admin-cascade-delete-controller" ]
@@ -6868,6 +7009,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "admin-cascade-delete-controller" ]
@@ -6896,6 +7043,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "admin-cascade-delete-controller" ]
@@ -6933,6 +7086,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "admin-cascade-delete-controller" ]
@@ -6960,6 +7119,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "admin-cascade-delete-controller" ]
@@ -6981,6 +7146,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "consent-admin-controller" ]
@@ -7007,6 +7178,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "consent-admin-controller" ]
@@ -7037,6 +7214,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "consent-admin-controller" ]
@@ -7074,6 +7257,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "consent-admin-controller" ]
@@ -7102,6 +7291,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "consent-admin-controller" ]
@@ -7124,6 +7319,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "summary" : "Clean expired cache",
@@ -7154,6 +7355,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "summary" : "Lookup IP location",
@@ -7177,6 +7384,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "summary" : "Get GeoIP metrics",
@@ -7200,6 +7413,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "summary" : "Get my location",
@@ -7252,6 +7471,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "summary" : "Test impossible travel with full analysis",
@@ -7275,6 +7500,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "summary" : "Update GeoIP database",
@@ -7306,6 +7537,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "legal-admin-controller" ]
@@ -7337,6 +7574,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "legal-admin-controller" ]
@@ -7356,6 +7599,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "summary" : "Clean up orphaned uploads",
@@ -7376,6 +7625,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "summary" : "Generate weekly report",
@@ -7396,6 +7651,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "summary" : "Get system upload statistics",
@@ -7442,6 +7703,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "summary" : "Get uploads by status",
@@ -7488,6 +7755,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "summary" : "Get user uploads",
@@ -7521,6 +7794,12 @@
         "responses" : {
           "200" : {
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "admin-controller" ]
@@ -7561,6 +7840,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -7600,6 +7882,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "summary" : "Submit new content",
@@ -7640,6 +7928,9 @@
               }
             },
             "description" : "Content retrieved successfully"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -7714,6 +8005,9 @@
             },
             "description" : "Content retrieved successfully"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -7756,6 +8050,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "summary" : "Get pending content",
@@ -7787,6 +8087,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "summary" : "Get content by status",
@@ -7809,6 +8115,12 @@
         "responses" : {
           "200" : {
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "summary" : "Delete content",
@@ -7836,6 +8148,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "summary" : "Get content by ID",
@@ -7873,6 +8191,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "summary" : "Update content submission",
@@ -7902,6 +8226,12 @@
         "responses" : {
           "200" : {
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "summary" : "Approve content",
@@ -7956,6 +8286,12 @@
         "responses" : {
           "200" : {
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "summary" : "Update engagement metrics",
@@ -7985,6 +8321,12 @@
         "responses" : {
           "200" : {
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "summary" : "Reject content",
@@ -8023,6 +8365,9 @@
               }
             },
             "description" : "Successful search"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -8084,6 +8429,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "applied-opportunity-controller" ]
@@ -8102,6 +8453,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "applied-opportunity-controller" ]
@@ -8136,6 +8493,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "applied-opportunity-controller" ]
@@ -8166,6 +8529,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "applied-opportunity-controller" ]
@@ -8227,6 +8596,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "applied-opportunity-controller" ]
@@ -8254,6 +8629,9 @@
           },
           "400" : {
             "description" : "Invalid request (empty ID list or too many IDs)"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "description" : "User not authorized to delete one or more entities"
@@ -8286,6 +8664,9 @@
               }
             },
             "description" : "Entity found"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -8357,6 +8738,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -8424,6 +8808,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -8478,6 +8865,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "applied-opportunity-controller" ]
@@ -8512,6 +8905,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "applied-opportunity-controller" ]
@@ -8539,6 +8938,9 @@
               }
             },
             "description" : "Contact data retrieved successfully"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -9259,6 +9661,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -9306,6 +9711,9 @@
               }
             },
             "description" : "Successful search"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -9355,6 +9763,9 @@
           "400" : {
             "description" : "Invalid request (empty ID list or too many IDs)"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "description" : "User not authorized to delete one or more entities"
           }
@@ -9386,6 +9797,9 @@
               }
             },
             "description" : "Entity found"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -9457,6 +9871,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -9524,6 +9941,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -9565,6 +9985,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "consent-controller" ]
@@ -9591,6 +10017,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "consent-controller" ]
@@ -9620,6 +10052,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "consent-controller" ]
@@ -9659,6 +10097,9 @@
               }
             },
             "description" : "Invalid input data"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -9708,6 +10149,9 @@
             },
             "description" : "Successful search"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -9756,6 +10200,9 @@
           "400" : {
             "description" : "Invalid request (empty ID list or too many IDs)"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "description" : "User not authorized to delete one or more entities"
           }
@@ -9787,6 +10234,9 @@
               }
             },
             "description" : "Entity found"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -9858,6 +10308,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -9925,6 +10378,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -9985,6 +10441,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -10032,6 +10491,9 @@
               }
             },
             "description" : "Successful search"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -10081,6 +10543,9 @@
           "400" : {
             "description" : "Invalid request (empty ID list or too many IDs)"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "description" : "User not authorized to delete one or more entities"
           }
@@ -10112,6 +10577,9 @@
               }
             },
             "description" : "Entity found"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -10183,6 +10651,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -10250,6 +10721,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -10291,6 +10765,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "dictionary-controller" ]
@@ -10313,6 +10793,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "dictionary-controller" ]
@@ -10342,6 +10828,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "dictionary-controller" ]
@@ -10362,6 +10854,12 @@
         "responses" : {
           "200" : {
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "dictionary-controller" ]
@@ -10388,6 +10886,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "dictionary-controller" ]
@@ -10421,6 +10925,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "dictionary-controller" ]
@@ -10584,6 +11094,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "file-management-controller" ]
@@ -10610,6 +11126,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "file-management-controller" ]
@@ -10636,6 +11158,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "file-management-controller" ]
@@ -10667,6 +11195,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "geo-location-gdpr-controller" ]
@@ -10688,6 +11222,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "geo-location-gdpr-controller" ]
@@ -10718,6 +11258,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "geo-location-gdpr-controller" ]
@@ -10747,6 +11293,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "geo-location-gdpr-controller" ]
@@ -10777,6 +11329,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "geo-location-gdpr-controller" ]
@@ -10807,6 +11365,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "geo-location-gdpr-controller" ]
@@ -10835,6 +11399,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "legal-controller" ]
@@ -10856,6 +11426,12 @@
         "responses" : {
           "200" : {
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "legal-controller" ]
@@ -10874,6 +11450,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "legal-controller" ]
@@ -10895,6 +11477,12 @@
         "responses" : {
           "200" : {
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "legal-controller" ]
@@ -10916,6 +11504,12 @@
         "responses" : {
           "200" : {
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "legal-controller" ]
@@ -10937,6 +11531,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "legal-controller" ]
@@ -10958,6 +11558,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "legal-controller" ]
@@ -10969,6 +11575,12 @@
         "responses" : {
           "200" : {
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "legal-controller" ]
@@ -10999,6 +11611,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "enum-metadata-controller" ]
@@ -11028,6 +11646,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "enum-metadata-controller" ]
@@ -11058,6 +11682,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "enum-metadata-controller" ]
@@ -11088,6 +11718,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "enum-metadata-controller" ]
@@ -11109,6 +11745,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "enum-metadata-controller" ]
@@ -11130,6 +11772,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "enum-metadata-controller" ]
@@ -11159,6 +11807,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "enum-metadata-controller" ]
@@ -11209,6 +11863,9 @@
               }
             },
             "description" : "Unauthorized - user not authenticated"
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "summary" : "Get user notifications",
@@ -11254,6 +11911,9 @@
               }
             },
             "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "summary" : "Get notifications by group",
@@ -11284,6 +11944,9 @@
               }
             },
             "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "summary" : "Mark all notifications as read",
@@ -11314,6 +11977,9 @@
               }
             },
             "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "summary" : "Get unread notification count",
@@ -11340,6 +12006,9 @@
           },
           "401" : {
             "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           },
           "404" : {
             "description" : "Notification not found"
@@ -11381,6 +12050,9 @@
               }
             },
             "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           },
           "404" : {
             "content" : {
@@ -11432,6 +12104,9 @@
             },
             "description" : "Unauthorized"
           },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
+          },
           "404" : {
             "content" : {
               "*/*" : {
@@ -11482,6 +12157,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -11514,6 +12192,9 @@
               }
             },
             "description" : "Compensation types retrieved successfully"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -11578,6 +12259,9 @@
             },
             "description" : "Invalid filter or pagination parameters"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -11626,6 +12310,9 @@
           "400" : {
             "description" : "Invalid request (empty ID list or too many IDs)"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "description" : "User not authorized to delete one or more entities"
           }
@@ -11658,6 +12345,9 @@
               }
             },
             "description" : "Partnership opportunity found"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -11729,6 +12419,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -11796,6 +12489,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -11856,6 +12552,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -11903,6 +12602,9 @@
               }
             },
             "description" : "Successful search"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -11952,6 +12654,9 @@
           "400" : {
             "description" : "Invalid request (empty ID list or too many IDs)"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "description" : "User not authorized to delete one or more entities"
           }
@@ -11983,6 +12688,9 @@
               }
             },
             "description" : "Entity found"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -12054,6 +12762,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -12121,6 +12832,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -12162,6 +12876,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "rate-limit-privacy-controller" ]
@@ -12183,6 +12903,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "rate-limit-privacy-controller" ]
@@ -12204,6 +12930,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "rate-limit-privacy-controller" ]
@@ -12225,6 +12957,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "rate-limit-privacy-controller" ]
@@ -12243,6 +12981,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "public-config-controller" ]
@@ -12255,6 +12999,12 @@
         "responses" : {
           "200" : {
             "description" : "Company data reset successfully"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           },
           "409" : {
             "description" : "No company data to reset or invalid user type"
@@ -12276,6 +13026,12 @@
               }
             },
             "description" : "Company data returned (may be null)"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "summary" : "Get company data",
@@ -12316,6 +13072,12 @@
               }
             },
             "description" : "Invalid NIP"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           },
           "409" : {
             "content" : {
@@ -12367,6 +13129,12 @@
             },
             "description" : "Invalid NIP format"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
+          },
           "404" : {
             "content" : {
               "*/*" : {
@@ -12416,6 +13184,12 @@
               }
             },
             "description" : "Company data refreshed"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           },
           "409" : {
             "content" : {
@@ -12467,6 +13241,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -12514,6 +13291,9 @@
               }
             },
             "description" : "Successful search"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -12563,6 +13343,9 @@
           "400" : {
             "description" : "Invalid request (empty ID list or too many IDs)"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "description" : "User not authorized to delete one or more entities"
           }
@@ -12594,6 +13377,9 @@
               }
             },
             "description" : "Entity found"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -12665,6 +13451,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -12732,6 +13521,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -12778,6 +13570,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "step-up-auth-controller" ]
@@ -12809,6 +13607,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "step-up-auth-controller" ]
@@ -12837,6 +13641,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "step-up-auth-controller" ]
@@ -12876,6 +13686,9 @@
               }
             },
             "description" : "Invalid input data"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -12977,6 +13790,9 @@
               }
             },
             "description" : "Invalid input data"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -13095,6 +13911,9 @@
           "400" : {
             "description" : "Invalid request (empty ID list or too many IDs)"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "description" : "User not authorized to delete one or more entities"
           }
@@ -13197,6 +14016,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -13264,6 +14086,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -13319,6 +14144,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "faq-category-controller" ]
@@ -13339,6 +14170,12 @@
         "responses" : {
           "200" : {
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "faq-category-controller" ]
@@ -13454,6 +14291,9 @@
           "400" : {
             "description" : "Invalid request (empty ID list or too many IDs)"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "description" : "User not authorized to delete one or more entities"
           }
@@ -13556,6 +14396,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -13623,6 +14466,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -13678,6 +14524,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "faq-controller" ]
@@ -13698,6 +14550,12 @@
         "responses" : {
           "200" : {
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "faq-controller" ]
@@ -13745,6 +14603,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "support-ticket-controller" ]
@@ -13823,6 +14687,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "support-ticket-controller" ]
@@ -13909,6 +14779,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "support-ticket-controller" ]
@@ -13969,6 +14845,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "support-ticket-controller" ]
@@ -14006,6 +14888,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "support-ticket-controller" ]
@@ -14083,6 +14971,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "support-ticket-controller" ]
@@ -14153,6 +15047,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "two-factor-status-controller" ]
@@ -14181,6 +15081,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "two-factor-status-controller" ]
@@ -14199,6 +15105,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "two-factor-status-controller" ]
@@ -14217,6 +15129,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "two-factor-status-controller" ]
@@ -14245,6 +15163,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "two-factor-status-controller" ]
@@ -14273,6 +15197,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "two-factor-status-controller" ]
@@ -14307,6 +15237,12 @@
               }
             },
             "description" : "Upload confirmed"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           },
           "404" : {
             "content" : {
@@ -14350,6 +15286,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "summary" : "Health check",
@@ -14370,6 +15312,12 @@
               }
             },
             "description" : "Rate limit status retrieved"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "summary" : "Get user's rate limit status",
@@ -14421,6 +15369,9 @@
             },
             "description" : "User not authenticated"
           },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
+          },
           "429" : {
             "content" : {
               "*/*" : {
@@ -14460,6 +15411,12 @@
               }
             },
             "description" : "Statistics retrieved successfully"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "summary" : "Get user's upload statistics",
@@ -14501,6 +15458,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -14529,6 +15489,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "user-preferences-controller" ]
@@ -14558,6 +15524,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "user-preferences-controller" ]
@@ -14584,6 +15556,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "user-preferences-controller" ]
@@ -14621,6 +15599,9 @@
               }
             },
             "description" : "Successful search"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -14669,6 +15650,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "user-preferences-controller" ]
@@ -14707,6 +15694,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "user-preferences-controller" ]
@@ -14734,6 +15727,9 @@
           },
           "400" : {
             "description" : "Invalid request (empty ID list or too many IDs)"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "description" : "User not authorized to delete one or more entities"
@@ -14766,6 +15762,9 @@
               }
             },
             "description" : "Entity found"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -14837,6 +15836,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -14904,6 +15906,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -14964,6 +15969,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -15011,6 +16019,9 @@
               }
             },
             "description" : "Successful search"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -15060,6 +16071,9 @@
           "400" : {
             "description" : "Invalid request (empty ID list or too many IDs)"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "description" : "User not authorized to delete one or more entities"
           }
@@ -15091,6 +16105,9 @@
               }
             },
             "description" : "Entity found"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -15162,6 +16179,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -15229,6 +16249,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -15289,6 +16312,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -15320,6 +16346,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "user-controller" ]
@@ -15347,6 +16379,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "user-controller" ]
@@ -15370,6 +16408,12 @@
         "responses" : {
           "200" : {
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "user-controller" ]
@@ -15397,6 +16441,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "user-controller" ]
@@ -15415,6 +16465,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "user-controller" ]
@@ -15433,6 +16489,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "user-controller" ]
@@ -15470,6 +16532,9 @@
               }
             },
             "description" : "Successful search"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -15527,6 +16592,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "user-controller" ]
@@ -15548,6 +16619,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "user-controller" ]
@@ -15574,6 +16651,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "user-controller" ]
@@ -15601,6 +16684,9 @@
           },
           "400" : {
             "description" : "Invalid request (empty ID list or too many IDs)"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "description" : "User not authorized to delete one or more entities"
@@ -15633,6 +16719,9 @@
               }
             },
             "description" : "Entity found"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
           },
           "403" : {
             "content" : {
@@ -15704,6 +16793,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "application/json" : {
@@ -15771,6 +16863,9 @@
             },
             "description" : "Invalid input data"
           },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
           "403" : {
             "content" : {
               "application/json" : {
@@ -15818,6 +16913,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "user-controller" ]
@@ -15852,6 +16953,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "user-controller" ]
@@ -15891,6 +16998,12 @@
               }
             },
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "No valid session: the request carried no credentials, or they had expired."
+          },
+          "403" : {
+            "description" : "Authenticated, but not allowed to perform this operation."
           }
         },
         "tags" : [ "webhook-controller" ]

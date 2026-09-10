@@ -37,14 +37,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444  # v5
         with:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci --prefer-offline --no-audit --loglevel=error
       - run: npm run build
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6
         with:
           name: browser-dist
           path: dist/check-it-out-fe-greenfield/browser
@@ -124,14 +124,14 @@ jobs:
           --health-cmd "wget -qO- http://127.0.0.1:8080/api/actuator/health/readiness | grep -q UP"
           --health-interval 10s --health-timeout 5s --health-retries 40 --health-start-period 60s
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444  # v5
         with:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci --prefer-offline --no-audit --loglevel=error
       - run: npx playwright install --with-deps chromium
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131  # v7
         with:
           name: browser-dist
           path: dist/check-it-out-fe-greenfield/browser
@@ -144,7 +144,7 @@ jobs:
       # firebase-tools 15 refuses to start the Firestore emulator on anything below JDK 21, and the
       # runner image's default `java` is older. The backend's own tier never hit this because it sets
       # up a JDK for Maven anyway.
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961  # v5
         with:
           distribution: temurin
           java-version: "21"
@@ -191,7 +191,7 @@ jobs:
       - name: Backend log on failure
         if: failure()
         run: docker logs ${{ job.services.backend.id }} > backend-${{ matrix.shard }}.log 2>&1 || true
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6
         if: always()
         with:
           name: nightly-blob-${{ matrix.shard }}
@@ -210,13 +210,13 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444  # v5
         with:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci --prefer-offline --no-audit --loglevel=error
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131  # v7
         with:
           pattern: nightly-blob-*
           path: fragments
@@ -235,7 +235,7 @@ jobs:
         env:
           NEEDS: ${{ toJSON(needs) }}
         run: set -o pipefail; node tools/ci/k8s-summary.mjs ci-reports --needs "$NEEDS" --json ci-reports/summary.json | tee -a "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6
         if: always()
         with:
           name: nightly-report-${{ github.run_number }}
@@ -244,7 +244,7 @@ jobs:
             !ci-reports/blobs
           retention-days: 30
       - name: Pages site (previous state)
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
         with:
           ref: gh-pages
           path: site
