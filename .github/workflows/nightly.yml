@@ -1,0 +1,111 @@
+# The night pipeline: everything the pull-request pipeline cannot afford.
+#
+# The trade is explicit. `pr.yml` answers "is this change safe to merge" in about ten minutes and
+# is allowed to miss things a ten-minute run cannot see. This answers "is the system actually
+# healthy", takes as long as it takes, and runs while nobody is waiting.
+#
+#   browser (full)   the smoothness tier over three runners and the visual tier in the pinned container
+#   full-stack       the ported Cucumber corpus against the real backend image and a Firebase emulator
+#   kubernetes       a kind cluster: Playwright as a four-pod Indexed Job, k6-operator generating load
+#   lighthouse       performance, accessibility, best practices and SEO against the demo build
+#   contract         the OpenAPI document taken from a booted backend, the client regenerated and compiled
+#   mutation         Stryker: whether the tests would notice if the code were wrong
+#   security         Semgrep, Checkov, Trivy, an SBOM, and a ZAP baseline against the live sandbox
+#
+# Everything lands in one report and one verdict, and the metrics are appended to a history that the
+# dashboard trends over weeks. A night run that nobody reads is a night run that should not exist.
+name: nightly
+
+on:
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+    inputs:
+      skip_kubernetes:
+        description: Skip the kind cluster tier (it is the slowest)
+        type: boolean
+        default: false
+
+concurrency:
+  group: nightly
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  browser:
+    name: Browser tiers (full)
+    uses: ./.github/workflows/browser-tiers.yml
+    with:
+      tiers: full
+    secrets: inherit
+
+  full-stack:
+    name: Full stack
+    uses: ./.github/workflows/nightly-full-stack.yml
+    secrets: inherit
+
+  kubernetes:
+    name: Kubernetes tier
+    if: ${{ !inputs.skip_kubernetes }}
+    uses: ./.github/workflows/k8s-test-execution.yml
+    secrets: inherit
+
+  lighthouse:
+    name: Lighthouse
+    uses: ./.github/workflows/lighthouse.yml
+    secrets: inherit
+
+  contract:
+    name: Contract
+    uses: ./.github/workflows/contract-check.yml
+    secrets: inherit
+
+  mutation:
+    name: Mutation
+    uses: ./.github/workflows/mutation.yml
+    secrets: inherit
+
+  security:
+    name: Security
+    uses: ./.github/workflows/security.yml
+    secrets: inherit
+
+  verdict:
+    name: One night, one verdict
+    needs: [browser, full-stack, kubernetes, lighthouse, contract, mutation, security]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --prefer-offline --no-audit --loglevel=error
+
+      - name: Collect what the tiers published
+        uses: actions/download-artifact@v7
+        with:
+          path: results
+        continue-on-error: true
+
+      - name: The night in one table
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        run: |
+          set -o pipefail
+          node tools/ci/nightly-verdict.mjs --needs "$NEEDS" --results results \
+            --json nightly-summary.json | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: nightly-${{ github.run_number }}
+          path: nightly-summary.json
+          retention-days: 90

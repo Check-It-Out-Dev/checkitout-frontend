@@ -25,10 +25,9 @@
 name: Frontend CI - Quality Gates
 
 on:
-  pull_request:
-  push:
-    branches: ["main", "master"]
+  workflow_call:
   workflow_dispatch:
+
 
 concurrency:
   group: ci-tests-${{ github.ref }}

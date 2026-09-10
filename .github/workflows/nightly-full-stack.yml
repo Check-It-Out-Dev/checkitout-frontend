@@ -8,14 +8,9 @@
 name: Frontend CI - Nightly Full Stack (sharded)
 
 on:
-  schedule:
-    - cron: "0 2 * * *"
+  workflow_call:
   workflow_dispatch:
-    inputs:
-      backend_tag:
-        description: Backend image tag on ghcr.io
-        type: string
-        default: main
+
 
 concurrency:
   group: nightly-full-stack-${{ github.ref }}

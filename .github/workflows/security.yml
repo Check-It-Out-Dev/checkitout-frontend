@@ -22,12 +22,9 @@
 name: security
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-  schedule:
-    - cron: "20 3 * * 1"
+  workflow_call:
   workflow_dispatch:
+
 
 concurrency:
   group: security-${{ github.ref }}

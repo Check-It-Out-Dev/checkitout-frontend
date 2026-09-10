@@ -5,16 +5,9 @@
 name: contract-check
 
 on:
-  schedule:
-    - cron: "30 4 * * *"
+  workflow_call:
   workflow_dispatch:
-    inputs:
-      backend_ref:
-        description: Backend ref to take the contract from
-        type: string
-        default: main
-  repository_dispatch:
-    types: [backend-published]
+
 
 permissions:
   contents: read

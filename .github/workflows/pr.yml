@@ -1,0 +1,114 @@
+# The pull-request pipeline: fast enough that nobody routes around it.
+#
+# There used to be nine workflows firing on every push, which is the same thing as none — when a
+# change lights up nine status checks with nine verdicts, the answer to "is this safe to merge" is
+# a paragraph rather than a word. This is one of two entry points. Everything expensive lives in
+# nightly.yml, and every piece below is a reusable workflow that can still be dispatched on its own
+# when you are working on that piece.
+#
+#   gates      static checks, typecheck, the Angular build, Jest with coverage
+#   browser    the sandbox and MSW tiers over four runners; smoothness and visual wait for the night
+#   sonar      SonarQube Cloud, fed that coverage, with the quality gate on NEW code
+#   deps       dependency review, which only exists on a pull request
+#   CodeQL     runs on its own through GitHub's default setup, on every pull request
+#
+# The one that changes behaviour daily is Sonar's new-code gate: it asks whether the code in THIS
+# change is covered and clean, not whether the repository as a whole is, which is the only version
+# of that question a large existing codebase can answer honestly.
+name: pr
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  # A superseded pull-request run is waste; a superseded push to main loses the record of what main
+  # did, so those are allowed to finish.
+  group: pr-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+  pull-requests: read
+  security-events: write
+
+jobs:
+  gates:
+    name: Gate wall
+    uses: ./.github/workflows/ci-tests.yml
+    secrets: inherit
+
+  browser:
+    name: Browser tiers (fast)
+    uses: ./.github/workflows/browser-tiers.yml
+    with:
+      tiers: fast
+    secrets: inherit
+
+  sonar:
+    name: Quality gate
+    uses: ./.github/workflows/sonar.yml
+    secrets: inherit
+
+  # Dependency review compares the manifests either side of a pull request and fails when the
+  # difference introduces a known advisory. It needs a base and a head, so it cannot run on a push.
+  #
+  # CodeQL is deliberately NOT a job here. The organisation enables CodeQL **default setup**, which
+  # analyses actions, java-kotlin, javascript-typescript and python on the extended query suite and
+  # reports on every push. An advanced setup in a workflow file cannot coexist with it: GitHub
+  # refuses the SARIF outright — "configurations cannot be processed when the default setup is
+  # enabled" — so a CodeQL job here would be permanently red while adding nothing. Its findings are
+  # under Security → Code scanning.
+  #
+  # Why any of this exists: on 2026-09-09 a live credential was found in the backend's Cucumber
+  # corpus, in 54 files, because nothing in the estate was looking. Secret scanning and push
+  # protection were enabled alongside this.
+  deps:
+    name: Dependency review
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+          comment-summary-in-pr: on-failure
+
+  verdict:
+    name: Merge verdict
+    needs: [gates, browser, sonar]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # One line that says whether this change is safe to merge, so nobody has to open four reports
+      # to find out. A cancelled job is not a pass, which is the failure mode a naive `always()`
+      # summary has.
+      - name: Say it in one line
+        run: |
+          set -euo pipefail
+          gates='${{ needs.gates.result }}'
+          browser='${{ needs.browser.result }}'
+          sonar='${{ needs.sonar.result }}'
+          {
+            echo "### Pull-request verdict"
+            echo
+            echo "| check | result |"
+            echo "| --- | --- |"
+            echo "| gate wall | $gates |"
+            echo "| browser tiers (fast) | $browser |"
+            echo "| quality gate | $sonar |"
+            echo
+            echo "The smoothness, visual, Kubernetes, performance, mutation, contract and security"
+            echo "tiers run in \`nightly\`. This pipeline is the fast half on purpose."
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+          for r in "$gates" "$browser" "$sonar"; do
+            case "$r" in
+              success|skipped) ;;
+              *) echo "::error::a required check reported '$r'"; exit 1 ;;
+            esac
+          done
+          echo "safe to merge as far as this pipeline can tell"

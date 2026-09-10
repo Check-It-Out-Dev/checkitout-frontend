@@ -3,6 +3,10 @@
  *  Matches every *.spec.ts under src/ + Stage-5b trace-library *.unit.spec.ts. */
 module.exports = {
   preset: 'jest-preset-angular',
+  // Stated explicitly rather than left to the preset: Stryker's jest runner reads the resolved
+  // config without expanding presets, defaults to the node environment, and every Angular spec
+  // then dies with `window is not defined`. Harmless duplication for a normal run.
+  testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],
   testMatch: [
     '<rootDir>/src/**/*.spec.ts',
