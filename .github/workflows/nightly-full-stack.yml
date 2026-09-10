@@ -167,6 +167,27 @@ jobs:
         if: failure()
         run: tail -60 /tmp/emulators.log || true
 
+      # The backend runs as a service container, so its log is not in this job's output and a failure
+      # inside it reads only as an HTTP 500 in a test. Several scenarios fail with
+      # `error.network.external_service`, which is the backend saying it could not reach something --
+      # and which something is a question only its own log answers. Captured on failure rather than
+      # always, so a green night stays readable.
+      - name: Backend log on failure
+        if: failure()
+        run: |
+          id=$(docker ps -a --filter "ancestor=ghcr.io/check-it-out-dev/checkitout-backend:${{ inputs.backend_tag || 'main' }}" --format '{{.ID}}' | head -1)
+          if [ -z "$id" ]; then
+            id=$(docker ps -a --format '{{.ID}} {{.Image}}' | grep checkitout-backend | head -1 | cut -d' ' -f1)
+          fi
+          if [ -n "$id" ]; then
+            echo "### Backend container log (tail)" >> "$GITHUB_STEP_SUMMARY"
+            docker logs "$id" 2>&1 | tail -120 | tee -a "$GITHUB_STEP_SUMMARY"
+            echo "--- lines mentioning the emulator or an external call ---"
+            docker logs "$id" 2>&1 | grep -iE "emulator|identitytoolkit|firestore|external_service|Connection refused|UnknownHost" | tail -40 || true
+          else
+            echo "no backend container found to read a log from"
+          fi
+
       - name: Frontend behind nginx, /api proxied to the backend service on the host
         run: |
           docker build -q -f deploy/k8s/frontend/Dockerfile -t checkitout-frontend:ci .
