@@ -1,0 +1,1 @@
+{"id":"55b5c2a74f1828e89c6855705c9af974","fullName":"integration/flows/profile-critical-fields.spec.ts:153:7","name":"@influencer firstName + lastName + phoneNumber PATCH keep session ACTIVE","status":"passed","testResultsByEnv":{"default":"4a84a791aea6fb68f21538ddc75127b2"}}

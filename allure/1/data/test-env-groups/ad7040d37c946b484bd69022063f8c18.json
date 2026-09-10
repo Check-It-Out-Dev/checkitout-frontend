@@ -1,0 +1,1 @@
+{"id":"ad7040d37c946b484bd69022063f8c18","fullName":"integration/flows/rate-limiting.spec.ts:114:7","name":"@company @headers rate limit headers include reset timestamp","status":"passed","testResultsByEnv":{"default":"59845cde08ff7a4b3c79e7dcedd37d49"}}

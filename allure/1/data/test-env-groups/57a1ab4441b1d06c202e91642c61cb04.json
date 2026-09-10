@@ -1,0 +1,1 @@
+{"id":"57a1ab4441b1d06c202e91642c61cb04","fullName":"integration/auth/security-unauth.spec.ts:277:9","name":"admin endpoints reject unauthenticated requests","status":"passed","testResultsByEnv":{"default":"18961275d7e6a3419a698f1ae338ea95"}}

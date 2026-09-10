@@ -1,0 +1,1 @@
+{"id":"bb6d946862d9393d96775a5547b2ec30","fullName":"integration/flows/registry-company-flow.spec.ts:259:7","name":"@lookup GUS not found returns 404","status":"passed","testResultsByEnv":{"default":"0fa4ca66ca61194817a4c6f8a4a819e3"}}

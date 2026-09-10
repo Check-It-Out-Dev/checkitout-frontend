@@ -1,0 +1,1 @@
+{"id":"71ba79b08cabc4c662a5b49a4fc1d4ab","fullName":"integration/flows/registry-company-flow.spec.ts:418:7","name":"@confirm KRS confirm without emailVerified does NOT auto-activate","status":"passed","testResultsByEnv":{"default":"7832f4216a94384bfd71ae163102d39e"}}

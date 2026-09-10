@@ -1,0 +1,1 @@
+{"id":"173dfa039eed6a69afc288a2e4e2f44e","fullName":"integration/flows/magic-link-errors.spec.ts:179:7","name":"@tier-1 confirm-password-reset rejects empty body (400 on BOTH fields)","status":"passed","testResultsByEnv":{"default":"78e4699f21b6474c58a9e76419e06c28"}}

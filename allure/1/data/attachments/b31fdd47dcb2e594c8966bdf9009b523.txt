@@ -1,0 +1,37 @@
+
+=== Route smoke (anon) ===
+ok   | anon    | /                                                | /                                               
+ok   | anon    | /error/404                                       | /error/404                                      
+ok   | anon    | /auth/sign-in                                    | /auth/sign-in                                   
+ok   | anon    | /auth/sign-up                                    | /auth/sign-up                                   
+ok   | anon    | /auth/sign-up/influencer                         | /auth/sign-up/influencer                        
+ok   | anon    | /auth/sign-up/business                           | /auth/sign-up/business                          
+ok   | anon    | /auth/forgot-password                            | /auth/forgot-password                           
+ok   | anon    | /auth/confirmation-required                      | /auth/confirmation-required                     
+ok   | anon    | /auth/verify-email                               | /auth/verify-email                              
+ok   | anon    | /auth/reset-password                             | /auth/reset-password                            
+ok   | anon    | /auth/auth/error                                 | /error/404                                      
+ok   | anon    | /auth/error                                      | /auth/error                                     
+ok   | anon    | /auth/2fa-setup                                  | /auth/2fa-setup                                 
+ok   | anon    | /auth/action                                     | /auth/action                                    
+ok   | anon    | /collaborations/list                             | /auth/sign-in                                   
+ok   | anon    | /collaborations/my-campaigns                     | /auth/sign-in                                   
+ok   | anon    | /collaborations/create                           | /auth/sign-in                                   
+ok   | anon    | /collaborations/dashboard                        | /auth/sign-in                                   
+ok   | anon    | /collaborations/in-progress                      | /auth/sign-in                                   
+ok   | anon    | /collaborations/registrations                    | /auth/sign-in                                   
+ok   | anon    | /collaborations/finished                         | /auth/sign-in                                   
+ok   | anon    | /user/settings/account                           | /auth/sign-in                                   
+ok   | anon    | /user/settings/preferences                       | /auth/sign-in                                   
+ok   | anon    | /user/settings/addresses                         | /auth/sign-in                                   
+ok   | anon    | /user/settings/plan-billing                      | /auth/sign-in                                   
+ok   | anon    | /user/list                                       | /auth/sign-in                                   
+ok   | anon    | /company/setup                                   | /auth/sign-in                                   
+ok   | anon    | /team                                            | /team                                           
+ok   | anon    | /grants                                          | /grants                                         
+ok   | anon    | /support                                         | /support                                        
+ok   | anon    | /support/tickets/create                          | /support/tickets/create                         
+ok   | anon    | /support/tickets/status                          | /support/tickets/status                         
+ok   | anon    | /support/tickets/my-tickets                      | /auth/sign-in                                   
+ok   | anon    | /support/admin/tickets                           | /auth/sign-in                                   
+ok   | anon    | /admin/dictionary                                | /auth/sign-in                                   

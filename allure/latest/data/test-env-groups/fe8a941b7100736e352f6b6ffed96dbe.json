@@ -1,0 +1,1 @@
+{"id":"fe8a941b7100736e352f6b6ffed96dbe","fullName":"integration/auth/login-ui-real.spec.ts:45:7","name":"@company @full-auth — company signs in via the form and lands on a protected route","status":"skipped","testResultsByEnv":{"default":"40db8aead30535e4f71bbaf747c65d3d"}}

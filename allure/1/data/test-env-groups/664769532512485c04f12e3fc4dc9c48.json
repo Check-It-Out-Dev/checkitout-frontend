@@ -1,0 +1,1 @@
+{"id":"664769532512485c04f12e3fc4dc9c48","fullName":"integration/flows/magic-link-errors.spec.ts:118:7","name":"@tier-1 confirm-password-reset rejects blank oobCode (400)","status":"passed","testResultsByEnv":{"default":"03155cbcb6f9968e12ac72cf5d48f90b"}}

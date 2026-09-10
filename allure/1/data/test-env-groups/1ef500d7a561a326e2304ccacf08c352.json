@@ -1,0 +1,1 @@
+{"id":"1ef500d7a561a326e2304ccacf08c352","fullName":"integration/auth/security-unauth.spec.ts:277:9","name":"consent endpoints reject unauthenticated requests","status":"passed","testResultsByEnv":{"default":"aadca42f49dbbfa113092daab4309ad5"}}
