@@ -1,1 +1,1 @@
-{"id":"cd3f975151434b2247b7b7505dd4a5c8","fullName":"e2e-tests/bdd/features/login.feature.spec.js:24:7","name":"Influencer logs in via OAuth with the Instagram token from Firestore","status":"passed","testResultsByEnv":{"default":"fcc3875efabe95d7199fbd4631a8d70f"}}
+{"id":"cd3f975151434b2247b7b7505dd4a5c8","fullName":"e2e-tests/bdd/features/login.feature.spec.js:24:7","name":"Influencer logs in via OAuth with the Instagram token from Firestore","status":"passed","testResultsByEnv":{"default":"39a5704ea25d4eaab7f97bd09ecd370d"}}
