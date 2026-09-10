@@ -2,26 +2,26 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 40,
-    "id": 34455556062,
-    "sha": "6d3b6a9",
+    "number": 45,
+    "id": 34456783497,
+    "sha": "e21c5a4",
     "branch": "main",
     "workflow": "browser-tiers",
-    "startedAt": "2026-09-10T08:30:40Z",
-    "durationSec": 720,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34455556062",
+    "startedAt": "2026-09-10T08:44:20Z",
+    "durationSec": 476,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34456783497",
     "status": "incomplete"
   },
   "tests": {
-    "total": 1343,
-    "passed": 1319,
+    "total": 1216,
+    "passed": 1214,
     "failed": 0,
     "flaky": 0,
-    "skipped": 24,
+    "skipped": 2,
     "passRate": 1,
     "flakyRate": 0,
-    "durationMeanSec": 0.43,
-    "durationP95Sec": 1.02,
+    "durationMeanSec": 0.09,
+    "durationP95Sec": 0.37,
     "tiers": {
       "jest": {
         "total": 1183,
@@ -29,31 +29,23 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
-        "durationSec": 59
+        "durationSec": 73
+      },
+      "sandbox": {
+        "total": 32,
+        "passed": 31,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "durationSec": 38
       },
       "msw": {
-        "total": 2,
+        "total": 1,
         "passed": 0,
         "failed": 0,
         "flaky": 0,
-        "skipped": 2,
+        "skipped": 1,
         "durationSec": 0
-      },
-      "sandbox": {
-        "total": 128,
-        "passed": 106,
-        "failed": 0,
-        "flaky": 0,
-        "skipped": 22,
-        "durationSec": 129
-      },
-      "perf": {
-        "total": 30,
-        "passed": 30,
-        "failed": 0,
-        "flaky": 0,
-        "skipped": 0,
-        "durationSec": 379
       }
     }
   },
@@ -79,7 +71,6 @@
       "runsFailed": 0,
       "lastSeen": 37,
       "history": [
-        "absent",
         "pass",
         "pass",
         "flaky",
@@ -88,12 +79,13 @@
         "flaky",
         "pass",
         "absent",
-        "pass"
+        "pass",
+        "absent"
       ]
     }
   ],
   "reports": {
-    "playwright": "playwright/40/",
-    "allure": "allure/40/"
+    "playwright": "playwright/45/",
+    "allure": "allure/45/"
   }
 }
