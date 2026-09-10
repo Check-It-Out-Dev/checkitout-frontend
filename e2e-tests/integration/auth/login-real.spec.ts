@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { GREENFIELD_URL } from '../_actor';
+import { sessionCookiesShouldBeSecure } from '../../_framework/auth';
 import { hasRealCredentialsFor, realLogin } from '../../_framework/real-login';
 import { ACTORS } from '../../_framework/actor';
 import {
@@ -7,7 +8,7 @@ import {
   readTotpSecret,
   TotpSecretMissingError,
 } from '../../_framework/firebase-admin-bridge';
-import { currentTotpCode } from '../../_framework/totp';
+import { currentTotpCode, provisionedAdminTotpSecret } from '../../_framework/totp';
 import type { UserDtoOut } from '../../../src/app/api/model/user-dto-out';
 
 /**
@@ -79,7 +80,10 @@ test.describe('@login-real — real-Firebase happy-path login (T4)', () => {
       // the BE issues in production (see SessionSecurityService).
       const sessionCookie = cookies.find((c) => c.name === 'session');
       expect(sessionCookie?.httpOnly, 'session cookie must be HttpOnly').toBe(true);
-      expect(sessionCookie?.secure, 'session cookie must be Secure').toBe(true);
+      expect(
+        sessionCookie?.secure,
+        `session cookie Secure must match the scheme of ${GREENFIELD_URL}`,
+      ).toBe(sessionCookiesShouldBeSecure(GREENFIELD_URL));
     } finally {
       await context.close();
     }
@@ -99,9 +103,13 @@ test.describe('@login-real — real-Firebase happy-path login (T4)', () => {
       !hasRealCredentialsFor('ADMIN'),
       'FIREBASE_TEST_ADMIN_{EMAIL,PASSWORD} not set — see e2e-tests/.env.example',
     );
+    // Either the run provisioned a secret it already knows (the emulator path, no credential
+    // anywhere) or the bridge can decrypt one out of Firestore with KMS. Neither, and there is no
+    // way to generate a valid code, so there is nothing to assert.
+    const provisioned = provisionedAdminTotpSecret();
     test.skip(
-      !isBridgeAvailable(),
-      'Firebase Admin bridge not available — service-account.json missing; see e2e-tests/.env.example',
+      !provisioned && !isBridgeAvailable(),
+      'no provisioned secret (E2E_TOTP_SECRET) and no Firebase Admin bridge — see e2e-tests/.env.example',
     );
 
     const context = await browser.newContext({ ignoreHTTPSErrors: true });
@@ -117,16 +125,22 @@ test.describe('@login-real — real-Firebase happy-path login (T4)', () => {
       // service-account.json + KMS keyring lookup; we just pass the UID.
       const adminUid = process.env['ADMIN_FIREBASE_UID'] ?? '85VJgS6shAWTqby4rHypN355RWv2';
       let totpSecret: string;
-      try {
-        totpSecret = await readTotpSecret(adminUid);
-      } catch (err) {
-        if (err instanceof TotpSecretMissingError) {
-          test.skip(
-            true,
-            `totpSecrets/${adminUid} not provisioned — run \`node --experimental-strip-types e2e-tests/scripts/provision-admin-totp.mjs\` first.`,
-          );
+      if (provisioned) {
+        // Provisioned through the backend's own service, so the ciphertext in Firestore is whatever
+        // this run's cipher produces and nothing here needs to decrypt it.
+        totpSecret = provisioned;
+      } else {
+        try {
+          totpSecret = await readTotpSecret(adminUid);
+        } catch (err) {
+          if (err instanceof TotpSecretMissingError) {
+            test.skip(
+              true,
+              `totpSecrets/${adminUid} not provisioned — run \`node --experimental-strip-types e2e-tests/scripts/provision-admin-totp.mjs\` first.`,
+            );
+          }
+          throw err;
         }
-        throw err;
       }
       const code = currentTotpCode(totpSecret);
 
@@ -142,13 +156,29 @@ test.describe('@login-real — real-Firebase happy-path login (T4)', () => {
         `2FA verify with real TOTP must succeed (got ${verifyRes.status()}: ${await verifyRes.text()})`,
       ).toBe(200);
 
-      // Step 4: re-exchange to upgrade partial → full session. Mirrors
-      // the FE's SignInComponent post-2FA branch.
+      // Step 4: re-exchange to upgrade partial → full session. Mirrors the FE's SignInComponent
+      // post-2FA branch, which posts an EMPTY body: the backend re-reads the Firebase ID token
+      // from the FirebaseIdToken cookie pair it re-set alongside the partial session.
+      //
+      // Which is why that pair is asserted here rather than left to be inferred. Without it the
+      // exchange answers 400 and the log says "ID token is null or empty", three layers away from
+      // "the cookie the previous call set did not come back".
+      const beforeFinal = await context.cookies(GREENFIELD_URL);
+      const carried = beforeFinal.map((c) => c.name);
+      expect(
+        carried,
+        `the partial-session step must leave the Firebase token cookies for the re-exchange to ` +
+          `read; the jar holds: ${carried.join(', ') || '(nothing)'}`,
+      ).toEqual(expect.arrayContaining(['FirebaseIdToken', 'FirebaseIdToken_sig']));
+
       const finalExchange = await page.request.post(`${GREENFIELD_URL}/api/auth/exchange-token`, {
         data: {},
         ignoreHTTPSErrors: true,
       });
-      expect(finalExchange.status(), 'final exchange-token must be 200').toBe(200);
+      expect(
+        finalExchange.status(),
+        `final exchange-token must be 200 (got ${finalExchange.status()}: ${await finalExchange.text()})`,
+      ).toBe(200);
 
       // Step 5: /users/me round-trips with the admin role.
       const meRes = await page.request.get(`${GREENFIELD_URL}/api/users/me`, {

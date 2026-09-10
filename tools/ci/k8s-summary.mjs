@@ -14,6 +14,7 @@
 //                                 [--optional job1,job2]   jobs allowed to be skipped deliberately
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { byCodepoint } from '../lib/order.mjs';
 
 const args = process.argv.slice(2);
 const dir = args.find((a) => !a.startsWith('--')) || 'ci-reports';
@@ -24,7 +25,12 @@ const flag = (name) => {
 const jsonOut = flag('json');
 const needsRaw = flag('needs');
 // Jobs this run was never going to execute, comma separated - see the note by the needs loop.
-const optional = new Set((flag('optional') || '').split(',').map((s) => s.trim()).filter(Boolean));
+const optional = new Set(
+  (flag('optional') || '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean),
+);
 const expectShards = Number(flag('expect-shards') || 0);
 const lines = [];
 const say = (s = '') => lines.push(s);
@@ -57,7 +63,15 @@ if (needsRaw) {
 
 // ---- Playwright: merged.json + shard-<n>.exit ----
 const mergedPath = join(dir, 'merged.json');
-const tests = { expected: 0, unexpected: 0, flaky: 0, skipped: 0, durationSec: 0, unexpectedTitles: [], flakyTitles: [] };
+const tests = {
+  expected: 0,
+  unexpected: 0,
+  flaky: 0,
+  skipped: 0,
+  durationSec: 0,
+  unexpectedTitles: [],
+  flakyTitles: [],
+};
 const timings = [];
 if (existsSync(mergedPath)) {
   const merged = JSON.parse(readFileSync(mergedPath, 'utf8'));
@@ -71,14 +85,18 @@ if (existsSync(mergedPath)) {
     for (const spec of suite.specs || []) {
       for (const t of spec.tests || []) {
         const title = [...path, spec.title].join(' › ');
-        if (t.status === 'unexpected') tests.unexpectedTitles.push(`${suite.file || ''} › ${title}`);
+        if (t.status === 'unexpected')
+          tests.unexpectedTitles.push(`${suite.file || ''} › ${title}`);
         if (t.status === 'flaky') tests.flakyTitles.push(`${suite.file || ''} › ${title}`);
         // Budgets the tier measured but did not assert (PERF_TIMING=report on a shared runner). They belong
         // in the report or they are invisible: a number nobody reads is the same as a number nobody took.
         // Playwright mirrors annotations onto the test from its LAST result only, so a retried test would
         // lose the earlier readings; read both places and de-duplicate.
         const seen = new Set();
-        for (const a of [...(t.annotations || []), ...(t.results || []).flatMap((r) => r.annotations || [])]) {
+        for (const a of [
+          ...(t.annotations || []),
+          ...(t.results || []).flatMap((r) => r.annotations || []),
+        ]) {
           if (!a || a.type !== 'timing' || !a.description || seen.has(a.description)) continue;
           seen.add(a.description);
           const [name, reading] = a.description.split(/:\s(.+)/);
@@ -92,7 +110,7 @@ if (existsSync(mergedPath)) {
 }
 const shards = readdirSync(dir)
   .filter((f) => /^shard-\d+\.exit$/.test(f))
-  .sort()
+  .sort(byCodepoint)
   .map((f) => ({ shard: f.match(/\d+/)[0], exit: readFileSync(join(dir, f), 'utf8').trim() }));
 
 say('### Browser tiers on the cluster');
@@ -100,7 +118,9 @@ say();
 if (existsSync(mergedPath)) {
   say('| expected | unexpected | flaky | skipped | wall |');
   say('| --- | --- | --- | --- | --- |');
-  say(`| ${tests.expected} | ${tests.unexpected} | ${tests.flaky} | ${tests.skipped} | ${tests.durationSec} s |`);
+  say(
+    `| ${tests.expected} | ${tests.unexpected} | ${tests.flaky} | ${tests.skipped} | ${tests.durationSec} s |`,
+  );
   say();
   if (shards.length) say(`Shards: ${shards.map((s) => `${s.shard} → exit ${s.exit}`).join(', ')}.`);
   if (expectShards && shards.length < expectShards) {
@@ -132,13 +152,17 @@ if (existsSync(mergedPath)) {
 }
 
 // ---- k6: one JSON per runner ----
-const k6Files = readdirSync(dir).filter((f) => /^api-.*\.json$/.test(f)).sort();
+const k6Files = readdirSync(dir)
+  .filter((f) => /^api-.*\.json$/.test(f))
+  .sort(byCodepoint);
 const k6 = [];
 for (const f of k6Files) {
   const d = JSON.parse(readFileSync(join(dir, f), 'utf8'));
   const m = d.metrics || {};
   const p95 = (name) => (m[name] && m[name].values ? m[name].values['p(95)'] : undefined);
-  const thresholdsOk = Object.values(m).every((x) => !x.thresholds || Object.values(x.thresholds).every((t) => t.ok));
+  const thresholdsOk = Object.values(m).every(
+    (x) => !x.thresholds || Object.values(x.thresholds).every((t) => t.ok),
+  );
   const row = {
     runner: f.replace(/^api-/, '').replace(/\.json$/, ''),
     requests: m.http_reqs ? m.http_reqs.values.count : 0,
@@ -160,14 +184,18 @@ if (k6.length) {
   say('| --- | --- | --- | --- | --- | --- | --- | --- |');
   const ms = (x) => (typeof x === 'number' ? `${x.toFixed(0)} ms` : '–');
   for (const r of k6) {
-    say(`| ${r.runner} | ${r.requests} | ${(r.failedRate * 100).toFixed(2)} % | ${(r.checksRate * 100).toFixed(1)} % | ${ms(r.p95Ms)} | ${ms(r.browseP95Ms)} | ${ms(r.applyP95Ms)} | ${r.thresholdsOk ? 'within budget' : 'crossed'} |`);
+    say(
+      `| ${r.runner} | ${r.requests} | ${(r.failedRate * 100).toFixed(2)} % | ${(r.checksRate * 100).toFixed(1)} % | ${ms(r.p95Ms)} | ${ms(r.browseP95Ms)} | ${ms(r.applyP95Ms)} | ${r.thresholdsOk ? 'within budget' : 'crossed'} |`,
+    );
   }
 }
 
 const status = incomplete ? 'incomplete' : red ? 'red' : 'green';
 say();
 if (incomplete) {
-  say(`**Verdict: incomplete.** ${missing.join('; ')} — the numbers above cover only what finished, so this run`);
+  say(
+    `**Verdict: incomplete.** ${missing.join('; ')} — the numbers above cover only what finished, so this run`,
+  );
   say('is not a green run and is not published as one.');
   if (red) say('It is red as well: the unexpected tests above did run and did fail.');
 } else {
@@ -175,5 +203,9 @@ if (incomplete) {
 }
 const out = lines.join('\n') + '\n';
 process.stdout.write(out);
-if (jsonOut) writeFileSync(jsonOut, JSON.stringify({ status, red, incomplete, missing, tests, shards, k6, timings }, null, 2));
+if (jsonOut)
+  writeFileSync(
+    jsonOut,
+    JSON.stringify({ status, red, incomplete, missing, tests, shards, k6, timings }, null, 2),
+  );
 process.exit(status === 'green' ? 0 : 1);

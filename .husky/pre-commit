@@ -68,6 +68,17 @@ npm run check:contract-coverage || exit 1
 #     regenerated font + manifest.
 npm run check:icon-subset || exit 1
 
+# 10a. Every form control has an accessible name. Sonar reports 67 of these and
+#      66 are its checker not understanding that Material associates a mat-label
+#      at runtime; this states the rule the code actually follows instead.
+npm run check:input-labels || exit 1
+
+# 10b. The translation cache-buster must match the translation files. A stale
+#      stamp serves yesterday's strings from cache to anyone still holding them.
+#      This check lived only in check:static until 2026-09-10 and drifted; the
+#      parity check below is what stops that happening again.
+npm run check:i18n-cache-buster || exit 1
+
 # 1h. Hard rule (G15) — every number this repository publishes about itself,
 #     against `docs/testing/measured-counts.json`. Cheap enough to belong here
 #     rather than only in CI: it fires the moment you add a test, which is the
@@ -76,6 +87,19 @@ npm run check:icon-subset || exit 1
 #     against 1,141, and no gate could see either. Fix when this fires:
 #     `npm run measure:counts`, then update the surfaces it names.
 npm run check:published-numbers || exit 1
+
+# 11b. Two workflow defects a YAML parser and `bash -n` both wave through: a
+#      duplicate key inside a step's `env:` block (parsers silently keep the
+#      last; GitHub rejects the file with a zero-job startup failure and no
+#      log at all), and a single-quoted `'${VAR}'` in a run block, which in
+#      bash is a literal string rather than the value. Both were introduced
+#      by one mechanical rewrite and took the backend's release chain down
+#      for six hours with nothing to read.
+npm run check:workflow-env || exit 1
+
+# 12. The hook and check:static are two hand-written lists of the same set.
+#     This fails the commit when they stop agreeing.
+npm run check:gate-parity || exit 1
 
 # 2. Run prettier on the staged files (auto-formats + re-stages).
 npx lint-staged || exit 1

@@ -42,6 +42,7 @@ import { TicketCategory } from '../../api/model/ticket-category';
 import { TicketStatus } from '../../api/model/ticket-status';
 import type { UserDtoOut } from '../../api/model/user-dto-out';
 import { readLangChoice } from '../i18n/lang-preference';
+import { sixDigitDemoCode } from './demo-code';
 import {
   currentDemoRole,
   isDemoSignedIn,
@@ -1459,10 +1460,7 @@ const RULES: DemoRule[] = [
     match: /\/step-up\/request$/,
     respond: () => {
       if (typeof sessionStorage !== 'undefined' && !sessionStorage.getItem(DEMO_STEP_UP_KEY)) {
-        sessionStorage.setItem(
-          DEMO_STEP_UP_KEY,
-          String(Math.floor(100000 + Math.random() * 900000)),
-        );
+        sessionStorage.setItem(DEMO_STEP_UP_KEY, sixDigitDemoCode());
       }
       return { success: true, required: true, challengeType: 'EMAIL_CODE' };
     },

@@ -24,6 +24,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { byCodepoint } from './lib/order.mjs';
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const PAIRS_FILE = join(REPO_ROOT, 'e2e-tests/visual-parity/component-pairs.ts');
@@ -65,7 +66,8 @@ function extractPairTargets() {
   // array is the top-level only in this file (no semicolon-terminated
   // expressions inside), so a simple search works.
   const arrayEnd = text.indexOf('];', arrayStart);
-  if (arrayStart === -1 || arrayEnd === -1) throw new Error('COMPONENT_PAIRS array bounds not found');
+  if (arrayStart === -1 || arrayEnd === -1)
+    throw new Error('COMPONENT_PAIRS array bounds not found');
   const body = text.slice(arrayStart + 1, arrayEnd);
 
   const targets = [];
@@ -130,14 +132,16 @@ const orphanPairs = pairTargets.filter((p) => !sandboxIds.has(p.sandboxTarget));
 const classifiedSandboxIds = new Set(pairTargets.map((p) => p.sandboxTarget));
 const unclassifiedSandboxes = [...sandboxIds]
   .filter((id) => !classifiedSandboxIds.has(id) && !UNCLASSIFIED_OK.has(id))
-  .sort();
+  .sort(byCodepoint);
 
 const ok = orphanPairs.length === 0;
 
 if (orphanPairs.length > 0) {
   console.error('Component-pair sync FAILED — pairs reference unknown sandbox fixtures:');
   for (const p of orphanPairs) {
-    console.error(`  - pair id="${p.id}" → sandboxTarget="${p.sandboxTarget}" (no matching fixture)`);
+    console.error(
+      `  - pair id="${p.id}" → sandboxTarget="${p.sandboxTarget}" (no matching fixture)`,
+    );
   }
   console.error('');
   console.error(

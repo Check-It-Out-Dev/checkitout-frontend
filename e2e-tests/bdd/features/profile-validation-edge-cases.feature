@@ -71,15 +71,21 @@ Feature: Profile Validation Edge Cases (Consolidated)
 
     # ===== EMAIL VALIDATION =====
     # Email format validation only - no actual email mutation.
-    # Port divergence from the BE source (which expects 401): the step-up
-    # gate is validateTokenIfRequired — it SELF-SKIPS for principals without
-    # a completed 2FA setup. The BE corpus actor has 2FA configured, so the
-    # missing X-Step-Up-Token 401s before validation; this port's
-    # mock-session actor has no step-up setup, so the gate passes and the
-    # entity's @Email validation rejects with 400. The 401-before-validation
-    # path stays covered by the BE corpus + the FE step-up dialog specs.
+    #
+    # This step used to expect 400 and say the port diverged from the BE source
+    # because a mock-session actor has no step-up setup. That stopped being true
+    # on 2026-06-10, when TestAuthController started defaulting
+    # initialAccountSetupCompleted to TRUE for oracle actors — its own comment
+    # names this scenario as what an unset flag had been silently breaking.
+    #
+    # So step-up IS required for this actor, validateTokenIfRequired does not
+    # self-skip, and the missing X-Step-Up-Token is refused before @Email
+    # validation ever runs. 401 is the correct answer and the BE corpus has
+    # expected it all along; the port was asserting a precondition it no longer
+    # had. Specs that genuinely need an incomplete setup pass setupCompleted
+    # false explicitly.
     When the company attempts to update email with value "not-an-email"
-    Then soft assert response status is 400
+    Then soft assert response status is 401
 
     # ===== PHONE NUMBER VALIDATION =====
     # ----- Invalid format -----

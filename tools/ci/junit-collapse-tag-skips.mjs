@@ -92,11 +92,11 @@ for (const f of files) {
     const cases = [...next.matchAll(TESTCASE)];
     const n = (name, pred) =>
       raw.includes(`${name}=`)
-        ? whole.replace(new RegExp(`\\b${name}\\s*=\\s*"[^"]*"`), `${name}="${cases.filter(pred).length}"`)
+        ? whole.replace(new RegExp(`\\b${name}\\s*=\\s*"[^"]*"`), `${name}="${cases.filter((c) => pred(c)).length}"`)
         : whole;
     let out = n('tests', () => true);
     const withCount = (src, name, pred) =>
-      src.replace(new RegExp(`\\b${name}\\s*=\\s*"[^"]*"`), `${name}="${cases.filter(pred).length}"`);
+      src.replace(new RegExp(`\\b${name}\\s*=\\s*"[^"]*"`), `${name}="${cases.filter((c) => pred(c)).length}"`);
     out = withCount(out, 'skipped', (m) => isSkipped(m[2]));
     return out;
   });

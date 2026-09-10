@@ -4,7 +4,7 @@ import type { PageNotificationDtoOut } from '../../../src/app/api/model/page-not
 import type { PartnershipOpportunityDtoOut } from '../../../src/app/api/model/partnership-opportunity-dto-out';
 import type { UserDtoOut } from '../../../src/app/api/model/user-dto-out';
 import { BE_URL, GREENFIELD_URL, seedSession } from '../_actor';
-import { seedInstagramConnection } from '../_helpers';
+import { activateAccount, seedInstagramConnection } from '../_helpers';
 import { clearInbox, flushPendingEmails, listInbox } from '../../_framework/test-email';
 
 /** Shape of `/notifications/unread/count` — not in the generated client. */
@@ -140,12 +140,32 @@ async function seedInfluencerContext(
  */
 async function seedInfluencerContextWithInstagram(
   browser: import('@playwright/test').Browser,
+  hookPage: Page,
 ): Promise<{ page: Page; context: BrowserContext; email: string }> {
   const context = await browser.newContext({ ignoreHTTPSErrors: true });
   const page = await context.newPage();
   const email = UNIQUE_INFLUENCER();
   await seedSession(page, email, 'INFLUENCER');
-  await seedInstagramConnection(page, email);
+
+  // The two admin hooks run from ANOTHER context's page on purpose. They are keyed by email and
+  // need no session of their own, and driving them from the influencer's page put two extra
+  // round-trips through that context's cookie jar between minting its session and using it --
+  // after which the apply arrived with no session at all (401, NO_AUTHENTICATION_FOR_REQUIRED_
+  // ENDPOINT in the backend log). The test one file up that seeds nothing extra authenticates
+  // fine, which is the differential. Nothing touches this jar now between mint and use.
+  await seedInstagramConnection(hookPage, email);
+  // ACTIVE is the second of the three requirements saveAsDto checks; without it the apply is
+  // refused exactly as it is with no connection at all, and the backend now says which.
+  await activateAccount(hookPage, email);
+
+  // The precondition, asserted rather than assumed. A lost session used to surface three steps
+  // later as "apply should succeed, got 401", which reads as a permissions problem.
+  const me = await api(page, 'GET', '/users/me');
+  expect(
+    me.status(),
+    `the influencer session must survive seeding — /users/me answered ${me.status()}`,
+  ).toBe(200);
+
   return { page, context, email };
 }
 
@@ -346,7 +366,7 @@ test.describe('@notification-lifecycle — port of notification-e2e.feature', ()
     // the apply lands. Without Instagram, apply 403s and the test would
     // be moot (no apply event = trivially no notification, not a real
     // suppression assertion).
-    const inf = await seedInfluencerContextWithInstagram(browser);
+    const inf = await seedInfluencerContextWithInstagram(browser, page);
     try {
       const applyRes = await api(inf.page, 'POST', '/applied-opportunity', {
         partnershipOpportunity: campaignId,

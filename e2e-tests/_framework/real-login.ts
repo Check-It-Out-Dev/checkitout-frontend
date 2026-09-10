@@ -66,8 +66,37 @@ interface ResolvedCredentials {
   readonly apiKey: string;
 }
 
+/**
+ * Where Identity Toolkit is, for this run.
+ *
+ * The emulator serves the production API under a path prefix and accepts any API key, which is what
+ * lets the 2FA specs sign in for real with no Google project in reach. The backend has had exactly
+ * this redirect since its e2e tier moved to the emulator (see its FirebaseEmulator component); this
+ * is the test side of the same idea, keyed off the same variable, so a run has either both halves
+ * pointed at the emulator or neither.
+ */
+function identityToolkitBase(): string {
+  const host = process.env['FIREBASE_AUTH_EMULATOR_HOST']?.trim();
+  return host
+    ? `http://${host}/identitytoolkit.googleapis.com/v1`
+    : 'https://identitytoolkit.googleapis.com/v1';
+}
+
+/** True when this run signs in against the emulator rather than a Google project. */
+export function usingAuthEmulator(): boolean {
+  return Boolean(process.env['FIREBASE_AUTH_EMULATOR_HOST']?.trim());
+}
+
+/**
+ * The emulator ignores the API key entirely: it is in the URL because the production endpoint
+ * requires one, not because anything checks it. A literal keeps the shape of the call identical in
+ * both modes rather than branching the request itself.
+ */
+const EMULATOR_API_KEY = 'emulator-ignores-this';
+
 function resolveCredentials(role: ActorRole): ResolvedCredentials {
-  const apiKey = process.env['FIREBASE_API_KEY'];
+  const apiKey =
+    process.env['FIREBASE_API_KEY'] ?? (usingAuthEmulator() ? EMULATOR_API_KEY : undefined);
   if (!apiKey) {
     throw new MissingCredentialsError(
       'FIREBASE_API_KEY not set. Copy e2e-tests/.env.example to e2e-tests/.env and fill in.',
@@ -98,12 +127,12 @@ export async function mintFirebaseIdToken(
   context: BrowserContext,
   email: string,
   password: string,
-  apiKey: string = process.env['FIREBASE_API_KEY'] ?? '',
+  apiKey: string = process.env['FIREBASE_API_KEY'] ?? (usingAuthEmulator() ? EMULATOR_API_KEY : ''),
 ): Promise<string> {
   if (!apiKey) {
     throw new MissingCredentialsError('FIREBASE_API_KEY not set.');
   }
-  const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`;
+  const url = `${identityToolkitBase()}/accounts:signInWithPassword?key=${apiKey}`;
   const res = await context.request.post(url, {
     data: { email, password, returnSecureToken: true },
     ignoreHTTPSErrors: true,
@@ -164,7 +193,9 @@ export async function realLogin(
  * so missing-secrets runs stay green.
  */
 export function hasRealCredentialsFor(role: ActorRole): boolean {
-  if (!process.env['FIREBASE_API_KEY']) return false;
+  // The API key is a production requirement, not an emulator one: against the emulator the accounts
+  // and their passwords come from the seeder, so having the credentials IS having them.
+  if (!process.env['FIREBASE_API_KEY'] && !usingAuthEmulator()) return false;
   return hasUiCredentialsFor(role);
 }
 

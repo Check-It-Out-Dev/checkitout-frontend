@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { GREENFIELD_URL } from '../_actor';
+import { sessionCookiesShouldBeSecure } from '../../_framework/auth';
 import { hasUiCredentialsFor } from '../../_framework/real-login';
 import type { UserDtoOut } from '../../../src/app/api/model/user-dto-out';
 
@@ -133,9 +134,15 @@ test.describe('@login-ui-real — real-Firebase UI sign-in (T4-UI)', () => {
       // for the cookies-only auth model (a missing HttpOnly would mean JS
       // could read the session — major security regression).
       expect(sessionCookie!.httpOnly, 'session must be HttpOnly').toBe(true);
-      expect(sessionCookie!.secure, 'session must be Secure').toBe(true);
       expect(sessionSigCookie!.httpOnly, 'session_sig must be HttpOnly').toBe(true);
-      expect(sessionSigCookie!.secure, 'session_sig must be Secure').toBe(true);
+      expect(
+        sessionCookie!.secure,
+        `session Secure must match the scheme of ${GREENFIELD_URL}`,
+      ).toBe(sessionCookiesShouldBeSecure(GREENFIELD_URL));
+      expect(
+        sessionSigCookie!.secure,
+        `session_sig Secure must match the scheme of ${GREENFIELD_URL}`,
+      ).toBe(sessionCookiesShouldBeSecure(GREENFIELD_URL));
 
       // Final cross-check: probe /users/me with the auto-attached cookies.
       // This is what `SessionStateService.probe()` does inside the form

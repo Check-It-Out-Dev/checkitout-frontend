@@ -358,11 +358,19 @@
               {{ 'opportunities.form.photos.add' | transloco }}
             }
           </button>
+          <!--
+            The only input in this application that is not inside a mat-form-field, and the only one
+            of Sonar's 67 InputWithoutLabelCheck findings that was real. `hidden` is display:none, so
+            assistive technology never reaches it and the button above is the actual control -- but
+            that is a property of a CSS class, and a class can change. The label says what it is
+            regardless, and renders nothing.
+          -->
           <input
             #photoInput
             type="file"
             accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
             class="hidden"
+            [attr.aria-label]="'opportunities.form.photos.add' | transloco"
             (change)="onPhotoSelected($event)"
             data-testid="opp-form-photo-input"
           />

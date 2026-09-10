@@ -28,7 +28,7 @@ your time. These are the parts that transplant with the least effort, roughly in
 
 ## What you cannot run without bringing your own
 
-The demo build, the 1181 Jest tests and the gate wall run on a clean clone with nothing
+The demo build, the 1206 Jest tests and the gate wall run on a clean clone with nothing
 installed but npm packages. Everything that talks to a real backend does not, and the
 [README explains why](../README.md#-getting-it-running) — in short, this is a commercial
 product, no secret is committed, and the live tiers need a Google Cloud Storage bucket, a

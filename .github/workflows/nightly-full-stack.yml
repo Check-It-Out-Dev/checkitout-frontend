@@ -29,6 +29,18 @@ permissions:
 env:
   NG_CLI_ANALYTICS: "false"
   NODE_OPTIONS: "--max-old-space-size=4096"
+  # The suite mints its own ID token by calling Identity Toolkit directly, so it needs the same
+  # redirect the backend has. The accounts and their passwords are the seeder's, and the secret is
+  # the one provisioned above -- so the 2FA scenarios run for real with no Google project in reach.
+  FIREBASE_AUTH_EMULATOR_HOST: 127.0.0.1:9099
+  FIREBASE_TEST_ADMIN_EMAIL: e2e.admin@test.com
+  FIREBASE_TEST_ADMIN_PASSWORD: e2e-emulator-password
+  FIREBASE_TEST_COMPANY_EMAIL: e2e.company@test.com
+  FIREBASE_TEST_COMPANY_PASSWORD: e2e-emulator-password
+  FIREBASE_TEST_INFLUENCER_EMAIL: e2e.influencer@test.com
+  FIREBASE_TEST_INFLUENCER_PASSWORD: e2e-emulator-password
+  ADMIN_FIREBASE_UID: E2E_ADMIN_001
+  E2E_TOTP_SECRET: JBSWY3DPEHPK3PXP
   BACKEND_TAG: ${{ inputs.backend_tag || 'main' }}
 
 jobs:
@@ -37,14 +49,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
-      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444  # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020  # v7.0.0
         with:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci --prefer-offline --no-audit --loglevel=error
       - run: npm run build
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
           name: browser-dist
           path: dist/check-it-out-fe-greenfield/browser
@@ -118,20 +130,26 @@ jobs:
           # login is EMAIL_NOT_FOUND while the users plainly exist.
           FIREBASE_PROJECT_ID: demo-checkitout
           GCP_PROJECT_ID: demo-checkitout
+          # TOTP secrets are sealed by Cloud KMS in production and by LocalTotpCipher when KMS is
+          # off. There is no KMS here and there must not be, so the local cipher does it: an AES-GCM
+          # key derived from this string, which is a test key for a throwaway emulator and seals
+          # nothing that outlives the run.
+          GCP_KMS_ENABLED: "false"
+          TOTP_LOCAL_KEY: nightly-emulator-totp-key
         ports: ["8080:8080"]
         options: >-
           --add-host=host.docker.internal:host-gateway
           --health-cmd "wget -qO- http://127.0.0.1:8080/api/actuator/health/readiness | grep -q UP"
           --health-interval 10s --health-timeout 5s --health-retries 40 --health-start-period 60s
     steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
-      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444  # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020  # v7.0.0
         with:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci --prefer-offline --no-audit --loglevel=error
       - run: npx playwright install --with-deps chromium
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131  # v7
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
           name: browser-dist
           path: dist/check-it-out-fe-greenfield/browser
@@ -144,7 +162,7 @@ jobs:
       # firebase-tools 15 refuses to start the Firestore emulator on anything below JDK 21, and the
       # runner image's default `java` is older. The backend's own tier never hit this because it sets
       # up a JDK for Maven anyway.
-      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961  # v5
+      - uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c  # v6.0.0
         with:
           distribution: temurin
           java-version: "21"
@@ -163,9 +181,22 @@ jobs:
           JSON
           firebase emulators:start --only auth,firestore --project demo-checkitout             --config /tmp/firebase.json > /tmp/emulators.log 2>&1 &
           FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099           FIRESTORE_EMULATOR_HOST=127.0.0.1:8085           FIREBASE_PROJECT_ID=demo-checkitout             node tools/ci/seed-firebase-emulator.mjs
-      - name: Emulator log on failure
-        if: failure()
-        run: tail -60 /tmp/emulators.log || true
+      # `always()` for the same reason the backend log below says: the blob reporter does not
+      # fail this job when tests fail, so `failure()` here could never fire. It stays quiet on a
+      # healthy night -- only lines the emulators themselves flagged are printed, and the tail
+      # follows only if there were any.
+      - name: Emulator log
+        if: always()
+        run: |
+          if [ ! -f /tmp/emulators.log ]; then echo 'the emulators never wrote a log'; exit 0; fi
+          hits=$(grep -iE 'error|exception|refused|failed|denied' /tmp/emulators.log | tail -40 || true)
+          if [ -n "$hits" ]; then
+            echo "$hits"
+            echo '--- tail, for context ---'
+            tail -60 /tmp/emulators.log
+          else
+            echo 'the emulators logged nothing that looks like a problem'
+          fi
 
       - name: Frontend behind nginx, /api proxied to the backend service on the host
         run: |
@@ -178,6 +209,87 @@ jobs:
             -H "Content-Type: application/json" -d '{"email":"smoke@checkitout.app","role":"COMPANY"}'
           grep -i "^set-cookie: session=" /tmp/h | grep -qiv secure && echo "session cookie without Secure: sign-in will work"
 
+      # The emulator seeds three accounts into Firebase Auth. The backend keeps its own users table
+      # and does not learn about them: mock-session creates a row on the way past, so every scenario
+      # signing in that way has always worked, while the real-login ones -- which post a genuine ID
+      # token to /auth/exchange-token -- did not. exchangeToken verifies the token, validates the role
+      # through the Admin SDK, then looks the user up in Postgres and finds nothing.
+      #
+      # From outside that is a bare 401, because a missing user on an auth endpoint is deliberately
+      # indistinguishable from a bad credential. The backend log says what it actually was:
+      # ResourceNotFoundException at TokenExchangeService:193.
+      #
+      # ensure-user exists for exactly this, and is idempotent.
+      - name: The seeded actors, in the backend's database as well
+        run: |
+          set -uo pipefail
+          ensure() {
+            payload=$(printf '{"email":"%s","role":"%s","firebaseUid":"%s"}' "$1" "$2" "$3")
+            code=$(curl -sS -o /tmp/ensure.json -w '%{http_code}' -X POST http://127.0.0.1:8080/api/test/auth/ensure-user -H 'Content-Type: application/json' -d "$payload" || echo 000)
+            echo "ensure-user $2 $3 -> HTTP $code"
+            [ "$code" = "200" ] || echo "::warning::ensure-user for $3 answered $code; the real-login scenarios will fail"
+          }
+          ensure e2e.company@test.com COMPANY E2E_COMPANY_001
+          ensure e2e.influencer@test.com INFLUENCER E2E_INFLUENCER_001
+          ensure e2e.admin@test.com ADMIN E2E_ADMIN_001
+
+          # A user the seed did not create has no COOKIE_POLICY consent record, and
+          # TokenExchangeService.verifyCookiePolicyConsent blocks sign-in with 451 before it looks at
+          # anything else -- so a freshly ensured actor gets "Please accept the cookie policy before
+          # signing in", not a 401, and it looks nothing like the missing-user failure above.
+          # The backend has carried an endpoint for exactly this since the consent module landed
+          # ("Used by E2E login helpers so exchange-token doesn't return 451"); nothing called it.
+          # Idempotent: it answers seeded=false when the record is already there.
+          consent() {
+            code=$(curl -sS -o /tmp/consent.json -w '%{http_code}' -X POST http://127.0.0.1:8080/api/test/legal/seed-cookie-consent -H 'Content-Type: application/json' -d "$(printf '{"email":"%s"}' "$1")" || echo 000)
+            echo "seed-cookie-consent $1 -> HTTP $code $(cat /tmp/consent.json 2>/dev/null | head -c 120)"
+            [ "$code" = "200" ] || echo "::warning::seed-cookie-consent for $1 answered $code; exchange-token will return 451"
+          }
+          consent e2e.company@test.com
+          consent e2e.influencer@test.com
+          consent e2e.admin@test.com
+
+      # The 2FA scenarios need the suite and the application to agree on one secret. Rather than read
+      # one back and decrypt it -- which is what needs Cloud KMS and a service account -- the run
+      # provisions a secret it already knows, through the backend's own endpoint, so the application
+      # seals it with the cipher configured above and the suite never decrypts anything. The endpoint
+      # is idempotent and refuses to exist on the public sandbox.
+      #
+      # It retries for three minutes, and it never fails the shard.
+      #
+      # Both numbers are the gRPC reconnect backoff. A service container starts before any step, so
+      # the backend opens its Firestore channel against an emulator that does not exist yet; gRPC
+      # then doubles its retry interval -- 1s, 2s, 4s ... to a two-minute ceiling -- and a call
+      # arriving inside a long backoff fails instantly with UNAVAILABLE rather than waiting. Thirty
+      # seconds of retries landed squarely in that window and reported failure while the very next
+      # tests used Firestore happily. Three minutes covers the ceiling.
+      #
+      # Placed after the frontend container so the channel has that minute too, and non-fatal
+      # because a seeding convenience must not be able to stop a tier that would otherwise run:
+      # the scenarios that need the secret skip without it and say why.
+      - name: The admin's TOTP secret, provisioned rather than decrypted
+        run: |
+          set -uo pipefail
+          url=http://127.0.0.1:8080/api/test/auth/provision-totp
+          payload=$(printf '{"firebaseUid":"%s","secret":"%s"}' "$ADMIN_FIREBASE_UID" "$E2E_TOTP_SECRET")
+          code=000
+          for attempt in $(seq 1 12); do
+            code=$(curl -sS -o /tmp/totp.json -w '%{http_code}' -X POST "$url" -H 'Content-Type: application/json' -d "$payload" || echo 000)
+            echo "attempt $attempt: provision-totp -> HTTP $code"
+            [ "$code" = "200" ] && break
+            [ "$code" = "404" ] && break
+            sleep 15
+          done
+          cat /tmp/totp.json 2>/dev/null || true
+          echo
+          if [ "$code" = "200" ]; then
+            echo "the admin's TOTP secret is in place"
+          elif [ "$code" = "404" ]; then
+            echo "::warning::this backend image has no /test/auth/provision-totp - the 2FA scenarios will skip"
+          else
+            echo "::warning::provision-totp answered $code after 12 attempts over three minutes - the 2FA scenarios will skip"
+          fi
+
       - name: ${{ matrix.queue }}
         run: ${{ matrix.command }}
         env:
@@ -188,10 +300,61 @@ jobs:
           PLAYWRIGHT_BLOB_OUTPUT_DIR: blob-report
         continue-on-error: true
 
-      - name: Backend log on failure
-        if: failure()
-        run: docker logs ${{ job.services.backend.id }} > backend-${{ matrix.shard }}.log 2>&1 || true
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6
+      # After the tests, not before them. This block sat above the test step and captured a log
+      # that stopped at startup -- which is why an investigation into a 401 during the run found
+      # no request in it at all. There was also a second copy below, conditioned on failure(),
+      # which a blob-reporting shard never satisfies; it has been removed rather than fixed,
+      # because one capture that always runs is the whole requirement.
+      # The backend runs as a service container, so its log is not in this job's output and a failure
+      # inside it reads only as an HTTP 500 in a test. Several scenarios fail with
+      # `error.network.external_service`, which is the backend saying it could not reach something --
+      # and which something is a question only its own log answers.
+      #
+      # `always()`, not `failure()`, and that distinction cost a run: the blob reporter does not fail
+      # this job when tests fail. The shards all end green and the merge job downstream decides the
+      # verdict, so a step conditioned on this job failing can never run. What is printed is a grep
+      # first; the tail only follows if the grep found something, so a healthy night stays readable.
+      - name: Backend log
+        if: always()
+        run: |
+          id=$(docker ps -a --filter "ancestor=ghcr.io/check-it-out-dev/checkitout-backend:${{ inputs.backend_tag || 'main' }}" --format '{{.ID}}' | head -1)
+          if [ -z "$id" ]; then
+            id=$(docker ps -a --format '{{.ID}} {{.Image}}' | grep checkitout-backend | head -1 | cut -d' ' -f1)
+          fi
+          if [ -z "$id" ]; then echo "no backend container found to read a log from"; exit 0; fi
+          echo "### Backend: what it said about reaching anything"
+          # The whole log, kept as an artifact. Three nightly failures in a row have been diagnosed
+          # by reading it, and each time the grep below turned out not to match the interesting line
+          # -- a 401 is not "external_service", and the gRPC channel panic that caused nine failures
+          # said "Uncaught exception in the SynchronizationContext", which no pattern here would have
+          # caught. Grepping is for the step summary; the artifact is for the next question.
+          docker logs "$id" > /tmp/backend.log 2>&1 || true
+          echo "backend log: $(wc -l < /tmp/backend.log) lines"
+          hits=$(grep -iE "emulator|identitytoolkit|securetoken|firestore|external_service|Connection refused|UnknownHost|NetworkTranslatable|not_authenticated|Uncaught exception|rate_limit" /tmp/backend.log | tail -60 || true)
+          if [ -n "$hits" ]; then
+            echo "$hits"
+            {
+              echo "### Backend: emulator and external-call lines"
+              echo '```'
+              echo "$hits"
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+            echo "--- tail, for context ---"
+            tail -80 /tmp/backend.log
+          else
+            echo "nothing about emulators or external calls in the backend log"
+          fi
+
+      - name: Keep the backend log
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        with:
+          name: backend-log-${{ matrix.shard }}
+          path: /tmp/backend.log
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         if: always()
         with:
           name: nightly-blob-${{ matrix.shard }}
@@ -210,13 +373,13 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
-      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444  # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020  # v7.0.0
         with:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci --prefer-offline --no-audit --loglevel=error
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131  # v7
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
           pattern: nightly-blob-*
           path: fragments
@@ -235,7 +398,7 @@ jobs:
         env:
           NEEDS: ${{ toJSON(needs) }}
         run: set -o pipefail; node tools/ci/k8s-summary.mjs ci-reports --needs "$NEEDS" --json ci-reports/summary.json | tee -a "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         if: always()
         with:
           name: nightly-report-${{ github.run_number }}
@@ -244,7 +407,7 @@ jobs:
             !ci-reports/blobs
           retention-days: 30
       - name: Pages site (previous state)
-        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
           ref: gh-pages
           path: site

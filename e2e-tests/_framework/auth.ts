@@ -26,6 +26,24 @@ export const GREENFIELD_URL =
   process.env['GREENFIELD_URL'] ?? process.env['PW_BASE_URL'] ?? 'https://localhost:4201';
 
 /**
+ * Whether the session cookies served from `origin` should carry the Secure attribute.
+ *
+ * A browser DISCARDS a Secure cookie that arrives over plain http, so a backend that set one there
+ * would hand out a session nobody keeps. The nightly full-stack tier serves the app over http on the
+ * runner and configures the backend accordingly -- it prints "session cookie without Secure: sign-in
+ * will work" before the tests start -- so asserting Secure unconditionally asserts that sign-in is
+ * broken. Asserting it against the scheme keeps the check meaningful in BOTH environments: over
+ * https Secure is mandatory, over http its absence is the correct behaviour, and a backend that got
+ * either one backwards fails here.
+ *
+ * Takes the origin rather than closing over GREENFIELD_URL, because the integration tier resolves
+ * its own copy of that constant and the two must not be able to disagree.
+ */
+export function sessionCookiesShouldBeSecure(origin: string = GREENFIELD_URL): boolean {
+  return origin.startsWith('https://');
+}
+
+/**
  * Authenticate the actor against the given origin via cookies.
  *
  * `origin` defaults to `GREENFIELD_URL` for greenfield-only callers

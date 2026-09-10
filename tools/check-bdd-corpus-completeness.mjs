@@ -29,10 +29,19 @@
 import { readdir, readFile, stat } from 'node:fs/promises';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { byCodepoint } from './lib/order.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
-const BE_FEATURES_DIR = resolve(ROOT, '..', 'checkitout-backend', 'src', 'test', 'resources', 'features');
+const BE_FEATURES_DIR = resolve(
+  ROOT,
+  '..',
+  'checkitout-backend',
+  'src',
+  'test',
+  'resources',
+  'features',
+);
 const FE_FEATURES_DIR = join(ROOT, 'e2e-tests', 'bdd', 'features');
 const WAIVERS_FILE = join(ROOT, 'e2e-tests', 'bdd', 'CORPUS-WAIVERS.md');
 
@@ -82,7 +91,7 @@ async function main() {
   }
 
   const beFiles = await walk(BE_FEATURES_DIR);
-  const beRel = beFiles.map((f) => toPosix(relative(BE_FEATURES_DIR, f))).sort();
+  const beRel = beFiles.map((f) => toPosix(relative(BE_FEATURES_DIR, f))).sort(byCodepoint);
 
   // Ported: BE paths cited by FE feature headers.
   const feFiles = await walk(FE_FEATURES_DIR);
@@ -104,8 +113,12 @@ async function main() {
 
   const beSet = new Set(beRel);
   const missing = beRel.filter((p) => !ported.has(p) && !waived.has(p));
-  const staleWaivers = [...waived].filter((p) => !beSet.has(p)).sort();
-  const doubleCovered = [...waived].filter((p) => ported.has(p)).sort();
+  const staleWaivers = [...waived]
+    .filter((p) => !beSet.has(p))
+    .sort(byCodepoint);
+  const doubleCovered = [...waived]
+    .filter((p) => ported.has(p))
+    .sort(byCodepoint);
 
   const problems = [];
   if (missing.length) {

@@ -27,6 +27,7 @@
  */
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+import { byCodepoint } from './lib/order.mjs';
 
 const log = (m) => console.log(`\x1b[36m[review] ${m}\x1b[0m`);
 
@@ -38,7 +39,7 @@ function pickRun() {
   const runs = readdirSync(root, { withFileTypes: true })
     .filter((e) => e.isDirectory())
     .map((e) => e.name)
-    .sort();
+    .sort(byCodepoint);
   if (!runs.length) throw new Error('qa-film holds no runs');
   return join(root, runs.at(-1));
 }
@@ -194,7 +195,9 @@ function check(run) {
   // Not `validation.json` — this used to write its own report into the very
   // directory it globs for verdicts, so every run after the first rejected its
   // own output and exited 1.
-  for (const file of readdirSync(dir).filter((f) => f.endsWith('.json') && f !== 'validation.json')) {
+  for (const file of readdirSync(dir).filter(
+    (f) => f.endsWith('.json') && f !== 'validation.json',
+  )) {
     let verdict;
     try {
       verdict = parseLoosely(readFileSync(join(dir, file), 'utf8'));

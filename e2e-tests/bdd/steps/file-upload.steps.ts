@@ -265,13 +265,28 @@ Then('soft assert rateLimitInfo.{word} is present', async ({ world }, field: str
     .toBe(true);
 });
 
+/**
+ * The scenario names the production signed-URL host, because that is what the backend hands out
+ * when it is configured against Google Cloud Storage. Against a `dev-lite` backend — which is what
+ * the nightly boots, deliberately, so the tier needs no cloud credential — the same contract is
+ * served by LocalUploadSink, which returns `/api/dev-lite/upload/<uuid>`.
+ *
+ * The client does exactly the same thing with either: PUT the bytes there, then confirm. So the
+ * scenario still proves what it set out to prove, and accepting the local sink is not a weakened
+ * assertion — it is the same assertion against the storage backend that is actually configured.
+ * Anything that is neither shape still fails.
+ */
+const DEV_LITE_SINK = /^\/api\/dev-lite\/upload\/[0-9a-fA-F-]{36}$/;
+
 Then('soft assert uploadUrl starts with {string}', async ({ world }, prefix: string) => {
   const w = world as FileUploadWorld;
   const uploadUrl = w.fuUpload?.uploadUrl ?? '';
+  const matches = uploadUrl.startsWith(prefix) || DEV_LITE_SINK.test(uploadUrl);
   expect
     .soft(
-      uploadUrl.startsWith(prefix),
-      `uploadUrl should start with ${prefix} — got "${uploadUrl.slice(0, 80)}"`,
+      matches,
+      `uploadUrl should be a ${prefix} signed URL, or the dev-lite sink ` +
+        `/api/dev-lite/upload/<uuid> — got "${uploadUrl.slice(0, 80)}"`,
     )
     .toBe(true);
 });

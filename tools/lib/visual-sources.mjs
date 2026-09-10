@@ -10,6 +10,7 @@ import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { byCodepoint } from './order.mjs';
 
 export const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 export const FIXTURES_DIR = join(REPO_ROOT, 'src/app/sandbox/fixtures');
@@ -35,7 +36,9 @@ export function resolveWatchedSources() {
       }
     }
   }
-  return [...out].map((p) => relative(REPO_ROOT, p).split('\\').join('/')).sort();
+  return [...out]
+    .map((p) => relative(REPO_ROOT, p).split('\\').join('/'))
+    .sort(byCodepoint);
 }
 
 /**

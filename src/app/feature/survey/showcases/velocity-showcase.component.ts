@@ -10,7 +10,7 @@ import { SurveyCardComponent } from '../ui/survey-card.component';
  * development speed. Fragment id `velocity` is a hub deep-link target.
  *
  * Grounding (kept honest, refreshed 2026-09-02):
- *   • Loops: tsc+strictTemplates seconds-fast; the fourteen-step check:full
+ *   • Loops: tsc+strictTemplates seconds-fast; the nineteen-step check:full
  *     (ten audit scripts + both typechecks + ng build strictTemplates + 886
  *     jest) lands in minutes on a clean tree; runtime = pm2 logs of BE :8080
  *     + FE :4200/:4201 readable by the agent live.
