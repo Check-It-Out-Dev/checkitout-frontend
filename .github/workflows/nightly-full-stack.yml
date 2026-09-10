@@ -185,46 +185,6 @@ jobs:
       # fail this job when tests fail, so `failure()` here could never fire. It stays quiet on a
       # healthy night -- only lines the emulators themselves flagged are printed, and the tail
       # follows only if there were any.
-      # The 2FA scenarios need the suite and the application to agree on one secret. Rather than read
-      # one back and decrypt it -- which is what needs Cloud KMS and a service account -- the run
-      # provisions a secret it already knows, through the backend's own endpoint, so the application
-      # seals it with the cipher configured above and the suite never decrypts anything. The endpoint
-      # is idempotent and refuses to exist on the public sandbox.
-      # The 2FA scenarios need the suite and the application to agree on one secret. Rather than read
-      # one back and decrypt it -- which is what needs Cloud KMS and a service account -- the run
-      # provisions a secret it already knows, through the backend's own endpoint, so the application
-      # seals it with the cipher configured above and the suite never decrypts anything. The endpoint
-      # is idempotent and refuses to exist on the public sandbox.
-      #
-      # It retries, and it never fails the shard. The first version did both the other way round and
-      # took three shards down with it: the backend's Firestore channel is opened at startup, when the
-      # emulators are not up yet, and the first call after they appear can still land on a connection
-      # that is backing off -- 409, "A data integrity error occurred", from an UNAVAILABLE underneath.
-      # A seeding convenience must not be able to fail a tier that would otherwise have run. The
-      # scenarios that need the secret skip without it and say so, which is the honest outcome.
-      - name: The admin's TOTP secret, provisioned rather than decrypted
-        run: |
-          set -uo pipefail
-          url=http://127.0.0.1:8080/api/test/auth/provision-totp
-          payload=$(printf '{"firebaseUid":"%s","secret":"%s"}' "$ADMIN_FIREBASE_UID" "$E2E_TOTP_SECRET")
-          code=000
-          for attempt in 1 2 3 4 5 6; do
-            code=$(curl -sS -o /tmp/totp.json -w '%{http_code}' -X POST "$url" -H 'Content-Type: application/json' -d "$payload" || echo 000)
-            echo "attempt $attempt: provision-totp -> HTTP $code"
-            [ "$code" = "200" ] && break
-            [ "$code" = "404" ] && break
-            sleep 5
-          done
-          cat /tmp/totp.json 2>/dev/null || true
-          echo
-          if [ "$code" = "200" ]; then
-            echo "the admin's TOTP secret is in place"
-          elif [ "$code" = "404" ]; then
-            echo "::warning::this backend image has no /test/auth/provision-totp - the 2FA scenarios will skip"
-          else
-            echo "::warning::provision-totp answered $code after 6 attempts - the 2FA scenarios will skip"
-          fi
-
       - name: Emulator log
         if: always()
         run: |
@@ -238,6 +198,71 @@ jobs:
             echo 'the emulators logged nothing that looks like a problem'
           fi
 
+      - name: Frontend behind nginx, /api proxied to the backend service on the host
+        run: |
+          docker build -q -f deploy/k8s/frontend/Dockerfile -t checkitout-frontend:ci .
+          docker run -d --name frontend -p 4300:80 --add-host=host.docker.internal:host-gateway \
+            -e BACKEND_UPSTREAM=host.docker.internal:8080 -e COOKIE_FLAGS="nosecure samesite=lax" checkitout-frontend:ci
+          for i in $(seq 1 30); do curl -fsS -o /dev/null http://localhost:4300/healthz && break; sleep 1; done
+          curl -fsS http://localhost:4300/api/actuator/health | grep -q '"UP"' && echo "backend UP through nginx"
+          curl -sS -D /tmp/h -o /dev/null -X POST http://localhost:4300/api/test/auth/mock-session \
+            -H "Content-Type: application/json" -d '{"email":"smoke@checkitout.app","role":"COMPANY"}'
+          grep -i "^set-cookie: session=" /tmp/h | grep -qiv secure && echo "session cookie without Secure: sign-in will work"
+
+      # The 2FA scenarios need the suite and the application to agree on one secret. Rather than read
+      # one back and decrypt it -- which is what needs Cloud KMS and a service account -- the run
+      # provisions a secret it already knows, through the backend's own endpoint, so the application
+      # seals it with the cipher configured above and the suite never decrypts anything. The endpoint
+      # is idempotent and refuses to exist on the public sandbox.
+      # The 2FA scenarios need the suite and the application to agree on one secret. Rather than read
+      # one back and decrypt it -- which is what needs Cloud KMS and a service account -- the run
+      # provisions a secret it already knows, through the backend's own endpoint, so the application
+      # seals it with the cipher configured above and the suite never decrypts anything. The endpoint
+      # is idempotent and refuses to exist on the public sandbox.
+      #
+      # It retries for three minutes, and it never fails the shard.
+      #
+      # Both numbers are the gRPC reconnect backoff. A service container starts before any step, so
+      # the backend opens its Firestore channel against an emulator that does not exist yet; gRPC
+      # then doubles its retry interval -- 1s, 2s, 4s ... to a two-minute ceiling -- and a call
+      # arriving inside a long backoff fails instantly with UNAVAILABLE rather than waiting. Thirty
+      # seconds of retries landed squarely in that window and reported failure while the very next
+      # tests used Firestore happily. Three minutes covers the ceiling.
+      #
+      # Placed after the frontend container so the channel has that minute too, and non-fatal
+      # because a seeding convenience must not be able to stop a tier that would otherwise run:
+      # the scenarios that need the secret skip without it and say why.
+      - name: The admin's TOTP secret, provisioned rather than decrypted
+        run: |
+          set -uo pipefail
+          url=http://127.0.0.1:8080/api/test/auth/provision-totp
+          payload=$(printf '{"firebaseUid":"%s","secret":"%s"}' "$ADMIN_FIREBASE_UID" "$E2E_TOTP_SECRET")
+          code=000
+          for attempt in $(seq 1 12); do
+            code=$(curl -sS -o /tmp/totp.json -w '%{http_code}' -X POST "$url" -H 'Content-Type: application/json' -d "$payload" || echo 000)
+            echo "attempt $attempt: provision-totp -> HTTP $code"
+            [ "$code" = "200" ] && break
+            [ "$code" = "404" ] && break
+            sleep 15
+          done
+          cat /tmp/totp.json 2>/dev/null || true
+          echo
+          if [ "$code" = "200" ]; then
+            echo "the admin's TOTP secret is in place"
+          elif [ "$code" = "404" ]; then
+            echo "::warning::this backend image has no /test/auth/provision-totp - the 2FA scenarios will skip"
+          else
+            echo "::warning::provision-totp answered $code after 12 attempts over three minutes - the 2FA scenarios will skip"
+          fi
+
+      - name: ${{ matrix.queue }}
+        run: ${{ matrix.command }}
+
+      # After the tests, not before them. This block sat above the test step and captured a log
+      # that stopped at startup -- which is why an investigation into a 401 during the run found
+      # no request in it at all. There was also a second copy below, conditioned on failure(),
+      # which a blob-reporting shard never satisfies; it has been removed rather than fixed,
+      # because one capture that always runs is the whole requirement.
       # The backend runs as a service container, so its log is not in this job's output and a failure
       # inside it reads only as an HTTP 500 in a test. Several scenarios fail with
       # `error.network.external_service`, which is the backend saying it could not reach something --
@@ -287,19 +312,6 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
-      - name: Frontend behind nginx, /api proxied to the backend service on the host
-        run: |
-          docker build -q -f deploy/k8s/frontend/Dockerfile -t checkitout-frontend:ci .
-          docker run -d --name frontend -p 4300:80 --add-host=host.docker.internal:host-gateway \
-            -e BACKEND_UPSTREAM=host.docker.internal:8080 -e COOKIE_FLAGS="nosecure samesite=lax" checkitout-frontend:ci
-          for i in $(seq 1 30); do curl -fsS -o /dev/null http://localhost:4300/healthz && break; sleep 1; done
-          curl -fsS http://localhost:4300/api/actuator/health | grep -q '"UP"' && echo "backend UP through nginx"
-          curl -sS -D /tmp/h -o /dev/null -X POST http://localhost:4300/api/test/auth/mock-session \
-            -H "Content-Type: application/json" -d '{"email":"smoke@checkitout.app","role":"COMPANY"}'
-          grep -i "^set-cookie: session=" /tmp/h | grep -qiv secure && echo "session cookie without Secure: sign-in will work"
-
-      - name: ${{ matrix.queue }}
-        run: ${{ matrix.command }}
         env:
           CI: "1"
           PW_EXTERNAL_SERVER: "1"
@@ -308,9 +320,6 @@ jobs:
           PLAYWRIGHT_BLOB_OUTPUT_DIR: blob-report
         continue-on-error: true
 
-      - name: Backend log on failure
-        if: failure()
-        run: docker logs ${{ job.services.backend.id }} > backend-${{ matrix.shard }}.log 2>&1 || true
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         if: always()
         with:
