@@ -1,1 +1,1 @@
-{"id":"d909a3e46aecbf2c66a91fc754d876ca","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:53:7","name":"GUS not found returns 404","status":"passed","testResultsByEnv":{"default":"93a686e0bb591beb07f8d84549171080"}}
+{"id":"d909a3e46aecbf2c66a91fc754d876ca","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:53:7","name":"GUS not found returns 404","status":"passed","testResultsByEnv":{"default":"65abdd9ad75012af13b4ce193bb9aa6d"}}

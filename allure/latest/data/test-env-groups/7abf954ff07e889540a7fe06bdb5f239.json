@@ -1,1 +1,1 @@
-{"id":"7abf954ff07e889540a7fe06bdb5f239","fullName":"integration/flows/registry-company-flow.spec.ts:123:7","name":"@get-data get company data without prior confirm returns 200 + empty body","status":"passed","testResultsByEnv":{"default":"266df4a2d9bfdf8cbc204114cc7c365f"}}
+{"id":"7abf954ff07e889540a7fe06bdb5f239","fullName":"integration/flows/registry-company-flow.spec.ts:123:7","name":"@get-data get company data without prior confirm returns 200 + empty body","status":"passed","testResultsByEnv":{"default":"9ee622161a2cc1ba3963833a781ff199"}}

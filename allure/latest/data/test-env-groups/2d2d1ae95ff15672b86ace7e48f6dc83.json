@@ -1,1 +1,1 @@
-{"id":"2d2d1ae95ff15672b86ace7e48f6dc83","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:43:7","name":"NIP already registered returns 409","status":"passed","testResultsByEnv":{"default":"405bd8267313c4ac57445f9a902ac6ce"}}
+{"id":"2d2d1ae95ff15672b86ace7e48f6dc83","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:43:7","name":"NIP already registered returns 409","status":"passed","testResultsByEnv":{"default":"d1e9e203529f3831d79a45d8609f6cb4"}}

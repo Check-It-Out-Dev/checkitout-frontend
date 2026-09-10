@@ -1,1 +1,1 @@
-{"id":"e946b1f1a695ba7f62dc15bfde710471","fullName":"integration/auth/security-unauth.spec.ts:277:9","name":"user-preferences endpoints reject unauthenticated requests","status":"passed","testResultsByEnv":{"default":"70ff037c8aaa5cd3fea28c0f1ff4c36e"}}
+{"id":"e946b1f1a695ba7f62dc15bfde710471","fullName":"integration/auth/security-unauth.spec.ts:277:9","name":"user-preferences endpoints reject unauthenticated requests","status":"passed","testResultsByEnv":{"default":"c2d9b58ec7c256db596e849c122c2678"}}

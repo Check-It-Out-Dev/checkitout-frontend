@@ -1,1 +1,1 @@
-{"id":"cbe9e901c9a35cc38f63947a1cc70172","fullName":"integration/flows/admin-user-management.spec.ts:318:7","name":"@cross-role COMPANY actor cannot ban another user (403)","status":"passed","testResultsByEnv":{"default":"84c4f5a4485f73e439e803a129dff253"}}
+{"id":"cbe9e901c9a35cc38f63947a1cc70172","fullName":"integration/flows/admin-user-management.spec.ts:318:7","name":"@cross-role COMPANY actor cannot ban another user (403)","status":"passed","testResultsByEnv":{"default":"3495ca7534aaf715758b83bb4f1d7d58"}}

@@ -1,1 +1,1 @@
-{"id":"bdd7e4b78e63c7a4d34b112d66f18f40","fullName":"e2e-tests/bdd/features/subscription-e2e.feature.spec.js:89:7","name":"Terms change moves company to TERMS_PENDING then restores on accept","status":"passed","testResultsByEnv":{"default":"d9871c63e7191b85c22ccf4be73d4770"}}
+{"id":"bdd7e4b78e63c7a4d34b112d66f18f40","fullName":"e2e-tests/bdd/features/subscription-e2e.feature.spec.js:89:7","name":"Terms change moves company to TERMS_PENDING then restores on accept","status":"passed","testResultsByEnv":{"default":"fde2a47c3e87a3bd0649736133fb8d0e"}}

@@ -1,1 +1,1 @@
-{"id":"247d9fdbc00fbedc1a2bfa7141c89535","fullName":"integration/flows/profile-critical-fields.spec.ts:153:7","name":"@influencer firstName + lastName + phoneNumber PATCH keep session ACTIVE","status":"passed","testResultsByEnv":{"default":"d340cbf4529a188131d7d2a32d9111e2"}}
+{"id":"247d9fdbc00fbedc1a2bfa7141c89535","fullName":"integration/flows/profile-critical-fields.spec.ts:153:7","name":"@influencer firstName + lastName + phoneNumber PATCH keep session ACTIVE","status":"passed","testResultsByEnv":{"default":"557793ab5b87cc2f2a53386d3fbd4ea5"}}

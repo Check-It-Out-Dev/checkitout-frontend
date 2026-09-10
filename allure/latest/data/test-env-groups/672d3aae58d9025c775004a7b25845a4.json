@@ -1,1 +1,1 @@
-{"id":"672d3aae58d9025c775004a7b25845a4","fullName":"e2e-tests/bdd/features/consent-module.feature.spec.js:34:7","name":"Registration fails with 400 when consent cookies are missing","status":"passed","testResultsByEnv":{"default":"367f163391e404bb587453d8ab95fd4c"}}
+{"id":"672d3aae58d9025c775004a7b25845a4","fullName":"e2e-tests/bdd/features/consent-module.feature.spec.js:34:7","name":"Registration fails with 400 when consent cookies are missing","status":"passed","testResultsByEnv":{"default":"2e8888060c3ffb25ad3a3053c5879110"}}
