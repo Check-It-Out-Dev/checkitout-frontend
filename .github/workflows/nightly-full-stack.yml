@@ -104,8 +104,21 @@ jobs:
           SPRING_LIQUIBASE_CONTEXTS: dev,local,dev-lite
           SERVER_PORT: "8080"
           TZ: UTC
+          # The Firebase emulators run on the RUNNER, not as a service, because a service container
+          # cannot be given a start command and no image ships the suite. The backend reaches them
+          # through the docker host gateway, the same way the frontend container below reaches the
+          # backend. They are not up yet when this service starts, which costs nothing: the Admin SDK
+          # only records the addresses at init and the first call happens once the tests run.
+          FIREBASE_AUTH_EMULATOR_HOST: host.docker.internal:9099
+          FIRESTORE_EMULATOR_HOST: host.docker.internal:8085
+          # The project id decides which emulator store the accounts land in, and the synthetic
+          # offline credentials carry it too - seed one project and sign in against another and every
+          # login is EMAIL_NOT_FOUND while the users plainly exist.
+          FIREBASE_PROJECT_ID: demo-checkitout
+          GCP_PROJECT_ID: demo-checkitout
         ports: ["8080:8080"]
         options: >-
+          --add-host=host.docker.internal:host-gateway
           --health-cmd "wget -qO- http://127.0.0.1:8080/api/actuator/health/readiness | grep -q UP"
           --health-interval 10s --health-timeout 5s --health-retries 40 --health-start-period 60s
     steps:
@@ -120,6 +133,30 @@ jobs:
         with:
           name: browser-dist
           path: dist/check-it-out-fe-greenfield/browser
+
+      # Sixteen ported scenarios sign in through Firebase rather than through the mock session -
+      # OAuth with the profile the backend reads out of Firestore, email verification with a
+      # password, the negative login paths. The backend's own tier stopped needing a credential when
+      # it was pointed at the emulator suite; this gives the nightly the same thing, so those
+      # scenarios run for real here instead of being excluded.
+      - name: Firebase emulators and the three actors
+        run: |
+          set -euo pipefail
+          npm install -g firebase-tools@15 --loglevel=error
+          cat > /tmp/firebase.json <<'JSON'
+          {
+            "emulators": {
+              "auth":      { "host": "0.0.0.0", "port": 9099 },
+              "firestore": { "host": "0.0.0.0", "port": 8085 },
+              "ui":        { "enabled": false }
+            }
+          }
+          JSON
+          firebase emulators:start --only auth,firestore --project demo-checkitout             --config /tmp/firebase.json > /tmp/emulators.log 2>&1 &
+          FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099           FIRESTORE_EMULATOR_HOST=127.0.0.1:8085           FIREBASE_PROJECT_ID=demo-checkitout             node tools/ci/seed-firebase-emulator.mjs
+      - name: Emulator log on failure
+        if: failure()
+        run: tail -60 /tmp/emulators.log || true
 
       - name: Frontend behind nginx, /api proxied to the backend service on the host
         run: |
