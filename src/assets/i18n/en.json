@@ -3345,32 +3345,43 @@
       "roadmap": {
         "tag": "In progress",
         "title": "What is under way",
-        "subtitle": "The product fit a three-person team without a cloud test pipeline; in a larger organisation that pipeline is required. The next step is a substrate for running tests, not new hosting.",
+        "subtitle": "The product fit a three-person team without a cloud test pipeline; in a larger organisation that pipeline is required. Four of these shipped between 2026-09-09 and 2026-09-12 and are linked above; two have not, and saying so is the point of this list.",
         "why": "Hosting stays on Docker Compose and systemd — right-sized for this scale. Kubernetes enters only as the place where tests run: ephemeral runner pods, suites sharded across machines, reports merged in one place.",
         "status": {
           "progress": "in progress",
-          "next": "next"
+          "next": "next",
+          "done": "shipped"
         },
         "items": {
           "k8s": {
             "t": "Test execution on Kubernetes",
-            "d": "Playwright and JUnit suites sharded across ephemeral runners; blob reports merged after the run; on main the run fails on a flaky test, on PRs only changed specs run.",
-            "tools": "Testkube Test Workflows · GitHub ARC · playwright merge-reports · JUnit 5 parallel · Cucumber-JVM"
+            "d": "A kind cluster on the GitHub runner, the whole stack inside it, and Playwright as a four-pod Indexed Job — the pod index is the shard. Blob reports are collected off a hostPath and merged into one report and one verdict.",
+            "tools": "kind · Kubernetes Indexed Job · playwright merge-reports · Allure 3"
           },
           "perf": {
             "t": "Performance in CI",
-            "d": "The k6 script with thresholds exists; on Kubernetes it runs through k6-operator as a TestRun with thresholds as the pass condition — a performance regression stops a release the way a red test does.",
-            "tools": "k6 · k6-operator · Grafana"
+            "d": "k6-operator runs the same script as a TestRun of two runners against the in-cluster services, thresholds decide the run, and the metrics are remote-written to a public Grafana Cloud dashboard.",
+            "tools": "k6 · k6-operator · Prometheus remote write · Grafana Cloud"
           },
           "reports": {
-            "t": "Report aggregation and a flaky policy",
-            "d": "One place with run history instead of a report per run: a quarantine lane for unstable tests, readmission after a 99 % pass rate, error clustering.",
-            "tools": "Allure Report → ReportPortal · JUnit XML → GitHub checks"
+            "t": "Report aggregation and a flaky list",
+            "d": "One dashboard per repository on GitHub Pages with run history, an Allure report whose history carries across runs, and a list of every test that failed or flaked in the last ten runs. The quarantine lane is the part that is still a policy question.",
+            "tools": "Allure 3 · GitHub Pages · shields endpoint badges · quality-metrics.mjs"
           },
           "vitals": {
             "t": "Lighthouse CI and web-vitals budgets",
-            "d": "Today’s lab measurement (LCP, CLS, TBT) becomes an assertion on every PR: a warning first, an error at p90; plus a whole-site crawl.",
-            "tools": "Lighthouse CI · budget.json · Unlighthouse"
+            "d": "Lighthouse CI runs against the demo build on every push, asserted against a config and a budget file, and the four scores are a live badge on the README.",
+            "tools": "Lighthouse CI · lighthouserc.json · budget.json"
+          },
+          "schemathesis": {
+            "t": "Schemathesis against the running backend",
+            "d": "The one gap left in the contract chain. The spec is generated from a booted server and the client compiles against it, but nothing yet fuzzes the running provider for responses that satisfy the schema and still break a consumer.",
+            "tools": "Schemathesis · Hypothesis · OpenAPI 3"
+          },
+          "quarantine": {
+            "t": "A flaky quarantine lane",
+            "d": "The flaky list exists and is published; what to do with an entry does not. A lane that holds an unstable test out of the gate and readmits it at a pass rate is a policy decision about what a red build is allowed to mean, not a tooling gap.",
+            "tools": "METRICS.md · flaky-report.mjs"
           }
         },
         "ai": {

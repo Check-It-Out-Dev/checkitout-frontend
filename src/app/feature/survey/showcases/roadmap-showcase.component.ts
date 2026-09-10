@@ -6,7 +6,8 @@ import { GRAPH_REPO_URL, graphFileUrl } from '../ui/survey-links';
 
 /**
  * In progress — the work under way, named so the estate never reads as
- * finished-and-abandoned. Five items, two statuses. The product's own hosting
+ * finished-and-abandoned. Six items, three statuses: four shipped between 2026-09-09 and 2026-09-12,
+ * two that genuinely have not. The product's own hosting
  * stays on Docker Compose + systemd (the docs reject Kubernetes for that three
  * times, and still do); Kubernetes enters only as the substrate for test
  * execution — ephemeral runner pods, sharded suites, aggregated reports —
@@ -37,7 +38,13 @@ import { GRAPH_REPO_URL, graphFileUrl } from '../ui/survey-links';
           >
             <span
               class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-white"
-              [class]="it.status === 'progress' ? 'bg-navy-900' : 'bg-slate2'"
+              [class]="
+                it.status === 'done'
+                  ? 'bg-emerald-600'
+                  : it.status === 'progress'
+                    ? 'bg-navy-900'
+                    : 'bg-slate2'
+              "
             >
               <mat-icon class="!h-5 !w-5 !text-xl">{{ it.icon }}</mat-icon>
             </span>
@@ -49,9 +56,11 @@ import { GRAPH_REPO_URL, graphFileUrl } from '../ui/survey-links';
                 <span
                   class="rounded-full px-2 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.14em]"
                   [class]="
-                    it.status === 'progress'
-                      ? 'bg-navy-900 text-white'
-                      : 'border border-beige bg-white text-slate2'
+                    it.status === 'done'
+                      ? 'bg-emerald-600 text-white'
+                      : it.status === 'progress'
+                        ? 'bg-navy-900 text-white'
+                        : 'border border-beige bg-white text-slate2'
                   "
                 >
                   {{ 'landing.survey.roadmap.status.' + it.status | transloco }}
@@ -114,10 +123,18 @@ export class RoadmapShowcaseComponent {
   readonly evalDocs = graphFileUrl('applications/CodeMap/docs/06-prompt-transfer-findings.md');
 
   /** Status is a fact about the work, not a promise: `progress` has commits behind it, `next` has a design. */
-  readonly items = [
-    { k: 'k8s', icon: 'lan', status: 'progress' },
-    { k: 'perf', icon: 'speed', status: 'progress' },
-    { k: 'reports', icon: 'summarize', status: 'next' },
-    { k: 'vitals', icon: 'insights', status: 'next' },
-  ] as const;
+  /**
+   * Three states, declared rather than inferred. Nothing is `progress` at the moment, and `as const`
+   * would narrow the union to what happens to be in the list today - which turns the template's
+   * three-way branch into a type error and would quietly delete the middle state the next time
+   * something is genuinely half-done.
+   */
+  readonly items: readonly { k: string; icon: string; status: 'done' | 'progress' | 'next' }[] = [
+    { k: 'k8s', icon: 'lan', status: 'done' },
+    { k: 'perf', icon: 'speed', status: 'done' },
+    { k: 'reports', icon: 'summarize', status: 'done' },
+    { k: 'vitals', icon: 'insights', status: 'done' },
+    { k: 'schemathesis', icon: 'fact_check', status: 'next' },
+    { k: 'quarantine', icon: 'gpp_maybe', status: 'next' },
+  ];
 }

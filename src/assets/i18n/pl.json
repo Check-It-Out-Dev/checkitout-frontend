@@ -3345,32 +3345,43 @@
       "roadmap": {
         "tag": "W toku",
         "title": "Co jest w toku",
-        "subtitle": "Produkt zmieścił się w zespole trzech osób bez potoku testowego w chmurze; w większej organizacji taki potok jest wymagany. Następny krok to podłoże do wykonywania testów, nie nowy hosting.",
+        "subtitle": "Produkt zmieścił się w trzyosobowym zespole bez chmurowego pipeline’u testowego; w większej organizacji taki pipeline jest wymagany. Cztery z tych pozycji powstały między 2026-09-09 a 2026-09-12 i są podlinkowane wyżej; dwie nie — i właśnie o tym jest ta lista.",
         "why": "Hosting zostaje na Docker Compose i systemd — dla tej skali to właściwy rozmiar. Kubernetes wchodzi wyłącznie jako miejsce wykonywania testów: efemeryczne pody runnerów, suity dzielone na shardy między maszyny, raporty scalane w jednym miejscu.",
         "status": {
           "progress": "w toku",
-          "next": "następne"
+          "next": "następne",
+          "done": "gotowe"
         },
         "items": {
           "k8s": {
             "t": "Wykonywanie testów na Kubernetes",
-            "d": "Suity Playwright i JUnit dzielone na shardy między efemeryczne runnery; raporty blob scalane po biegu; na main bieg pada przy teście flaky, na PR biegną tylko zmienione specyfikacje.",
-            "tools": "Testkube Test Workflows · GitHub ARC · playwright merge-reports · JUnit 5 parallel · Cucumber-JVM"
+            "d": "Klaster kind na maszynie CI, cały stos w środku, a Playwright jako Indexed Job w czterech podach — indeks poda jest numerem sharda. Raporty zbierane z hostPath i scalane w jeden raport i jeden werdykt.",
+            "tools": "kind · Kubernetes Indexed Job · playwright merge-reports · Allure 3"
           },
           "perf": {
             "t": "Wydajność w CI",
-            "d": "Skrypt k6 z progami już jest; na Kubernetes uruchamia go k6-operator jako TestRun z progami jako warunkiem przejścia — regresja wydajności zatrzymuje wydanie tak samo jak czerwony test.",
-            "tools": "k6 · k6-operator · Grafana"
+            "d": "k6-operator uruchamia ten sam skrypt jako TestRun w dwóch podach przeciw usługom wewnątrz klastra, progi decydują o wyniku, a metryki trafiają do publicznego dashboardu Grafana Cloud.",
+            "tools": "k6 · k6-operator · Prometheus remote write · Grafana Cloud"
           },
           "reports": {
-            "t": "Agregacja raportów i polityka flaky",
-            "d": "Jedno miejsce z historią biegów zamiast raportu na bieg: kwarantanna dla testów niestabilnych, powrót do głównej suity po 99 % przejść, klastrowanie błędów.",
-            "tools": "Allure Report → ReportPortal · JUnit XML → GitHub checks"
+            "t": "Agregacja raportów i lista testów niestabilnych",
+            "d": "Jeden dashboard na repozytorium na GitHub Pages z historią przebiegów, raport Allure z historią przenoszoną między przebiegami i lista testów, które padły lub były niestabilne w ostatnich dziesięciu przebiegach. Kwarantanna pozostaje kwestią polityki.",
+            "tools": "Allure 3 · GitHub Pages · shields endpoint badges · quality-metrics.mjs"
           },
           "vitals": {
             "t": "Lighthouse CI i budżety web-vitals",
-            "d": "Dzisiejszy pomiar laboratoryjny (LCP, CLS, TBT) staje się asercją na każdym PR: najpierw ostrzeżenie, potem błąd przy p90; do tego crawl całej witryny.",
-            "tools": "Lighthouse CI · budget.json · Unlighthouse"
+            "d": "Lighthouse CI działa na builzie demo przy każdym pushu, sprawdzany wobec pliku konfiguracji i budżetu, a cztery wyniki są żywą odznaką w README.",
+            "tools": "Lighthouse CI · lighthouserc.json · budget.json"
+          },
+          "schemathesis": {
+            "t": "Schemathesis przeciw działającemu backendowi",
+            "d": "Jedyna luka, jaka została w łańcuchu kontraktu. Specyfikacja powstaje z uruchomionego serwera, a klient się wobec niej kompiluje, ale nic jeszcze nie fuzzuje działającego dostawcy w poszukiwaniu odpowiedzi zgodnych ze schematem, które i tak psują konsumenta.",
+            "tools": "Schemathesis · Hypothesis · OpenAPI 3"
+          },
+          "quarantine": {
+            "t": "Kwarantanna testów niestabilnych",
+            "d": "Lista testów niestabilnych istnieje i jest publikowana; co z nią zrobić — nie. Pas, który wyjmuje niestabilny test z bramki i przyjmuje go z powrotem przy określonym wskaźniku, to decyzja o tym, co wolno znaczyć czerwonemu builddowi, nie brak narzędzia.",
+            "tools": "METRICS.md · flaky-report.mjs"
           }
         },
         "ai": {

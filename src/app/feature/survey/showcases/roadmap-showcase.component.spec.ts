@@ -27,17 +27,21 @@ describe('RoadmapShowcaseComponent', () => {
     el = fixture.nativeElement;
   });
 
-  it('lists the four items with the in-progress ones first', () => {
+  it('lists the six items with the shipped ones first', () => {
     const items = el.querySelectorAll('[data-testid="roadmap-items"] [data-item]');
     expect(Array.from(items).map((i) => i.getAttribute('data-item'))).toEqual([
       'k8s',
       'perf',
       'reports',
       'vitals',
+      'schemathesis',
+      'quarantine',
     ]);
     expect(Array.from(items).map((i) => i.getAttribute('data-status'))).toEqual([
-      'progress',
-      'progress',
+      'done',
+      'done',
+      'done',
+      'done',
       'next',
       'next',
     ]);
