@@ -1,0 +1,1 @@
+{"id":"150906a781c479632fc88560eaf07348","fullName":"integration/flows/profile-validation.spec.ts:244:7","name":"@nip too long (> 20 chars) returns 400","status":"passed","testResultsByEnv":{"default":"43597237be38399285bacfc17732d4d5"}}

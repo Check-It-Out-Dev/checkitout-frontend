@@ -1,0 +1,1 @@
+{"id":"502cc2f48ffda3b4342513d1eec51746","fullName":"integration/auth/security-unauth.spec.ts:277:9","name":"reference-data endpoints reject unauthenticated requests","status":"passed","testResultsByEnv":{"default":"7d2b531e04368b6afb0bd66058db58b4"}}

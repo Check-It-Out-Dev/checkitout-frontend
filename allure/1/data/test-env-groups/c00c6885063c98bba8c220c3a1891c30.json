@@ -1,0 +1,1 @@
+{"id":"c00c6885063c98bba8c220c3a1891c30","fullName":"integration/flows/registry-company-flow.spec.ts:151:7","name":"@permissions unauthenticated registry lookup returns 401","status":"passed","testResultsByEnv":{"default":"e6fd17c75dc16765abbe72c5349f0c3e"}}

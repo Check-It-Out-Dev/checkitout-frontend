@@ -1,7 +1,0 @@
-  admin-ops
-    pill: 0@/support/admin/tickets → 1@/support/admin/tickets/9001 → 2@/support/admin/tickets/9001 → 3@/support/admin/tickets/9001 → 4@/collaborations/502 → 5@/collaborations/502 → 6@/collaborations/502 → 7@/collaborations/list → 7@/collaborations/list → done
-    hand: 0@/support/admin/tickets → 1@/support/admin/tickets/9001 → 2@/support/admin/tickets/9001 → 3@/support/admin/tickets/9001 → 4@/collaborations/502 → 5@/collaborations/502 → 6@/collaborations/502 → 7@/collaborations/list → 7@/collaborations/list → done
-    a visitor can do steps [2, 3, 4, 5] unaided; the guide finishes []; [0, 1, 6] ring a field you type into
-
-  compared 22 steps done both ways: admin-2fa:0, admin-2fa:1, admin-2fa:3, stepup-email:2, company-campaign:2, company-campaign:4, influencer-collab:0, influencer-collab:1, nip-to-ksef:1, nip-to-ksef:2, nip-to-ksef:3, nip-to-ksef:4, nip-to-ksef:6, nip-to-ksef:7, nip-to-ksef:8, nip-to-ksef:9, support-ticket:1, support-ticket:2, admin-ops:2, admin-ops:3, admin-ops:4, admin-ops:5
-

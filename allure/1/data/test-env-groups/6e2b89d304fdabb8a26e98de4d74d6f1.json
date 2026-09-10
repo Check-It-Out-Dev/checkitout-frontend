@@ -1,0 +1,1 @@
+{"id":"6e2b89d304fdabb8a26e98de4d74d6f1","fullName":"e2e-tests/bdd/features/payments-off.feature.spec.js:6:7","name":"GET /api/public-config returns paymentsEnabled=false anonymously","status":"passed","testResultsByEnv":{"default":"4a4a7b0c87d3d722c6307f499abd68fc"}}

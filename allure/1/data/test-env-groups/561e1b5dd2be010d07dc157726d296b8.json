@@ -1,0 +1,1 @@
+{"id":"561e1b5dd2be010d07dc157726d296b8","fullName":"integration/auth/login-errors.spec.ts:129:7","name":"@admin existing email + wrong password surfaces error UI","status":"passed","testResultsByEnv":{"default":"625ba0939214c6cd4b3f96cd2975d3c5"}}

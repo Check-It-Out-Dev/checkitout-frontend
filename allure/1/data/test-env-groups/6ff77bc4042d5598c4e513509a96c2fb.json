@@ -1,0 +1,1 @@
+{"id":"6ff77bc4042d5598c4e513509a96c2fb","fullName":"e2e-tests/bdd/features/consent-lifecycle.feature.spec.js:24:7","name":"Only ACTIVE and IN_VALIDATION users get blocked","status":"passed","testResultsByEnv":{"default":"636e6c9627292aa06171d0a0a34d3f4c"}}

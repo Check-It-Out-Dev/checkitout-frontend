@@ -1,0 +1,228 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: ../.features-gen/e2e-tests/bdd/features/notification-e2e.feature.spec.js >> Notification System E2E with Real Email Delivery >> Full notification lifecycle with email delivery, archive, and cross-user isolation
+- Location: .features-gen/e2e-tests/bdd/features/notification-e2e.feature.spec.js:6:7
+
+# Error details
+
+```
+Error: expected 200; response body: {"timestamp":"2026-09-10T02:17:34.148","status":401,"error":"Unauthorized","message":"User not authenticated","path":"/api/applied-opportunity","requestId":"REQ-984dae1c"}
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: 200
+Received: 401
+```
+
+# Test source
+
+```ts
+  67  | function record(world: OracleWorld, r: ApiResult): void {
+  68  |   world.lastResponse = { status: r.status, headers: r.headers, body: r.body };
+  69  | }
+  70  | 
+  71  | function requireOpportunity(world: OracleWorld, ref: string): Store {
+  72  |   const o = world.opportunities?.[ref];
+  73  |   if (!o) throw new Error(`unknown opportunity "${ref}"`);
+  74  |   return o;
+  75  | }
+  76  | function requireApplication(world: OracleWorld, ref: string): Store {
+  77  |   const a = world.applications?.[ref];
+  78  |   if (!a) throw new Error(`unknown application "${ref}"`);
+  79  |   return a;
+  80  | }
+  81  | function requireContent(world: OracleWorld, ref: string): ContentRef {
+  82  |   const c = world.contents?.[ref];
+  83  |   if (!c) throw new Error(`unknown content "${ref}"`);
+  84  |   return c;
+  85  | }
+  86  | 
+  87  | /** Re-fetch the application fresh (company side) for a status/rating assertion. */
+  88  | async function fetchApplication(
+  89  |   world: OracleWorld,
+  90  |   appRef: string,
+  91  | ): Promise<AppliedOpportunityDtoOut> {
+  92  |   const app = requireApplication(world, appRef);
+  93  |   const r = await apiFor(world, 'company').getApplication(app.id);
+  94  |   expect(r.ok, `GET /applied-opportunity/${app.id} (HTTP ${r.status})`).toBeTruthy();
+  95  |   return r.json;
+  96  | }
+  97  | 
+  98  | // ── Background — two authenticated actor sessions, each fully seeded ─────────
+  99  | 
+  100 | Given('the company actor is signed in and active', async ({ playwright, world }) => {
+  101 |   world.companySession = await TestSession.open(playwright, ACTORS['company1']);
+  102 |   world.companyUserId = await world.companySession.userId();
+  103 |   await world.companySession.grantEnterprisePlan();
+  104 | });
+  105 | 
+  106 | Given('the influencer actor is signed in and active', async ({ playwright, world }) => {
+  107 |   world.influencerSession = await TestSession.open(playwright, ACTORS['influencer1']);
+  108 |   await world.influencerSession.activate();
+  109 |   await world.influencerSession.seedInstagram();
+  110 | });
+  111 | 
+  112 | After(async ({ world }) => {
+  113 |   // Boot-guard hygiene: leave the company on FREE_ACTIVE — the dev BE refuses
+  114 |   // to boot (payments disabled) while a subscription row sits in a PAID status.
+  115 |   await world.companySession?.restoreFreePlan().catch(() => undefined);
+  116 |   await world.companySession?.dispose();
+  117 |   await world.influencerSession?.dispose();
+  118 | });
+  119 | 
+  120 | // ── Create opportunity ──────────────────────────────────────────────────────
+  121 | 
+  122 | When(
+  123 |   'the company creates partnership opportunity {string}:',
+  124 |   async ({ world }, ref: string, table: Table) => {
+  125 |     const row = table.rowsHash();
+  126 |     const now = new Date();
+  127 |     const dto: PartnershipOpportunityDtoIn = {
+  128 |       company: world.companyUserId!,
+  129 |       name: row['name'],
+  130 |       city: row['city'],
+  131 |       title: row['title'],
+  132 |       details: row['details'],
+  133 |       requirements: row['requirements'],
+  134 |       followersMin: Number(row['followersMin'] ?? 1),
+  135 |       followersMax: Number(row['followersMax'] ?? 1_000_000),
+  136 |       compensationType: row['compensationType'] as CompensationType,
+  137 |       compensationAmountMin: Number(row['compensationMin'] ?? 100),
+  138 |       compensationAmountMax: Number(row['compensationMax'] ?? 1000),
+  139 |       currency: Number(row['currency'] ?? 1),
+  140 |       platforms: new Set((row['platforms'] ?? '1').split(',').map(Number)),
+  141 |       contentTypes: new Set((row['contentTypes'] ?? '1').split(',').map(Number)),
+  142 |       serviceType: Number(row['serviceType'] ?? 1),
+  143 |       startDate: isoLocal(new Date(now.getTime() + 7 * 864e5)),
+  144 |       endDate: isoLocal(new Date(now.getTime() + 37 * 864e5)),
+  145 |       active: true,
+  146 |       // Nested address — COMPANY users are 403'd on POST /address directly; the
+  147 |       // opportunity endpoint persists it inline (verified idempotent on repeats).
+  148 |       address: {
+  149 |         street: 'ul. Testowa 1',
+  150 |         city: 'Warszawa',
+  151 |         postalCode: '00-001',
+  152 |         country: 'Poland',
+  153 |         addressType: AddressDtoInAddressTypeEnum.MAIN,
+  154 |       },
+  155 |       photos: [],
+  156 |     };
+  157 |     const r = await apiFor(world, 'company').createOpportunity(dto);
+  158 |     record(world, r);
+  159 |     (world.opportunities ??= {})[ref] = r.json as Store;
+  160 |   },
+  161 | );
+  162 | 
+  163 | Then('the response status should be {int}', async ({ world }, status: number) => {
+  164 |   expect(
+  165 |     world.lastResponse?.status,
+  166 |     `expected ${status}; response body: ${(world.lastResponse?.body ?? '(none recorded)').slice(0, 400)}`,
+> 167 |   ).toBe(status);
+      |     ^ Error: expected 200; response body: {"timestamp":"2026-09-10T02:17:34.148","status":401,"error":"Unauthorized","message":"User not authenticated","path":"/api/applied-opportunity","requestId":"REQ-984dae1c"}
+  168 | });
+  169 | 
+  170 | Then(
+  171 |   'opportunity {string} should have {word} {string}',
+  172 |   async ({ world }, ref: string, field: string, value: string) => {
+  173 |     expect(String(requireOpportunity(world, ref)[field])).toBe(value);
+  174 |   },
+  175 | );
+  176 | 
+  177 | Then('opportunity {string} should be active', async ({ world }, ref: string) => {
+  178 |   expect(requireOpportunity(world, ref)['active']).toBe(true);
+  179 | });
+  180 | 
+  181 | // ── Apply ───────────────────────────────────────────────────────────────────
+  182 | 
+  183 | When(
+  184 |   'the influencer applies to opportunity {string} with note {string} storing the application as {string}',
+  185 |   async ({ world }, oppRef: string, note: string, appRef: string) => {
+  186 |     const dto: AppliedOpportunityDtoIn = {
+  187 |       partnershipOpportunity: requireOpportunity(world, oppRef).id,
+  188 |       note,
+  189 |     };
+  190 |     const r = await apiFor(world, 'influencer').apply(dto);
+  191 |     record(world, r);
+  192 |     (world.applications ??= {})[appRef] = r.json as Store;
+  193 |   },
+  194 | );
+  195 | 
+  196 | // ── State-machine advances (accept both sides / reject IG / verify / pay) ────
+  197 | 
+  198 | When('the {word} accepts application {string}', async ({ world }, who: string, appRef: string) => {
+  199 |   record(world, await apiFor(world, who).advanceStatus(requireApplication(world, appRef).id, true));
+  200 | });
+  201 | 
+  202 | When(
+  203 |   'the company rejects the Instagram post for application {string} with reason {string}',
+  204 |   async ({ world }, appRef: string, _reason: string) => {
+  205 |     // The BE state machine only reads accept=false here; the reason is client-side context.
+  206 |     record(
+  207 |       world,
+  208 |       await apiFor(world, 'company').advanceStatus(requireApplication(world, appRef).id, false),
+  209 |     );
+  210 |   },
+  211 | );
+  212 | 
+  213 | When(
+  214 |   'the company verifies the Instagram post for application {string}',
+  215 |   async ({ world }, appRef: string) => {
+  216 |     record(
+  217 |       world,
+  218 |       await apiFor(world, 'company').advanceStatus(requireApplication(world, appRef).id, true),
+  219 |     );
+  220 |   },
+  221 | );
+  222 | 
+  223 | When('the company confirms payment for application {string}', async ({ world }, appRef: string) => {
+  224 |   record(
+  225 |     world,
+  226 |     await apiFor(world, 'company').advanceStatus(requireApplication(world, appRef).id, true),
+  227 |   );
+  228 | });
+  229 | 
+  230 | // ── Content submission + review ──────────────────────────────────────────────
+  231 | 
+  232 | When(
+  233 |   'the influencer submits content for application {string} storing the content as {string}:',
+  234 |   async ({ world }, appRef: string, contentRef: string, table: Table) => {
+  235 |     const row = table.rowsHash();
+  236 |     const dto: AppliedOpportunityContentDtoIn = {
+  237 |       appliedOpportunityId: requireApplication(world, appRef).id,
+  238 |       contentTypeId: Number(row['contentTypeId'] ?? 1),
+  239 |       contentCount: Number(row['contentCount'] ?? 1),
+  240 |       // Only send urls when the scenario provides one: wrapping an absent
+  241 |       // row serializes as [null], which @VimeoUrls correctly rejects (a
+  242 |       // provided list must contain only trusted URLs) — the review-page
+  243 |       // scenario submits without urls and 400'd into review-row-undefined.
+  244 |       ...(row['urls'] ? { urls: [row['urls']] } : {}),
+  245 |       description: row['description'],
+  246 |       tags: row['tags'],
+  247 |     };
+  248 |     const r = await apiFor(world, 'influencer').submitContent(dto);
+  249 |     record(world, r);
+  250 |     (world.contents ??= {})[contentRef] = {
+  251 |       id: (r.json as { id: number }).id,
+  252 |       dto: dto as unknown as Record<string, unknown>,
+  253 |     };
+  254 |   },
+  255 | );
+  256 | 
+  257 | When(
+  258 |   'the company rejects content {string} with notes {string}',
+  259 |   async ({ world }, contentRef: string, notes: string) => {
+  260 |     record(
+  261 |       world,
+  262 |       await apiFor(world, 'company').rejectContent(requireContent(world, contentRef).id, notes),
+  263 |     );
+  264 |   },
+  265 | );
+  266 | 
+  267 | When(
+```

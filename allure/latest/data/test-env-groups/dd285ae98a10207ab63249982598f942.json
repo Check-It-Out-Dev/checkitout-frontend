@@ -1,0 +1,1 @@
+{"id":"dd285ae98a10207ab63249982598f942","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:83:7","name":"KRS confirm without emailVerified does not auto-activate","status":"passed","testResultsByEnv":{"default":"1c30ea58630f864439cfe8eab72a56c4"}}

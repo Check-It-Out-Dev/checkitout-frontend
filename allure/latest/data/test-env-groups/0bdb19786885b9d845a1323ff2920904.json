@@ -1,0 +1,1 @@
+{"id":"0bdb19786885b9d845a1323ff2920904","fullName":"integration/flows/profile-validation.spec.ts:158:7","name":"@phone valid with parentheses returns 200","status":"passed","testResultsByEnv":{"default":"c7be17d730bdf477d6112e976be454a1"}}

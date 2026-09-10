@@ -1,0 +1,1 @@
+{"id":"afc3c4ff0cf5d14727f34703f216017b","fullName":"integration/flows/profile-validation.spec.ts:232:7","name":"@companyDescription boundary (1000 chars) returns 200","status":"passed","testResultsByEnv":{"default":"e04334f9ca19cec40516a5c76416dd06"}}

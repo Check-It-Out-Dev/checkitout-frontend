@@ -1,1 +1,0 @@
-  sweep: 641 frames, mean 16.7 ms, worst 22 ms, 0 over 33 ms, long tasks [], base mutations 12

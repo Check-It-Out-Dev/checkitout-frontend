@@ -1,0 +1,1 @@
+{"id":"ef2ea50acd66a994f8712b50d59ab68b","fullName":"integration/flows/magic-link-errors.spec.ts:201:7","name":"@tier-1 confirm-password-reset rejects malformed JSON (400)","status":"passed","testResultsByEnv":{"default":"6e06a73d858f5d06719f14eb79e2a84b"}}

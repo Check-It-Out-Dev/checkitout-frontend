@@ -1,0 +1,1 @@
+{"id":"d9aa1e7af25b07120d5118d27ed4c773","fullName":"integration/flows/security-cross-role.spec.ts:201:7","name":"@company-forbidden @influencer-restricted COMPANY → influencer-only GET returns 403","status":"passed","testResultsByEnv":{"default":"8145655838f7bc95c96486c787a7cf33"}}

@@ -1,0 +1,1 @@
+{"id":"92279e8b50b8bd58963852ad0e1a91fb","fullName":"integration/flows/oauth-consent-cookie-survival.spec.ts:280:7","name":"@scenario-5 @cookie-attributes consent cookies have SameSite=Lax + HttpOnly for OAuth redirect survival","status":"passed","testResultsByEnv":{"default":"bd767ec6bb5eee90fd7724f71145d5ba"}}

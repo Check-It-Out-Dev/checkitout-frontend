@@ -1,0 +1,1 @@
+{"id":"0f54fe3a4c8dfee638dd92b8818a2a49","fullName":"integration/flows/admin-geoip-analysis.spec.ts:239:7","name":"@scenario-3 @non-admin COMPANY actor is 403 on GeoIP admin endpoints","status":"passed","testResultsByEnv":{"default":"13984d7cfa6bfcd0613b2a1fdba4822b"}}
