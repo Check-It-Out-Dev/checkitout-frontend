@@ -1,1 +1,0 @@
-{"id":"8cc54fba7101f64feeadb1688406fdc8","fullName":"integration/flows/profile-validation.spec.ts:144:7","name":"@phone valid international format returns 200","status":"passed","testResultsByEnv":{"default":"ec6b55e97839a3e6c70c5f768ee80aff"}}

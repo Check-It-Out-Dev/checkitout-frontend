@@ -1,0 +1,19 @@
+
+  2FA at 6x CPU throttle — 1068 frames, 13 states
+
+        t    ms  st  work  shld   way  sim   phone  dlg   typed  busy  err  scrim  recap  panel  done           path
+        5   185   0     ·     ·  pill    ·       ·    ·       ·     ·    ·      0      ·      Y     ·  /auth/sign-in
+      190    60   0     Y     Y  none    ·       ·    Y       ·     ·    ·      0      ·      Y     ·  /auth/sign-in
+      250    35   1     ·     ·  none    Y       ·    Y       ·     ·    ·      0      ·      Y     ·  /auth/sign-in
+      285   158   1     ·     ·  none    Y       ·    Y       ·     ·    ·      1      ·      Y     ·  /auth/sign-in
+      443  5732   1     ·     ·  pill    Y       ·    Y       ·     ·    ·      1      ·      Y     ·  /auth/sign-in
+     6175    26   1     Y     Y  none    Y  526951    Y       ·     ·    ·      1      ·      Y     ·  /auth/sign-in
+     6201    72   1     Y     Y  none    Y  526951    Y  526951     ·    ·      1      ·      Y     ·  /auth/sign-in
+     6273   162   2     ·     ·  none    Y  526951    Y  526951     ·    ·      1      ·      Y     ·  /auth/sign-in
+     6435  5779   2     ·     ·  pill    Y  526951    Y  526951     ·    ·      1      ·      Y     ·  /auth/sign-in
+    12214    57   2     Y     Y  none    Y  526951    Y  526951     ·    ·      1      ·      Y     ·  /auth/sign-in
+    12271    63   2     Y     Y  none    Y  526951    Y       ·     ·    Y      1      ·      Y     ·  /auth/sign-in
+    12334   122   3     ·     ·  none    Y  526951    Y       ·     ·    Y      1      ·      Y     ·  /auth/sign-in
+    12456  5749   3     ·     ·  pill    Y  526951    Y       ·     ·    Y      1      ·      Y     ·  /auth/sign-in
+  "Working…" total 278 ms, longest single run 72 ms
+

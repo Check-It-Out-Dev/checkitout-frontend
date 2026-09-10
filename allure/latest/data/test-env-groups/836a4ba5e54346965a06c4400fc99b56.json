@@ -1,1 +1,0 @@
-{"id":"836a4ba5e54346965a06c4400fc99b56","fullName":"integration/flows/admin-user-management.spec.ts:200:7","name":"@group-b admin cycles COMPANY through BANNED→ACTIVE→INACTIVE→ACTIVE","status":"passed","testResultsByEnv":{"default":"2e47eaffa3e3798ad6ed847f4005bc3e"}}
