@@ -2,26 +2,26 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 37,
-    "id": 34451643609,
-    "sha": "5376754",
+    "number": 38,
+    "id": 34453807752,
+    "sha": "1e0fe86",
     "branch": "main",
     "workflow": "browser-tiers",
-    "startedAt": "2026-09-10T07:46:21Z",
-    "durationSec": 1151,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34451643609",
-    "status": "green"
+    "startedAt": "2026-09-10T08:11:13Z",
+    "durationSec": 826,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34453807752",
+    "status": "incomplete"
   },
   "tests": {
-    "total": 1761,
-    "passed": 1681,
+    "total": 1737,
+    "passed": 1658,
     "failed": 0,
-    "flaky": 1,
+    "flaky": 0,
     "skipped": 79,
-    "passRate": 0.9994,
-    "flakyRate": 0.0006,
-    "durationMeanSec": 1.54,
-    "durationP95Sec": 2,
+    "passRate": 1,
+    "flakyRate": 0,
+    "durationMeanSec": 0.91,
+    "durationP95Sec": 1.52,
     "tiers": {
       "jest": {
         "total": 1183,
@@ -29,7 +29,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
-        "durationSec": 73
+        "durationSec": 72
       },
       "visual": {
         "total": 284,
@@ -37,7 +37,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 1,
-        "durationSec": 421
+        "durationSec": 398
       },
       "visual-parity": {
         "total": 82,
@@ -45,7 +45,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 54,
-        "durationSec": 83
+        "durationSec": 81
       },
       "msw": {
         "total": 2,
@@ -61,15 +61,15 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 22,
-        "durationSec": 117
+        "durationSec": 126
       },
       "perf": {
-        "total": 82,
-        "passed": 81,
+        "total": 58,
+        "passed": 58,
         "failed": 0,
-        "flaky": 1,
+        "flaky": 0,
         "skipped": 0,
-        "durationSec": 1982
+        "durationSec": 915
       }
     }
   },
@@ -95,7 +95,6 @@
       "runsFailed": 0,
       "lastSeen": 37,
       "history": [
-        "pass",
         "absent",
         "pass",
         "absent",
@@ -104,52 +103,13 @@
         "flaky",
         "flaky",
         "pass",
-        "flaky"
-      ]
-    },
-    {
-      "title": "Visual snapshots · Sandbox fixtures › fixture survey-cicd-runs [chromium-desktop]",
-      "file": "visual/sandbox-snapshots.spec.ts",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 28,
-      "history": [
-        "fail",
-        "absent",
-        "absent",
-        "absent",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "Visual snapshots · Sandbox fixtures › fixture survey-cicd-runs [mobile-chrome]",
-      "file": "visual/sandbox-snapshots.spec.ts",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 28,
-      "history": [
-        "fail",
-        "absent",
-        "absent",
-        "absent",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
+        "flaky",
         "pass"
       ]
     }
   ],
   "reports": {
-    "playwright": "playwright/37/",
-    "allure": "allure/37/"
+    "playwright": "playwright/38/",
+    "allure": "allure/38/"
   }
 }
