@@ -2,26 +2,26 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 62,
-    "id": 34513305675,
+    "number": 12,
+    "id": 34513305668,
     "sha": "bc0abe5",
     "branch": "main",
-    "workflow": "browser-tiers",
+    "workflow": "nightly-full-stack",
     "startedAt": "2026-09-10T18:16:28Z",
     "durationSec": 351,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34513305675",
-    "status": "green"
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34513305668",
+    "status": "red"
   },
   "tests": {
-    "total": 1314,
-    "passed": 1290,
-    "failed": 0,
+    "total": 1617,
+    "passed": 1572,
+    "failed": 6,
     "flaky": 0,
-    "skipped": 24,
-    "passRate": 1,
+    "skipped": 39,
+    "passRate": 0.9962,
     "flakyRate": 0,
-    "durationMeanSec": 0.15,
-    "durationP95Sec": 0.93,
+    "durationMeanSec": 0.18,
+    "durationP95Sec": 0.73,
     "tiers": {
       "jest": {
         "total": 1184,
@@ -31,21 +31,37 @@
         "skipped": 0,
         "durationSec": 59
       },
-      "msw": {
-        "total": 2,
-        "passed": 0,
+      "bdd": {
+        "total": 148,
+        "passed": 138,
+        "failed": 2,
+        "flaky": 0,
+        "skipped": 8,
+        "durationSec": 43
+      },
+      "sandbox": {
+        "total": 64,
+        "passed": 62,
         "failed": 0,
         "flaky": 0,
         "skipped": 2,
-        "durationSec": 0
+        "durationSec": 57
       },
-      "sandbox": {
-        "total": 128,
-        "passed": 106,
+      "scenarios": {
+        "total": 6,
+        "passed": 6,
         "failed": 0,
         "flaky": 0,
-        "skipped": 22,
-        "durationSec": 131
+        "skipped": 0,
+        "durationSec": 11
+      },
+      "integration": {
+        "total": 215,
+        "passed": 182,
+        "failed": 4,
+        "flaky": 0,
+        "skipped": 29,
+        "durationSec": 117
       }
     }
   },
@@ -80,9 +96,430 @@
     },
     "scans": 2
   },
-  "flaky": [],
+  "flaky": [
+    {
+      "title": "@notification-lifecycle — port of notification-e2e.feature › @notification-preferences disabled prefs suppress APPLICATION_RECEIVED [chromium-desktop]",
+      "file": "integration/flows/notification-lifecycle.spec.ts",
+      "window": 10,
+      "runsFlaky": 0,
+      "runsFailed": 9,
+      "lastSeen": 12,
+      "history": [
+        "fail",
+        "fail",
+        "fail",
+        "fail",
+        "fail",
+        "fail",
+        "fail",
+        "skipped",
+        "fail",
+        "fail"
+      ]
+    },
+    {
+      "title": "Notification System E2E with Real Email Delivery › Full notification lifecycle with email delivery, archive, and cross-user isolation [bdd]",
+      "file": "../.features-gen/e2e-tests/bdd/features/notification-e2e.feature.spec.js",
+      "window": 10,
+      "runsFlaky": 0,
+      "runsFailed": 8,
+      "lastSeen": 12,
+      "history": [
+        "fail",
+        "fail",
+        "fail",
+        "fail",
+        "fail",
+        "absent",
+        "fail",
+        "skipped",
+        "fail",
+        "fail"
+      ]
+    },
+    {
+      "title": "@login-real — real-Firebase happy-path login (T4) › @company @full-auth — company logs in with real Firebase + receives session cookie [chromium-desktop]",
+      "file": "integration/auth/login-real.spec.ts",
+      "window": 10,
+      "runsFlaky": 0,
+      "runsFailed": 4,
+      "lastSeen": 12,
+      "history": [
+        "skipped",
+        "skipped",
+        "skipped",
+        "skipped",
+        "skipped",
+        "absent",
+        "fail",
+        "fail",
+        "fail",
+        "fail"
+      ]
+    },
+    {
+      "title": "@login-ui-real — real-Firebase UI sign-in (T4-UI) › @company @full-auth — company signs in via the form and lands on a protected route [chromium-desktop]",
+      "file": "integration/auth/login-ui-real.spec.ts",
+      "window": 10,
+      "runsFlaky": 0,
+      "runsFailed": 4,
+      "lastSeen": 12,
+      "history": [
+        "skipped",
+        "skipped",
+        "skipped",
+        "skipped",
+        "skipped",
+        "absent",
+        "fail",
+        "fail",
+        "fail",
+        "fail"
+      ]
+    },
+    {
+      "title": "@security-advanced-session — port of security-advanced-session.feature › @scenario-7-prod @session-lifecycle production refresh-session against real Firebase user [chromium-desktop]",
+      "file": "integration/flows/security-advanced-session.spec.ts",
+      "window": 10,
+      "runsFlaky": 0,
+      "runsFailed": 4,
+      "lastSeen": 12,
+      "history": [
+        "skipped",
+        "skipped",
+        "skipped",
+        "skipped",
+        "skipped",
+        "fail",
+        "fail",
+        "skipped",
+        "fail",
+        "fail"
+      ]
+    },
+    {
+      "title": "Magic Link Happy Path › Email verification succeeds with valid oobCode [bdd]",
+      "file": "../.features-gen/e2e-tests/bdd/features/magic-link-happy-path.feature.spec.js",
+      "window": 10,
+      "runsFlaky": 0,
+      "runsFailed": 3,
+      "lastSeen": 12,
+      "history": [
+        "skipped",
+        "skipped",
+        "skipped",
+        "skipped",
+        "skipped",
+        "absent",
+        "fail",
+        "skipped",
+        "fail",
+        "fail"
+      ]
+    },
+    {
+      "title": "@multi-user @session-isolation — port of multi-user-session-isolation.feature › @smoke @company Company user logs in via multi-user infrastructure [chromium-desktop]",
+      "file": "integration/flows/multi-user-session-isolation.spec.ts",
+      "window": 10,
+      "runsFlaky": 0,
+      "runsFailed": 2,
+      "lastSeen": 11,
+      "history": [
+        "skipped",
+        "skipped",
+        "skipped",
+        "skipped",
+        "skipped",
+        "absent",
+        "fail",
+        "skipped",
+        "fail",
+        "pass"
+      ]
+    },
+    {
+      "title": "@authentication @login · Login session reaches authenticated UI › @company company user with a session sees the authenticated shell [chromium-desktop]",
+      "file": "scenarios/auth/login.scenario.spec.ts",
+      "window": 10,
+      "runsFlaky": 0,
+      "runsFailed": 1,
+      "lastSeen": 10,
+      "history": [
+        "pass",
+        "pass",
+        "pass",
+        "pass",
+        "pass",
+        "absent",
+        "pass",
+        "fail",
+        "pass",
+        "pass"
+      ]
+    },
+    {
+      "title": "@authentication @login · Login session reaches authenticated UI › @influencer influencer with a session sees their applications page [chromium-desktop]",
+      "file": "scenarios/auth/login.scenario.spec.ts",
+      "window": 10,
+      "runsFlaky": 0,
+      "runsFailed": 1,
+      "lastSeen": 10,
+      "history": [
+        "pass",
+        "pass",
+        "pass",
+        "pass",
+        "pass",
+        "absent",
+        "pass",
+        "fail",
+        "pass",
+        "pass"
+      ]
+    },
+    {
+      "title": "@multi-user @partnership-flow · Two actors don't share session › company and influencer have isolated browser contexts [chromium-desktop]",
+      "file": "scenarios/multi-user/company-and-influencer.scenario.spec.ts",
+      "window": 10,
+      "runsFlaky": 0,
+      "runsFailed": 1,
+      "lastSeen": 10,
+      "history": [
+        "pass",
+        "pass",
+        "pass",
+        "pass",
+        "pass",
+        "absent",
+        "pass",
+        "fail",
+        "pass",
+        "pass"
+      ]
+    },
+    {
+      "title": "@partnership-flow @company · Create a campaign › company can open the new-campaign form [chromium-desktop]",
+      "file": "scenarios/partnership/create-campaign.scenario.spec.ts",
+      "window": 10,
+      "runsFlaky": 0,
+      "runsFailed": 1,
+      "lastSeen": 10,
+      "history": [
+        "pass",
+        "pass",
+        "pass",
+        "pass",
+        "pass",
+        "absent",
+        "pass",
+        "fail",
+        "pass",
+        "pass"
+      ]
+    },
+    {
+      "title": "@partnership-flow @company · Create a campaign › submit is disabled until required fields are filled [chromium-desktop]",
+      "file": "scenarios/partnership/create-campaign.scenario.spec.ts",
+      "window": 10,
+      "runsFlaky": 0,
+      "runsFailed": 1,
+      "lastSeen": 10,
+      "history": [
+        "pass",
+        "pass",
+        "pass",
+        "pass",
+        "pass",
+        "absent",
+        "pass",
+        "fail",
+        "pass",
+        "pass"
+      ]
+    },
+    {
+      "title": "@smoke route-smoke — every non-param route renders without errors › anonymous visit — every smokeable route [chromium-desktop]",
+      "file": "integration/route-smoke.spec.ts",
+      "window": 10,
+      "runsFlaky": 0,
+      "runsFailed": 1,
+      "lastSeen": 10,
+      "history": [
+        "pass",
+        "pass",
+        "pass",
+        "pass",
+        "pass",
+        "pass",
+        "pass",
+        "fail",
+        "pass",
+        "pass"
+      ]
+    },
+    {
+      "title": "Profile Validation Edge Cases (Consolidated) › Company profile validation - all edge cases (consolidated - 20+ assertions) [bdd]",
+      "file": "../.features-gen/e2e-tests/bdd/features/profile-validation-edge-cases.feature.spec.js",
+      "window": 10,
+      "runsFlaky": 0,
+      "runsFailed": 5,
+      "lastSeen": 7,
+      "history": [
+        "fail",
+        "fail",
+        "fail",
+        "fail",
+        "fail",
+        "absent",
+        "pass",
+        "skipped",
+        "pass",
+        "pass"
+      ]
+    },
+    {
+      "title": "Authentication Error Handling › Influencer OAuth fails with non-existent Firebase UID [bdd]",
+      "file": "../.features-gen/e2e-tests/bdd/features/login-errors.feature.spec.js",
+      "window": 10,
+      "runsFlaky": 0,
+      "runsFailed": 4,
+      "lastSeen": 6,
+      "history": [
+        "fail",
+        "fail",
+        "fail",
+        "fail",
+        "pass",
+        "absent",
+        "pass",
+        "skipped",
+        "pass",
+        "pass"
+      ]
+    },
+    {
+      "title": "Influencer email verification with password setup › Influencer can re-verify after reset [bdd]",
+      "file": "../.features-gen/e2e-tests/bdd/features/influencer-verification-password.feature.spec.js",
+      "window": 10,
+      "runsFlaky": 0,
+      "runsFailed": 4,
+      "lastSeen": 6,
+      "history": [
+        "fail",
+        "fail",
+        "fail",
+        "fail",
+        "pass",
+        "absent",
+        "pass",
+        "skipped",
+        "pass",
+        "pass"
+      ]
+    },
+    {
+      "title": "Influencer email verification with password setup › Influencer receives ACCOUNT_ACTIVATED notification after verification [bdd]",
+      "file": "../.features-gen/e2e-tests/bdd/features/influencer-verification-password.feature.spec.js",
+      "window": 10,
+      "runsFlaky": 0,
+      "runsFailed": 4,
+      "lastSeen": 6,
+      "history": [
+        "fail",
+        "fail",
+        "fail",
+        "fail",
+        "pass",
+        "absent",
+        "pass",
+        "skipped",
+        "pass",
+        "pass"
+      ]
+    },
+    {
+      "title": "Influencer email verification with password setup › Influencer verifies email and sets password via complete-verification [bdd]",
+      "file": "../.features-gen/e2e-tests/bdd/features/influencer-verification-password.feature.spec.js",
+      "window": 10,
+      "runsFlaky": 0,
+      "runsFailed": 4,
+      "lastSeen": 6,
+      "history": [
+        "fail",
+        "fail",
+        "fail",
+        "fail",
+        "pass",
+        "absent",
+        "pass",
+        "skipped",
+        "pass",
+        "pass"
+      ]
+    },
+    {
+      "title": "Influencer email verification with password setup › Invalid oobCode returns error [bdd]",
+      "file": "../.features-gen/e2e-tests/bdd/features/influencer-verification-password.feature.spec.js",
+      "window": 10,
+      "runsFlaky": 0,
+      "runsFailed": 4,
+      "lastSeen": 6,
+      "history": [
+        "fail",
+        "fail",
+        "fail",
+        "fail",
+        "pass",
+        "absent",
+        "pass",
+        "skipped",
+        "pass",
+        "pass"
+      ]
+    },
+    {
+      "title": "User Login › Influencer logs in via OAuth with the Instagram token from Firestore [bdd]",
+      "file": "../.features-gen/e2e-tests/bdd/features/login.feature.spec.js",
+      "window": 10,
+      "runsFlaky": 0,
+      "runsFailed": 4,
+      "lastSeen": 6,
+      "history": [
+        "fail",
+        "fail",
+        "fail",
+        "fail",
+        "pass",
+        "absent",
+        "pass",
+        "skipped",
+        "pass",
+        "pass"
+      ]
+    },
+    {
+      "title": "File Upload via Signed URLs (Consolidated) › Company file upload - all scenarios via signed URL (consolidated - 15+ assertions) [bdd]",
+      "file": "../.features-gen/e2e-tests/bdd/features/file-upload-signed-url.feature.spec.js",
+      "window": 10,
+      "runsFlaky": 0,
+      "runsFailed": 2,
+      "lastSeen": 4,
+      "history": [
+        "fail",
+        "fail",
+        "pass",
+        "pass",
+        "pass",
+        "absent",
+        "pass",
+        "skipped",
+        "pass",
+        "pass"
+      ]
+    }
+  ],
   "reports": {
-    "playwright": "playwright/62/",
-    "allure": "allure/62/"
+    "playwright": "playwright/12/",
+    "allure": "allure/12/"
   }
 }

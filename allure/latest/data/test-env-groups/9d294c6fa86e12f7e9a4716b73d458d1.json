@@ -1,1 +1,1 @@
-{"id":"9d294c6fa86e12f7e9a4716b73d458d1","fullName":"integration/flows/admin-platform-management.spec.ts:252:7","name":"@scenario-6 @reference-data admin can CRUD a city","status":"passed","testResultsByEnv":{"default":"3749b27bcd6183c8a388625bf844e282"}}
+{"id":"9d294c6fa86e12f7e9a4716b73d458d1","fullName":"integration/flows/admin-platform-management.spec.ts:252:7","name":"@scenario-6 @reference-data admin can CRUD a city","status":"passed","testResultsByEnv":{"default":"dc3dccf639f7ed33cfd920e7fdbe99de"}}

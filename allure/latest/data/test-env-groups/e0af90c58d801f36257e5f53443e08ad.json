@@ -1,1 +1,1 @@
-{"id":"e0af90c58d801f36257e5f53443e08ad","fullName":"integration/flows/security-advanced.spec.ts:194:7","name":"@admin-2fa partial-session blocked on admin endpoints; full-session allowed","status":"passed","testResultsByEnv":{"default":"a75340cea2ce55ee17c2f76919133dba"}}
+{"id":"e0af90c58d801f36257e5f53443e08ad","fullName":"integration/flows/security-advanced.spec.ts:194:7","name":"@admin-2fa partial-session blocked on admin endpoints; full-session allowed","status":"passed","testResultsByEnv":{"default":"934ef016b3d3da50e2fe585e37e43220"}}

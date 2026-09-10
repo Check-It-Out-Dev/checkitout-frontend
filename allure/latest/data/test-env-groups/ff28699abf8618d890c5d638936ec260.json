@@ -1,1 +1,1 @@
-{"id":"ff28699abf8618d890c5d638936ec260","fullName":"integration/flows/security-advanced-session.spec.ts:234:7","name":"@scenario-5 @user-ban admin bans COMPANY + INFLUENCER, banned users denied","status":"passed","testResultsByEnv":{"default":"710130e245235fc107c72141cfb5d270"}}
+{"id":"ff28699abf8618d890c5d638936ec260","fullName":"integration/flows/security-advanced-session.spec.ts:234:7","name":"@scenario-5 @user-ban admin bans COMPANY + INFLUENCER, banned users denied","status":"passed","testResultsByEnv":{"default":"ac81b4f5bd80f99a73e7249423fb768c"}}

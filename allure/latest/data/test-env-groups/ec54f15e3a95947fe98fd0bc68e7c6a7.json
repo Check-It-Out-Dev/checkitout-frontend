@@ -1,1 +1,1 @@
-{"id":"ec54f15e3a95947fe98fd0bc68e7c6a7","fullName":"integration/auth/step-up.spec.ts:59:7","name":"@incomplete-setup COMPANY can PATCH email without step-up token","status":"passed","testResultsByEnv":{"default":"66a6bd32be056a3fe9cdbae5c2af78e7"}}
+{"id":"ec54f15e3a95947fe98fd0bc68e7c6a7","fullName":"integration/auth/step-up.spec.ts:59:7","name":"@incomplete-setup COMPANY can PATCH email without step-up token","status":"passed","testResultsByEnv":{"default":"066dba6852038e9a8108c2e4189c979e"}}
