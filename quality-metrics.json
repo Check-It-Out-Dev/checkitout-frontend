@@ -2,26 +2,26 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 29,
-    "id": 34420053245,
-    "sha": "c3ec9fa",
+    "number": 30,
+    "id": 34420412550,
+    "sha": "6afceaf",
     "branch": "main",
     "workflow": "browser-tiers",
-    "startedAt": "2026-09-10T00:09:19Z",
-    "durationSec": 350,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34420053245",
+    "startedAt": "2026-09-10T00:14:10Z",
+    "durationSec": 652,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34420412550",
     "status": "incomplete"
   },
   "tests": {
-    "total": 1313,
-    "passed": 1289,
+    "total": 1343,
+    "passed": 1319,
     "failed": 0,
     "flaky": 0,
     "skipped": 24,
     "passRate": 1,
     "flakyRate": 0,
-    "durationMeanSec": 0.15,
-    "durationP95Sec": 0.88,
+    "durationMeanSec": 0.45,
+    "durationP95Sec": 1.01,
     "tiers": {
       "jest": {
         "total": 1183,
@@ -45,7 +45,15 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 22,
-        "durationSec": 118
+        "durationSec": 122
+      },
+      "perf": {
+        "total": 30,
+        "passed": 30,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "durationSec": 388
       }
     }
   },
@@ -75,11 +83,11 @@
         "absent",
         "absent",
         "absent",
-        "absent",
         "pass",
         "absent",
         "pass",
         "fail",
+        "absent",
         "absent"
       ]
     },
@@ -95,11 +103,11 @@
         "absent",
         "absent",
         "absent",
-        "absent",
         "pass",
         "absent",
         "pass",
         "fail",
+        "absent",
         "absent"
       ]
     },
@@ -107,11 +115,10 @@
       "title": "Demo smoothness › a simulator that never fires holds the step instead of narrating it [perf]",
       "file": "perf/demo-smoothness.spec.ts",
       "window": 10,
-      "runsFlaky": 3,
+      "runsFlaky": 2,
       "runsFailed": 0,
       "lastSeen": 25,
       "history": [
-        "flaky",
         "pass",
         "absent",
         "flaky",
@@ -120,7 +127,8 @@
         "pass",
         "pass",
         "pass",
-        "absent"
+        "absent",
+        "pass"
       ]
     },
     {
@@ -131,7 +139,6 @@
       "runsFailed": 1,
       "lastSeen": 16,
       "history": [
-        "pass",
         "fail",
         "absent",
         "pass",
@@ -140,12 +147,13 @@
         "pass",
         "pass",
         "pass",
-        "absent"
+        "absent",
+        "pass"
       ]
     }
   ],
   "reports": {
-    "playwright": "playwright/29/",
-    "allure": "allure/29/"
+    "playwright": "playwright/30/",
+    "allure": "allure/30/"
   }
 }
