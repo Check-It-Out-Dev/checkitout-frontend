@@ -140,23 +140,34 @@ async function seedInfluencerContext(
  */
 async function seedInfluencerContextWithInstagram(
   browser: import('@playwright/test').Browser,
-  hookPage: Page,
 ): Promise<{ page: Page; context: BrowserContext; email: string }> {
   const context = await browser.newContext({ ignoreHTTPSErrors: true });
   const page = await context.newPage();
   const email = UNIQUE_INFLUENCER();
   await seedSession(page, email, 'INFLUENCER');
 
-  // The two admin hooks run from ANOTHER context's page on purpose. They are keyed by email and
-  // need no session of their own, and driving them from the influencer's page put two extra
-  // round-trips through that context's cookie jar between minting its session and using it --
-  // after which the apply arrived with no session at all (401, NO_AUTHENTICATION_FOR_REQUIRED_
-  // ENDPOINT in the backend log). The test one file up that seeds nothing extra authenticates
-  // fine, which is the differential. Nothing touches this jar now between mint and use.
-  await seedInstagramConnection(hookPage, email);
-  // ACTIVE is the second of the three requirements saveAsDto checks; without it the apply is
-  // refused exactly as it is with no connection at all, and the backend now says which.
-  await activateAccount(hookPage, email);
+  // The two admin hooks run in a THROWAWAY context, belonging to no test.
+  //
+  // They are keyed by email and need no session of their own, but they do go through whichever
+  // cookie jar they are handed -- and that jar comes back damaged. Driving them from the
+  // influencer's page left the apply arriving with no session at all (401,
+  // NO_AUTHENTICATION_FOR_REQUIRED_ENDPOINT in the backend log); moving them to the company's page
+  // moved the damage there instead, and /notifications/unread/count stopped answering. The
+  // differential both times was the same: the context that makes these two calls loses its
+  // session, the one that does not keeps it.
+  //
+  // So neither test's jar is exposed to them. What is actually happening to that jar is worth
+  // finding out, but it is not worth a test session while it is being found.
+  const hooks = await browser.newContext({ ignoreHTTPSErrors: true });
+  try {
+    const hookPage = await hooks.newPage();
+    await seedInstagramConnection(hookPage, email);
+    // ACTIVE is the second of the three requirements saveAsDto checks; without it the apply is
+    // refused exactly as it is with no connection at all, and the backend now says which.
+    await activateAccount(hookPage, email);
+  } finally {
+    await hooks.close();
+  }
 
   // The precondition, asserted rather than assumed. A lost session used to surface three steps
   // later as "apply should succeed, got 401", which reads as a permissions problem.
@@ -366,7 +377,7 @@ test.describe('@notification-lifecycle — port of notification-e2e.feature', ()
     // the apply lands. Without Instagram, apply 403s and the test would
     // be moot (no apply event = trivially no notification, not a real
     // suppression assertion).
-    const inf = await seedInfluencerContextWithInstagram(browser, page);
+    const inf = await seedInfluencerContextWithInstagram(browser);
     try {
       const applyRes = await api(inf.page, 'POST', '/applied-opportunity', {
         partnershipOpportunity: campaignId,
@@ -382,8 +393,17 @@ test.describe('@notification-lifecycle — port of notification-e2e.feature', ()
     // "no email ever" because the preference suppressed it).
     await flushPendingEmails(page);
 
-    // Suppression assertion #1: unread count must NOT have increased
+    // Suppression assertion #1: unread count must NOT have increased.
+    //
+    // The status is checked first because the count used to fall back to -1 when the body had no
+    // `count` field, and -1 then failed the comparison as though the number had gone DOWN by one.
+    // A nightly run spent a cycle being read as a notification disappearing when the call itself
+    // had not succeeded.
     const afterRes = await api(page, 'GET', '/notifications/unread/count');
+    expect(
+      afterRes.status(),
+      `unread count must be readable to be compared (got ${afterRes.status()}: ${await afterRes.text()})`,
+    ).toBe(200);
     const afterUnread = ((await afterRes.json()) as UnreadCountResponse).count ?? -1;
     expect(
       afterUnread,

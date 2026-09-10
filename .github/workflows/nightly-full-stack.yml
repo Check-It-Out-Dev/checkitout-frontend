@@ -405,6 +405,12 @@ jobs:
         run: |
           mkdir -p ci-reports/blobs
           find fragments -name '*.zip' -exec cp {} ci-reports/blobs/ \;
+          # ...and the exit files beside the merged report, where the verdict reads them. They
+          # arrive inside the same artifacts as the blobs but only the .zip files were copied out,
+          # so the first run with --expect-shards reported all four shards missing while all four
+          # had in fact written one.
+          find fragments -name 'shard-*.exit' -exec cp {} ci-reports/ \;
+          echo "exit files found:"; ls -1 ci-reports/shard-*.exit 2>/dev/null || echo "  none"
           PLAYWRIGHT_HTML_OUTPUT_DIR=ci-reports/merged PLAYWRIGHT_HTML_REPORT=ci-reports/merged PLAYWRIGHT_JSON_OUTPUT_NAME=ci-reports/merged.json \
             npx playwright merge-reports --reporter html,json ci-reports/blobs
       # The verdict is recorded here but does not stop the job: a red or an incomplete run must still publish
