@@ -2,26 +2,26 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 30,
-    "id": 34420412550,
-    "sha": "6afceaf",
+    "number": 31,
+    "id": 34421125994,
+    "sha": "191a088",
     "branch": "main",
     "workflow": "browser-tiers",
-    "startedAt": "2026-09-10T00:14:10Z",
-    "durationSec": 652,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34420412550",
+    "startedAt": "2026-09-10T00:24:02Z",
+    "durationSec": 296,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34421125994",
     "status": "incomplete"
   },
   "tests": {
-    "total": 1343,
-    "passed": 1319,
+    "total": 1313,
+    "passed": 1289,
     "failed": 0,
     "flaky": 0,
     "skipped": 24,
     "passRate": 1,
     "flakyRate": 0,
-    "durationMeanSec": 0.45,
-    "durationP95Sec": 1.01,
+    "durationMeanSec": 0.15,
+    "durationP95Sec": 0.85,
     "tiers": {
       "jest": {
         "total": 1183,
@@ -45,15 +45,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 22,
-        "durationSec": 122
-      },
-      "perf": {
-        "total": 30,
-        "passed": 30,
-        "failed": 0,
-        "flaky": 0,
-        "skipped": 0,
-        "durationSec": 388
+        "durationSec": 116
       }
     }
   },
@@ -82,11 +74,11 @@
         "absent",
         "absent",
         "absent",
-        "absent",
         "pass",
         "absent",
         "pass",
         "fail",
+        "absent",
         "absent",
         "absent"
       ]
@@ -102,11 +94,11 @@
         "absent",
         "absent",
         "absent",
-        "absent",
         "pass",
         "absent",
         "pass",
         "fail",
+        "absent",
         "absent",
         "absent"
       ]
@@ -119,7 +111,6 @@
       "runsFailed": 0,
       "lastSeen": 25,
       "history": [
-        "pass",
         "absent",
         "flaky",
         "pass",
@@ -128,32 +119,13 @@
         "pass",
         "pass",
         "absent",
-        "pass"
-      ]
-    },
-    {
-      "title": "Demo smoothness › the admin-ops tour advances promptly at every step [perf]",
-      "file": "perf/demo-smoothness.spec.ts",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 16,
-      "history": [
-        "fail",
-        "absent",
         "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "absent",
-        "pass"
+        "absent"
       ]
     }
   ],
   "reports": {
-    "playwright": "playwright/30/",
-    "allure": "allure/30/"
+    "playwright": "playwright/31/",
+    "allure": "allure/31/"
   }
 }
