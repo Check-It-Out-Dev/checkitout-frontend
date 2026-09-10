@@ -41,8 +41,8 @@ jobs:
     # public Grafana Cloud dashboard; without them the run is summaries-only and says so.
     environment: grafana-cloud
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444  # v5
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -50,9 +50,9 @@ jobs:
 
       # ---- images: the frontend from the production build, the test image from the pinned Playwright base ----
       - run: npm run build
-      - uses: docker/setup-buildx-action@v4
+      - uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e  # v4
       - name: Frontend image
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a  # v7
         with:
           context: .
           file: deploy/k8s/frontend/Dockerfile
@@ -62,7 +62,7 @@ jobs:
         id: pw
         run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
       - name: Test image (layers cached between runs)
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a  # v7
         with:
           context: .
           file: deploy/k8s/tests/Dockerfile.playwright
@@ -82,7 +82,7 @@ jobs:
           # ephemeral and holds nothing but the checkout.
           chmod 0777 ci-reports
           CI_REPORTS_DIR="$GITHUB_WORKSPACE/ci-reports" envsubst < deploy/k8s/kind-config.yaml > kind-config.rendered.yaml
-      - uses: helm/kind-action@v1
+      - uses: helm/kind-action@ef37e7f390d99f746eb8b610417061a60e82a6cc  # v1
         with:
           cluster_name: ${{ env.KIND_CLUSTER }}
           config: kind-config.rendered.yaml
@@ -182,7 +182,7 @@ jobs:
           kubectl -n checkitout describe pods > ci-reports/cluster/describe.txt || true
           for p in $(kubectl -n checkitout get pods -o name); do kubectl -n checkitout logs "$p" --all-containers > "ci-reports/cluster/$(basename "$p").log" 2>&1 || true; done
           kubectl describe nodes > ci-reports/cluster/nodes.txt || true
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6
         if: always()
         with:
           name: k8s-reports-${{ github.run_number }}
@@ -192,7 +192,7 @@ jobs:
           retention-days: 30
       - name: Pages site (previous state)
         if: always()
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
         with:
           ref: gh-pages
           path: site

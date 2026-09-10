@@ -52,8 +52,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1  # v6
         with:
           python-version: "3.12"
       - run: python -m pip install --quiet "semgrep==${SEMGREP_VERSION}"
@@ -84,7 +84,7 @@ jobs:
       # Kept as an artifact as well as uploaded to code scanning, so the summary job below can
       # count what every tool found in ONE run. Code scanning answers "what is open"; this answers
       # "what did tonight's scan see", which is the number worth trending.
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6
         if: always()
         with:
           name: sarif-semgrep
@@ -98,8 +98,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1  # v6
         with:
           python-version: "3.12"
       - run: python -m pip install --quiet "checkov==${CHECKOV_VERSION}"
@@ -126,7 +126,7 @@ jobs:
       # Kept as an artifact as well as uploaded to code scanning, so the summary job below can
       # count what every tool found in ONE run. Code scanning answers "what is open"; this answers
       # "what did tonight's scan see", which is the number worth trending.
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6
         if: always()
         with:
           name: sarif-checkov
@@ -140,7 +140,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
       - name: Install Trivy
         run: |
           set -euo pipefail
@@ -170,7 +170,7 @@ jobs:
       # Kept as an artifact as well as uploaded to code scanning, so the summary job below can
       # count what every tool found in ONE run. Code scanning answers "what is open"; this answers
       # "what did tonight's scan see", which is the number worth trending.
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6
         if: always()
         with:
           name: sarif-trivy
@@ -178,7 +178,7 @@ jobs:
           retention-days: 30
           if-no-files-found: ignore
           category: trivy
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6
         with:
           name: sbom-${{ github.run_number }}
           path: sbom.cdx.json
@@ -192,7 +192,7 @@ jobs:
     # sandbox is the one public surface running the real stack.
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
       # The baseline scan is passive: it crawls, reads what comes back, and reports missing headers,
       # cookie flags, information disclosure and the like. It sends no attack payloads, which is what
       # makes it safe to point at a live host on a schedule.
@@ -208,7 +208,7 @@ jobs:
             echo
             if [ -f zap/report.md ]; then head -60 zap/report.md; else echo "no report produced"; fi
           } | tee -a "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6
         if: always()
         with:
           name: zap-${{ github.run_number }}
@@ -225,13 +225,13 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444  # v5
         with:
           node-version-file: .nvmrc
 
       - name: Collect the SARIF every tool produced
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131  # v7
         with:
           pattern: sarif-*
           path: sarif
@@ -244,7 +244,7 @@ jobs:
           node tools/ci/sarif-summary.mjs "sarif/*.sarif" --json security-summary.json             | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: Pages site (previous state)
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
         with:
           ref: gh-pages
           path: site
@@ -260,7 +260,7 @@ jobs:
         run: |
           bash tools/ci/publish-pages.sh site "security run ${{ github.run_number }}"
 
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6
         if: always()
         with:
           name: security-summary-${{ github.run_number }}
