@@ -2,6 +2,15 @@
 # asserted at warn level (they become errors once the history shows what the p90 is), HTML reports as an
 # artifact and a scores table in the step summary via tools/ci/lighthouse-summary.mjs. Configuration in
 # lighthouserc.json at the repository root.
+# Accessibility is asserted as an ERROR, not a warning, and `color-contrast` is asserted on its own.
+# Both were warnings while the score sat at 97 with one real failure: a 12px semibold span in
+# coral-600 at 3.85:1 on cream, where AA wants 4.5. The palette now clears it (coral-600 is 4.60:1
+# on the lightest ground it sits on), so the bar moves to where the code actually is.
+#
+# The category floor is 0.97 rather than 1.00 because 0.97 is what the last run MEASURED; a 1.00
+# would be a prediction about a fix whose effect no run has reported yet. Raise it when a run
+# reports higher. A ratchet: never lowered to make a red run green.
+#
 name: lighthouse
 
 on:

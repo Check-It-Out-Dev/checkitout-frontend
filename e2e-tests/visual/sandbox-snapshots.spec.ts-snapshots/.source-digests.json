@@ -1,5 +1,5 @@
 {
-  "stampedAt": "adopted 2026-09-10T10:34:39.622Z",
+  "stampedAt": "2026-09-10T11:45:43.425Z",
   "sources": {
     "src/app/feature/addresses/addresses.component.html": "b9d84c2a576d902a",
     "src/app/feature/addresses/addresses.component.ts": "6fab40439d5951bc",
@@ -29,9 +29,9 @@
     "src/app/feature/auth/sign-in/sign-in.component.scss": "6eb3580112d021f4",
     "src/app/feature/auth/sign-in/sign-in.component.ts": "dd5a8f1efeba855d",
     "src/app/feature/auth/sign-out/sign-out.component.ts": "d6a8d688d96aac9b",
-    "src/app/feature/auth/sign-up/business-sign-up.component.html": "8c1aff5a9aef9c1a",
+    "src/app/feature/auth/sign-up/business-sign-up.component.html": "44460e14c16e0120",
     "src/app/feature/auth/sign-up/business-sign-up.component.ts": "5c0c3f91d3ceccdd",
-    "src/app/feature/auth/sign-up/influencer-sign-up.component.html": "c5795d81e63be87c",
+    "src/app/feature/auth/sign-up/influencer-sign-up.component.html": "54d09761982273fa",
     "src/app/feature/auth/sign-up/influencer-sign-up.component.ts": "24f1fb7faa728caf",
     "src/app/feature/auth/sign-up/sign-up-chooser.component.ts": "1fce99c83b8d0b0d",
     "src/app/feature/auth/social-callback/social-callback.component.ts": "3cfa2019e87ac14d",

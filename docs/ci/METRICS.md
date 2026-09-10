@@ -155,12 +155,40 @@ One JSON object per line, appended after every run, in this shape:
   "k6P95Ms": 118.4,
   "k6FailedRate": 0,
   "lhPerformance": 100,
-  "lhAccessibility": 100
+  "lhAccessibility": 100,
+  "mutationScore": 72.84,
+  "mutationCoveredScore": 83.29,
+  "securityFindings": 4,
+  "securityErrors": 1
 }
 ```
 
 The dashboard draws its ribbon and sparklines from the last 30 lines; `id` is the workflow run id, so every bar
 links to its run. Missing keys mean "this run did not measure that".
+
+### The two quality-over-time keys
+
+`mutationScore` and `securityFindings` answer the two questions a pass rate cannot.
+
+**Test quality.** A pass rate says the tests agreed with the code; it says nothing about whether they would
+have disagreed if the code were wrong. Mutation testing changes the code on purpose and reports the share of
+those changes the tests noticed. Two numbers are recorded because averaging them hides which problem you have:
+`mutationScore` is over everything in scope, `mutationCoveredScore` only over code some test reaches. A wide
+gap between them is a _coverage_ gap — "write a test" — while a low covered score is a _test-quality_ gap —
+"make an existing test assert something". Both repositories produce these: Stryker on the frontend
+(`tools/ci/mutation-summary.mjs`), PIT on the backend (`tools/ci/pit-summary.mjs`), writing the same keys.
+
+**Security quality.** `securityFindings` counts what the scanners found in THIS run, read from their own SARIF
+by `tools/ci/sarif-summary.mjs`, rather than from the code-scanning API. Two reasons: the number is then the
+run's own evidence and stays readable offline, and a tool that ran and found nothing is recorded at zero
+instead of being omitted — a scanner that silently stops running otherwise looks exactly like a clean
+repository. `securityErrors` is broken out because errors are the number that moves a decision; a linter
+emitting four hundred style notes should not make the estate look on fire.
+
+Neither tier publishes the full metrics document. Each writes one small file to the Pages branch —
+`mutation/latest.json`, `security/latest.json` — and the publishers that do write the document pass those
+paths in, exactly as they already do for `lighthouse/latest.json`. That keeps one document per run rather than
+several partial ones racing to overwrite each other.
 
 ## 4 · `metrics/tests/<run>.json` and the flaky list
 

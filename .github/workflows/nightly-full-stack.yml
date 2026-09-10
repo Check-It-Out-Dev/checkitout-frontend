@@ -274,7 +274,7 @@ jobs:
           DURATION=$(( $(date +%s) - $(date -d "$STARTED_AT" +%s) ))
           node tools/ci/quality-metrics.mjs --out site --workflow nightly-full-stack --started-at "$STARTED_AT" --duration-sec "$DURATION" \
             --playwright ci-reports/merged.json --verdict ci-reports/summary.json --copy playwright=ci-reports/merged \
-            --jest site/jest/latest.json --coverage site/coverage/latest.json --lighthouse site/lighthouse/latest.json --copy allure=allure-report | tee -a "$GITHUB_STEP_SUMMARY"
+            --jest site/jest/latest.json --coverage site/coverage/latest.json --lighthouse site/lighthouse/latest.json --mutation site/mutation/latest.json --security site/security/latest.json --copy allure=allure-report | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

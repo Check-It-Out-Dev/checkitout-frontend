@@ -81,6 +81,16 @@ jobs:
       - uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: semgrep.sarif
+      # Kept as an artifact as well as uploaded to code scanning, so the summary job below can
+      # count what every tool found in ONE run. Code scanning answers "what is open"; this answers
+      # "what did tonight's scan see", which is the number worth trending.
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: sarif-semgrep
+          path: semgrep.sarif
+          retention-days: 30
+          if-no-files-found: ignore
           category: semgrep
 
   iac:
@@ -113,6 +123,16 @@ jobs:
         if: hashFiles('checkov.sarif') != ''
         with:
           sarif_file: checkov.sarif
+      # Kept as an artifact as well as uploaded to code scanning, so the summary job below can
+      # count what every tool found in ONE run. Code scanning answers "what is open"; this answers
+      # "what did tonight's scan see", which is the number worth trending.
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: sarif-checkov
+          path: checkov.sarif
+          retention-days: 30
+          if-no-files-found: ignore
           category: checkov
 
   supply-chain:
@@ -147,6 +167,16 @@ jobs:
       - uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: trivy.sarif
+      # Kept as an artifact as well as uploaded to code scanning, so the summary job below can
+      # count what every tool found in ONE run. Code scanning answers "what is open"; this answers
+      # "what did tonight's scan see", which is the number worth trending.
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: sarif-trivy
+          path: trivy.sarif
+          retention-days: 30
+          if-no-files-found: ignore
           category: trivy
       - uses: actions/upload-artifact@v6
         with:
@@ -184,3 +214,55 @@ jobs:
           name: zap-${{ github.run_number }}
           path: zap/
           retention-days: 30
+
+  summary:
+    name: What the scanners found, in one number
+    needs: [sast, iac, supply-chain]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Writes the count to the Pages branch so the dashboard can trend security quality over time.
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+
+      - name: Collect the SARIF every tool produced
+        uses: actions/download-artifact@v7
+        with:
+          pattern: sarif-*
+          path: sarif
+          merge-multiple: true
+        continue-on-error: true
+
+      - name: Count it
+        run: |
+          set -o pipefail
+          node tools/ci/sarif-summary.mjs "sarif/*.sarif" --json security-summary.json             | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Pages site (previous state)
+        uses: actions/checkout@v5
+        with:
+          ref: gh-pages
+          path: site
+        continue-on-error: true
+      - name: This tier's number into the site, for the dashboard to trend
+        run: |
+          rm -rf site/.git
+          mkdir -p site/security
+          cp security-summary.json site/security/latest.json
+      - name: Publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          bash tools/ci/publish-pages.sh site "security run ${{ github.run_number }}"
+
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: security-summary-${{ github.run_number }}
+          path: security-summary.json
+          retention-days: 90

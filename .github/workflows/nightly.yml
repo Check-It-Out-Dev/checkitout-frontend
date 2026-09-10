@@ -78,13 +78,18 @@ jobs:
   mutation:
     name: Mutation
     uses: ./.github/workflows/mutation.yml
+    # It writes its score to the Pages branch so the dashboard can trend test quality over time,
+    # and a called workflow may never hold more than the job that calls it.
+    permissions:
+      contents: write
     secrets: inherit
 
   security:
     name: Security
     uses: ./.github/workflows/security.yml
     permissions:
-      contents: read
+      # write, because the tier now also publishes its finding count for the dashboard to trend.
+      contents: write
       security-events: write
     secrets: inherit
 
