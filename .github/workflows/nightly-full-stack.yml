@@ -238,7 +238,14 @@ jobs:
           fi
           if [ -z "$id" ]; then echo "no backend container found to read a log from"; exit 0; fi
           echo "### Backend: what it said about reaching anything"
-          hits=$(docker logs "$id" 2>&1 | grep -iE "emulator|identitytoolkit|securetoken|firestore|external_service|Connection refused|UnknownHost|NetworkTranslatable" | tail -60 || true)
+          # The whole log, kept as an artifact. Three nightly failures in a row have been diagnosed
+          # by reading it, and each time the grep below turned out not to match the interesting line
+          # -- a 401 is not "external_service", and the gRPC channel panic that caused nine failures
+          # said "Uncaught exception in the SynchronizationContext", which no pattern here would have
+          # caught. Grepping is for the step summary; the artifact is for the next question.
+          docker logs "$id" > /tmp/backend.log 2>&1 || true
+          echo "backend log: $(wc -l < /tmp/backend.log) lines"
+          hits=$(grep -iE "emulator|identitytoolkit|securetoken|firestore|external_service|Connection refused|UnknownHost|NetworkTranslatable|not_authenticated|Uncaught exception|rate_limit" /tmp/backend.log | tail -60 || true)
           if [ -n "$hits" ]; then
             echo "$hits"
             {
@@ -248,10 +255,19 @@ jobs:
               echo '```'
             } >> "$GITHUB_STEP_SUMMARY"
             echo "--- tail, for context ---"
-            docker logs "$id" 2>&1 | tail -80
+            tail -80 /tmp/backend.log
           else
             echo "nothing about emulators or external calls in the backend log"
           fi
+
+      - name: Keep the backend log
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        with:
+          name: backend-log-${{ matrix.shard }}
+          path: /tmp/backend.log
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Frontend behind nginx, /api proxied to the backend service on the host
         run: |
