@@ -5,14 +5,19 @@
  * dashboard off for a day and kept every job green while it did; the fourth is the one that would
  * not announce itself at all.
  *
- * 1. A DUPLICATE KEY in a step's `env:` block. YAML libraries keep the last one silently -- js-yaml
- *    and PyYAML both do -- so the file parses, the shell script parses, and every local check is
- *    green. GitHub's own validator rejects it, and the run it rejects has zero jobs and no log: it
- *    shows up only as a red row named after the workflow's own path. The way this got in was a
- *    mechanical rewrite that bound `${{ }}` expressions to env vars and derived each name from the
- *    last path segment, so `steps.check.outputs.errors`, `steps.format.outputs.errors` and
- *    `steps.templates.outputs.errors` all became OUT_ERRORS. Even had GitHub accepted it, the shell
- *    below summed one value three times and labelled it three different ways.
+ * 1. A DUPLICATE KEY in any mapping. YAML libraries keep the last one silently -- js-yaml and
+ *    PyYAML both do -- so the file parses, the shell script parses, and every local check is green.
+ *    GitHub's own validator rejects it, and the run it rejects has zero jobs and no log: it shows
+ *    up only as a red row named after the workflow's own path. The first one was a mechanical
+ *    rewrite that bound `${{ }}` expressions to env vars and derived each name from the last path
+ *    segment, so `steps.check.outputs.errors`, `steps.format.outputs.errors` and
+ *    `steps.templates.outputs.errors` all became OUT_ERRORS in one `env:` block; even had GitHub
+ *    accepted it, the shell below summed one value three times and labelled it three different
+ *    ways. The second was an edit script that ran twice and inserted the same `secrets:` block
+ *    under `workflow_call:` twice, which took out a pull-request pipeline the same way. This rule
+ *    started out looking only inside `env:` blocks and so missed the second; it now walks every
+ *    mapping, resetting at each `-` sequence item because each item is a mapping of its own, and
+ *    skipping block scalars because a `run: |` body is text, not keys.
  *
  * 2. A SINGLE-QUOTED expansion, `VAR='${OTHER}'`. In bash that is a literal seven-character string,
  *    not the value. It is the natural output of rewriting `VAR='${{ inputs.x }}'` -- where the
@@ -48,31 +53,62 @@ import { join } from 'node:path';
 const roots = process.argv.slice(2);
 if (!roots.length) roots.push('.');
 
-/** `env:` blocks are found by indentation rather than by parsing, because the parser is the thing
- *  that hides the bug: it collapses the duplicate before anyone can see it. */
-function duplicateEnvKeys(text) {
+/** Duplicates are found by indentation rather than by parsing, because the parser is the thing
+ *  that hides the bug: it collapses the duplicate before anyone can see it.
+ *
+ *  Scope rules, and why each one is here:
+ *   - a `-` starts a sequence item, and each item is its own mapping, so two steps may both say
+ *     `uses:` without that being a duplicate;
+ *   - a block scalar (`run: |`, `if: >-`) is text, so everything indented under it is skipped --
+ *     a shell heredoc that writes YAML would otherwise read as a nest of keys;
+ *   - a key at a shallower indent closes every deeper scope, so two jobs may share `runs-on:`. */
+function duplicateMappingKeys(text) {
   const lines = text.replace(/\r\n/g, '\n').split('\n');
   const found = [];
+  const stack = [];
+  let insideBlockScalarAt = -1;
+
   for (let i = 0; i < lines.length; i++) {
-    const open = /^(\s*)env:\s*$/.exec(lines[i]);
-    if (!open) continue;
-    const indent = open[1].length;
-    const seen = new Map();
-    let j = i + 1;
-    for (; j < lines.length; j++) {
-      const line = lines[j];
-      if (line.trim() === '') continue;
-      const ind = line.length - line.trimStart().length;
-      if (ind <= indent) break;
-      const key = /^\s*([A-Za-z_][A-Za-z0-9_]*)\s*:/.exec(line);
-      if (key) {
-        const at = seen.get(key[1]) || [];
-        at.push(j + 1);
-        seen.set(key[1], at);
-      }
+    const line = lines[i];
+    if (line.trim() === '' || /^\s*#/.test(line)) continue;
+    const indent = line.length - line.trimStart().length;
+
+    if (insideBlockScalarAt >= 0) {
+      if (indent > insideBlockScalarAt) continue;
+      insideBlockScalarAt = -1;
     }
-    for (const [key, at] of seen) if (at.length > 1) found.push({ key, at });
-    i = j - 1;
+
+    let body = line.trimStart();
+    let keyIndent = indent;
+    if (body.startsWith('- ')) {
+      keyIndent = indent + 2;
+      while (stack.length && stack[stack.length - 1].indent >= keyIndent) stack.pop();
+      stack.push({ indent: keyIndent, seen: new Map() });
+      body = body.slice(2);
+    } else if (body === '-' || body.startsWith('-')) {
+      while (stack.length && stack[stack.length - 1].indent > indent) stack.pop();
+      continue;
+    } else {
+      while (stack.length && stack[stack.length - 1].indent > keyIndent) stack.pop();
+    }
+
+    const m = /^([A-Za-z_][\w.-]*)\s*:(\s|$)/.exec(body);
+    if (!m) continue;
+
+    if (!stack.length || stack[stack.length - 1].indent !== keyIndent) {
+      stack.push({ indent: keyIndent, seen: new Map() });
+    }
+    const scope = stack[stack.length - 1];
+    const key = m[1];
+    const at = scope.seen.get(key);
+    if (at) {
+      at.push(i + 1);
+      if (at.length === 2) found.push({ key, at });
+    } else {
+      scope.seen.set(key, [i + 1]);
+    }
+
+    if (/:\s*[|>][-+0-9]*\s*$/.test(body)) insideBlockScalarAt = keyIndent;
   }
   return found;
 }
@@ -142,11 +178,12 @@ for (const root of roots) {
     const path = join(dir, name);
     const text = readFileSync(path, 'utf8');
     scanned++;
-    for (const d of duplicateEnvKeys(text)) {
+    for (const d of duplicateMappingKeys(text)) {
       problems++;
       console.error(
-        `${path}: env key ${d.key} defined ${d.at.length} times (lines ${d.at.join(', ')}) — ` +
-          `GitHub rejects the workflow with a zero-job startup failure and no log`,
+        `${path}: key ${d.key} defined ${d.at.length} times in one mapping (lines ` +
+          `${d.at.join(', ')}) — YAML keeps the last one and GitHub rejects the workflow, ` +
+          `with a zero-job startup failure and no log`,
       );
     }
     for (const d of deadSingleQuotedExpansions(text)) {
@@ -177,6 +214,6 @@ if (problems) {
   process.exit(1);
 }
 console.log(
-  `check:workflow-env OK — ${scanned} workflow(s): no duplicate env keys, no dead expansions,` +
+  `check:workflow-env OK — ${scanned} workflow(s): no duplicate keys, no dead expansions,` +
     ` no literal backslash-n, every action pinned to a commit.`,
 );
