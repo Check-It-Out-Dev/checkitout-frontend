@@ -7,7 +7,7 @@ import {
   readTotpSecret,
   TotpSecretMissingError,
 } from '../../_framework/firebase-admin-bridge';
-import { currentTotpCode } from '../../_framework/totp';
+import { currentTotpCode, provisionedAdminTotpSecret } from '../../_framework/totp';
 import type { UserDtoOut } from '../../../src/app/api/model/user-dto-out';
 
 /**
@@ -99,9 +99,13 @@ test.describe('@login-real — real-Firebase happy-path login (T4)', () => {
       !hasRealCredentialsFor('ADMIN'),
       'FIREBASE_TEST_ADMIN_{EMAIL,PASSWORD} not set — see e2e-tests/.env.example',
     );
+    // Either the run provisioned a secret it already knows (the emulator path, no credential
+    // anywhere) or the bridge can decrypt one out of Firestore with KMS. Neither, and there is no
+    // way to generate a valid code, so there is nothing to assert.
+    const provisioned = provisionedAdminTotpSecret();
     test.skip(
-      !isBridgeAvailable(),
-      'Firebase Admin bridge not available — service-account.json missing; see e2e-tests/.env.example',
+      !provisioned && !isBridgeAvailable(),
+      'no provisioned secret (E2E_TOTP_SECRET) and no Firebase Admin bridge — see e2e-tests/.env.example',
     );
 
     const context = await browser.newContext({ ignoreHTTPSErrors: true });
@@ -117,16 +121,22 @@ test.describe('@login-real — real-Firebase happy-path login (T4)', () => {
       // service-account.json + KMS keyring lookup; we just pass the UID.
       const adminUid = process.env['ADMIN_FIREBASE_UID'] ?? '85VJgS6shAWTqby4rHypN355RWv2';
       let totpSecret: string;
-      try {
-        totpSecret = await readTotpSecret(adminUid);
-      } catch (err) {
-        if (err instanceof TotpSecretMissingError) {
-          test.skip(
-            true,
-            `totpSecrets/${adminUid} not provisioned — run \`node --experimental-strip-types e2e-tests/scripts/provision-admin-totp.mjs\` first.`,
-          );
+      if (provisioned) {
+        // Provisioned through the backend's own service, so the ciphertext in Firestore is whatever
+        // this run's cipher produces and nothing here needs to decrypt it.
+        totpSecret = provisioned;
+      } else {
+        try {
+          totpSecret = await readTotpSecret(adminUid);
+        } catch (err) {
+          if (err instanceof TotpSecretMissingError) {
+            test.skip(
+              true,
+              `totpSecrets/${adminUid} not provisioned — run \`node --experimental-strip-types e2e-tests/scripts/provision-admin-totp.mjs\` first.`,
+            );
+          }
+          throw err;
         }
-        throw err;
       }
       const code = currentTotpCode(totpSecret);
 

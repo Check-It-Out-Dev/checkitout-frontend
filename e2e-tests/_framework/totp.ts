@@ -38,6 +38,27 @@ import { createHmac } from 'node:crypto';
  */
 export const ADMIN_TEST_TOTP_SECRET = 'JBSWY3DPEHPK3PXP';
 
+/**
+ * The admin's TOTP secret for this run, when it was provisioned rather than read back.
+ *
+ * There are two ways for a suite to know a secret it can generate codes from, and they are not
+ * equally good. The old one reads `totpSecrets/{uid}.encryptedSecret` out of Firestore and decrypts
+ * it with Cloud KMS through the Firebase Admin bridge, which needs a service account, a live Google
+ * project and a KMS key -- the credential dependency the emulator work exists to remove.
+ *
+ * The new one turns it around: the run provisions a secret it already knows, through the backend's
+ * own `POST /test/auth/provision-totp`, so the application seals it with whatever cipher that run is
+ * configured with and the suite never has to decrypt anything. `E2E_TOTP_SECRET` is how the run says
+ * which secret that was.
+ *
+ * Returns null when nothing was provisioned, so callers can fall back to the bridge rather than
+ * silently generate codes from a secret the application does not hold.
+ */
+export function provisionedAdminTotpSecret(): string | null {
+  const provisioned = process.env['E2E_TOTP_SECRET']?.trim();
+  return provisioned ? provisioned : null;
+}
+
 /** Decode a Base32-encoded string into a Buffer of bytes. */
 function base32Decode(input: string): Buffer {
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';

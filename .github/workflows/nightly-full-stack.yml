@@ -29,6 +29,18 @@ permissions:
 env:
   NG_CLI_ANALYTICS: "false"
   NODE_OPTIONS: "--max-old-space-size=4096"
+  # The suite mints its own ID token by calling Identity Toolkit directly, so it needs the same
+  # redirect the backend has. The accounts and their passwords are the seeder's, and the secret is
+  # the one provisioned above -- so the 2FA scenarios run for real with no Google project in reach.
+  FIREBASE_AUTH_EMULATOR_HOST: 127.0.0.1:9099
+  FIREBASE_TEST_ADMIN_EMAIL: e2e.admin@test.com
+  FIREBASE_TEST_ADMIN_PASSWORD: e2e-emulator-password
+  FIREBASE_TEST_COMPANY_EMAIL: e2e.company@test.com
+  FIREBASE_TEST_COMPANY_PASSWORD: e2e-emulator-password
+  FIREBASE_TEST_INFLUENCER_EMAIL: e2e.influencer@test.com
+  FIREBASE_TEST_INFLUENCER_PASSWORD: e2e-emulator-password
+  ADMIN_FIREBASE_UID: E2E_ADMIN_001
+  E2E_TOTP_SECRET: JBSWY3DPEHPK3PXP
   BACKEND_TAG: ${{ inputs.backend_tag || 'main' }}
 
 jobs:
@@ -118,6 +130,12 @@ jobs:
           # login is EMAIL_NOT_FOUND while the users plainly exist.
           FIREBASE_PROJECT_ID: demo-checkitout
           GCP_PROJECT_ID: demo-checkitout
+          # TOTP secrets are sealed by Cloud KMS in production and by LocalTotpCipher when KMS is
+          # off. There is no KMS here and there must not be, so the local cipher does it: an AES-GCM
+          # key derived from this string, which is a test key for a throwaway emulator and seals
+          # nothing that outlives the run.
+          GCP_KMS_ENABLED: "false"
+          TOTP_LOCAL_KEY: nightly-emulator-totp-key
         ports: ["8080:8080"]
         options: >-
           --add-host=host.docker.internal:host-gateway
@@ -167,6 +185,28 @@ jobs:
       # fail this job when tests fail, so `failure()` here could never fire. It stays quiet on a
       # healthy night -- only lines the emulators themselves flagged are printed, and the tail
       # follows only if there were any.
+      # The 2FA scenarios need the suite and the application to agree on one secret. Rather than read
+      # one back and decrypt it -- which is what needs Cloud KMS and a service account -- the run
+      # provisions a secret it already knows, through the backend's own endpoint, so the application
+      # seals it with the cipher configured above and the suite never decrypts anything. The endpoint
+      # is idempotent and refuses to exist on the public sandbox.
+      - name: The admin's TOTP secret, provisioned rather than decrypted
+        run: |
+          set -euo pipefail
+          # One line per command and no backslash continuations: a continuation inside a YAML block
+          # scalar is folded away before the shell ever sees it.
+          url=http://127.0.0.1:8080/api/test/auth/provision-totp
+          payload=$(printf '{"firebaseUid":"%s","secret":"%s"}' "$ADMIN_FIREBASE_UID" "$E2E_TOTP_SECRET")
+          code=$(curl -sS -o /tmp/totp.json -w '%{http_code}' -X POST "$url" -H 'Content-Type: application/json' -d "$payload")
+          echo "provision-totp -> HTTP $code"; cat /tmp/totp.json; echo
+          # A 404 means the backend image predates the endpoint. Say so plainly rather than letting
+          # every 2FA scenario skip with a message about a missing bridge.
+          if [ "$code" = "404" ]; then
+            echo "::warning::the backend image has no /test/auth/provision-totp - 2FA scenarios will skip"
+          elif [ "$code" != "200" ]; then
+            echo "::error::provision-totp answered $code"; exit 1
+          fi
+
       - name: Emulator log
         if: always()
         run: |
