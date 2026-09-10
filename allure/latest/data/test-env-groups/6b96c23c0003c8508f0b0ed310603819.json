@@ -1,1 +1,1 @@
-{"id":"6b96c23c0003c8508f0b0ed310603819","fullName":"integration/flows/security-cross-role.spec.ts:108:7","name":"@company-forbidden @admin-get COMPANY → all admin GET endpoints return 403","status":"passed","testResultsByEnv":{"default":"d777bfa440d49d2bdee6a020106ec518"}}
+{"id":"6b96c23c0003c8508f0b0ed310603819","fullName":"integration/flows/security-cross-role.spec.ts:108:7","name":"@company-forbidden @admin-get COMPANY → all admin GET endpoints return 403","status":"passed","testResultsByEnv":{"default":"edf89e3b6a5ec7d3c40bd3dbded1d694"}}
