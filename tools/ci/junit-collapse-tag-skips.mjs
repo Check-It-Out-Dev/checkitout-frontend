@@ -17,7 +17,7 @@
 // stops running something still says so.
 //
 // Usage: node junit-collapse-tag-skips.mjs <dir> [--glob TEST-*.xml] [--dry]
-import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const argv = process.argv.slice(2);
@@ -46,6 +46,13 @@ const attr = (raw, name) => {
 };
 const isSkipped = (body) => body !== '/>' && /<skipped\b/.test(body);
 const key = (raw) => `${attr(raw, 'classname')} :: ${attr(raw, 'name')}`;
+
+if (!existsSync(dir)) {
+  // A tier that did not run leaves no directory. That is not an error here: the run simply has nothing
+  // of this kind to collapse, and the metrics step is what decides whether a missing tier matters.
+  console.log(`junit-collapse-tag-skips: no ${dir}, nothing to do`);
+  process.exit(0);
+}
 
 const files = walk(dir);
 if (!files.length) {

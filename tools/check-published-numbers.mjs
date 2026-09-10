@@ -180,7 +180,9 @@ claim('README.md', 'pyramid suites', /│ {2,}(\d+) suites/, m.jest.suites);
 claim('docs/README.md', 'docs index Jest', /the ([\d,]+) Jest tests and the gate wall/, jest);
 // The CI table's measured duration — asked of GitHub by measure:counts, kept with its own date.
 if (m.ci?.prRun) {
-  claim('README.md', 'PR run duration', /\*\*(\d+) s\*\*, median of the last six runs/, m.ci.prRun.medianSeconds);
+  // The CI/CD table rounds to the nearest ten seconds - a median that moves by four seconds is not a
+  // change anyone should have to edit a README for - so the gate rounds the measured value the same way.
+  claim('README.md', 'PR run duration', /\|\s*~(\d+) s\s*\|/, String(Math.round(m.ci.prRun.medianSeconds / 10) * 10));
 }
 
 // ── The live site. Numbers appear in both locales and must agree with the repo,
@@ -211,7 +213,11 @@ for (const locale of ['en', 'pl']) {
 // ── Coverage, published four ways. The percentages barely move; the raw counts
 //    move with every test, and two of them were already one and two behind. ──
 const c = m.coverage;
-claim('README.md', 'coverage badge', /badge\/lines_covered-([\d.]+)%25/, c.lines.pct.toFixed(1));
+// The coverage badge reads from the quality dashboard now, so there is no number in the file to gate -
+// and nothing to go stale. What IS worth asserting is that it still points at this repository's badge.
+claim('README.md', 'coverage badge is live',
+  /img\.shields\.io\/endpoint\?url=https:\/\/check-it-out-dev\.github\.io\/(checkitout-frontend)\/badges\/coverage\.json/,
+  'checkitout-frontend');
 for (const [row, key] of [
   ['Lines', 'lines'],
   ['Statements', 'statements'],
@@ -229,7 +235,7 @@ for (const [row, key] of [
 // ── The date the page claims its numbers were measured on. A stale date is a
 //    quieter lie than a stale number and outlives it. ───────────────────────
 for (const [label, pattern] of [
-  ['badge note', /badges are static, measured (\d{4}-\d{2}-\d{2}),/],
+  ['badge note', /the test count is static — 1884 across every tier, measured (\d{4}-\d{2}-\d{2})/],
   ['page note', /was measured on \*\*(\d{4}-\d{2}-\d{2})\*\*/],
   ['coverage note', /Measured (\d{4}-\d{2}-\d{2})\. Coverage excludes/],
 ]) {

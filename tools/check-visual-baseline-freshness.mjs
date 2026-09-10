@@ -68,23 +68,41 @@ function resolveSourcesForFixture(fixturePath, fixtureText) {
   return [...sources];
 }
 
+// A timestamp in the future is not evidence of a newer source; it is evidence of a clock that moved.
+// This machine's has jumped about a month forward and back more than once, and each time it left files
+// dated ahead of anything a regeneration could ever produce - so the gate reported every baseline stale
+// and no amount of regenerating could clear it. Those files are counted, named and skipped instead.
+const SKEW_TOLERANCE_MS = 60_000;
+
 function freshestSourceFile() {
   let freshest = { path: null, mtimeMs: 0 };
+  const fromTheFuture = [];
+  const now = Date.now();
   for (const fixturePath of collectFixtureFiles()) {
     const text = readFileSync(fixturePath, 'utf8');
     for (const source of resolveSourcesForFixture(fixturePath, text)) {
       const m = statSync(source).mtimeMs;
+      if (m > now + SKEW_TOLERANCE_MS) {
+        fromTheFuture.push(source);
+        continue;
+      }
       if (m > freshest.mtimeMs) {
         freshest = { path: source, mtimeMs: m };
       }
     }
   }
-  return freshest;
+  return { ...freshest, fromTheFuture };
 }
 
 const tagExists = existsSync(REGEN_TAG);
 const tagMtime = tagExists ? statSync(REGEN_TAG).mtimeMs : 0;
 const freshest = freshestSourceFile();
+if (freshest.fromTheFuture.length) {
+  console.warn(
+    `check:visual-baseline-freshness: ${freshest.fromTheFuture.length} source(s) are dated in the future ` +
+      `and were ignored — this machine's clock has moved. First: ${freshest.fromTheFuture[0]}`,
+  );
+}
 
 if (freshest.mtimeMs <= tagMtime) {
   const tagAgeMs = Date.now() - tagMtime;

@@ -3300,17 +3300,29 @@
       },
       "pipelines": {
         "title": "What runs on every push, what at night, and what on release",
-        "subtitle": "Four pipelines that exist in the repositories today — with durations measured, not declared.",
+        "subtitle": "Six pipelines that exist in the repositories today — with durations measured, not declared.",
         "runs": {
           "pr": {
             "name": "Every push and pull request",
             "trigger": "ci-tests.yml · ubuntu-latest",
-            "what": "Eleven static gates, two typechecks, ng build with strictTemplates, 1,181 Jest tests with coverage and the L0 contract assertions at compile time. Hermetic by design: no backend, no browsers, no Docker, so a fork’s PR never touches the self-hosted infrastructure.",
+            "what": "Eleven static gates, two typechecks, ng build with strictTemplates, 1,181 Jest tests with coverage and the L0 contract proofs. Hermetic: no backend, no browsers, no Docker.",
             "figure": "147 s · median of the last 6"
+          },
+          "browser": {
+            "name": "Browser tiers",
+            "trigger": "browser-tiers.yml · 9 runners",
+            "what": "Sandbox and MSW over four shards, the smoothness tier over three with one worker each, and the visual tier inside the pinned Playwright image. Blob reports merged into one report and one verdict — and a cancelled shard publishes \"incomplete\", never green.",
+            "figure": "~20 min"
+          },
+          "kubernetes": {
+            "name": "Kubernetes",
+            "trigger": "k8s-test-execution.yml · kind",
+            "what": "A cluster on the runner: PostgreSQL, Redis, the backend image, the frontend behind nginx. Playwright runs as an Indexed Job of four pods and k6-operator as a TestRun of two, generating load against the in-cluster services and remote-writing to Grafana Cloud.",
+            "figure": "11 min · 4 + 2 pods"
           },
           "nightly": {
             "name": "Nightly full-stack run",
-            "trigger": "nightly-full-stack.yml · 4 shards",
+            "trigger": "nightly-full-stack.yml · 02:00 UTC · 4 shards",
             "what": "Four shards — BDD, integration ×2, scenarios + sandbox — each with its own PostgreSQL 16, Redis 7 and GreenMail; blob reports merged into one HTML report with pass, fail and flaky counts. Written, run on demand: the schedule goes live once the backend images have run in CI — a red cron nobody has seen green is worse than no cron.",
             "figure": "75 min budget"
           },
@@ -3327,46 +3339,58 @@
             "figure": "p95 thresholds"
           }
         },
-        "note": "The PR run time was measured on 2026-09-08 with gh run list; the test counts come from docs/testing/measured-counts.json. The backend has no test pipeline in GitHub Actions today — its 8,908 test methods run locally through ./mvnw; the test pipeline is the next step, described below.",
+        "note": "The PR run time was measured on 2026-09-08 with gh run list; the test counts come from docs/testing/measured-counts.json. The backend has its own test pipeline now — unit and integration on every push, the Cucumber tier nightly against the Firebase emulators — and every run publishes to a quality dashboard on GitHub Pages with an Allure report and a flaky list over the last ten runs.",
         "beWorkflows": "backend workflows"
       },
       "roadmap": {
         "tag": "In progress",
         "title": "What is under way",
-        "subtitle": "The product fit a three-person team without a cloud test pipeline; in a larger organisation that pipeline is required. The next step is a substrate for running tests, not new hosting.",
+        "subtitle": "The product fit a three-person team without a cloud test pipeline; in a larger organisation that pipeline is required. Four of these shipped between 2026-09-09 and 2026-09-12 and are linked above; two have not, and saying so is the point of this list.",
         "why": "Hosting stays on Docker Compose and systemd — right-sized for this scale. Kubernetes enters only as the place where tests run: ephemeral runner pods, suites sharded across machines, reports merged in one place.",
         "status": {
           "progress": "in progress",
-          "next": "next"
+          "next": "next",
+          "done": "shipped"
         },
         "items": {
           "k8s": {
             "t": "Test execution on Kubernetes",
-            "d": "Playwright and JUnit suites sharded across ephemeral runners; blob reports merged after the run; on main the run fails on a flaky test, on PRs only changed specs run.",
-            "tools": "Testkube Test Workflows · GitHub ARC · playwright merge-reports · JUnit 5 parallel · Cucumber-JVM"
+            "d": "A kind cluster on the GitHub runner, the whole stack inside it, and Playwright as a four-pod Indexed Job — the pod index is the shard. Blob reports are collected off a hostPath and merged into one report and one verdict.",
+            "tools": "kind · Kubernetes Indexed Job · playwright merge-reports · Allure 3"
           },
           "perf": {
             "t": "Performance in CI",
-            "d": "The k6 script with thresholds exists; on Kubernetes it runs through k6-operator as a TestRun with thresholds as the pass condition — a performance regression stops a release the way a red test does.",
-            "tools": "k6 · k6-operator · Grafana"
+            "d": "k6-operator runs the same script as a TestRun of two runners against the in-cluster services, thresholds decide the run, and the metrics are remote-written to a public Grafana Cloud dashboard.",
+            "tools": "k6 · k6-operator · Prometheus remote write · Grafana Cloud"
           },
           "reports": {
-            "t": "Report aggregation and a flaky policy",
-            "d": "One place with run history instead of a report per run: a quarantine lane for unstable tests, readmission after a 99 % pass rate, error clustering.",
-            "tools": "Allure Report → ReportPortal · JUnit XML → GitHub checks"
+            "t": "Report aggregation and a flaky list",
+            "d": "One dashboard per repository on GitHub Pages with run history, an Allure report whose history carries across runs, and a list of every test that failed or flaked in the last ten runs. The quarantine lane is the part that is still a policy question.",
+            "tools": "Allure 3 · GitHub Pages · shields endpoint badges · quality-metrics.mjs"
           },
           "vitals": {
             "t": "Lighthouse CI and web-vitals budgets",
-            "d": "Today’s lab measurement (LCP, CLS, TBT) becomes an assertion on every PR: a warning first, an error at p90; plus a whole-site crawl.",
-            "tools": "Lighthouse CI · budget.json · Unlighthouse"
+            "d": "Lighthouse CI runs against the demo build on every push, asserted against a config and a budget file, and the four scores are a live badge on the README.",
+            "tools": "Lighthouse CI · lighthouserc.json · budget.json"
+          },
+          "schemathesis": {
+            "t": "Schemathesis against the running backend",
+            "d": "The one gap left in the contract chain. The spec is generated from a booted server and the client compiles against it, but nothing yet fuzzes the running provider for responses that satisfy the schema and still break a consumer.",
+            "tools": "Schemathesis · Hypothesis · OpenAPI 3"
+          },
+          "quarantine": {
+            "t": "A flaky quarantine lane",
+            "d": "The flaky list exists and is published; what to do with an entry does not. A lane that holds an unstable test out of the gate and readmits it at a pass rate is a policy decision about what a red build is allowed to mean, not a tooling gap.",
+            "tools": "METRICS.md · flaky-report.mjs"
           }
         },
         "ai": {
           "title": "Evaluating the AI in the loop — now and next",
-          "present": "Built: prompts as XML contracts (24 documents, five generations), an evaluation harness with an exec-fp oracle — the answer compared with execution, not with an opinion — SFT/DPO evaluation ladders and a local model that abstains when the answer is not in the graph: abstention 1.0 on out-of-graph questions.",
-          "next": "Next: prompt and model evaluation as a CI gate — a question set with expected answers runs on every prompt change; and measuring the quality of an AI system in production: the share of answers grounded in the graph, the abstention rate, drift between graph version and model version.",
+          "present": "Built: prompts as XML contracts (24 documents, five generations), an evaluation harness with an exec-fp oracle — the answer compared with execution, not with an opinion — SFT/DPO evaluation ladders and a local model that abstains when the answer is not in the graph: abstention 1.0 on out-of-graph questions. That evaluation is now itself a CI gate, running on every push with no GPU and no model: the prompt's verb table must equal the parser's, every published figure must re-derive from the run it came from, every recorded DSL step must draw the same verdict from today's grammar, and each number in the prose is tied to the artifact behind it.",
+          "next": "Next: measuring the quality of an AI system in production — the share of answers grounded in the graph, the abstention rate, drift between graph version and model version; and putting the model itself back in the loop rather than replaying it, which needs the checkpoint and the graph pack published, not a bigger runner.",
           "link": "The method and the tooling on GitHub",
-          "evalLink": "Prompt-transfer evaluation findings"
+          "evalLink": "Prompt-transfer evaluation findings",
+          "gateLink": "How the evaluation gate works"
         }
       }
     }
@@ -3803,8 +3827,14 @@
       "notice": "This is the public sandbox: the real application on demo data, with two shared accounts. Someone else may be using them right now.",
       "resets": "Everything resets every night at 03:00 UTC.",
       "persona": {
-        "company": { "name": "The company", "blurb": "Runs campaigns, reads applications, rates influencers." },
-        "influencer": { "name": "The influencer", "blurb": "Browses campaigns, applies, submits content." }
+        "company": {
+          "name": "The company",
+          "blurb": "Runs campaigns, reads applications, rates influencers."
+        },
+        "influencer": {
+          "name": "The influencer",
+          "blurb": "Browses campaigns, applies, submits content."
+        }
       },
       "persona_only": "This sandbox admits only its two demo accounts.",
       "failed": "The sandbox did not answer. Try again in a moment."

@@ -11,8 +11,8 @@
 #   (admin-2fa-kms.feature). Steps shared with admin-users.steps.ts.
 # - 'Given the application is running with real Redis' is covered by the
 #   tier's BE-reachability Before hook (fixtures.ts) — no per-feature step.
-# - The BE's real prod-account targets (Firebase UIDs WWXA9DehxZghyLq849TpyE4vYzZ2
-#   / SEWgduxUjRh4KDqxVWFs6zgThIa2) + 'synced from Firestore' + Company1's
+# - The BE's real prod-account targets (Firebase UIDs E2E_COMPANY_001
+#   / E2E_INFLUENCER_001) + 'synced from Firestore' + Company1's
 #   real-password login + Influencer1's Instagram OAuth login ALL collapse to
 #   disposable unique-email mock-session targets (aliases "Company1"/
 #   "Influencer1"/"CompanyTarget"/"InfluencerTarget"), provisioned via the

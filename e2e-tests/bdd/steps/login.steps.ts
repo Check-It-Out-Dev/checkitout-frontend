@@ -167,7 +167,7 @@ Then('the two-factor verification should succeed', async ({ page }) => {
  * instagramUsers/{uid} holding the KMS-encrypted Instagram token
  * (checkitout-backend login.feature Examples table).
  */
-const INFLUENCER_OAUTH_UID = 'SEWgduxUjRh4KDqxVWFs6zgThIa2';
+const INFLUENCER_OAUTH_UID = 'E2E_INFLUENCER_001';
 
 When('the influencer authenticates via the Instagram OAuth simulation', async ({ page, world }) => {
   // POST through the PAGE's request context so the issued session cookies land

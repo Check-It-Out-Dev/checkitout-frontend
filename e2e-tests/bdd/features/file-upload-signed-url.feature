@@ -2,8 +2,8 @@
 #
 # Adaptations (BE Cucumber → FE oracle), scenario-for-scenario otherwise:
 # - Real-Firebase logins collapse to mock-session TestSessions (S6 port rule):
-#   the BE's COMPANY password login (UID WWXA9Deh…, Gmail address, password)
-#   and the INFLUENCER OAuth login (UID SEWgdux…) both end in the same
+#   the BE's COMPANY password login (UID E2E_COMPANY_001) and the INFLUENCER
+#   OAuth login (UID E2E_INFLUENCER_001) both end in the same
 #   HttpOnly session cookie pair the mock-session hook mints, and nothing in
 #   this feature reads uid-keyed /test hooks or Instagram data — so the fixed
 #   company1/influencer1 mock actors observe the identical /upload + /users

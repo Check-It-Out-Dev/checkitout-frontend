@@ -64,11 +64,33 @@ function die(msg) {
 }
 const readJson = (p) => JSON.parse(readFileSync(p, 'utf8'));
 function glob(pattern) {
-  // A minimal glob: one directory, a file pattern with * only.
-  const dir = dirname(pattern);
-  const re = new RegExp('^' + basename(pattern).replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$');
+  // A minimal glob: one directory and a file pattern with * — plus a single `**` segment, which matches
+  // the directory and everything below it. The backend needs the recursive form: the e2e profile gives
+  // every Cucumber suite its own reportsDirectory, so the XMLs sit at
+  // failsafe-reports/<suite>/TEST-*.xml and no single-directory pattern can reach them.
+  const norm = pattern.replace(/\\/g, '/');
+  const re = (name) =>
+    new RegExp('^' + basename(name).replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$');
+  if (norm.includes('**')) {
+    const [head, tail] = norm.split(/\/?\*\*\/?/, 2);
+    const filePattern = re(tail || '*');
+    const root = head || '.';
+    const out = [];
+    const walk = (dir) => {
+      if (!existsSync(dir)) return;
+      for (const e of readdirSync(dir, { withFileTypes: true })) {
+        const full = join(dir, e.name);
+        if (e.isDirectory()) walk(full);
+        else if (filePattern.test(e.name)) out.push(full);
+      }
+    };
+    walk(root);
+    return out.sort();
+  }
+  const dir = dirname(norm);
+  const filePattern = re(norm);
   if (!existsSync(dir)) return [];
-  return readdirSync(dir).filter((f) => re.test(f)).map((f) => join(dir, f)).sort();
+  return readdirSync(dir).filter((f) => filePattern.test(f)).map((f) => join(dir, f)).sort();
 }
 const r2 = (x) => Math.round(x * 100) / 100;
 const r4 = (x) => Math.round(x * 10000) / 10000;
