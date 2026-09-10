@@ -302,3 +302,43 @@ The report job feeds every tier's JUnit XML to Allure 3 (`npx allure generate`),
 `allure/latest/history` in first, and publishes `allure/<run>/` and `allure/latest/` on `gh-pages`;
 the first run is where the JUnit reader and the history copy are verified, then `quality-metrics`
 (O7) hangs off the same job.
+
+### One origin per session (2026-09-11)
+
+Two nightly scenarios spent three rounds being fixed by containment before anyone read the backend's own
+log. `magic-link-happy-path` and `notification-e2e` authenticated, staged their fixtures, and were then
+anonymous on the next call — "User not authenticated" — with no failure in between. The guess of record
+was that the credential-free `/test` hooks damage whichever Playwright cookie jar they are driven
+through. They do not. Run 34534847000's backend log says exactly what happens, and it is worth writing
+down because it applies to anything that talks to this backend through more than one address:
+
+- Every session is bound to a fingerprint of client IP + User-Agent
+  (`SessionSecurityService.generateSessionFingerprint`). A request whose address does not match the one
+  the session was minted on is treated as a hijack.
+- The greenfield dev-server proxies `/api` to the same backend, so the frontend origin and the backend
+  origin reach the same endpoint by different routes — and through the proxy the backend sees the
+  proxy's address, not the caller's.
+- Cookies are scoped to a host, not a port. `localhost:4201` and `localhost:8080` share one jar, so a
+  session minted on the backend is sent to the frontend without a word of warning.
+- On a fingerprint mismatch the backend answers with the session cookies cleared. Playwright applies
+  that `Set-Cookie` like any other, so the caller is anonymous from the next request on. Nothing in the
+  test output points at the request that did it.
+
+All eleven fingerprint mismatches in that run were `DELETE /api/test/email` — `clearInbox`, which
+defaulted to the frontend origin while its callers' sessions were minted on the backend. The two step
+files that had been patched earlier passed `origin: BE_URL` explicitly, which is why they passed.
+
+**The law: one origin per session.** The mail helpers in `e2e-tests/_framework/test-email.ts` now take
+`origin` as a REQUIRED argument, so the compiler asks the question instead of a default answering it
+wrongly: `TestSession` sessions pass `BE_URL`, page sessions seeded through the frontend (`seedSession`,
+`realLogin`) pass `GREENFIELD_URL`.
+
+There is a second finding underneath, and it is a production one rather than a test one:
+`JwtAuthenticationFilter` calls `terminateSession(response)` **before** checking whether the endpoint is
+public, so a fingerprint mismatch clears a user's cookies even on a path that requires no
+authentication. A signed-in user whose address changes — a mobile handoff, a VPN, a NAT rotation — is
+signed out by a page that never asked them to be signed in. The two failure modes above it (expired
+token, stale token version) already exempt public paths; this one does not, and a unit test asserts the
+current behaviour deliberately, so it is a decision to revisit rather than a slip. It touches sessions,
+so it is the owner's call, not mine.
+
