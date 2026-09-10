@@ -139,6 +139,13 @@ jobs:
       # password, the negative login paths. The backend's own tier stopped needing a credential when
       # it was pointed at the emulator suite; this gives the nightly the same thing, so those
       # scenarios run for real here instead of being excluded.
+      # firebase-tools 15 refuses to start the Firestore emulator on anything below JDK 21, and the
+      # runner image's default `java` is older. The backend's own tier never hit this because it sets
+      # up a JDK for Maven anyway.
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
       - name: Firebase emulators and the three actors
         run: |
           set -euo pipefail
