@@ -1,1 +1,1 @@
-{"id":"3b15484d091eaec0851bdc31acb1764d","fullName":"integration/auth/consent.spec.ts:53:7","name":"@public-api current legal documents endpoint returns 3 expected types","status":"skipped","testResultsByEnv":{"default":"4ac256e1199b8264821fb8058cf124ba"}}
+{"id":"3b15484d091eaec0851bdc31acb1764d","fullName":"integration/auth/consent.spec.ts:53:7","name":"@public-api current legal documents endpoint returns 3 expected types","status":"passed","testResultsByEnv":{"default":"df0a0004d98e20e07c87e135d153e475"}}

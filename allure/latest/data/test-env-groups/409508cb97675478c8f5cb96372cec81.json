@@ -1,1 +1,1 @@
-{"id":"409508cb97675478c8f5cb96372cec81","fullName":"integration/flows/profile-validation.spec.ts:202:7","name":"@profilePicture tracked uploadId returns 200 with the BE-resolved canonical URL","status":"skipped","testResultsByEnv":{"default":"3b67fd02e18eb1982a9e4ff285e3cc5b"}}
+{"id":"409508cb97675478c8f5cb96372cec81","fullName":"integration/flows/profile-validation.spec.ts:202:7","name":"@profilePicture tracked uploadId returns 200 with the BE-resolved canonical URL","status":"passed","testResultsByEnv":{"default":"be0e2faa4b972d1921c38efa4c70a3d0"}}

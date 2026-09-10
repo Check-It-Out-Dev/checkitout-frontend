@@ -1,1 +1,1 @@
-{"id":"2edcfb2972afe9fa6f147334d837d85f","fullName":"e2e-tests/bdd/features/consent-lifecycle.feature.spec.js:61:7","name":"Blocked INFLUENCER cannot apply to partnership","status":"skipped","testResultsByEnv":{"default":"d236de3d1d1027ebf11a56a6d4c0ba60"}}
+{"id":"2edcfb2972afe9fa6f147334d837d85f","fullName":"e2e-tests/bdd/features/consent-lifecycle.feature.spec.js:61:7","name":"Blocked INFLUENCER cannot apply to partnership","status":"passed","testResultsByEnv":{"default":"ae7875e1ade1a7dc688c5bcfbfc33c44"}}

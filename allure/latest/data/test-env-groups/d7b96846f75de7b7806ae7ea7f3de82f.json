@@ -1,1 +1,1 @@
-{"id":"d7b96846f75de7b7806ae7ea7f3de82f","fullName":"integration/flows/subscription-lifecycle.spec.ts:188:7","name":"@upgrade-flow Company upgrades from FREE to BUSINESS via simulated webhook","status":"skipped","testResultsByEnv":{"default":"44de46235eda3072825a164bbd3164c7"}}
+{"id":"d7b96846f75de7b7806ae7ea7f3de82f","fullName":"integration/flows/subscription-lifecycle.spec.ts:188:7","name":"@upgrade-flow Company upgrades from FREE to BUSINESS via simulated webhook","status":"passed","testResultsByEnv":{"default":"aa9d3ea0463c7d0f66c9d553442ce41c"}}

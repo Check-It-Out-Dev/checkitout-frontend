@@ -1,1 +1,1 @@
-{"id":"9f77b2d552b9390adf6dcce107a4c197","fullName":"e2e-tests/bdd/features/login.feature.spec.js:6:7","name":"Company user logs in through the real sign-in form","status":"skipped","testResultsByEnv":{"default":"8664c7980e1b2e10a369c84d493d5034"}}
+{"id":"9f77b2d552b9390adf6dcce107a4c197","fullName":"e2e-tests/bdd/features/login.feature.spec.js:6:7","name":"Company user logs in through the real sign-in form","status":"passed","testResultsByEnv":{"default":"8343654ad84d869075021716182b4fab"}}

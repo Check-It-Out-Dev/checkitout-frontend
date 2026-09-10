@@ -1,1 +1,1 @@
-{"id":"9491e9e193dcb65e5ef594bfe7e774c3","fullName":"integration/flows/registry-company-flow.spec.ts:359:7","name":"@lookup inactive company returns 409 with no-longer-active","status":"skipped","testResultsByEnv":{"default":"8839e7453b13004f560ba4b2db07954c"}}
+{"id":"9491e9e193dcb65e5ef594bfe7e774c3","fullName":"integration/flows/registry-company-flow.spec.ts:359:7","name":"@lookup inactive company returns 409 with no-longer-active","status":"passed","testResultsByEnv":{"default":"e665a46e0c66bda3b00898a20596011f"}}

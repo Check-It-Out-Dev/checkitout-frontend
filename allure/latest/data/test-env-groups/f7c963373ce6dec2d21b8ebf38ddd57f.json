@@ -1,1 +1,1 @@
-{"id":"f7c963373ce6dec2d21b8ebf38ddd57f","fullName":"integration/flows/profile-non-critical.spec.ts:84:7","name":"@company profilePicture + companyDescription PATCH succeed (no token invalidation)","status":"skipped","testResultsByEnv":{"default":"3bab14beb6893efab68d7b63abd38b5d"}}
+{"id":"f7c963373ce6dec2d21b8ebf38ddd57f","fullName":"integration/flows/profile-non-critical.spec.ts:84:7","name":"@company profilePicture + companyDescription PATCH succeed (no token invalidation)","status":"passed","testResultsByEnv":{"default":"88ea7f87387953bfff3b4c060739f613"}}

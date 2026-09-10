@@ -1,1 +1,1 @@
-{"id":"2907442bcb621eb81e1d3f12ff074220","fullName":"e2e-tests/bdd/features/step-up-auth.feature.spec.js:106:7","name":"Five wrong codes triggers cooldown","status":"skipped","testResultsByEnv":{"default":"12f77504a2498be119a54642f505dca3"}}
+{"id":"2907442bcb621eb81e1d3f12ff074220","fullName":"e2e-tests/bdd/features/step-up-auth.feature.spec.js:106:7","name":"Five wrong codes triggers cooldown","status":"passed","testResultsByEnv":{"default":"317be7c257c54768a82651937d1a3976"}}

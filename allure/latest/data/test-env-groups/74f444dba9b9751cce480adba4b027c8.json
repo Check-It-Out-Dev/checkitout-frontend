@@ -1,1 +1,1 @@
-{"id":"74f444dba9b9751cce480adba4b027c8","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:96:7","name":"Duplicate NIP on confirm returns 409","status":"skipped","testResultsByEnv":{"default":"e6528a3c2f24407579f36125773b8e32"}}
+{"id":"74f444dba9b9751cce480adba4b027c8","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:96:7","name":"Duplicate NIP on confirm returns 409","status":"passed","testResultsByEnv":{"default":"e44e5b119db26286c9ce9cc77ebb77a7"}}

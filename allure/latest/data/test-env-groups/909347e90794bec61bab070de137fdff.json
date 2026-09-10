@@ -1,1 +1,1 @@
-{"id":"909347e90794bec61bab070de137fdff","fullName":"e2e-tests/bdd/features/consent-lifecycle.feature.spec.js:127:7","name":"Complete lifecycle - publish, block, re-consent, unblock","status":"skipped","testResultsByEnv":{"default":"ad9ce306659150420922273fe35b7bcb"}}
+{"id":"909347e90794bec61bab070de137fdff","fullName":"e2e-tests/bdd/features/consent-lifecycle.feature.spec.js:127:7","name":"Complete lifecycle - publish, block, re-consent, unblock","status":"passed","testResultsByEnv":{"default":"8fda7552d9512e0a28ef889fcb8225f2"}}

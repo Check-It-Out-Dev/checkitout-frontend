@@ -1,1 +1,1 @@
-{"id":"6ff77bc4042d5598c4e513509a96c2fb","fullName":"e2e-tests/bdd/features/consent-lifecycle.feature.spec.js:24:7","name":"Only ACTIVE and IN_VALIDATION users get blocked","status":"skipped","testResultsByEnv":{"default":"2f792c79743b9cedb3f5dfc866dd8594"}}
+{"id":"6ff77bc4042d5598c4e513509a96c2fb","fullName":"e2e-tests/bdd/features/consent-lifecycle.feature.spec.js:24:7","name":"Only ACTIVE and IN_VALIDATION users get blocked","status":"passed","testResultsByEnv":{"default":"460b3f498f1a79f356ba5f5c75d9fe7c"}}

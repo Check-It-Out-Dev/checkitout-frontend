@@ -1,1 +1,1 @@
-{"id":"8d5f2523e9667f1aa8d80241cbda777f","fullName":"integration/flows/notification-lifecycle.spec.ts:316:7","name":"@notification-preferences disabled prefs suppress APPLICATION_RECEIVED","status":"skipped","testResultsByEnv":{"default":"a0d3c1f5fecd7795c17865a1637220c2"}}
+{"id":"8d5f2523e9667f1aa8d80241cbda777f","fullName":"integration/flows/notification-lifecycle.spec.ts:316:7","name":"@notification-preferences disabled prefs suppress APPLICATION_RECEIVED","status":"failed","testResultsByEnv":{"default":"632d7b1948e608d55bac47b0612f6a09"}}

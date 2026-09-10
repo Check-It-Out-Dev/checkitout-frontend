@@ -1,1 +1,1 @@
-{"id":"0bd3a6114ca2c7b50591820b25ac9400","fullName":"integration/route-smoke.spec.ts:263:7","name":"authenticated visit (company1) — every smokeable route","status":"skipped","testResultsByEnv":{"default":"c027eb5dc0c5eec581cd84c2d4d14f9b"}}
+{"id":"0bd3a6114ca2c7b50591820b25ac9400","fullName":"integration/route-smoke.spec.ts:263:7","name":"authenticated visit (company1) — every smokeable route","status":"passed","testResultsByEnv":{"default":"00f3509999cf6b451334021740f0726f"}}

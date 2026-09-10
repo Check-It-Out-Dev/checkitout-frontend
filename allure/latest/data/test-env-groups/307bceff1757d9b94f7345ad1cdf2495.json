@@ -1,1 +1,1 @@
-{"id":"307bceff1757d9b94f7345ad1cdf2495","fullName":"e2e-tests/bdd/features/step-up-auth.feature.spec.js:63:7","name":"INFLUENCER with incomplete setup can change email without step-up","status":"skipped","testResultsByEnv":{"default":"9788e02a785cde76d003e4a428be05d0"}}
+{"id":"307bceff1757d9b94f7345ad1cdf2495","fullName":"e2e-tests/bdd/features/step-up-auth.feature.spec.js:63:7","name":"INFLUENCER with incomplete setup can change email without step-up","status":"passed","testResultsByEnv":{"default":"c6788cfaf3aef20bf551ab6f66f8005b"}}

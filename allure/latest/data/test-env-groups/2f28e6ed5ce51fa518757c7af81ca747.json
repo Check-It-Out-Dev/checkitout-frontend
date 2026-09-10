@@ -1,1 +1,1 @@
-{"id":"2f28e6ed5ce51fa518757c7af81ca747","fullName":"integration/flows/consent-lifecycle.spec.ts:291:7","name":"@blocked-restrictions blocked user → 200 on read endpoints + 403 on write endpoints","status":"skipped","testResultsByEnv":{"default":"babb2a649c0e646136695a8a54470bdf"}}
+{"id":"2f28e6ed5ce51fa518757c7af81ca747","fullName":"integration/flows/consent-lifecycle.spec.ts:291:7","name":"@blocked-restrictions blocked user → 200 on read endpoints + 403 on write endpoints","status":"passed","testResultsByEnv":{"default":"7ddd0068255660d10be088e472fed78b"}}

@@ -1,1 +1,1 @@
-{"id":"0bdb19786885b9d845a1323ff2920904","fullName":"integration/flows/profile-validation.spec.ts:158:7","name":"@phone valid with parentheses returns 200","status":"skipped","testResultsByEnv":{"default":"c0a1089fe9648ddb03d3c53094bb9b73"}}
+{"id":"0bdb19786885b9d845a1323ff2920904","fullName":"integration/flows/profile-validation.spec.ts:158:7","name":"@phone valid with parentheses returns 200","status":"passed","testResultsByEnv":{"default":"a874f6e947bfdb50efafc1957b501195"}}

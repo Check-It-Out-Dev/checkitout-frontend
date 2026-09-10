@@ -1,0 +1,182 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: integration/auth/login-ui-real.spec.ts >> @login-ui-real — real-Firebase UI sign-in (T4-UI) >> @company @full-auth — company signs in via the form and lands on a protected route
+- Location: e2e-tests/integration/auth/login-ui-real.spec.ts:45:7
+
+# Error details
+
+```
+Error: /auth/exchange-token must return 200 (got 401)
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: 200
+Received: 401
+```
+
+# Test source
+
+```ts
+  1   | import { expect, test } from '@playwright/test';
+  2   | import { GREENFIELD_URL } from '../_actor';
+  3   | import { hasUiCredentialsFor } from '../../_framework/real-login';
+  4   | import type { UserDtoOut } from '../../../src/app/api/model/user-dto-out';
+  5   | 
+  6   | /**
+  7   |  * T4-UI — Port of `login.feature` @company @full-auth driven through the
+  8   |  * real browser sign-in form (not the request-fixture shortcut).
+  9   |  *
+  10  |  * Source of truth: `checkitout-backend/src/test/resources/features/login.feature`.
+  11  |  *
+  12  |  * Why this exists separately from `login-real.spec.ts`:
+  13  |  *
+  14  |  *   The sibling `login-real.spec.ts` proves the real-Firebase auth chain
+  15  |  *   end-to-end via `context.request.post('/api/auth/exchange-token')`
+  16  |  *   directly — it MINTS the cookies via Identity Toolkit + BE exchange.
+  17  |  *   That's sufficient to prove the BE contract.
+  18  |  *
+  19  |  *   This spec proves the FE *form code path* — `page.goto('/auth/sign-in')`
+  20  |  *   → `page.fill` → `page.click('submit')` → `SignInComponent.submit()`
+  21  |  *   Observable chain (signIn → exchangeTokenForSession → optional 2FA →
+  22  |  *   session.probe → router.navigate('/')) → cookies actually land in the
+  23  |  *   browser-managed cookie jar with production attributes (HttpOnly +
+  24  |  *   Secure + SameSite=Strict).
+  25  |  *
+  26  |  *   The 2026-05-12 opus-code-crawler audit surfaced this as the highest-
+  27  |  *   leverage gap: `actorSignsInWithEmail` existed in `_framework/when.ts`
+  28  |  *   with zero callers, `login-errors.spec.ts` drove the form but mocked
+  29  |  *   the BE 401 (never reaching the success branch), and `login-real.spec.ts`
+  30  |  *   bypassed the form entirely. A regression in `SignInComponent.submit()`
+  31  |  *   (RxJS chain order, router-navigate-on-success, FormGroup wiring,
+  32  |  *   testid drift) would not have been caught by any existing test.
+  33  |  *
+  34  |  * Self-skipping: when `e2e-tests/.env` lacks `FIREBASE_TEST_COMPANY_{EMAIL,
+  35  |  * PASSWORD}` + `FIREBASE_API_KEY`, the test self-skips.
+  36  |  *
+  37  |  * Run: `npm run test:integration -- --grep login-ui-real`
+  38  |  */
+  39  | 
+  40  | test.describe('@login-ui-real — real-Firebase UI sign-in (T4-UI)', () => {
+  41  |   // Sequential — shared Firebase test user means concurrent runs would
+  42  |   // race against Identity Toolkit rate limits.
+  43  |   test.describe.configure({ mode: 'serial' });
+  44  | 
+  45  |   test('@company @full-auth — company signs in via the form and lands on a protected route', async ({
+  46  |     browser,
+  47  |   }) => {
+  48  |     test.skip(
+  49  |       !hasUiCredentialsFor('COMPANY'),
+  50  |       'FIREBASE_TEST_COMPANY_{EMAIL,PASSWORD} not set — see e2e-tests/.env.example',
+  51  |     );
+  52  | 
+  53  |     const email = process.env['FIREBASE_TEST_COMPANY_EMAIL']!;
+  54  |     const password = process.env['FIREBASE_TEST_COMPANY_PASSWORD']!;
+  55  | 
+  56  |     const context = await browser.newContext({ ignoreHTTPSErrors: true });
+  57  |     try {
+  58  |       const page = await context.newPage();
+  59  | 
+  60  |       // Drive the actual UI form — this is the production code path.
+  61  |       await page.goto(`${GREENFIELD_URL}/auth/sign-in`, { waitUntil: 'networkidle' });
+  62  |       await expect(page.getByTestId('sign-in-email'), 'sign-in form must render').toBeVisible();
+  63  | 
+  64  |       // Accept the cookie banner exactly like a first-visit user — the BE
+  65  |       // consent gate 451s /auth/exchange-token without the HMAC-signed
+  66  |       // `consent_cookie_policy` cookie the banner's ESSENTIAL toggle sets.
+  67  |       const acceptCookies = page.getByTestId('cookie-banner-accept-all');
+  68  |       if (await acceptCookies.isVisible().catch(() => false)) {
+  69  |         const essentialToggle = page.waitForResponse(
+  70  |           (resp) =>
+  71  |             /\/api\/legal\/consent\/category-toggle\b/.test(resp.url()) &&
+  72  |             resp.request().method() === 'POST' &&
+  73  |             resp.status() < 300,
+  74  |           { timeout: 10_000 },
+  75  |         );
+  76  |         await acceptCookies.click();
+  77  |         // Wait for the consent cookie to land before login, or exchange 451s.
+  78  |         await essentialToggle;
+  79  |         await expect(page.getByTestId('cookie-banner')).toBeHidden();
+  80  |       }
+  81  | 
+  82  |       await page.getByTestId('sign-in-email').fill(email);
+  83  |       await page.getByTestId('sign-in-password').fill(password);
+  84  | 
+  85  |       // Capture the exchange-token POST so we have a concrete proof the
+  86  |       // FE chain reached step 2 (BE issues cookies here).
+  87  |       const exchangePromise = page.waitForResponse(
+  88  |         (resp) =>
+  89  |           /\/api\/auth\/exchange-token\b/.test(resp.url()) && resp.request().method() === 'POST',
+  90  |         { timeout: 15_000 },
+  91  |       );
+  92  | 
+  93  |       await page.getByTestId('sign-in-submit').click();
+  94  | 
+  95  |       const exchange = await exchangePromise;
+  96  |       expect(
+  97  |         exchange.status(),
+  98  |         `/auth/exchange-token must return 200 (got ${exchange.status()})`,
+> 99  |       ).toBe(200);
+      |         ^ Error: /auth/exchange-token must return 200 (got 401)
+  100 | 
+  101 |       // The router lands the authenticated COMPANY actor on a protected
+  102 |       // route after `session.probe()` resolves. Either `/` redirects to
+  103 |       // the role's landing, or some intermediate guard lands here. Accept
+  104 |       // anything that is NOT `/auth/sign-in` as evidence the form chain
+  105 |       // completed successfully.
+  106 |       await page.waitForURL((url) => !new URL(url).pathname.startsWith('/auth/sign-in'), {
+  107 |         timeout: 10_000,
+  108 |       });
+  109 |       const landedPath = new URL(page.url()).pathname;
+  110 |       expect(
+  111 |         landedPath.startsWith('/auth/sign-in'),
+  112 |         `form should navigate away from /auth/sign-in (landed: ${landedPath})`,
+  113 |       ).toBe(false);
+  114 | 
+  115 |       // The browser-managed cookie jar now carries the production session
+  116 |       // cookies. Assert both halves of the HMAC pair are present and
+  117 |       // shaped correctly.
+  118 |       const cookies = await context.cookies(GREENFIELD_URL);
+  119 |       const cookieByName = new Map(cookies.map((c) => [c.name, c]));
+  120 | 
+  121 |       const sessionCookie = cookieByName.get('session');
+  122 |       const sessionSigCookie = cookieByName.get('session_sig');
+  123 |       expect(
+  124 |         sessionCookie,
+  125 |         `session cookie must be set by the form sign-in (have: ${[...cookieByName.keys()].join(', ')})`,
+  126 |       ).toBeDefined();
+  127 |       expect(
+  128 |         sessionSigCookie,
+  129 |         `session_sig cookie must be set by the form sign-in (have: ${[...cookieByName.keys()].join(', ')})`,
+  130 |       ).toBeDefined();
+  131 | 
+  132 |       // Production cookie attributes. HttpOnly + Secure are non-negotiable
+  133 |       // for the cookies-only auth model (a missing HttpOnly would mean JS
+  134 |       // could read the session — major security regression).
+  135 |       expect(sessionCookie!.httpOnly, 'session must be HttpOnly').toBe(true);
+  136 |       expect(sessionCookie!.secure, 'session must be Secure').toBe(true);
+  137 |       expect(sessionSigCookie!.httpOnly, 'session_sig must be HttpOnly').toBe(true);
+  138 |       expect(sessionSigCookie!.secure, 'session_sig must be Secure').toBe(true);
+  139 | 
+  140 |       // Final cross-check: probe /users/me with the auto-attached cookies.
+  141 |       // This is what `SessionStateService.probe()` does inside the form
+  142 |       // chain anyway, but doing it again from the test proves the
+  143 |       // BrowserContext jar is intact (not just the in-memory probe cache).
+  144 |       const meRes = await page.request.get(`${GREENFIELD_URL}/api/users/me`, {
+  145 |         ignoreHTTPSErrors: true,
+  146 |       });
+  147 |       expect(meRes.status(), 'post-sign-in /users/me must be 200').toBe(200);
+  148 |       const me = (await meRes.json()) as UserDtoOut;
+  149 |       expect(me.userType?.value, 'role should round-trip to /users/me').toBe('COMPANY');
+  150 |     } finally {
+  151 |       await context.close();
+  152 |     }
+  153 |   });
+  154 | });
+  155 | 
+```

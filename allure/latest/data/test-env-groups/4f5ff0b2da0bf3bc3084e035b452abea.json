@@ -1,1 +1,1 @@
-{"id":"4f5ff0b2da0bf3bc3084e035b452abea","fullName":"integration/flows/profile-validation.spec.ts:77:7","name":"@firstName valid 2-char boundary returns 200","status":"skipped","testResultsByEnv":{"default":"358909bc56908ffd91bb03d54fb61b27"}}
+{"id":"4f5ff0b2da0bf3bc3084e035b452abea","fullName":"integration/flows/profile-validation.spec.ts:77:7","name":"@firstName valid 2-char boundary returns 200","status":"passed","testResultsByEnv":{"default":"0e500b264f8e1ea066675dc88fd70684"}}

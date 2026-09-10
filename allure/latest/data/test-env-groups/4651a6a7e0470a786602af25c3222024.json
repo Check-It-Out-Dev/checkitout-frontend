@@ -1,1 +1,1 @@
-{"id":"4651a6a7e0470a786602af25c3222024","fullName":"integration/flows/step-up-email-required.spec.ts:153:7","name":"@step-up PENDING_ADMIN /step-up/check returns 403 for EMAIL_CHANGE","status":"skipped","testResultsByEnv":{"default":"86564886e05f3a506c6035ad63584b0d"}}
+{"id":"4651a6a7e0470a786602af25c3222024","fullName":"integration/flows/step-up-email-required.spec.ts:153:7","name":"@step-up PENDING_ADMIN /step-up/check returns 403 for EMAIL_CHANGE","status":"passed","testResultsByEnv":{"default":"b4d44763e03006fdb16f5b0f96408232"}}

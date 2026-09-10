@@ -1,1 +1,1 @@
-{"id":"6b97d01f46a4be0362da75aaf2819584","fullName":"e2e-tests/bdd/features/step-up-auth.feature.spec.js:6:7","name":"COMPANY user completes full step-up email change flow","status":"skipped","testResultsByEnv":{"default":"dd4dfbdbb068ffd92ccaba6c1a58e3f1"}}
+{"id":"6b97d01f46a4be0362da75aaf2819584","fullName":"e2e-tests/bdd/features/step-up-auth.feature.spec.js:6:7","name":"COMPANY user completes full step-up email change flow","status":"passed","testResultsByEnv":{"default":"192d590780e96efd08663c81645a6e3e"}}

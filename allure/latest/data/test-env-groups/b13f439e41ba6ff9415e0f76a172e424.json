@@ -1,1 +1,1 @@
-{"id":"b13f439e41ba6ff9415e0f76a172e424","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:153:7","name":"Full KRS flow - lookup, confirm, get","status":"skipped","testResultsByEnv":{"default":"905fc2cf692548b31beb8ab2730c07a7"}}
+{"id":"b13f439e41ba6ff9415e0f76a172e424","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:153:7","name":"Full KRS flow - lookup, confirm, get","status":"passed","testResultsByEnv":{"default":"881665c042b3b69a3e7f8d7d648ddec3"}}

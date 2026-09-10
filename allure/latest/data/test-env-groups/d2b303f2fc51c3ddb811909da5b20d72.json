@@ -1,1 +1,1 @@
-{"id":"d2b303f2fc51c3ddb811909da5b20d72","fullName":"e2e-tests/bdd/features/admin-platform-management.feature.spec.js:195:7","name":"Admin performs comprehensive reference data management","status":"skipped","testResultsByEnv":{"default":"6c062725dcc1f9cf2b67f86ebcce6013"}}
+{"id":"d2b303f2fc51c3ddb811909da5b20d72","fullName":"e2e-tests/bdd/features/admin-platform-management.feature.spec.js:195:7","name":"Admin performs comprehensive reference data management","status":"passed","testResultsByEnv":{"default":"4189312dd96ec500f5a30e4a6ba1e93f"}}

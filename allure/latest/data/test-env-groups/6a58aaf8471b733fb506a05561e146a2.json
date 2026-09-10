@@ -1,1 +1,1 @@
-{"id":"6a58aaf8471b733fb506a05561e146a2","fullName":"integration/flows/profile-validation.spec.ts:128:7","name":"@phone too short (< 7 chars) returns 400","status":"skipped","testResultsByEnv":{"default":"3692dc9f13a0d7b60196816362410c54"}}
+{"id":"6a58aaf8471b733fb506a05561e146a2","fullName":"integration/flows/profile-validation.spec.ts:128:7","name":"@phone too short (< 7 chars) returns 400","status":"passed","testResultsByEnv":{"default":"640819a1fb0e56efd004d50d9be3f30e"}}

@@ -1,1 +1,1 @@
-{"id":"896b3862a5f1dabb4c7d524bf8daf708","fullName":"e2e-tests/bdd/features/magic-link-errors.feature.spec.js:144:7","name":"Verification oobCode rejected by password reset endpoints","status":"skipped","testResultsByEnv":{"default":"542ff6edd50e1ce659763120fdd16be8"}}
+{"id":"896b3862a5f1dabb4c7d524bf8daf708","fullName":"e2e-tests/bdd/features/magic-link-errors.feature.spec.js:144:7","name":"Verification oobCode rejected by password reset endpoints","status":"passed","testResultsByEnv":{"default":"8966e7f533064c0ebfc1fcf2125c7ae9"}}

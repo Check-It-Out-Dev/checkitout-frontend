@@ -1,1 +1,1 @@
-{"id":"906b7c5f09c5d6e93ff11891e657a9e5","fullName":"integration/flows/security-advanced-session.spec.ts:75:7","name":"@scenario-1 @cookie-tamper modified session cookie content returns 401","status":"skipped","testResultsByEnv":{"default":"c51a128653bc9bfec9d941cac88c68ff"}}
+{"id":"906b7c5f09c5d6e93ff11891e657a9e5","fullName":"integration/flows/security-advanced-session.spec.ts:75:7","name":"@scenario-1 @cookie-tamper modified session cookie content returns 401","status":"passed","testResultsByEnv":{"default":"80d3a1c79251ce180ad34acdb9a3968e"}}

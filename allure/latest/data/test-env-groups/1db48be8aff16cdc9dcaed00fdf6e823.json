@@ -1,1 +1,1 @@
-{"id":"1db48be8aff16cdc9dcaed00fdf6e823","fullName":"integration/flows/admin-inactive-flow.spec.ts:443:7","name":"@cross-role COMPANY actor cannot change another COMPANY user accountStatus","status":"skipped","testResultsByEnv":{"default":"0cd315b1cee016e803249e759d346976"}}
+{"id":"1db48be8aff16cdc9dcaed00fdf6e823","fullName":"integration/flows/admin-inactive-flow.spec.ts:443:7","name":"@cross-role COMPANY actor cannot change another COMPANY user accountStatus","status":"passed","testResultsByEnv":{"default":"099acca1e7f56353fa2c9d128864c577"}}

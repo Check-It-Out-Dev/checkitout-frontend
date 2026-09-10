@@ -1,1 +1,1 @@
-{"id":"bbb8a75e10c343e787bd952dbda0fe5a","fullName":"integration/flows/profile-validation.spec.ts:223:7","name":"@companyDescription too long (> 1000 chars) returns 400","status":"skipped","testResultsByEnv":{"default":"46ee146d67c81318149f1c741f41bbc5"}}
+{"id":"bbb8a75e10c343e787bd952dbda0fe5a","fullName":"integration/flows/profile-validation.spec.ts:223:7","name":"@companyDescription too long (> 1000 chars) returns 400","status":"passed","testResultsByEnv":{"default":"14cc28a1427d427948894d43cc1af0c7"}}

@@ -1,1 +1,1 @@
-{"id":"9491202c8951fd87ae3e83db05121c38","fullName":"e2e-tests/bdd/features/admin-platform-management.feature.spec.js:397:7","name":"Admin reference data CRUD and FAQ display order operations","status":"skipped","testResultsByEnv":{"default":"fbada12f44ec43aae151e00fbf8a0a02"}}
+{"id":"9491202c8951fd87ae3e83db05121c38","fullName":"e2e-tests/bdd/features/admin-platform-management.feature.spec.js:397:7","name":"Admin reference data CRUD and FAQ display order operations","status":"passed","testResultsByEnv":{"default":"08608d3c7d3f37e69b9346031621ebeb"}}

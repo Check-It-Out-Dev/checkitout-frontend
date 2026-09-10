@@ -1,1 +1,1 @@
-{"id":"72f70ae01db7384998ead4673ff7986f","fullName":"e2e-tests/bdd/features/consent-lifecycle.feature.spec.js:94:7","name":"Blocked user CAN browse campaigns (soft block allows read-only)","status":"skipped","testResultsByEnv":{"default":"efe3d50cc3781bf7c1eabe86c753b0c5"}}
+{"id":"72f70ae01db7384998ead4673ff7986f","fullName":"e2e-tests/bdd/features/consent-lifecycle.feature.spec.js:94:7","name":"Blocked user CAN browse campaigns (soft block allows read-only)","status":"passed","testResultsByEnv":{"default":"87b4d5490720040a0245dfcac03187ce"}}

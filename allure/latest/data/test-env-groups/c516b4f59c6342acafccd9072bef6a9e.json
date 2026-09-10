@@ -1,1 +1,1 @@
-{"id":"c516b4f59c6342acafccd9072bef6a9e","fullName":"integration/flows/file-upload-signed-url.spec.ts:112:7","name":"@company Successful CONTENT upload — full round-trip","status":"skipped","testResultsByEnv":{"default":"10fca7c466be8351a06995ba3913bf90"}}
+{"id":"c516b4f59c6342acafccd9072bef6a9e","fullName":"integration/flows/file-upload-signed-url.spec.ts:112:7","name":"@company Successful CONTENT upload — full round-trip","status":"passed","testResultsByEnv":{"default":"ceca29dc9e107353e6f9644642752bf1"}}

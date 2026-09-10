@@ -1,1 +1,1 @@
-{"id":"c9cb33d76a2daee6d79db2d8dadfa7ab","fullName":"integration/auth/security-unauth.spec.ts:277:9","name":"2fa endpoints reject unauthenticated requests","status":"skipped","testResultsByEnv":{"default":"62a946a1b6dd17979169dee09a7ef10b"}}
+{"id":"c9cb33d76a2daee6d79db2d8dadfa7ab","fullName":"integration/auth/security-unauth.spec.ts:277:9","name":"2fa endpoints reject unauthenticated requests","status":"passed","testResultsByEnv":{"default":"34f109e2b65f9ca7238f6556ea92e320"}}

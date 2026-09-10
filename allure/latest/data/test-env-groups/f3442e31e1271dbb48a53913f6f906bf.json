@@ -1,1 +1,1 @@
-{"id":"f3442e31e1271dbb48a53913f6f906bf","fullName":"integration/flows/profile-validation.spec.ts:174:7","name":"@profilePicture raw HTTP URL is rejected (uploadId-only) with 400","status":"skipped","testResultsByEnv":{"default":"b592dac55f2eb15eb0443bfce00fb783"}}
+{"id":"f3442e31e1271dbb48a53913f6f906bf","fullName":"integration/flows/profile-validation.spec.ts:174:7","name":"@profilePicture raw HTTP URL is rejected (uploadId-only) with 400","status":"passed","testResultsByEnv":{"default":"6b1682f4d2bb1980f2316f7f517ba78f"}}

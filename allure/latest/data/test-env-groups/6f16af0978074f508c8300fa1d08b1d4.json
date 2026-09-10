@@ -1,1 +1,1 @@
-{"id":"6f16af0978074f508c8300fa1d08b1d4","fullName":"integration/flows/magic-link-errors.spec.ts:212:7","name":"@tier-2 apply-action-code rejects garbage oobCode with invalid_action_code","status":"skipped","testResultsByEnv":{"default":"74dc1309917b5771f06805d363d0114f"}}
+{"id":"6f16af0978074f508c8300fa1d08b1d4","fullName":"integration/flows/magic-link-errors.spec.ts:212:7","name":"@tier-2 apply-action-code rejects garbage oobCode with invalid_action_code","status":"passed","testResultsByEnv":{"default":"4ef2b1d9146174aed6fa9e4f93857fea"}}

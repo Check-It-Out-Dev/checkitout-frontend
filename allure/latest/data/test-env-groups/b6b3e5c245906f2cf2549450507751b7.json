@@ -1,1 +1,1 @@
-{"id":"b6b3e5c245906f2cf2549450507751b7","fullName":"e2e-tests/bdd/features/consent-lifecycle.feature.spec.js:15:7","name":"Users NOT blocked during grace period","status":"skipped","testResultsByEnv":{"default":"e80c538ca81cab6ee99dbcddbd384864"}}
+{"id":"b6b3e5c245906f2cf2549450507751b7","fullName":"e2e-tests/bdd/features/consent-lifecycle.feature.spec.js:15:7","name":"Users NOT blocked during grace period","status":"passed","testResultsByEnv":{"default":"627a31c1cfcdb9a00ddd20b0fc10370a"}}

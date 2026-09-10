@@ -1,1 +1,1 @@
-{"id":"9a11cab206bec5017aa631fdc7ef3aa4","fullName":"integration/flows/magic-link-errors.spec.ts:196:7","name":"@tier-1 apply-action-code rejects malformed JSON (400)","status":"skipped","testResultsByEnv":{"default":"1eb45cc143e9fe1c209605c2980ee7e0"}}
+{"id":"9a11cab206bec5017aa631fdc7ef3aa4","fullName":"integration/flows/magic-link-errors.spec.ts:196:7","name":"@tier-1 apply-action-code rejects malformed JSON (400)","status":"passed","testResultsByEnv":{"default":"e8633c7e8d1d36f39c17d23d1f813a0a"}}

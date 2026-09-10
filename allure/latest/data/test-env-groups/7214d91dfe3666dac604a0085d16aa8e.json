@@ -1,1 +1,1 @@
-{"id":"7214d91dfe3666dac604a0085d16aa8e","fullName":"e2e-tests/bdd/features/magic-link-errors.feature.spec.js:101:7","name":"All magic link endpoints reject garbage oobCode (consolidated)","status":"skipped","testResultsByEnv":{"default":"5cec66f7b61ffa0eb20b26b59062275f"}}
+{"id":"7214d91dfe3666dac604a0085d16aa8e","fullName":"e2e-tests/bdd/features/magic-link-errors.feature.spec.js:101:7","name":"All magic link endpoints reject garbage oobCode (consolidated)","status":"passed","testResultsByEnv":{"default":"0e58ce688c83acb1d209fb4b728f4b37"}}

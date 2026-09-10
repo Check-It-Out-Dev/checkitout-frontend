@@ -1,1 +1,1 @@
-{"id":"216e3c451bfde134c5238583dc080695","fullName":"integration/flows/security-advanced-session.spec.ts:289:7","name":"@scenario-6 @token-version 419 after admin ban","status":"skipped","testResultsByEnv":{"default":"ba0eee1f11e8fd20fa81522136e1f349"}}
+{"id":"216e3c451bfde134c5238583dc080695","fullName":"integration/flows/security-advanced-session.spec.ts:289:7","name":"@scenario-6 @token-version 419 after admin ban","status":"passed","testResultsByEnv":{"default":"42a261a989b90ba729b539b056fb1008"}}

@@ -1,1 +1,1 @@
-{"id":"698e77c04cf1f04dedf024982ffc3a44","fullName":"e2e-tests/bdd/features/magic-link-errors.feature.spec.js:36:9","name":"confirm-password-reset rejects invalid input: blank oobCode","status":"skipped","testResultsByEnv":{"default":"459d7aa95ae736a0ae458f6445b031f3"}}
+{"id":"698e77c04cf1f04dedf024982ffc3a44","fullName":"e2e-tests/bdd/features/magic-link-errors.feature.spec.js:36:9","name":"confirm-password-reset rejects invalid input: blank oobCode","status":"passed","testResultsByEnv":{"default":"f129813f74094c16f4156ce080203dee"}}
