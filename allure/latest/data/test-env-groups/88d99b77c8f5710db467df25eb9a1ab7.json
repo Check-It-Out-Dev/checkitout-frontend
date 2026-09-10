@@ -1,1 +1,1 @@
-{"id":"88d99b77c8f5710db467df25eb9a1ab7","fullName":"scenarios/partnership/create-campaign.scenario.spec.ts:46:7","name":"submit is disabled until required fields are filled","status":"passed","testResultsByEnv":{"default":"cd3b120e160e5fb16f49816cd380a122"}}
+{"id":"88d99b77c8f5710db467df25eb9a1ab7","fullName":"scenarios/partnership/create-campaign.scenario.spec.ts:46:7","name":"submit is disabled until required fields are filled","status":"passed","testResultsByEnv":{"default":"4f092ac0792e54d91ea8e1a02cbf46cf"}}
