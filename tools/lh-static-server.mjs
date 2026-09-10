@@ -23,33 +23,17 @@ import { extname, isAbsolute, join, relative, resolve } from 'node:path';
 import { gzipSync } from 'node:zlib';
 
 const port = Number(process.argv[2] ?? 4299);
-const dist =
-  process.argv[3] ??
-  join(import.meta.dirname, '..', 'dist', 'check-it-out-fe-greenfield', 'browser');
+const dist = process.argv[3] ?? join(import.meta.dirname, '..', 'dist', 'check-it-out-fe-greenfield', 'browser');
 // Resolved once: every containment check below compares against this, not against a relative form
 // that would depend on the process's working directory.
 const root = resolve(dist);
 
 const certDir = mkdtempSync(join(tmpdir(), 'lh-cert-'));
-execFileSync(
-  'openssl',
-  [
-    'req',
-    '-x509',
-    '-newkey',
-    'rsa:2048',
-    '-nodes',
-    '-keyout',
-    join(certDir, 'key.pem'),
-    '-out',
-    join(certDir, 'cert.pem'),
-    '-days',
-    '7',
-    '-subj',
-    '/CN=localhost',
-  ],
-  { stdio: 'ignore' },
-);
+execFileSync('openssl', [
+  'req', '-x509', '-newkey', 'rsa:2048', '-nodes',
+  '-keyout', join(certDir, 'key.pem'), '-out', join(certDir, 'cert.pem'),
+  '-days', '7', '-subj', '/CN=localhost',
+], { stdio: 'ignore' });
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -91,11 +75,10 @@ server.on('request', (req, res) => {
   let file = index;
   try {
     const decoded = decodeURIComponent(reqPath);
-    // First gate: an allow-list of what a built asset's path can look like. Everything this server
-    // is ever asked for is a file Angular emitted -- `/main-A1B2C3D4.js`, `/assets/i18n/en.json` --
-    // so the alphabet is unreserved characters and `/`, nothing else. A segment of that alphabet
-    // cannot be `..`, cannot contain a NUL or a backslash, and cannot name a Windows device or an
-    // alternate data stream. Anything else is served the index instead of being resolved at all.
+    // First gate, an allow-list: everything this server is ever asked for is a file Angular
+    // emitted -- `/main-A1B2C3D4.js`, `/assets/i18n/en.json` -- so the alphabet is unreserved
+    // characters and `/`. A segment of that alphabet cannot be `..`, cannot contain a NUL or a
+    // backslash, and cannot name a Windows device or an alternate data stream.
     const safeShape =
       decoded.startsWith('/') &&
       decoded
@@ -103,8 +86,8 @@ server.on('request', (req, res) => {
         .split('/')
         .every((s) => s === '' || (s !== '..' && SAFE_SEGMENT.test(s)));
     if (safeShape) {
-      // Second gate: containment by `relative`, not by `startsWith`. A prefix test says a path is
-      // inside the root when it merely begins with the root's characters, so a sibling directory
+      // Second gate, containment by `relative` rather than `startsWith`. A prefix test says a path
+      // is inside the root when it merely begins with the root's characters, so a sibling directory
       // named `...-browser-something` passes it while being entirely outside.
       const candidate = resolve(root, '.' + decoded);
       const rel = relative(root, candidate);
