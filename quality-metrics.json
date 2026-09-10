@@ -2,26 +2,26 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 61,
-    "id": 34457655058,
-    "sha": "18b2c6e",
+    "number": 66,
+    "id": 34460556313,
+    "sha": "17cd1d8",
     "branch": "main",
     "workflow": "browser-tiers",
-    "startedAt": "2026-09-10T08:53:54Z",
-    "durationSec": 2047,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34457655058",
-    "status": "incomplete"
+    "startedAt": "2026-09-10T09:25:28Z",
+    "durationSec": 1490,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34460556313",
+    "status": "green"
   },
   "tests": {
-    "total": 1343,
-    "passed": 1318,
+    "total": 1761,
+    "passed": 1682,
     "failed": 0,
-    "flaky": 1,
-    "skipped": 24,
-    "passRate": 0.9992,
-    "flakyRate": 0.0008,
-    "durationMeanSec": 0.46,
-    "durationP95Sec": 1.04,
+    "flaky": 0,
+    "skipped": 79,
+    "passRate": 1,
+    "flakyRate": 0,
+    "durationMeanSec": 1.51,
+    "durationP95Sec": 2,
     "tiers": {
       "jest": {
         "total": 1183,
@@ -29,7 +29,23 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
-        "durationSec": 80
+        "durationSec": 76
+      },
+      "visual": {
+        "total": 284,
+        "passed": 283,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "durationSec": 395
+      },
+      "visual-parity": {
+        "total": 82,
+        "passed": 28,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 54,
+        "durationSec": 81
       },
       "msw": {
         "total": 2,
@@ -45,15 +61,15 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 22,
-        "durationSec": 130
+        "durationSec": 126
       },
       "perf": {
-        "total": 30,
-        "passed": 29,
+        "total": 82,
+        "passed": 82,
         "failed": 0,
-        "flaky": 1,
+        "flaky": 0,
         "skipped": 0,
-        "durationSec": 404
+        "durationSec": 1948
       }
     }
   },
@@ -79,7 +95,6 @@
       "runsFailed": 0,
       "lastSeen": 61,
       "history": [
-        "pass",
         "flaky",
         "flaky",
         "pass",
@@ -88,12 +103,13 @@
         "absent",
         "pass",
         "absent",
-        "flaky"
+        "flaky",
+        "pass"
       ]
     }
   ],
   "reports": {
-    "playwright": "playwright/61/",
-    "allure": "allure/61/"
+    "playwright": "playwright/66/",
+    "allure": "allure/66/"
   }
 }
