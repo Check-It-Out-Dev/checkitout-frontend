@@ -1,1 +1,1 @@
-{"id":"5bad1f31abb3cce8fc5babb6df43351e","fullName":"e2e-tests/bdd/features/magic-link-errors.feature.spec.js:92:7","name":"Magic link endpoints reject malformed JSON (consolidated)","status":"passed","testResultsByEnv":{"default":"fb22cdd40b1002c712b01a2e44c21bc0"}}
+{"id":"5bad1f31abb3cce8fc5babb6df43351e","fullName":"e2e-tests/bdd/features/magic-link-errors.feature.spec.js:92:7","name":"Magic link endpoints reject malformed JSON (consolidated)","status":"passed","testResultsByEnv":{"default":"7d6393ab72263aef224a12eb5341ba88"}}

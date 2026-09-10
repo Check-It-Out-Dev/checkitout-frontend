@@ -1,1 +1,1 @@
-{"id":"81e812aea61074eb2eeb94482bdfbb90","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:139:7","name":"Unauthenticated request returns 401","status":"passed","testResultsByEnv":{"default":"8bb2468e7f3b1621c21da353bdcc4e2a"}}
+{"id":"81e812aea61074eb2eeb94482bdfbb90","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:139:7","name":"Unauthenticated request returns 401","status":"passed","testResultsByEnv":{"default":"bf36a3b00b11ec3c83dadd5d556dbb92"}}
