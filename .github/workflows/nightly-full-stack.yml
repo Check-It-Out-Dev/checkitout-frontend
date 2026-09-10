@@ -209,11 +209,30 @@ jobs:
             -H "Content-Type: application/json" -d '{"email":"smoke@checkitout.app","role":"COMPANY"}'
           grep -i "^set-cookie: session=" /tmp/h | grep -qiv secure && echo "session cookie without Secure: sign-in will work"
 
-      # The 2FA scenarios need the suite and the application to agree on one secret. Rather than read
-      # one back and decrypt it -- which is what needs Cloud KMS and a service account -- the run
-      # provisions a secret it already knows, through the backend's own endpoint, so the application
-      # seals it with the cipher configured above and the suite never decrypts anything. The endpoint
-      # is idempotent and refuses to exist on the public sandbox.
+      # The emulator seeds three accounts into Firebase Auth. The backend keeps its own users table
+      # and does not learn about them: mock-session creates a row on the way past, so every scenario
+      # signing in that way has always worked, while the real-login ones -- which post a genuine ID
+      # token to /auth/exchange-token -- did not. exchangeToken verifies the token, validates the role
+      # through the Admin SDK, then looks the user up in Postgres and finds nothing.
+      #
+      # From outside that is a bare 401, because a missing user on an auth endpoint is deliberately
+      # indistinguishable from a bad credential. The backend log says what it actually was:
+      # ResourceNotFoundException at TokenExchangeService:193.
+      #
+      # ensure-user exists for exactly this, and is idempotent.
+      - name: The seeded actors, in the backend's database as well
+        run: |
+          set -uo pipefail
+          ensure() {
+            payload=$(printf '{"email":"%s","role":"%s","firebaseUid":"%s"}' "$1" "$2" "$3")
+            code=$(curl -sS -o /tmp/ensure.json -w '%{http_code}' -X POST http://127.0.0.1:8080/api/test/auth/ensure-user -H 'Content-Type: application/json' -d "$payload" || echo 000)
+            echo "ensure-user $2 $3 -> HTTP $code"
+            [ "$code" = "200" ] || echo "::warning::ensure-user for $3 answered $code; the real-login scenarios will fail"
+          }
+          ensure e2e.company@test.com COMPANY E2E_COMPANY_001
+          ensure e2e.influencer@test.com INFLUENCER E2E_INFLUENCER_001
+          ensure e2e.admin@test.com ADMIN E2E_ADMIN_001
+
       # The 2FA scenarios need the suite and the application to agree on one secret. Rather than read
       # one back and decrypt it -- which is what needs Cloud KMS and a service account -- the run
       # provisions a secret it already knows, through the backend's own endpoint, so the application
