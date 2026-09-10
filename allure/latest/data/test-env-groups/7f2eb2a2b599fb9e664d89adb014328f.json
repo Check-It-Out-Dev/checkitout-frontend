@@ -1,1 +1,1 @@
-{"id":"7f2eb2a2b599fb9e664d89adb014328f","fullName":"e2e-tests/bdd/features/subscription-e2e.feature.spec.js:26:7","name":"FREE plan blocks campaign creation at limit 5","status":"passed","testResultsByEnv":{"default":"0823e5227a563f4bb1de757acb54a9b5"}}
+{"id":"7f2eb2a2b599fb9e664d89adb014328f","fullName":"e2e-tests/bdd/features/subscription-e2e.feature.spec.js:26:7","name":"FREE plan blocks campaign creation at limit 5","status":"passed","testResultsByEnv":{"default":"19982be80b74015bcee2a21e2f7a09aa"}}

@@ -1,1 +1,1 @@
-{"id":"bacea24566ac4dba86ca49c875d85d1b","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:70:7","name":"KRS confirm with emailVerified auto-activates account","status":"passed","testResultsByEnv":{"default":"70ab226e2a64f9cd754f7ddf90496766"}}
+{"id":"bacea24566ac4dba86ca49c875d85d1b","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:70:7","name":"KRS confirm with emailVerified auto-activates account","status":"passed","testResultsByEnv":{"default":"cc0fd69455b3914bd27224d91993958f"}}

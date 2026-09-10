@@ -1,1 +1,1 @@
-{"id":"55f9eb68b953c8db81ba586ebab35027","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:118:7","name":"Get company data after confirm returns full data","status":"passed","testResultsByEnv":{"default":"05c0e195863224dd0e8192743ac4ff90"}}
+{"id":"55f9eb68b953c8db81ba586ebab35027","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:118:7","name":"Get company data after confirm returns full data","status":"passed","testResultsByEnv":{"default":"05b5d7f87934c3f0c03413a411955ba9"}}

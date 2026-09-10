@@ -1,1 +1,1 @@
-{"id":"2080dcdd4af4d9a2fe0ace5e4228344f","fullName":"e2e-tests/bdd/features/rate-limiting.feature.spec.js:26:7","name":"Different users have independent rate limit buckets","status":"passed","testResultsByEnv":{"default":"2bc443d099eeeeb40bcdb082e2bb13fb"}}
+{"id":"2080dcdd4af4d9a2fe0ace5e4228344f","fullName":"e2e-tests/bdd/features/rate-limiting.feature.spec.js:26:7","name":"Different users have independent rate limit buckets","status":"passed","testResultsByEnv":{"default":"951d0582db5b517e688003ac428849cb"}}
