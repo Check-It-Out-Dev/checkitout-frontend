@@ -15,6 +15,12 @@
 //   --k6 "glob"                         k6 handleSummary JSON, one per runner
 //   --lighthouse lighthouse.json        from tools/ci/lighthouse-summary.mjs
 //   --kubernetes '{"shards":4,"wallSec":116,"k6Runners":2}'
+//   --mutation summary.json             mutation score, from tools/ci/mutation-summary.mjs (Stryker)
+//                                       or tools/ci/pit-summary.mjs (PIT) — both write the same keys
+//   --sarif "glob"                      SARIF from the security scanners; repeatable
+//   --security latest.json              an already-counted summary from tools/ci/sarif-summary.mjs,
+//                                       which is how a publisher picks up the security tier's result
+//                                       from the site without re-reading its SARIF
 //   --copy name=dir                     copy a report directory to <name>/<run>/ in the site, repeatable
 //                                       (allure also gets allure/latest/)
 //   --started-at ISO  --duration-sec N  the run's start and length (defaults: now, 0)
@@ -34,7 +40,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 /* ---------- arguments ---------- */
 const argv = process.argv.slice(2);
 const opt = {};
-const multi = { junit: [], copy: [], k6: [] };
+const multi = { junit: [], copy: [], k6: [], sarif: [] };
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
   if (!a.startsWith('--')) continue;
@@ -260,6 +266,58 @@ if (opt.lighthouse && existsSync(opt.lighthouse)) {
 let kubernetes;
 if (opt.kubernetes) kubernetes = JSON.parse(opt.kubernetes);
 
+/* ---------- mutation: would the tests notice if the code were wrong ---------- */
+// Coverage says a line ran. This says something checked the result. Two numbers, because the gap
+// between them separates "write a test" from "make a test assert something".
+let mutation;
+if (opt.mutation && existsSync(opt.mutation)) {
+  const m = readJson(opt.mutation);
+  if (m.mutationScore !== null && m.mutationScore !== undefined) {
+    mutation = {
+      score: m.mutationScore,
+      coveredScore: m.coveredScore ?? null,
+      mutants: m.mutants?.total ?? null,
+      survived: m.mutants?.Survived ?? m.mutants?.SURVIVED ?? null,
+      floor: m.floor ?? null,
+      ...(m.classesWithNoUnitTest !== undefined ? { classesWithNoUnitTest: m.classesWithNoUnitTest } : {}),
+    };
+  }
+}
+
+/* ---------- security: what the scanners found, this run ---------- */
+// Counted from the SARIF the scanners emit rather than from the code-scanning API, so the number is
+// this run's own evidence and stays readable offline and in a fork. A tool that produced a SARIF and
+// found nothing is recorded as zero rather than dropped: a scanner going silent should be visible.
+let security;
+if (opt.security && existsSync(opt.security)) {
+  const s = readJson(opt.security);
+  if (s && typeof s.total === 'number') security = s;
+}
+const sarifFiles = multi.sarif.flatMap(glob);
+if (!security && sarifFiles.length) {
+  const byLevel = { error: 0, warning: 0, note: 0 };
+  const byTool = {};
+  for (const f of sarifFiles) {
+    let d;
+    try {
+      d = readJson(f);
+    } catch {
+      console.warn(`quality-metrics: ${f} is not readable SARIF, skipped`);
+      continue;
+    }
+    for (const run of d.runs || []) {
+      const tool = run.tool?.driver?.name || basename(f);
+      byTool[tool] ??= 0;
+      for (const r of run.results || []) {
+        const lvl = String(r.level || 'warning').toLowerCase();
+        if (lvl in byLevel) byLevel[lvl]++;
+        byTool[tool]++;
+      }
+    }
+  }
+  security = { total: byLevel.error + byLevel.warning + byLevel.note, ...byLevel, tools: byTool, scans: sarifFiles.length };
+}
+
 /* ---------- the site: reports, tests file, flaky list, metrics, history, badges, dashboard ---------- */
 mkdirSync(join(out, 'metrics', 'tests'), { recursive: true });
 mkdirSync(join(out, 'badges'), { recursive: true });
@@ -305,6 +363,8 @@ const metrics = {
   ...(perf ? { perf } : {}),
   ...(lighthouse ? { lighthouse } : {}),
   ...(kubernetes ? { kubernetes } : {}),
+  ...(mutation ? { mutation } : {}),
+  ...(security ? { security } : {}),
   flaky,
   reports,
 };
@@ -318,6 +378,8 @@ const line = {
   ...(coverage ? { coverageLines: coverage.lines } : {}),
   ...(perf ? { k6P95Ms: perf.k6.p95Ms, k6FailedRate: perf.k6.failedRate } : {}),
   ...(lighthouse ? { lhPerformance: lighthouse.performance, lhAccessibility: lighthouse.accessibility } : {}),
+  ...(mutation ? { mutationScore: mutation.score, mutationCoveredScore: mutation.coveredScore } : {}),
+  ...(security ? { securityFindings: security.total, securityErrors: security.error } : {}),
 };
 const historyPath = join(out, 'metrics', 'history.jsonl');
 const existing = existsSync(historyPath) ? readFileSync(historyPath, 'utf8').split('\n').filter(Boolean) : [];
@@ -335,6 +397,19 @@ const badge = (name, label, message, color) => writeFileSync(join(out, 'badges',
 badge('tests', 'tests', `${totals.passed} passed${totals.flaky ? ` · ${totals.flaky} flaky` : ''}${totals.failed ? ` · ${totals.failed} failed` : ''}`, totals.failed ? 'red' : totals.flaky ? 'yellow' : 'brightgreen');
 if (coverage) badge('coverage', 'coverage', `${coverage.lines.toFixed(1)} %`, coverage.lines >= 75 ? 'brightgreen' : coverage.lines >= 60 ? 'yellow' : 'red');
 if (perf) badge('k6', 'k6 p95', `${perf.k6.p95Ms >= 1000 ? (perf.k6.p95Ms / 1000).toFixed(2) + ' s' : perf.k6.p95Ms.toFixed(0) + ' ms'} · ${(perf.k6.failedRate * 100).toFixed(0)} % failed`, perf.k6.thresholdsOk ? 'brightgreen' : 'red');
+if (mutation) {
+  // Coloured against the tier's own floor rather than a universal number: 72 % is strong for a
+  // frontend scoped to core services and weak for a hand-written parser. The floor is the contract.
+  const f = mutation.floor ?? 60;
+  badge('mutation', 'mutation', `${mutation.score.toFixed(1)} %${mutation.coveredScore != null ? ` · ${mutation.coveredScore.toFixed(1)} % covered` : ''}`,
+    mutation.score >= f + 10 ? 'brightgreen' : mutation.score >= f ? 'yellow' : 'red');
+}
+if (security) {
+  // Errors are the number that matters; warnings and notes are counted but do not colour the badge,
+  // because a scanner that reports 400 style notes would otherwise make the estate look on fire.
+  badge('security', 'security', security.total ? `${security.error} error${security.error === 1 ? '' : 's'} · ${security.warning} warning${security.warning === 1 ? '' : 's'}` : 'no findings',
+    security.error ? 'red' : security.warning ? 'yellow' : 'brightgreen');
+}
 if (lighthouse) {
   const low = Math.min(lighthouse.performance, lighthouse.accessibility, lighthouse.bestPractices, lighthouse.seo);
   badge('lighthouse', 'lighthouse', `${lighthouse.performance} · ${lighthouse.accessibility} · ${lighthouse.bestPractices} · ${lighthouse.seo}`, low >= 90 ? 'brightgreen' : low >= 75 ? 'yellow' : 'red');

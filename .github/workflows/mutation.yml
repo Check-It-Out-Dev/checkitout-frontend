@@ -35,8 +35,9 @@ concurrency:
   # did, and a night is never worth cancelling.
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+# contents: write because this tier writes its score to the Pages branch for the dashboard.
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   stryker:
@@ -74,6 +75,28 @@ jobs:
           node tools/ci/mutation-summary.mjs \
             --break "${{ inputs.floor || 70 }}" \
             --json mutation-summary.json | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Pages site (previous state)
+        if: always()
+        uses: actions/checkout@v5
+        with:
+          ref: gh-pages
+          path: site
+        continue-on-error: true
+      - name: This tier's number into the site, for the dashboard to trend
+        if: always()
+        run: |
+          rm -rf site/.git
+          mkdir -p "site/mutation"
+          cp mutation-summary.json "site/mutation/latest.json"
+      - name: Publish
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # A retrying overlay push rather than the action, because several tiers publish in parallel
+        # and the loser of the race used to drop its result. See the script's header.
+        run: |
+          bash tools/ci/publish-pages.sh site "mutation run ${{ github.run_number }}"
 
       - name: Publish the report
         if: always()
