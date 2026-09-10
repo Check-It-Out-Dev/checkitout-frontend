@@ -82,7 +82,7 @@ jobs:
           # ephemeral and holds nothing but the checkout.
           chmod 0777 ci-reports
           CI_REPORTS_DIR="$GITHUB_WORKSPACE/ci-reports" envsubst < deploy/k8s/kind-config.yaml > kind-config.rendered.yaml
-      - uses: helm/kind-action@ef37e7f390d99f746eb8b610417061a60e82a6cc  # v1
+      - uses: helm/kind-action@06c1ae10762d3b9c1644e7fe69596ae519e015a2  # v1.15.0
         with:
           cluster_name: ${{ env.KIND_CLUSTER }}
           config: kind-config.rendered.yaml
