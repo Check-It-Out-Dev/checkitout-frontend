@@ -1,0 +1,1 @@
+  influencer-collab: fault-injected 2 ringed step(s) — [data-testid="opportunity-card-503"], [data-testid="opportunity-detail-apply-button"]

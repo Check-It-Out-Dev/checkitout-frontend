@@ -2,26 +2,26 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 45,
-    "id": 34456783497,
-    "sha": "e21c5a4",
+    "number": 61,
+    "id": 34457655058,
+    "sha": "18b2c6e",
     "branch": "main",
     "workflow": "browser-tiers",
-    "startedAt": "2026-09-10T08:44:20Z",
-    "durationSec": 476,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34456783497",
+    "startedAt": "2026-09-10T08:53:54Z",
+    "durationSec": 2047,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34457655058",
     "status": "incomplete"
   },
   "tests": {
-    "total": 1216,
-    "passed": 1214,
+    "total": 1343,
+    "passed": 1318,
     "failed": 0,
-    "flaky": 0,
-    "skipped": 2,
-    "passRate": 1,
-    "flakyRate": 0,
-    "durationMeanSec": 0.09,
-    "durationP95Sec": 0.37,
+    "flaky": 1,
+    "skipped": 24,
+    "passRate": 0.9992,
+    "flakyRate": 0.0008,
+    "durationMeanSec": 0.46,
+    "durationP95Sec": 1.04,
     "tiers": {
       "jest": {
         "total": 1183,
@@ -29,23 +29,31 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
-        "durationSec": 73
-      },
-      "sandbox": {
-        "total": 32,
-        "passed": 31,
-        "failed": 0,
-        "flaky": 0,
-        "skipped": 1,
-        "durationSec": 38
+        "durationSec": 80
       },
       "msw": {
-        "total": 1,
+        "total": 2,
         "passed": 0,
         "failed": 0,
         "flaky": 0,
-        "skipped": 1,
+        "skipped": 2,
         "durationSec": 0
+      },
+      "sandbox": {
+        "total": 128,
+        "passed": 106,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 22,
+        "durationSec": 130
+      },
+      "perf": {
+        "total": 30,
+        "passed": 29,
+        "failed": 0,
+        "flaky": 1,
+        "skipped": 0,
+        "durationSec": 404
       }
     }
   },
@@ -67,11 +75,10 @@
       "title": "Demo smoothness › a simulator that never fires holds the step instead of narrating it [perf]",
       "file": "perf/demo-smoothness.spec.ts",
       "window": 10,
-      "runsFlaky": 3,
+      "runsFlaky": 4,
       "runsFailed": 0,
-      "lastSeen": 37,
+      "lastSeen": 61,
       "history": [
-        "pass",
         "pass",
         "flaky",
         "flaky",
@@ -80,12 +87,13 @@
         "pass",
         "absent",
         "pass",
-        "absent"
+        "absent",
+        "flaky"
       ]
     }
   ],
   "reports": {
-    "playwright": "playwright/45/",
-    "allure": "allure/45/"
+    "playwright": "playwright/61/",
+    "allure": "allure/61/"
   }
 }
