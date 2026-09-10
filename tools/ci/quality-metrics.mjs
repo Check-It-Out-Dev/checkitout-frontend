@@ -618,7 +618,7 @@ writeFileSync(join(out, '.nojekyll'), '');
 const prune = (dir, isRun, numberOf = (f) => Number(f.replace('.json', ''))) => {
   if (!existsSync(dir)) return;
   const runs = readdirSync(dir)
-    .filter(isRun)
+    .filter((f) => isRun(f))
     .map((f) => ({ f, n: numberOf(f) }))
     .filter((x) => Number.isFinite(x.n))
     .sort((a, b) => b.n - a.n);
