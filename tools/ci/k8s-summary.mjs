@@ -14,6 +14,7 @@
 //                                 [--optional job1,job2]   jobs allowed to be skipped deliberately
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { byCodepoint } from '../lib/order.mjs';
 
 const args = process.argv.slice(2);
 const dir = args.find((a) => !a.startsWith('--')) || 'ci-reports';
@@ -109,7 +110,7 @@ if (existsSync(mergedPath)) {
 }
 const shards = readdirSync(dir)
   .filter((f) => /^shard-\d+\.exit$/.test(f))
-  .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
+  .sort(byCodepoint)
   .map((f) => ({ shard: f.match(/\d+/)[0], exit: readFileSync(join(dir, f), 'utf8').trim() }));
 
 say('### Browser tiers on the cluster');
@@ -153,7 +154,7 @@ if (existsSync(mergedPath)) {
 // ---- k6: one JSON per runner ----
 const k6Files = readdirSync(dir)
   .filter((f) => /^api-.*\.json$/.test(f))
-  .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+  .sort(byCodepoint);
 const k6 = [];
 for (const f of k6Files) {
   const d = JSON.parse(readFileSync(join(dir, f), 'utf8'));

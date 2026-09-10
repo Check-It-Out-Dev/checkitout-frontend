@@ -13,6 +13,7 @@
  * It just makes the two lists unable to drift apart quietly.
  */
 import { readFileSync } from 'node:fs';
+import { byCodepoint } from './lib/order.mjs';
 
 /** `npm run check:x` as an executed command, not as prose inside a comment. */
 function executedChecks(text) {
@@ -34,10 +35,10 @@ hook.delete('check:static');
 
 const missingFromHook = [...staticChecks]
   .filter((c) => !hook.has(c))
-  .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+  .sort(byCodepoint);
 const missingFromStatic = [...hook]
   .filter((c) => !staticChecks.has(c))
-  .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+  .sort(byCodepoint);
 
 if (missingFromHook.length === 0 && missingFromStatic.length === 0) {
   console.log(

@@ -28,6 +28,7 @@
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+import { byCodepoint } from './lib/order.mjs';
 
 const BOUNDARY_MS = 400;
 const QUIET_FPS = 2;
@@ -67,7 +68,7 @@ function pickRun() {
   const runs = readdirSync(root, { withFileTypes: true })
     .filter((e) => e.isDirectory())
     .map((e) => e.name)
-    .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+    .sort(byCodepoint);
   if (!runs.length) throw new Error('qa-film exists but holds no runs');
   return join(root, runs.at(-1));
 }

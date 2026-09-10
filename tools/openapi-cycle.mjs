@@ -29,6 +29,7 @@ import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync } from '
 import { homedir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { byCodepoint } from './lib/order.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const FE_ROOT = resolve(__dirname, '..');
@@ -59,7 +60,7 @@ function resolveJava21() {
     const jdks = join(homedir(), '.jdks');
     const c = readdirSync(jdks)
       .filter((d) => d.startsWith('corretto-21'))
-      .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
+      .sort(byCodepoint)
       .reverse();
     if (c.length) return join(jdks, c[0]);
   } catch {

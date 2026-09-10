@@ -44,6 +44,7 @@ import {
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { flakyList } from './flaky-report.mjs';
+import { byCodepoint } from '../lib/order.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 
@@ -107,7 +108,7 @@ function glob(pattern) {
       }
     };
     walk(root);
-    return out.sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+    return out.sort(byCodepoint);
   }
   const dir = dirname(norm);
   const filePattern = re(norm);
@@ -115,7 +116,7 @@ function glob(pattern) {
   return readdirSync(dir)
     .filter((f) => filePattern.test(f))
     .map((f) => join(dir, f))
-    .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+    .sort(byCodepoint);
 }
 const r2 = (x) => Math.round(x * 100) / 100;
 const r4 = (x) => Math.round(x * 10000) / 10000;

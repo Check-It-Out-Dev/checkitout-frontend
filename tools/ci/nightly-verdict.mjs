@@ -66,8 +66,15 @@ function harvest() {
       continue;
     }
     const name = f.replace(/\\/g, '/');
-    // Playwright merged report, or our own summary.json shape
-    const stats = d.stats || (d.tests && d.tests.total !== undefined ? null : null);
+    // Test counts come from Playwright's merged report and from nowhere else.
+    //
+    // This used to read `d.stats || (d.tests && d.tests.total !== undefined ? null : null)`, whose
+    // ternary yields null on both branches -- so it was `d.stats || null` with a decoration that
+    // read like a second supported shape (javascript:S3923). It cannot become one: the verdict step
+    // downloads EVERY artifact of the run, so a tier's merged.json and the summary.json derived
+    // from it both land here, and counting both would double that tier. Tiers that publish only a
+    // summary are picked up by the mutation/lighthouse/coverage branches below instead.
+    const stats = d.stats;
     if (stats && (stats.expected !== undefined || stats.unexpected !== undefined)) {
       facts.tests = facts.tests || { expected: 0, unexpected: 0, flaky: 0, skipped: 0 };
       facts.tests.expected += stats.expected || 0;
@@ -105,8 +112,23 @@ for (const [job, v] of Object.entries(needs)) {
   if (!ORDER.includes(job) && job !== 'verdict') rows.push({ job, result: v?.result });
 }
 
-const incomplete = cancelled > 0 || needsUnreadable;
+// Silence is not success -- which this file's own header says, and the verdict did not do.
+// The step that feeds this tool downloads artifacts with continue-on-error, so a failed download
+// produced an empty table under the word "green". Same for a needs context that names none of the
+// tiers: that is a wiring error, not a healthy night.
+const nothingReported = rows.length === 0;
+const nothingPublished = files.length === 0;
+const incomplete = cancelled > 0 || needsUnreadable || nothingReported || nothingPublished;
 const verdict = incomplete ? 'incomplete' : failed > 0 ? 'red' : 'green';
+const incompleteBecause = cancelled > 0
+  ? ' A cancelled tier means this run cannot be read as healthy.'
+  : needsUnreadable
+    ? ' The needs context was unreadable, so no tier result could be checked.'
+    : nothingReported
+      ? ' No tier reported a result, so there is nothing to read as healthy.'
+      : nothingPublished
+        ? ' No tier published an artifact, so there is nothing to read as healthy.'
+        : '';
 
 const icon = (r) =>
   ({ success: 'passed', failure: '**failed**', cancelled: '**cancelled**', skipped: 'skipped' }[r] || r || 'unknown');
@@ -114,7 +136,7 @@ const icon = (r) =>
 const lines = [];
 lines.push('### The night');
 lines.push('');
-lines.push(`**Verdict: ${verdict}.**` + (incomplete ? ' A cancelled tier means this run cannot be read as healthy.' : ''));
+lines.push(`**Verdict: ${verdict}.**` + incompleteBecause);
 lines.push('');
 lines.push('| tier | result |');
 lines.push('| --- | --- |');

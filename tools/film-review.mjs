@@ -27,6 +27,7 @@
  */
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+import { byCodepoint } from './lib/order.mjs';
 
 const log = (m) => console.log(`\x1b[36m[review] ${m}\x1b[0m`);
 
@@ -38,7 +39,7 @@ function pickRun() {
   const runs = readdirSync(root, { withFileTypes: true })
     .filter((e) => e.isDirectory())
     .map((e) => e.name)
-    .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+    .sort(byCodepoint);
   if (!runs.length) throw new Error('qa-film holds no runs');
   return join(root, runs.at(-1));
 }

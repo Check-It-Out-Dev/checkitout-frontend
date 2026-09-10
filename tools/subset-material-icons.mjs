@@ -38,6 +38,7 @@ import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { readFileSync, readdirSync, statSync, writeFileSync, existsSync } from 'node:fs';
 import { join, extname } from 'node:path';
+import { byCodepoint } from './lib/order.mjs';
 
 const ROOT = join(import.meta.dirname, '..');
 const SRC = join(ROOT, 'src');
@@ -143,7 +144,7 @@ function scanIconNames() {
       if (t && !t.startsWith('#') && NAME.test(t)) names.add(t);
     }
   }
-  return [...names].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+  return [...names].sort(byCodepoint);
 }
 
 const scanned = scanIconNames();

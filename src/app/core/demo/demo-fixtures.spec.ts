@@ -464,7 +464,7 @@ describe('demo fixtures', () => {
       type?: string;
       downloadUrl?: string;
     }>;
-    expect(docs.map((d) => d.type).sort()).toEqual([
+    expect(docs.map((d) => d.type).sort((a, b) => (a ?? '').localeCompare(b ?? ''))).toEqual([
       'COOKIE_POLICY',
       'PRIVACY_POLICY',
       'TERMS_OF_SERVICE',

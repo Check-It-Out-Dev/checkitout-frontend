@@ -24,6 +24,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { byCodepoint } from './lib/order.mjs';
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const PAIRS_FILE = join(REPO_ROOT, 'e2e-tests/visual-parity/component-pairs.ts');
@@ -131,7 +132,7 @@ const orphanPairs = pairTargets.filter((p) => !sandboxIds.has(p.sandboxTarget));
 const classifiedSandboxIds = new Set(pairTargets.map((p) => p.sandboxTarget));
 const unclassifiedSandboxes = [...sandboxIds]
   .filter((id) => !classifiedSandboxIds.has(id) && !UNCLASSIFIED_OK.has(id))
-  .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+  .sort(byCodepoint);
 
 const ok = orphanPairs.length === 0;
 
