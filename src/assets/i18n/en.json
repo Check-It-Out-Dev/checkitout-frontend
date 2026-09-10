@@ -2045,7 +2045,7 @@
               "d": "provable consent · real erasure"
             },
             "tests": {
-              "t": "10,792",
+              "t": "10,820",
               "d": "unit · integration · E2E"
             },
             "graph": {
@@ -2131,7 +2131,7 @@
             "detail": "131 sandbox fixtures on 2 chromium engines — committed baselines, reviewed as images in the diff"
           },
           "unit": {
-            "count": "1,181",
+            "count": "1,206",
             "name": "Unit specs",
             "detail": "Jest, one suite per component and service — runs last in the gate, --bail"
           }
@@ -3278,7 +3278,7 @@
           "frontend": {
             "kind": "Frontend · Angular 22",
             "owns": "The rewrite, and the test strategy behind it: nine test tiers, fifteen pre-commit gates, a client generated from the contract.",
-            "figure": "1,884 tests · 9 tiers · 15 gates",
+            "figure": "1,912 tests · 9 tiers · 15 gates",
             "answers": "is the test strategy backed by code?",
             "docs": "Layered test architecture"
           },
@@ -3305,8 +3305,8 @@
           "pr": {
             "name": "Every push and pull request",
             "trigger": "pr.yml · ubuntu-latest",
-            "what": "One of two entry points, and it ends in one line rather than nine status checks: eleven static gates, two typechecks, ng build with strictTemplates, 1,181 Jest tests with coverage and the L0 contract proofs, then Sonar's gate on new code. Hermetic: no backend, no browsers, no Docker.",
-            "figure": "147 s · median of the last 6"
+            "what": "One of two entry points, and it ends in one line rather than nine status checks: eleven static gates, two typechecks, ng build with strictTemplates, 1,206 Jest tests with coverage and the L0 contract proofs, then Sonar's gate on new code. Hermetic: no backend, no browsers, no Docker.",
+            "figure": "352 s · median of the last 6"
           },
           "browser": {
             "name": "Browser tiers",
@@ -3345,7 +3345,7 @@
             "figure": "p95 thresholds"
           }
         },
-        "note": "The PR run time was measured on 2026-09-08 with gh run list; the test counts come from docs/testing/measured-counts.json. The backend has its own test pipeline now — unit and integration on every push, the Cucumber tier nightly against the Firebase emulators — and every run publishes to a quality dashboard on GitHub Pages with an Allure report and a flaky list over the last ten runs.",
+        "note": "The PR run time was measured on 2026-09-10 with gh run list; the test counts come from docs/testing/measured-counts.json. The backend has its own test pipeline now — unit and integration on every push, the Cucumber tier nightly against the Firebase emulators — and every run publishes to a quality dashboard on GitHub Pages with an Allure report and a flaky list over the last ten runs.",
         "beWorkflows": "backend workflows",
         "dashboard": "Every run publishes to the quality dashboard: pass rate and its trend, mutation score, security findings, and every test that failed or flaked in the last ten runs."
       },

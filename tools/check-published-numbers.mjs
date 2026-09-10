@@ -24,7 +24,7 @@
  * intent — a test count that nobody has to maintain is a test count nobody can
  * trust.
  */
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { join, dirname, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -32,6 +32,50 @@ const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const COUNTS = join(REPO_ROOT, 'docs', 'testing', 'measured-counts.json');
 
 const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+const write = (p, text) => writeFileSync(join(REPO_ROOT, p), text);
+
+/**
+ * `--fix` writes the measured value into every surface that disagrees.
+ *
+ * Forty-eight figures across a README, a docs index, two locale files and a component is not an
+ * edit anyone performs accurately by hand, and the alternative -- leaving them stale -- is the
+ * failure this gate exists to stop. The gate already knows, for each figure, which file it is in
+ * and which capture group holds it, so it can put the number back where it found the old one.
+ *
+ * It rewrites ONLY the captured digits, never the sentence around them, and it keeps the
+ * separator style it found: "1,884" becomes "1,912" and "1 884" becomes "1 912", because those
+ * two are different languages' typography rather than a formatting accident. A claim the pattern
+ * no longer matches at all is never fixed -- that one means the sentence was reworded and the gate
+ * has stopped guarding anything, which a human has to look at.
+ */
+const FIX = process.argv.includes('--fix');
+const fixes = [];
+
+/**
+ * The measured number, wearing the separators the published one wore.
+ *
+ * Only for numbers. A measurement date is a value too, and stripping its punctuation the way a
+ * thousands separator is stripped turned "2026-09-08" into "20260910" on the first run of this.
+ */
+function likeOriginal(original, measured) {
+  if (!/^[\d,   .]+$/.test(String(measured))) return String(measured);
+  const plain = String(measured).replace(/[^\d.]/g, '');
+  const sep = /(\d)([,\u00a0\u202f ])(\d)/.exec(original);
+  if (!sep) return plain;
+  return plain.replace(/\B(?=(\d{3})+(?!\d))/g, sep[2]);
+}
+
+/**
+ * Replace one capture group in `text`, by index rather than by another search: two figures in one
+ * sentence can be the same digits, and a naive replace would rewrite the wrong one.
+ */
+function replaceGroup(text, pattern, groupIndex, measured) {
+  const withIndices = new RegExp(pattern.source, pattern.flags.includes('d') ? pattern.flags : pattern.flags + 'd');
+  const found = withIndices.exec(text);
+  if (!found || !found.indices || !found.indices[groupIndex]) return null;
+  const [start, end] = found.indices[groupIndex];
+  return text.slice(0, start) + likeOriginal(found[groupIndex], measured) + text.slice(end);
+}
 
 let m;
 try {
@@ -89,6 +133,17 @@ function claim(file, label, pattern, expected) {
   want.forEach((w, i) => {
     const got = found[i + 1];
     if (!eq(got, w)) {
+      if (FIX) {
+        const rewritten = replaceGroup(read(file), pattern, i + 1, w);
+        if (rewritten != null) {
+          write(file, rewritten);
+          fixes.push(`${file} · ${label}${want.length > 1 ? ` [${i + 1}]` : ''}: ${got} -> ${w}`);
+          // Still a checked figure: G15 asserts checked + failures + 1, and a fixed claim that
+          // counted as neither would make this gate rewrite its own total to a smaller number.
+          checked.push(`${file} · ${label}`);
+          return;
+        }
+      }
       failures.push({
         file,
         label: `${label}${want.length > 1 ? ` [${i + 1}]` : ''}`,
@@ -119,10 +174,36 @@ function claimJson(file, path, expected) {
     return;
   }
   if (!eq(found[0], expected)) {
+    if (FIX && fixJsonString(file, String(raw), found[0], likeOriginal(found[0], expected))) {
+      fixes.push(`${file} · ${path}: ${found[0].trim()} -> ${expected}`);
+      checked.push(`${file} · ${path}`);
+      return;
+    }
     failures.push({ file, label: path, got: String(raw).trim(), want: expected });
   } else {
     checked.push(`${file} · ${path}`);
   }
+}
+
+/**
+ * Rewrite one number inside one translation string, in the raw file text.
+ *
+ * Through JSON.parse/stringify it would be one line of code and a four-thousand-line diff: these
+ * locale files are hand-formatted and hold every string the application says. So the edit is made
+ * on the text, keyed on the escaped form of the whole value, and it is refused unless that value
+ * occurs EXACTLY once -- two keys sharing a phrase would otherwise have the wrong one rewritten.
+ */
+function fixJsonString(file, value, oldNumber, newNumber) {
+  // The number pattern is greedy about trailing separators, so "10 792 testow" matches
+  // "10 792 " with the space that belongs to the next word. Replacing that span would delete it:
+  // the first run of this produced "10 820testow". Only the digits are the claim.
+  oldNumber = oldNumber.replace(/[\s,  ]+$/, '');
+  const text = read(file);
+  const encoded = JSON.stringify(value);
+  if (text.split(encoded).length !== 2) return false;
+  const updated = JSON.stringify(value.replace(oldNumber, newNumber));
+  write(file, text.replace(encoded, updated));
+  return true;
 }
 
 /** A date inside a translated sentence — a stale date is a quieter lie than a stale number. */
@@ -131,8 +212,14 @@ function claimJsonDate(file, path, expected) {
   const raw = path.split('.').reduce((o, k) => (o == null ? o : o[k]), doc);
   const found = String(raw ?? '').match(/\d{4}-\d{2}-\d{2}/);
   if (!found) failures.push({ file, label: path, detail: 'no date in the sentence' });
-  else if (found[0] !== expected) failures.push({ file, label: path, got: found[0], want: expected });
-  else checked.push(`${file} · ${path} (date)`);
+  else if (found[0] !== expected) {
+    if (FIX && fixJsonString(file, String(raw), found[0], expected)) {
+      fixes.push(`${file} · ${path}: ${found[0]} -> ${expected}`);
+      checked.push(`${file} · ${path} (date)`);
+    } else {
+      failures.push({ file, label: path, got: found[0], want: expected });
+    }
+  } else checked.push(`${file} · ${path} (date)`);
 }
 
 // ── README.md ───────────────────────────────────────────────────────────────
@@ -176,6 +263,18 @@ claim('README.md', 'roadmap row', /\| ([\d,]+) Jest unit \+ component tests/, je
 claim('README.md', 'sandbox line', /npm run test:sandbox\s+# ([\d,]+) component-sandbox/, t.sandbox);
 claim('README.md', 'perf line', /npm run test:perf\s+# ([\d,]+) experience/, p.perf);
 claim('README.md', 'pyramid suites', /│ {2,}(\d+) suites/, m.jest.suites);
+// Two figures this gate was standing next to without checking. The badge-note total was even
+// written into this file's own pattern as a literal, so it would have reported "the measurement
+// date is gone" the first time the count moved -- a gate that stops guarding and blames the
+// sentence. Found by running --fix and reading the diff: every other total on the page changed
+// and these two did not.
+claim(
+  'README.md',
+  'badge note total',
+  /the test count is static — ([\d,]+) across every tier/,
+  m.total,
+);
+claim('README.md', 'pyramid · L2 component', /never HTTP {2,}│ {2,}([\d,]+) tests/, jest);
 // The docs index repeats one figure; it was the one place G15 did not look, and it was stale.
 claim('docs/README.md', 'docs index Jest', /the ([\d,]+) Jest tests and the gate wall/, jest);
 // The CI table's measured duration — asked of GitHub by measure:counts, kept with its own date.
@@ -235,15 +334,22 @@ for (const [row, key] of [
 // ── The date the page claims its numbers were measured on. A stale date is a
 //    quieter lie than a stale number and outlives it. ───────────────────────
 for (const [label, pattern] of [
-  ['badge note', /the test count is static — 1884 across every tier, measured (\d{4}-\d{2}-\d{2})/],
+  ['badge note', /the test count is static — [\d,]+ across every tier, measured (\d{4}-\d{2}-\d{2})/],
   ['page note', /was measured on \*\*(\d{4}-\d{2}-\d{2})\*\*/],
   ['coverage note', /Measured (\d{4}-\d{2}-\d{2})\. Coverage excludes/],
 ]) {
   const found = read('README.md').match(pattern);
   if (!found) failures.push({ file: 'README.md', label, detail: 'the measurement date is gone' });
-  else if (found[1] !== m.measuredAt)
-    failures.push({ file: 'README.md', label, got: found[1], want: m.measuredAt });
-  else checked.push(`README.md · ${label}`);
+  else if (found[1] !== m.measuredAt) {
+    const rewritten = FIX ? replaceGroup(read('README.md'), pattern, 1, m.measuredAt) : null;
+    if (rewritten != null) {
+      write('README.md', rewritten);
+      fixes.push(`README.md · ${label}: ${found[1]} -> ${m.measuredAt}`);
+      checked.push(`README.md · ${label}`);
+    } else {
+      failures.push({ file: 'README.md', label, got: found[1], want: m.measuredAt });
+    }
+  } else checked.push(`README.md · ${label}`);
 }
 
 // ── The gate table. Each row quotes its gate's headline number, and every one
@@ -305,18 +411,39 @@ claim(
       detail: 'the row no longer states a count',
     });
   } else if (Number(found[1]) !== asserted) {
-    failures.push({
-      file: 'README.md',
-      label: 'G15 · figures this gate checks',
-      got: found[1],
-      want: asserted,
-    });
+    // --fix reaches this row too: it is the one figure that changes whenever a claim is ADDED
+    // rather than whenever the code changes, so leaving it out would make every new claim a
+    // two-step edit and, the second time, an ignored red line.
+    const rewritten = FIX
+      ? replaceGroup(read('README.md'), /disagreeing with the measured one — (\d+) figures/, 1, asserted)
+      : null;
+    if (rewritten != null) {
+      write('README.md', rewritten);
+      fixes.push(`README.md · G15 · figures this gate checks: ${found[1]} -> ${asserted}`);
+      checked.push('README.md · G15 · figures this gate checks');
+    } else {
+      failures.push({
+        file: 'README.md',
+        label: 'G15 · figures this gate checks',
+        got: found[1],
+        want: asserted,
+      });
+    }
   } else {
     checked.push('README.md · G15 · figures this gate checks');
   }
 }
 
 // ── Report ─────────────────────────────────────────────────────────────────
+if (fixes.length) {
+  console.log(`check:published-numbers --fix — rewrote ${fixes.length} figure(s):`);
+  console.log('');
+  for (const f of fixes) console.log(`   ${f}`);
+  console.log('');
+  console.log('Re-run without --fix to confirm, and read the diff: the gate rewrote numbers,');
+  console.log('it did not check whether the sentences around them are still true.');
+  console.log('');
+}
 if (failures.length === 0) {
   console.log(
     `check:published-numbers OK — ${checked.length} published figures match ` +
@@ -335,7 +462,10 @@ for (const f of failures) {
 console.error(`
 Fix:
    npm run measure:counts        # re-ask the runners, if the code changed
-   …then update the surfaces above to the measured values.
+   npm run check:published-numbers -- --fix   # write the measured values into the surfaces
+   …then read the diff. --fix rewrites the digits, never the sentence around them,
+   and never a claim whose pattern stopped matching — that one is a reworded
+   sentence, and it needs a person.
 
 Both halves matter. If the code changed, the surfaces are stale. If the code
 did not, then a published number was typed rather than measured, which is the

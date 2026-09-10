@@ -10,7 +10,7 @@ it is ever a bug. Every tier above that re-proves the same truth at a higher lev
 [![License: MIT](https://img.shields.io/badge/License-MIT-1f6feb.svg)](LICENSE)
 [![Angular](https://img.shields.io/badge/Angular-22-dd0031.svg)](https://angular.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178c6.svg)](https://www.typescriptlang.org/)
-[![Tests](https://img.shields.io/badge/tests-1884-15c213.svg)](#-testing)
+[![Tests](https://img.shields.io/badge/tests-1912-15c213.svg)](#-testing)
 [![Coverage](https://img.shields.io/endpoint?url=https://check-it-out-dev.github.io/checkitout-frontend/badges/coverage.json)](https://check-it-out-dev.github.io/checkitout-frontend/)
 [![Flaky](https://img.shields.io/endpoint?url=https://check-it-out-dev.github.io/checkitout-frontend/badges/flaky.json)](https://check-it-out-dev.github.io/checkitout-frontend/)
 [![Lighthouse](https://img.shields.io/endpoint?url=https://check-it-out-dev.github.io/checkitout-frontend/badges/lighthouse.json)](https://check-it-out-dev.github.io/checkitout-frontend/lighthouse/latest.json)
@@ -23,7 +23,7 @@ it is ever a bug. Every tier above that re-proves the same truth at a higher lev
 [![deploy sandbox](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/deploy-sandbox.yml/badge.svg)](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/deploy-sandbox.yml)
 
 <sub>Two workflow badges, because there are two pipelines: everything else runs inside one of them.
-Only the test count is static — 1884 across every tier, measured 2026-09-08 and gated by G15.
+Only the test count is static — 1912 across every tier, measured 2026-09-10 and gated by G15.
 Coverage, the flaky list, mutation score, security findings and the Lighthouse scores are read live
 from the <a href="https://check-it-out-dev.github.io/checkitout-frontend/">quality dashboard</a>, which every run on <code>main</code> republishes.</sub>
 
@@ -52,11 +52,11 @@ Three claims, and the rest of this page is where you check them:
 | Claim                                                                                                                                                                                                                              | Where to check it                               |
 | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------- |
 | **The backend contract cannot silently drift.** 181 model types and 41 API services are generated from the backend's spec; three separate mechanisms refuse to let hand-written code diverge from them.                            | [The contract pipeline](#the-contract-pipeline) |
-| **1,884 tests across nine tiers, and each proves something the others structurally cannot.** 1181 Jest · 148 BDD scenarios · 222 live-backend integration · 142 visual · 82 experience · counted by the runners, skipped included. | [Testing](#-testing)                            |
+| **1,912 tests across nine tiers, and each proves something the others structurally cannot.** 1206 Jest · 148 BDD scenarios · 222 live-backend integration · 142 visual · 82 experience · counted by the runners, skipped included. | [Testing](#-testing)                            |
 | **Fifteen gates run before any commit lands, and each was born from a specific defect that got through.**                                                                                                                          | [Quality gates](#-quality-gates)                |
 
 > [!NOTE]
-> Every number on this page was measured on **2026-09-08** with a command you can run yourself, and
+> Every number on this page was measured on **2026-09-10** with a command you can run yourself, and
 > `npm run check:published-numbers` fails the build if any of them drifts from the code. Where
 > something is designed but not yet running, it is marked ⬜ and appears under
 > [in progress](#-in-progress). Nothing here is aspirational unless it says so.
@@ -80,7 +80,7 @@ npm run build:demo
 npx http-server dist/check-it-out-fe-greenfield/browser
 ```
 
-That is also enough to run **1,467 of the 1,884 tests**: every Jest test, the fifteen-gate wall, and
+That is also enough to run **1,495 of the 1,912 tests**: every Jest test, the fifteen-gate wall, and
 the sandbox, visual and experience tiers.
 
 **3 · Run the whole platform — a weekend.** From the
@@ -105,12 +105,12 @@ npm run start                            # https://localhost:4201
 <summary><b>Every test command</b></summary>
 
 ```bash
-npm test                  # 1181 Jest unit + component tests          ~20 s
+npm test                  # 1206 Jest unit + component tests          ~20 s
 npm test -- --coverage    # …with coverage, gated by a threshold
 npm run check:full        # the entire fifteen-gate wall, exactly as CI runs it
 npm run test:bdd          # 148 Cucumber scenarios       (needs the stack)
 npm run test:integration  # 222 live-backend cases       (needs the stack)
-npm run test:sandbox      # 61 component-sandbox tests
+npm run test:sandbox      # 64 component-sandbox tests
 npm run test:visual       # 142 byte-stable snapshots over 144 fixtures
 npm run test:parity       # legacy-vs-greenfield pixel diff, 4 device projects
 npm run test:perf         # 82 experience measurements   (serves a real build)
@@ -133,7 +133,7 @@ npm run measure:counts    # re-ask the runners; writes docs/testing/measured-cou
 > durations, and links to the reports themselves. The numbers below are the design; the dashboard is
 > the measurement.
 
-**1,884 tests.** Five layers in the pyramid, four tiers beside it. The point is not the count — it
+**1,912 tests.** Five layers in the pyramid, four tiers beside it. The point is not the count — it
 is that the layers are **connected**: each is built from the artifacts of the one below, so a
 regression cannot pass a lower layer and hide in a higher one. The tiers beside the pyramid are
 there because they answer questions the chain structurally cannot.
@@ -148,9 +148,9 @@ there because they answer questions the chain structurally cannot.
                     │  screens a real user touches                 │  needs the full stack
                 ┌───┴──────────────────────────────────────────────┴───┐
                 │  L2 · COMPONENT                                      │
-                │  UI logic against service interfaces, never HTTP     │  1181 tests
+                │  UI logic against service interfaces, never HTTP     │  1206 tests
             ┌───┴──────────────────────────────────────────────────────┴───┐
-            │  L1 · SERVICE                                                │  135 suites
+            │  L1 · SERVICE                                                │  138 suites
             │  every wrapper's URL, verb, body and return type             │  ~20 s
         ┌───┴──────────────────────────────────────────────────────────────┴───┐
         │  L0 · CONTRACT — compile time, zero runtime cost                     │  18 assertions
@@ -164,7 +164,7 @@ there because they answer questions the chain structurally cannot.
    ▸ SCENARIOS   · multi-actor flows     6 tests ·  3 files · two people, one campaign
    ▸ EXPERIENCE  · perf                 82 tests · 15 files · smooth, readable, honest in motion
 
-   1181 Jest + 703 Playwright = 1,884 tests. Counted by the runners themselves,
+   1206 Jest + 706 Playwright = 1,912 tests. Counted by the runners themselves,
    skipped and fixme included — `npx playwright test <dir> --list` says so.
 ```
 
@@ -189,15 +189,15 @@ spec. [Schemathesis](https://schemathesis.io/) would close it, and it is not ins
 
 ### Coverage
 
-Measured 2026-09-08. Coverage excludes `src/app/api/**` — 271 generated files nobody edits, and
+Measured 2026-09-10. Coverage excludes `src/app/api/**` — 271 generated files nobody edits, and
 counting them would move the number without moving the truth.
 
 |                          |                                                                                                Measured | Gate                            |
 | :----------------------- | ------------------------------------------------------------------------------------------------------: | :------------------------------ |
-| **Lines**                |                                                                               **78.06 %** (5885 / 7539) | fails under 75                  |
-| **Statements**           |                                                                               **76.54 %** (6558 / 8567) | fails under 74                  |
-| **Branches**             |                                                                               **67.98 %** (2264 / 3330) | fails under 66                  |
-| **Functions**            |                                                                               **65.68 %** (1378 / 2098) | fails under 62                  |
+| **Lines**                |                                                                               **78.70 %** (5987 / 7607) | fails under 75                  |
+| **Statements**           |                                                                               **77.25 %** (6676 / 8642) | fails under 74                  |
+| **Branches**             |                                                                               **69.40 %** (2321 / 3344) | fails under 66                  |
+| **Functions**            |                                                                               **66.77 %** (1409 / 2110) | fails under 62                  |
 | **Files in scope**       | **242** — every hand-written file under `src/app`; **80 of them have no test at all** and count as zero | —                               |
 | **Test code : app code** |                                              **0.75 : 1** — 50,639 lines of tests against 67,409 of app | —                               |
 | **Initial bundle**       |                                                                **1.09 MB** raw · **250 kB** transferred | 1250 kB warning / 1500 kB error |
@@ -302,19 +302,19 @@ written for this repository, and each exists because something specific got thro
 | :-- | :------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------- |
 | G1  | `check:no-legacy-ui`                  | Any import from the old template library                                                                                                     | The rewrite's whole point                                                                      |
 | G2  | `check:api-wrappers`                  | Feature code importing the generated client directly                                                                                         | `Observable<any>` leaking through casts                                                        |
-| G3  | `check:i18n-parity`                   | `en.json` and `pl.json` having different key sets — 4656 keys and 52 templates, checked pairwise                                             | A typo'd key shipping as raw text                                                              |
-| G4  | `check:visual-fixture-coverage`       | A sandbox fixture with no visual baseline — 144/144 registered and captured                                                                  | Silent coverage loss when new fixtures land                                                    |
+| G3  | `check:i18n-parity`                   | `en.json` and `pl.json` having different key sets — 4687 keys and 53 templates, checked pairwise                                             | A typo'd key shipping as raw text                                                              |
+| G4  | `check:visual-fixture-coverage`       | A sandbox fixture with no visual baseline — 146/144 registered and captured                                                                  | Silent coverage loss when new fixtures land                                                    |
 | G5  | `check:visual-baseline-freshness`     | Baselines older than the components they claim to show                                                                                       | An editorial sweep touched 27 templates without regenerating baselines                         |
 | G6  | `check:integration-cucumber-citation` | An integration spec that does not cite the backend feature it ports — 67/67 cite theirs                                                      | The tier is a _port_ of the backend corpus, not a parallel one                                 |
 | G7  | `check:bdd-corpus`                    | A backend Cucumber feature that is neither ported nor explicitly waived — 34 accounted for, 26 ported, 8 waived                              | Completeness you can measure beats completeness you assume                                     |
 | G8  | `check:component-pair-sync`           | A component pair pointing at a fixture that no longer exists                                                                                 | Dangling parity pairs passing vacuously                                                        |
-| G9  | `check:contract-coverage`             | A core wrapper that is neither under an L0 type proof nor explicitly waived — 19/31 proven, 12 waived with reasons                           | See above                                                                                      |
+| G9  | `check:contract-coverage`             | A core wrapper that is neither under an L0 type proof nor explicitly waived — 19/32 proven, 13 waived with reasons                           | See above                                                                                      |
 | G10 | `check:icon-subset`                   | An icon used in code but missing from the shipped font subset                                                                                | A missing glyph is invisible in review and obvious in production                               |
 | G11 | `check:i18n-cache-buster`             | A stale translation-bundle hash                                                                                                              | Users served yesterday's copy                                                                  |
 | G12 | `typecheck` + `typecheck:e2e`         | Any type error, app or test                                                                                                                  | Strict everywhere, tests included                                                              |
 | G13 | `build:check`                         | Template type errors — `strictTemplates` only fires in `ng build`                                                                            | `tsc --noEmit` does **not** check templates                                                    |
 | G14 | `jest --bail` + coverage threshold    | A failing test, or coverage sliding below the floor                                                                                          | —                                                                                              |
-| G15 | `check:published-numbers`             | Any number this repo publishes about itself disagreeing with the measured one — 73 figures across the README, both locales and one component | The site said 216 generated models against a directory holding 181, and 949 Jest against 1,141 |
+| G15 | `check:published-numbers`             | Any number this repo publishes about itself disagreeing with the measured one — 75 figures across the README, both locales and one component | The site said 216 generated models against a directory holding 181, and 949 Jest against 1,141 |
 
 The pre-commit hook runs G1–G10 and G12–G15 by name; G11 rides in `check:static`, which CI runs and
 the hook does not — a gap worth knowing about rather than papering over.
@@ -333,29 +333,29 @@ you assemble by hand. Every tier below is now a reusable workflow with no trigge
 dispatchable on its own while you work on it, never firing by itself — and each pipeline ends in one
 line that says whether the answer is yes.
 
-| Pipeline | Trigger | What it calls | Budget |
-| :--- | :--- | :--- | :--- |
-| [`pr.yml`](.github/workflows/pr.yml) | pull request, push to `main` | gate wall · browser tiers (sandbox + MSW, four shards) · Sonar's new-code gate · dependency review | ~10 min |
-| [`nightly.yml`](.github/workflows/nightly.yml) | 02:00 UTC, on demand | browser tiers in full · full stack · Kubernetes · Lighthouse · contract · mutation · security, then one table and one word | as long as it takes |
+| Pipeline                                       | Trigger                      | What it calls                                                                                                              | Budget              |
+| :--------------------------------------------- | :--------------------------- | :------------------------------------------------------------------------------------------------------------------------- | :------------------ |
+| [`pr.yml`](.github/workflows/pr.yml)           | pull request, push to `main` | gate wall · browser tiers (sandbox + MSW, four shards) · Sonar's new-code gate · dependency review                         | ~10 min             |
+| [`nightly.yml`](.github/workflows/nightly.yml) | 02:00 UTC, on demand         | browser tiers in full · full stack · Kubernetes · Lighthouse · contract · mutation · security, then one table and one word | as long as it takes |
 
-| Tier | What runs | Time |
-| :--- | :--- | :--- |
-| [`ci-tests.yml`](.github/workflows/ci-tests.yml) | The same fifteen gates as the pre-commit hook: eleven static gates, two typechecks, `ng build` with strictTemplates, the Jest suite with coverage. **Hermetic** — no backend, no browsers, no Docker. | ~150 s |
-| [`browser-tiers.yml`](.github/workflows/browser-tiers.yml) | Up to nine runners: sandbox and MSW over four shards, the smoothness tier over three (one worker each, because two workers on one machine drop frames in each other's measurements), and the visual tier inside the pinned Playwright image. Blob reports merged into one HTML report, one Allure report and one verdict. The pull-request pipeline takes only the fast half. | 6–20 min |
-| [`nightly-full-stack.yml`](.github/workflows/nightly-full-stack.yml) | Four shards — BDD, integration ×2, scenarios and sandbox — each with its own PostgreSQL 16, Redis 7 and GreenMail, against the published backend image. | 75 min budget |
-| [`k8s-test-execution.yml`](.github/workflows/k8s-test-execution.yml) | A kind cluster on the runner: PostgreSQL, Redis, the backend image on `dev-lite`, the frontend behind nginx. Playwright runs as an **Indexed Job** of four pods, k6-operator as a `TestRun` of two, generating load against the in-cluster services. Metrics remote-written to Grafana Cloud. | ~11 min |
-| [`lighthouse.yml`](.github/workflows/lighthouse.yml) | Lighthouse CI against the demo build served in the job, asserted against `lighthouserc.json` and `budget.json`. `color-contrast` and the accessibility category are **errors**, not warnings. | ~4 min |
-| [`contract-check.yml`](.github/workflows/contract-check.yml) | Boots the backend on the runner, takes the OpenAPI document from it, and compares it with the copy committed here. On a difference it regenerates the TypeScript client and compiles against it, so drift is a build error rather than a runtime surprise. | ~6 min |
-| [`mutation.yml`](.github/workflows/mutation.yml) | Stryker over the five core areas that have specs. Coverage says a line ran; this says whether anything checked the result. Publishes the score for the dashboard to trend. | ~10 min |
-| [`security.yml`](.github/workflows/security.yml) | Semgrep, Checkov, Trivy and an SBOM, plus a ZAP baseline against the live sandbox. Every scanner writes SARIF into code scanning, and one job counts what they all found so the number can be trended. CodeQL is deliberately absent: the organisation runs it through **default setup**, and the two cannot coexist — GitHub refuses SARIF from a workflow while default setup is enabled. | ~6 min |
-| [`sonar.yml`](.github/workflows/sonar.yml) | SonarQube Cloud, fed the same lcov coverage the gate wall measures. | ~4 min |
+| Tier                                                                 | What runs                                                                                                                                                                                                                                                                                                                                                                                   | Time          |
+| :------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :------------ |
+| [`ci-tests.yml`](.github/workflows/ci-tests.yml)                     | The same fifteen gates as the pre-commit hook: eleven static gates, two typechecks, `ng build` with strictTemplates, the Jest suite with coverage. **Hermetic** — no backend, no browsers, no Docker.                                                                                                                                                                                       | ~350 s        |
+| [`browser-tiers.yml`](.github/workflows/browser-tiers.yml)           | Up to nine runners: sandbox and MSW over four shards, the smoothness tier over three (one worker each, because two workers on one machine drop frames in each other's measurements), and the visual tier inside the pinned Playwright image. Blob reports merged into one HTML report, one Allure report and one verdict. The pull-request pipeline takes only the fast half.               | 6–20 min      |
+| [`nightly-full-stack.yml`](.github/workflows/nightly-full-stack.yml) | Four shards — BDD, integration ×2, scenarios and sandbox — each with its own PostgreSQL 16, Redis 7 and GreenMail, against the published backend image.                                                                                                                                                                                                                                     | 75 min budget |
+| [`k8s-test-execution.yml`](.github/workflows/k8s-test-execution.yml) | A kind cluster on the runner: PostgreSQL, Redis, the backend image on `dev-lite`, the frontend behind nginx. Playwright runs as an **Indexed Job** of four pods, k6-operator as a `TestRun` of two, generating load against the in-cluster services. Metrics remote-written to Grafana Cloud.                                                                                               | ~11 min       |
+| [`lighthouse.yml`](.github/workflows/lighthouse.yml)                 | Lighthouse CI against the demo build served in the job, asserted against `lighthouserc.json` and `budget.json`. `color-contrast` and the accessibility category are **errors**, not warnings.                                                                                                                                                                                               | ~4 min        |
+| [`contract-check.yml`](.github/workflows/contract-check.yml)         | Boots the backend on the runner, takes the OpenAPI document from it, and compares it with the copy committed here. On a difference it regenerates the TypeScript client and compiles against it, so drift is a build error rather than a runtime surprise.                                                                                                                                  | ~6 min        |
+| [`mutation.yml`](.github/workflows/mutation.yml)                     | Stryker over the five core areas that have specs. Coverage says a line ran; this says whether anything checked the result. Publishes the score for the dashboard to trend.                                                                                                                                                                                                                  | ~10 min       |
+| [`security.yml`](.github/workflows/security.yml)                     | Semgrep, Checkov, Trivy and an SBOM, plus a ZAP baseline against the live sandbox. Every scanner writes SARIF into code scanning, and one job counts what they all found so the number can be trended. CodeQL is deliberately absent: the organisation runs it through **default setup**, and the two cannot coexist — GitHub refuses SARIF from a workflow while default setup is enabled. | ~6 min        |
+| [`sonar.yml`](.github/workflows/sonar.yml)                           | SonarQube Cloud, fed the same lcov coverage the gate wall measures.                                                                                                                                                                                                                                                                                                                         | ~4 min        |
 
 Outside the two pipelines, because deployment is not a test:
 
-| | Trigger | What runs | Time |
-| :--- | :--- | :--- | :--- |
-| [`deploy-sandbox.yml`](.github/workflows/deploy-sandbox.yml) | push to `main` | Builds the image, then waits for a human in the `sandbox` environment. Rollout keeps the previous tags, gates on health, and rolls back by itself when the gate does not clear. | ~4 min |
-| Demo — [`tools/deploy-demo.mjs`](tools/deploy-demo.mjs) | `npm run deploy:demo -- --build` | Demo build, tar over SSH, atomic directory swap with three rollback copies, CDN purge, the served bundle hash verified on both domains past the cache. | ~3 min |
+|                                                              | Trigger                          | What runs                                                                                                                                                                       | Time   |
+| :----------------------------------------------------------- | :------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :----- |
+| [`deploy-sandbox.yml`](.github/workflows/deploy-sandbox.yml) | push to `main`                   | Builds the image, then waits for a human in the `sandbox` environment. Rollout keeps the previous tags, gates on health, and rolls back by itself when the gate does not clear. | ~4 min |
+| Demo — [`tools/deploy-demo.mjs`](tools/deploy-demo.mjs)      | `npm run deploy:demo -- --build` | Demo build, tar over SSH, atomic directory swap with three rollback copies, CDN purge, the served bundle hash verified on both domains past the cache.                          | ~3 min |
 
 Every run publishes to the [quality dashboard](https://check-it-out-dev.github.io/checkitout-frontend/): pass rate and its trend, **mutation score**,
 **security findings**, the flaky list over the last ten runs, per-tier durations, and the reports
@@ -381,10 +381,10 @@ shipped · 🟡 under way · ⬜ designed, not started.
 | :-- | :------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | ✅  | Contract pipeline, end to end                            | Spec → codegen → wrappers → compile-time proofs → every tier                                                                                                                                                                                                                                                                                                       |
 | ✅  | Fifteen-gate wall, local and in CI                       | Identical locally and on pull requests                                                                                                                                                                                                                                                                                                                             |
-| ✅  | 1181 Jest unit + component tests                         | Coverage measured and gated                                                                                                                                                                                                                                                                                                                                        |
+| ✅  | 1206 Jest unit + component tests                         | Coverage measured and gated                                                                                                                                                                                                                                                                                                                                        |
 | ✅  | 148 BDD scenarios from the backend corpus                | 27 feature files; 26 of 34 backend features ported, 8 waived, gated by G7                                                                                                                                                                                                                                                                                          |
 | ✅  | 222 live-backend integration tests                       | Each citing the feature it ports                                                                                                                                                                                                                                                                                                                                   |
-| ✅  | 142 visual snapshots over 144 fixtures + 41 parity diffs | Coverage gated by G4, freshness by G5                                                                                                                                                                                                                                                                                                                              |
+| ✅  | 142 visual snapshots over 146 fixtures + 41 parity diffs | Coverage gated by G4, freshness by G5                                                                                                                                                                                                                                                                                                                              |
 | ✅  | Experience tier — 82 measurements                        | Nine error classes closed, each swept across all seven journeys                                                                                                                                                                                                                                                                                                    |
 | ✅  | k6 performance gate                                      | Thresholds on the public routes, local and on demand in CI                                                                                                                                                                                                                                                                                                         |
 | ✅  | Live demo, fully mocked                                  | [checkitout.app](https://checkitout.app), with the technical survey prerendered and described for link previews                                                                                                                                                                                                                                                    |
@@ -393,9 +393,9 @@ shipped · 🟡 under way · ⬜ designed, not started.
 | 🟡  | Branch and function coverage                             | 68.0 % and 65.7 %. The floors stop a slide; they do not fix the gap.                                                                                                                                                                                                                                                                                               |
 | 🟡  | Nightly full-stack run on a schedule                     | Runs at 02:00 UTC against the published backend image; the first scheduled run passed all four shards and went red on 16 Firebase-dependent scenarios, because the nightly's backend service has no emulator beside it the way the backend's own tier does                                                                                                         |
 | ✅  | Report aggregation and a flaky list                      | Allure 3 with history on Pages, plus a dashboard listing every test that failed or flaked in the last ten runs. Quarantine remains a policy question, not a tooling one.                                                                                                                                                                                           |
-| ✅  | Two pipelines instead of nine workflows                   | `pr.yml` answers "safe to merge" in about ten minutes; `nightly.yml` answers "is the system healthy" and takes as long as it takes. Every tier is a reusable workflow with no trigger of its own, so nothing fires by itself and each pipeline ends in one line.                                                                                                     |
-| ✅  | Mutation testing in both repositories                     | Stryker over the five frontend core areas that have specs: **72.84 %**, or **83.29 %** on covered code, 486 mutants. PIT over the backend's security, rate-limit and auth services: **43.35 %**, **69.22 %** on the code the unit suite reaches. Both floors are ratchets, and both reports list survivors by file rather than only a score. |
-| ✅  | Quality and security metrics over time                    | The dashboard trends mutation score and the security finding count run by run, beside pass rate, coverage, k6 and Lighthouse. Counted from the scanners' own SARIF, so a tool that runs and finds nothing reads as zero rather than as absence.                                                                                              |
+| ✅  | Two pipelines instead of nine workflows                  | `pr.yml` answers "safe to merge" in about ten minutes; `nightly.yml` answers "is the system healthy" and takes as long as it takes. Every tier is a reusable workflow with no trigger of its own, so nothing fires by itself and each pipeline ends in one line.                                                                                                   |
+| ✅  | Mutation testing in both repositories                    | Stryker over the five frontend core areas that have specs: **72.84 %**, or **83.29 %** on covered code, 486 mutants. PIT over the backend's security, rate-limit and auth services: **43.35 %**, **69.22 %** on the code the unit suite reaches. Both floors are ratchets, and both reports list survivors by file rather than only a score.                       |
+| ✅  | Quality and security metrics over time                   | The dashboard trends mutation score and the security finding count run by run, beside pass rate, coverage, k6 and Lighthouse. Counted from the scanners' own SARIF, so a tool that runs and finds nothing reads as zero rather than as absence.                                                                                                                    |
 | ✅  | Lighthouse CI and web-vitals budgets                     | `lighthouserc.json` and `budget.json` on every push; the scores are the badge above                                                                                                                                                                                                                                                                                |
 | ✅  | Secret scanning, push protection, CodeQL                 | Enabled 2026-09-09 after a credential was found in the backend's test corpus; dependency review fails a pull request that adds a high-severity advisory                                                                                                                                                                                                            |
 | ✅  | Schemathesis against the running backend                 | Property-based fuzzing of the running provider, in the backend repository where it lives. It found the gap on its first run: every secured operation answered 401 while the document declared none — a contract defect, since this repository's client is generated from that document                                                                             |

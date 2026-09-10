@@ -2045,7 +2045,7 @@
               "d": "weryfikowalna zgoda · prawdziwe usuwanie"
             },
             "tests": {
-              "t": "10 792 testów",
+              "t": "10 820 testów",
               "d": "jednostkowe · integracyjne · E2E"
             },
             "graph": {
@@ -2131,7 +2131,7 @@
             "detail": "131 fixture'ów sandboksa na 2 silnikach chromium — baseliny commitowane i przeglądane jako obrazy w diffie"
           },
           "unit": {
-            "count": "1 181",
+            "count": "1 206",
             "name": "Specyfikacje jednostkowe",
             "detail": "Jest, jedna suita na komponent i serwis — działa na końcu bramki, z --bail"
           }
@@ -3278,7 +3278,7 @@
           "frontend": {
             "kind": "Frontend · Angular 22",
             "owns": "Przepisanie aplikacji i strategia testów, która za nim stoi: dziewięć warstw testów, piętnaście bramek pre-commit, klient generowany z kontraktu.",
-            "figure": "1 884 testów · 9 warstw · 15 bramek",
+            "figure": "1 912 testów · 9 warstw · 15 bramek",
             "answers": "czy strategia testów jest poparta kodem?",
             "docs": "Architektura warstw testów"
           },
@@ -3305,8 +3305,8 @@
           "pr": {
             "name": "Każdy push i pull request",
             "trigger": "pr.yml · ubuntu-latest",
-            "what": "Jedno z dwóch wejść, kończy się jedną linią zamiast dziewięcioma statusami: jedenaście bramek statycznych, dwa typechecki, ng build ze strictTemplates, 1181 testów Jest z pokryciem i dowody kontraktu L0, a na końcu bramka Sonara na nowym kodzie. Hermetycznie: bez backendu, bez przeglądarek, bez Dockera.",
-            "figure": "147 s · mediana 6 ostatnich"
+            "what": "Jedno z dwóch wejść, kończy się jedną linią zamiast dziewięcioma statusami: jedenaście bramek statycznych, dwa typechecki, ng build ze strictTemplates, 1206 testów Jest z pokryciem i dowody kontraktu L0, a na końcu bramka Sonara na nowym kodzie. Hermetycznie: bez backendu, bez przeglądarek, bez Dockera.",
+            "figure": "352 s · mediana 6 ostatnich"
           },
           "browser": {
             "name": "Warstwy przeglądarkowe",
@@ -3345,7 +3345,7 @@
             "figure": "progi p95"
           }
         },
-        "note": "Czas przebiegu PR zmierzono 2026-09-08 przez gh run list; liczby testów pochodzą z docs/testing/measured-counts.json. Backend ma dziś własny pipeline testowy — jednostkowe i integracyjne przy każdym pushu, warstwa Cucumber nocą na emulatorach Firebase — a każdy przebieg publikuje dashboard jakości na GitHub Pages z raportem Allure i listą testów niestabilnych z ostatnich dziesięciu przebiegów.",
+        "note": "Czas przebiegu PR zmierzono 2026-09-10 przez gh run list; liczby testów pochodzą z docs/testing/measured-counts.json. Backend ma dziś własny pipeline testowy — jednostkowe i integracyjne przy każdym pushu, warstwa Cucumber nocą na emulatorach Firebase — a każdy przebieg publikuje dashboard jakości na GitHub Pages z raportem Allure i listą testów niestabilnych z ostatnich dziesięciu przebiegów.",
         "beWorkflows": "workflow backendu",
         "dashboard": "Każdy przebieg publikuje do dashboardu jakości: pass rate i jego trend, wynik mutacji, znaleziska bezpieczeństwa oraz każdy test, który padł lub był niestabilny w ostatnich dziesięciu przebiegach."
       },
