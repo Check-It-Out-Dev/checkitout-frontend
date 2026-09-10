@@ -12,8 +12,12 @@ on:
   workflow_dispatch:
 
 
+# The group is keyed by the CALLING pipeline as well as the ref. Without `github.workflow` --
+# which under workflow_call is the caller's name -- a push to main starts `pr`, `pr` calls this
+# tier, and it cancels the copy the night is already running. That happened on the first night:
+# three shards cancelled mid-run and the verdict correctly called the night incomplete.
 concurrency:
-  group: nightly-full-stack-${{ github.ref }}
+  group: nightly-full-stack-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
