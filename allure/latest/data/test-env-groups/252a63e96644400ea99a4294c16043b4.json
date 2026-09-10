@@ -1,1 +1,1 @@
-{"id":"252a63e96644400ea99a4294c16043b4","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:29:7","name":"Invalid NIP format returns 400","status":"passed","testResultsByEnv":{"default":"282b44b86d6da156e2cd5c2f8cca3a5f"}}
+{"id":"252a63e96644400ea99a4294c16043b4","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:29:7","name":"Invalid NIP format returns 400","status":"passed","testResultsByEnv":{"default":"ccb4daadc2294c7fe1422beb3dbcaec7"}}

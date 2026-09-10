@@ -1,1 +1,1 @@
-{"id":"3b863a6163364ed11111a42a332bd0c5","fullName":"e2e-tests/bdd/features/magic-link-happy-path.feature.spec.js:19:7","name":"Password reset succeeds with valid oobCode","status":"passed","testResultsByEnv":{"default":"44ffd456991872a0a645eca58420d1a1"}}
+{"id":"3b863a6163364ed11111a42a332bd0c5","fullName":"e2e-tests/bdd/features/magic-link-happy-path.feature.spec.js:19:7","name":"Password reset succeeds with valid oobCode","status":"passed","testResultsByEnv":{"default":"f1b6245cf75583df88484cacdc477c39"}}

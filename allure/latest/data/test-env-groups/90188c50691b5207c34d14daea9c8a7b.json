@@ -1,1 +1,1 @@
-{"id":"90188c50691b5207c34d14daea9c8a7b","fullName":"integration/auth/step-up.spec.ts:81:7","name":"COMPANY non-email PATCH succeeds without step-up token","status":"passed","testResultsByEnv":{"default":"1fbc101af06a90b50e9fc449774ac439"}}
+{"id":"90188c50691b5207c34d14daea9c8a7b","fullName":"integration/auth/step-up.spec.ts:81:7","name":"COMPANY non-email PATCH succeeds without step-up token","status":"passed","testResultsByEnv":{"default":"3c700fb841eeb193c2a847a923132733"}}

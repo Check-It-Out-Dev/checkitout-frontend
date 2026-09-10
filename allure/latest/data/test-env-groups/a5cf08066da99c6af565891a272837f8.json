@@ -1,1 +1,1 @@
-{"id":"a5cf08066da99c6af565891a272837f8","fullName":"integration/flows/profile-validation.spec.ts:307:7","name":"@preferences gdprMarketingConsent boolean returns 200","status":"passed","testResultsByEnv":{"default":"345bf29b2cd7b8bb92cce109a2c9fdfe"}}
+{"id":"a5cf08066da99c6af565891a272837f8","fullName":"integration/flows/profile-validation.spec.ts:307:7","name":"@preferences gdprMarketingConsent boolean returns 200","status":"passed","testResultsByEnv":{"default":"4f609f16d84979228a5c4119dc0aefc8"}}
