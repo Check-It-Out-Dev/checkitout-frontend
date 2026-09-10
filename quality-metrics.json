@@ -2,14 +2,14 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 46,
-    "id": 34495140840,
-    "sha": "3cead68",
+    "number": 51,
+    "id": 34496836606,
+    "sha": "135a9a2",
     "branch": "main",
     "workflow": "browser-tiers",
-    "startedAt": "2026-09-10T15:21:49Z",
-    "durationSec": 442,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34495140840",
+    "startedAt": "2026-09-10T15:37:20Z",
+    "durationSec": 188,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34496836606",
     "status": "green"
   },
   "tests": {
@@ -20,8 +20,8 @@
     "skipped": 24,
     "passRate": 1,
     "flakyRate": 0,
-    "durationMeanSec": 0.16,
-    "durationP95Sec": 0.92,
+    "durationMeanSec": 0.14,
+    "durationP95Sec": 0.89,
     "tiers": {
       "jest": {
         "total": 1184,
@@ -29,7 +29,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
-        "durationSec": 78
+        "durationSec": 65
       },
       "msw": {
         "total": 2,
@@ -45,7 +45,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 22,
-        "durationSec": 127
+        "durationSec": 119
       }
     }
   },
@@ -71,11 +71,11 @@
       "runsFailed": 0,
       "lastSeen": 61,
       "history": [
-        "pass",
         "flaky",
         "pass",
         "absent",
         "pass",
+        "absent",
         "absent",
         "absent",
         "absent",
@@ -85,7 +85,7 @@
     }
   ],
   "reports": {
-    "playwright": "playwright/46/",
-    "allure": "allure/46/"
+    "playwright": "playwright/51/",
+    "allure": "allure/51/"
   }
 }
