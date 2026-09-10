@@ -1,0 +1,1 @@
+{"id":"c693b8b4b96a4c50f272832211d65a3d","fullName":"integration/flows/magic-link-errors.spec.ts:105:7","name":"@tier-1 verify-reset-code rejects blank oobCode (400)","status":"passed","testResultsByEnv":{"default":"25008ab9bb984ab999e63f05ccf6402b"}}

@@ -1,0 +1,1 @@
+{"id":"d0b819f63e95a1af9179f80decb9a3c7","fullName":"integration/flows/payments-off.spec.ts:61:7","name":"@public-config GET /public-config returns paymentsEnabled anonymously with no-store","status":"passed","testResultsByEnv":{"default":"1d8c6ab27fca218edb39239002de768f"}}
