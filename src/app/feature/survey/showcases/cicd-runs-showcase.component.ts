@@ -66,6 +66,10 @@ import { BE_REPO_URL, FE_REPO_URL, feFileUrl } from '../ui/survey-links';
         }
       </div>
 
+      <p class="mt-4 text-xs leading-relaxed text-slate2" data-testid="cicd-dashboard">
+        {{ 'landing.survey.pipelines.dashboard' | transloco }}
+      </p>
+
       <p class="mt-3 text-[11px] leading-relaxed text-slate2" data-testid="cicd-note">
         {{ 'landing.survey.pipelines.note' | transloco }}
       </p>
@@ -76,7 +80,17 @@ import { BE_REPO_URL, FE_REPO_URL, feFileUrl } from '../ui/survey-links';
           rel="noopener"
           class="inline-flex items-center gap-1.5 rounded-full border border-beige bg-white px-3 py-1 text-xs font-medium text-ink transition hover:border-coral-300 hover:text-coral-600"
         >
-          ci-tests.yml
+          pr.yml
+          <mat-icon class="!h-3.5 !w-3.5 !text-sm">open_in_new</mat-icon>
+        </a>
+        <a
+          [href]="dashboardUrl"
+          target="_blank"
+          rel="noopener"
+          class="inline-flex items-center gap-1.5 rounded-full border border-beige bg-white px-3 py-1 text-xs font-medium text-ink transition hover:border-coral-300 hover:text-coral-600"
+          data-testid="cicd-dashboard-link"
+        >
+          quality dashboard
           <mat-icon class="!h-3.5 !w-3.5 !text-sm">open_in_new</mat-icon>
         </a>
         <a
@@ -102,10 +116,12 @@ import { BE_REPO_URL, FE_REPO_URL, feFileUrl } from '../ui/survey-links';
   `,
 })
 export class CicdRunsShowcaseComponent {
-  readonly ciWorkflow = feFileUrl('.github/workflows/ci-tests.yml');
+  readonly ciWorkflow = feFileUrl('.github/workflows/pr.yml');
   readonly nightlyWorkflow = feFileUrl('.github/workflows/nightly-full-stack.yml');
   readonly beWorkflows = `${BE_REPO_URL}/tree/main/.github/workflows`;
   readonly feRepo = FE_REPO_URL;
+  /** The dashboard every run republishes: the measurement behind every figure in this card. */
+  readonly dashboardUrl = 'https://check-it-out-dev.github.io/checkitout-frontend/';
 
   /** One row per pipeline; the figure strings live in i18n and are gated by G15. */
   readonly runs = [
@@ -113,6 +129,7 @@ export class CicdRunsShowcaseComponent {
     { k: 'browser', icon: 'grid_view', badge: 'bg-coral-500 text-white' },
     { k: 'kubernetes', icon: 'hub', badge: 'bg-navy-900 text-white' },
     { k: 'nightly', icon: 'dark_mode', badge: 'bg-navy-900 text-white' },
+    { k: 'mutation', icon: 'science', badge: 'border border-beige bg-cream text-ink' },
     { k: 'release', icon: 'rocket_launch', badge: 'bg-ink text-white' },
     { k: 'perf', icon: 'speed', badge: 'border border-beige bg-cream text-ink' },
   ] as const;

@@ -3300,12 +3300,12 @@
       },
       "pipelines": {
         "title": "Co uruchamia się na każdy push, co nocą, a co przy wydaniu",
-        "subtitle": "Sześć pipeline’ów, które istnieją dziś w repozytoriach — z czasami zmierzonymi, nie zadeklarowanymi.",
+        "subtitle": "Dwa pipeline'y i warstwy, które wywołują — z czasami zmierzonymi, nie zadeklarowanymi.",
         "runs": {
           "pr": {
             "name": "Każdy push i pull request",
-            "trigger": "ci-tests.yml · ubuntu-latest",
-            "what": "Jedenaście bramek statycznych, dwa typechecki, ng build ze strictTemplates, 1 181 testów Jest z pokryciem i asercje kontraktu L0 w czasie kompilacji. Hermetyczny z założenia: bez backendu, przeglądarek i Dockera, więc PR z forka nigdy nie dotyka własnej infrastruktury.",
+            "trigger": "pr.yml · ubuntu-latest",
+            "what": "Jedno z dwóch wejść, kończy się jedną linią zamiast dziewięcioma statusami: jedenaście bramek statycznych, dwa typechecki, ng build ze strictTemplates, 1181 testów Jest z pokryciem i dowody kontraktu L0, a na końcu bramka Sonara na nowym kodzie. Hermetycznie: bez backendu, bez przeglądarek, bez Dockera.",
             "figure": "147 s · mediana 6 ostatnich"
           },
           "browser": {
@@ -3322,14 +3322,20 @@
           },
           "nightly": {
             "name": "Nocny bieg pełnego stosu",
-            "trigger": "nightly-full-stack.yml · 02:00 UTC · 4 shardy",
-            "what": "Cztery shardy — BDD, integracja ×2, scenariusze + sandbox — każdy z własnym PostgreSQL 16, Redis 7 i GreenMail; raporty blob scalane w jeden HTML z liczbą przejść, porażek i testów flaky. Napisany, uruchamiany na żądanie: harmonogram włączymy, gdy obrazy backendu przejdą w CI — czerwony cron, którego nikt nie widział zielonym, jest gorszy niż brak crona.",
+            "trigger": "nightly.yml · 02:00 UTC · siedem warstw",
+            "what": "Drugie wejście: pełny zestaw przeglądarkowy, przeniesiony korpus Cucumbera przeciwko prawdziwemu obrazowi backendu na czterech shardach, klaster kind, Lighthouse, kontrakt, mutacje i bezpieczeństwo — a potem jedna tabela i jedno słowo. Anulowana warstwa czyta się jako niekompletna, nigdy jako zielona.",
             "figure": "75 min budżetu"
+          },
+          "mutation": {
+            "name": "Mutacje",
+            "trigger": "Stryker na froncie · PIT na backendzie",
+            "what": "Pokrycie mówi, że linia się wykonała; to mówi, czy cokolwiek sprawdziło wynik. Kod jest zmieniany celowo, a wynik to udział tych zmian, które testy zauważyły — raportowany dwa razy, dla całego zakresu i dla kodu, do którego testy faktycznie sięgają, bo różnica między nimi oddziela brakujący test od testu, który niczego nie sprawdza.",
+            "figure": "72,8 % · 83,3 % pokrytego"
           },
           "release": {
             "name": "Wydanie",
             "trigger": "backend: 11 workflow · demo: deploy-demo.mjs",
-            "what": "Backend: konfiguracja walidowana w trybie strict → Maven i obraz Dockera do GHCR → kopia zapasowa przed wdrożeniem → deploy-and-secure (skrypty bramkowane sha256, niezmienne) → reload-and-validate; rollback wielokrotnego użytku istnieje, jego podpięcie jest w toku. Demo: build, tar po SSH, atomowa podmiana katalogu, trzy kopie do wycofania, weryfikacja hasha na obu domenach.",
+            "what": "Backend: konfiguracja walidowana w trybie strict → Maven i obraz Dockera do GHCR → kopia zapasowa przed wdrożeniem → deploy-and-secure (skrypty bramkowane sha256, niezmienne) → reload-and-validate; rollback wielokrotnego użytku przywraca kopię sprzed wdrożenia, restartuje usługę i ponownie sprawdza zdrowie, a uruchamia się sam, gdy kopia się powiodła, a późniejszy etap nie. Demo: build, tar po SSH, atomowa podmiana katalogu, trzy kopie do wycofania, weryfikacja hasha na obu domenach.",
             "figure": "atomowa podmiana"
           },
           "perf": {
@@ -3340,7 +3346,8 @@
           }
         },
         "note": "Czas przebiegu PR zmierzono 2026-09-08 przez gh run list; liczby testów pochodzą z docs/testing/measured-counts.json. Backend ma dziś własny pipeline testowy — jednostkowe i integracyjne przy każdym pushu, warstwa Cucumber nocą na emulatorach Firebase — a każdy przebieg publikuje dashboard jakości na GitHub Pages z raportem Allure i listą testów niestabilnych z ostatnich dziesięciu przebiegów.",
-        "beWorkflows": "workflow backendu"
+        "beWorkflows": "workflow backendu",
+        "dashboard": "Każdy przebieg publikuje do dashboardu jakości: pass rate i jego trend, wynik mutacji, znaleziska bezpieczeństwa oraz każdy test, który padł lub był niestabilny w ostatnich dziesięciu przebiegach."
       },
       "roadmap": {
         "tag": "W toku",

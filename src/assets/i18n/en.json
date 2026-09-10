@@ -3300,12 +3300,12 @@
       },
       "pipelines": {
         "title": "What runs on every push, what at night, and what on release",
-        "subtitle": "Six pipelines that exist in the repositories today — with durations measured, not declared.",
+        "subtitle": "Two pipelines and the tiers they call — with durations measured, not declared.",
         "runs": {
           "pr": {
             "name": "Every push and pull request",
-            "trigger": "ci-tests.yml · ubuntu-latest",
-            "what": "Eleven static gates, two typechecks, ng build with strictTemplates, 1,181 Jest tests with coverage and the L0 contract proofs. Hermetic: no backend, no browsers, no Docker.",
+            "trigger": "pr.yml · ubuntu-latest",
+            "what": "One of two entry points, and it ends in one line rather than nine status checks: eleven static gates, two typechecks, ng build with strictTemplates, 1,181 Jest tests with coverage and the L0 contract proofs, then Sonar's gate on new code. Hermetic: no backend, no browsers, no Docker.",
             "figure": "147 s · median of the last 6"
           },
           "browser": {
@@ -3322,14 +3322,20 @@
           },
           "nightly": {
             "name": "Nightly full-stack run",
-            "trigger": "nightly-full-stack.yml · 02:00 UTC · 4 shards",
-            "what": "Four shards — BDD, integration ×2, scenarios + sandbox — each with its own PostgreSQL 16, Redis 7 and GreenMail; blob reports merged into one HTML report with pass, fail and flaky counts. Written, run on demand: the schedule goes live once the backend images have run in CI — a red cron nobody has seen green is worse than no cron.",
+            "trigger": "nightly.yml · 02:00 UTC · seven tiers",
+            "what": "The other entry point: the full browser set, the ported Cucumber corpus against the real backend image on four shards, the kind cluster, Lighthouse, the contract, mutation and security — then one table and one word. A cancelled tier reads as incomplete, never as green.",
             "figure": "75 min budget"
+          },
+          "mutation": {
+            "name": "Mutation",
+            "trigger": "Stryker on the frontend · PIT on the backend",
+            "what": "Coverage says a line ran; this says whether anything checked the result. The code is changed on purpose and the score is the share of those changes the tests noticed — reported twice, over everything in scope and over the code the tests actually reach, because the gap between them separates a missing test from a test that asserts nothing.",
+            "figure": "72.8 % · 83.3 % covered"
           },
           "release": {
             "name": "Release",
             "trigger": "backend: 11 workflows · demo: deploy-demo.mjs",
-            "what": "Backend: configuration validated in strict mode → Maven and a Docker image to GHCR → pre-deployment backup → deploy-and-secure (sha256-gated, immutable scripts) → reload-and-validate; a reusable rollback exists and its wiring is in progress. Demo: build, tar over SSH, atomic directory swap, three rollback copies, hash verification on both domains.",
+            "what": "Backend: configuration validated in strict mode → Maven and a Docker image to GHCR → pre-deployment backup → deploy-and-secure (sha256-gated, immutable scripts) → reload-and-validate; a reusable rollback restores the pre-deployment backup, restarts the unit and re-checks health, and fires by itself when the backup succeeded and a later stage did not. Demo: build, tar over SSH, atomic directory swap, three rollback copies, hash verification on both domains.",
             "figure": "atomic swap"
           },
           "perf": {
@@ -3340,7 +3346,8 @@
           }
         },
         "note": "The PR run time was measured on 2026-09-08 with gh run list; the test counts come from docs/testing/measured-counts.json. The backend has its own test pipeline now — unit and integration on every push, the Cucumber tier nightly against the Firebase emulators — and every run publishes to a quality dashboard on GitHub Pages with an Allure report and a flaky list over the last ten runs.",
-        "beWorkflows": "backend workflows"
+        "beWorkflows": "backend workflows",
+        "dashboard": "Every run publishes to the quality dashboard: pass rate and its trend, mutation score, security findings, and every test that failed or flaked in the last ten runs."
       },
       "roadmap": {
         "tag": "In progress",
