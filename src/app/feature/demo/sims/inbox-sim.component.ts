@@ -5,6 +5,7 @@ import { WorldSimShellComponent } from './world-sim-shell.component';
 import { DEMO_STEP_UP_KEY, markCompanyMailVerified } from '../../../core/demo/demo-fixtures';
 import { SandboxDirectorService } from '../../../core/demo/sandbox-director.service';
 import { ACCOUNT_ACTIVATED, announce } from '../../../core/cross-tab';
+import { sixDigitDemoCode } from '../../../core/demo/demo-code';
 
 /**
  * Inbox simulator — "the user's mailbox". Shows one branded CheckItOut
@@ -122,7 +123,7 @@ export class InboxSimComponent implements OnInit {
     // the fixture and the mail always agree.
     let code = sessionStorage.getItem(DEMO_STEP_UP_KEY);
     if (!code) {
-      code = String(Math.floor(100000 + Math.random() * 900000));
+      code = sixDigitDemoCode();
       sessionStorage.setItem(DEMO_STEP_UP_KEY, code);
     }
     this.stepUpCode.set(code);

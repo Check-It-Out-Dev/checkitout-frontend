@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/c
 import { MatIconModule } from '@angular/material/icon';
 import { TranslocoPipe } from '@ngneat/transloco';
 import { WorldSimShellComponent } from './world-sim-shell.component';
+import { sixDigitDemoCode } from '../../../core/demo/demo-code';
 
 /**
  * Phone TOTP simulator — "the admin's phone". A phone frame with an
@@ -143,7 +144,7 @@ export class PhoneTotpSimComponent {
   generate(): void {
     // Deterministic-enough demo codes; the second one is the good one.
     this.attempt.set(Math.min(this.attempt() + 1, 2));
-    this.code.set(String(Math.floor(100000 + Math.random() * 900000)));
+    this.code.set(sixDigitDemoCode());
     sessionStorage.setItem(
       TOTP_KEY,
       JSON.stringify({ attempt: this.attempt(), code: this.code() } satisfies DemoTotpState),
