@@ -4,7 +4,7 @@ import type { PageNotificationDtoOut } from '../../../src/app/api/model/page-not
 import type { PartnershipOpportunityDtoOut } from '../../../src/app/api/model/partnership-opportunity-dto-out';
 import type { UserDtoOut } from '../../../src/app/api/model/user-dto-out';
 import { BE_URL, GREENFIELD_URL, seedSession } from '../_actor';
-import { seedInstagramConnection } from '../_helpers';
+import { activateAccount, seedInstagramConnection } from '../_helpers';
 import { clearInbox, flushPendingEmails, listInbox } from '../../_framework/test-email';
 
 /** Shape of `/notifications/unread/count` — not in the generated client. */
@@ -146,6 +146,9 @@ async function seedInfluencerContextWithInstagram(
   const email = UNIQUE_INFLUENCER();
   await seedSession(page, email, 'INFLUENCER');
   await seedInstagramConnection(page, email);
+  // ...and ACTIVE, the second of the three requirements saveAsDto checks. Without it the apply
+  // 403s exactly as it does with no Instagram connection at all, and the message is the same.
+  await activateAccount(page, email);
   return { page, context, email };
 }
 

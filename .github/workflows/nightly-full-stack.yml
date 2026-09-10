@@ -233,6 +233,22 @@ jobs:
           ensure e2e.influencer@test.com INFLUENCER E2E_INFLUENCER_001
           ensure e2e.admin@test.com ADMIN E2E_ADMIN_001
 
+          # A user the seed did not create has no COOKIE_POLICY consent record, and
+          # TokenExchangeService.verifyCookiePolicyConsent blocks sign-in with 451 before it looks at
+          # anything else -- so a freshly ensured actor gets "Please accept the cookie policy before
+          # signing in", not a 401, and it looks nothing like the missing-user failure above.
+          # The backend has carried an endpoint for exactly this since the consent module landed
+          # ("Used by E2E login helpers so exchange-token doesn't return 451"); nothing called it.
+          # Idempotent: it answers seeded=false when the record is already there.
+          consent() {
+            code=$(curl -sS -o /tmp/consent.json -w '%{http_code}' -X POST http://127.0.0.1:8080/api/test/legal/seed-cookie-consent -H 'Content-Type: application/json' -d "$(printf '{"email":"%s"}' "$1")" || echo 000)
+            echo "seed-cookie-consent $1 -> HTTP $code $(cat /tmp/consent.json 2>/dev/null | head -c 120)"
+            [ "$code" = "200" ] || echo "::warning::seed-cookie-consent for $1 answered $code; exchange-token will return 451"
+          }
+          consent e2e.company@test.com
+          consent e2e.influencer@test.com
+          consent e2e.admin@test.com
+
       # The 2FA scenarios need the suite and the application to agree on one secret. Rather than read
       # one back and decrypt it -- which is what needs Cloud KMS and a service account -- the run
       # provisions a secret it already knows, through the backend's own endpoint, so the application

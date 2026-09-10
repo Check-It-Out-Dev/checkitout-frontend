@@ -77,6 +77,26 @@ export async function seedTargetInNewContext(
  * circuits that blocker with a deterministic CONNECTED row. Call this AFTER
  * `seedSession` for any INFLUENCER context that needs to actually apply.
  */
+/**
+ * Force a user's accountStatus to ACTIVE (DB + cache), by email.
+ *
+ * A mock-session user is created IN_VALIDATION, and three things gate POST /applied-opportunity:
+ * a social connection, an ACTIVE account, and the INFLUENCER role
+ * (AppliedOpportunityService.saveAsDto). Seeding Instagram alone therefore still 403s with
+ * "AppliedOpportunity (missing requirements)" -- which names none of the three, so the log line
+ * that says which one is missing is the only way to tell them apart.
+ */
+export async function activateAccount(page: Page, email: string): Promise<void> {
+  const res = await page.request.post(`${BE_URL}/api/test/auth/set-account-status`, {
+    data: { email, status: 'ACTIVE' },
+    ignoreHTTPSErrors: true,
+    failOnStatusCode: false,
+  });
+  if (!res.ok()) {
+    throw new Error(`set-account-status ACTIVE failed: ${res.status()} ${await res.text()}`);
+  }
+}
+
 export async function seedInstagramConnection(page: Page, email: string): Promise<void> {
   const res = await page.request.post(`${BE_URL}/api/test/auth/seed-instagram-connection`, {
     data: { email },

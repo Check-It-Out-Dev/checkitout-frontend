@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { GREENFIELD_URL } from '../_actor';
+import { sessionCookiesShouldBeSecure } from '../../_framework/auth';
 import { hasRealCredentialsFor, realLogin } from '../../_framework/real-login';
 import { ACTORS } from '../../_framework/actor';
 import {
@@ -79,7 +80,10 @@ test.describe('@login-real — real-Firebase happy-path login (T4)', () => {
       // the BE issues in production (see SessionSecurityService).
       const sessionCookie = cookies.find((c) => c.name === 'session');
       expect(sessionCookie?.httpOnly, 'session cookie must be HttpOnly').toBe(true);
-      expect(sessionCookie?.secure, 'session cookie must be Secure').toBe(true);
+      expect(
+        sessionCookie?.secure,
+        `session cookie Secure must match the scheme of ${GREENFIELD_URL}`,
+      ).toBe(sessionCookiesShouldBeSecure(GREENFIELD_URL));
     } finally {
       await context.close();
     }
