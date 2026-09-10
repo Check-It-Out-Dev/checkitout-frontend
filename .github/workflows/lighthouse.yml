@@ -15,7 +15,10 @@ on:
 # three shards cancelled mid-run and the verdict correctly called the night incomplete.
 concurrency:
   group: lighthouse-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  # The caller's event, because under workflow_call that is whose event it is: a superseded
+  # pull-request run is waste, but a superseded push to main loses the record of what main
+  # did, and a night is never worth cancelling.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
