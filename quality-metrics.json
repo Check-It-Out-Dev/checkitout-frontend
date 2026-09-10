@@ -2,26 +2,26 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 36,
-    "id": 34449152391,
-    "sha": "138bc9a",
+    "number": 37,
+    "id": 34451643609,
+    "sha": "5376754",
     "branch": "main",
     "workflow": "browser-tiers",
-    "startedAt": "2026-09-10T07:16:36Z",
-    "durationSec": 1262,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34449152391",
+    "startedAt": "2026-09-10T07:46:21Z",
+    "durationSec": 1151,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34451643609",
     "status": "green"
   },
   "tests": {
     "total": 1761,
-    "passed": 1682,
+    "passed": 1681,
     "failed": 0,
-    "flaky": 0,
+    "flaky": 1,
     "skipped": 79,
-    "passRate": 1,
-    "flakyRate": 0,
+    "passRate": 0.9994,
+    "flakyRate": 0.0006,
     "durationMeanSec": 1.54,
-    "durationP95Sec": 2.14,
+    "durationP95Sec": 2,
     "tiers": {
       "jest": {
         "total": 1183,
@@ -29,7 +29,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
-        "durationSec": 82
+        "durationSec": 73
       },
       "visual": {
         "total": 284,
@@ -37,7 +37,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 1,
-        "durationSec": 436
+        "durationSec": 421
       },
       "visual-parity": {
         "total": 82,
@@ -45,7 +45,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 54,
-        "durationSec": 84
+        "durationSec": 83
       },
       "msw": {
         "total": 2,
@@ -61,15 +61,15 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 22,
-        "durationSec": 123
+        "durationSec": 117
       },
       "perf": {
         "total": 82,
-        "passed": 82,
+        "passed": 81,
         "failed": 0,
-        "flaky": 0,
+        "flaky": 1,
         "skipped": 0,
-        "durationSec": 1953
+        "durationSec": 1982
       }
     }
   },
@@ -91,12 +91,11 @@
       "title": "Demo smoothness › a simulator that never fires holds the step instead of narrating it [perf]",
       "file": "perf/demo-smoothness.spec.ts",
       "window": 10,
-      "runsFlaky": 2,
+      "runsFlaky": 3,
       "runsFailed": 0,
-      "lastSeen": 35,
+      "lastSeen": 37,
       "history": [
         "pass",
-        "pass",
         "absent",
         "pass",
         "absent",
@@ -104,7 +103,8 @@
         "pass",
         "flaky",
         "flaky",
-        "pass"
+        "pass",
+        "flaky"
       ]
     },
     {
@@ -115,11 +115,11 @@
       "runsFailed": 1,
       "lastSeen": 28,
       "history": [
-        "pass",
         "fail",
         "absent",
         "absent",
         "absent",
+        "pass",
         "pass",
         "pass",
         "pass",
@@ -135,11 +135,11 @@
       "runsFailed": 1,
       "lastSeen": 28,
       "history": [
-        "pass",
         "fail",
         "absent",
         "absent",
         "absent",
+        "pass",
         "pass",
         "pass",
         "pass",
@@ -149,7 +149,7 @@
     }
   ],
   "reports": {
-    "playwright": "playwright/36/",
-    "allure": "allure/36/"
+    "playwright": "playwright/37/",
+    "allure": "allure/37/"
   }
 }
