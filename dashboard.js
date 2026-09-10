@@ -28,6 +28,25 @@
     }
     return raw;
   })();
+
+  /**
+   * The URL of one of this report's own files — and the last word on where a fetch may go.
+   *
+   * The allow-list above constrains the INPUT; this checks the OUTPUT, which is the thing that
+   * actually matters. Whatever `?data=` said, the resolved absolute URL must sit on this origin
+   * and under this page's own directory, or the page reads its own directory instead. Two
+   * independent checks on the same question is the point: the first has to be right about every
+   * way to write an absolute URL, and this one only has to compare two origins.
+   */
+  const HERE = new URL('.', location.href);
+  function reportUrl(file) {
+    const wanted = new URL(`${BASE}/${file}`, HERE);
+    if (wanted.origin !== location.origin || !wanted.pathname.startsWith(HERE.pathname)) {
+      console.warn('dashboard: %s resolves off this report — reading ./%s instead', wanted, file);
+      return new URL(file, HERE).href;
+    }
+    return wanted.href;
+  }
   const WINDOW = 30;
   const FLAKY_WINDOW = 10;
 
@@ -446,8 +465,8 @@
   async function main() {
     try {
       const [m, history] = await Promise.all([
-        fetch(`${BASE}/quality-metrics.json`, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`)))),
-        fetch(`${BASE}/metrics/history.jsonl`, { cache: 'no-cache' }).then((r) => (r.ok ? r.text() : '')).then(parseJsonl).catch(() => []),
+        fetch(reportUrl('quality-metrics.json'), { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`)))),
+        fetch(reportUrl('metrics/history.jsonl'), { cache: 'no-cache' }).then((r) => (r.ok ? r.text() : '')).then(parseJsonl).catch(() => []),
       ]);
       const repoUrl = renderMast(m);
       // One site, several workflows, and run numbers that restart per workflow: the trend and the streak
