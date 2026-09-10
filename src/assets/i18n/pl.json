@@ -3386,10 +3386,11 @@
         },
         "ai": {
           "title": "Ewaluacja AI w pętli — teraz i dalej",
-          "present": "Zbudowane: prompty jako kontrakty XML (24 dokumenty, pięć generacji), harness ewaluacji z wyrocznią exec-fp — odpowiedź porównywana z wykonaniem, nie z opinią — drabiny ewaluacji SFT/DPO oraz lokalny model, który odmawia, gdy odpowiedzi nie ma w grafie: abstencja 1,0 na pytaniach spoza grafu.",
-          "next": "Dalej: ewaluacja promptów i modeli jako bramka w CI — zestaw pytań z oczekiwaną odpowiedzią biegnie przy każdej zmianie promptu; oraz pomiar jakości systemu AI na produkcji: odsetek odpowiedzi ugruntowanych w grafie, odsetek abstencji, dryf między wersją grafu a wersją modelu.",
+          "present": "Zbudowane: prompty jako kontrakty XML (24 dokumenty, pięć generacji), harness ewaluacji z wyrocznią exec-fp — odpowiedź porównywana z wykonaniem, nie z opinią — drabiny ewaluacji SFT/DPO oraz lokalny model, który odmawia, gdy odpowiedzi nie ma w grafie: abstencja 1,0 na pytaniach spoza grafu. Ta ewaluacja jest już sama bramką w CI — biegnie przy każdym pushu, bez GPU i bez modelu: tabela czasowników promptu musi zgadzać się z parserem, każda opublikowana liczba musi wyliczyć się ponownie z przebiegu, z którego pochodzi, każdy zapisany krok DSL musi dostać od dzisiejszej gramatyki ten sam werdykt, a każda liczba w tekście jest związana z artefaktem, który za nią stoi.",
+          "next": "Dalej: pomiar jakości systemu AI na produkcji — odsetek odpowiedzi ugruntowanych w grafie, odsetek abstencji, dryf między wersją grafu a wersją modelu; oraz powrót samego modelu do pętli zamiast odtwarzania jego przebiegów, co wymaga opublikowania checkpointu i paczki grafu, a nie większego runnera.",
           "link": "Metoda i narzędzia na GitHubie",
-          "evalLink": "Wyniki ewaluacji transferu promptów"
+          "evalLink": "Wyniki ewaluacji transferu promptów",
+          "gateLink": "Jak działa bramka ewaluacji"
         }
       }
     }

@@ -113,6 +113,15 @@ import { GRAPH_REPO_URL, graphFileUrl } from '../ui/survey-links';
             {{ 'landing.survey.roadmap.ai.evalLink' | transloco }}
             <mat-icon class="!h-3.5 !w-3.5 !text-sm">open_in_new</mat-icon>
           </a>
+          <a
+            [href]="evalGate"
+            target="_blank"
+            rel="noopener"
+            class="inline-flex items-center gap-1.5 text-xs font-medium text-ink hover:text-coral-600"
+          >
+            {{ 'landing.survey.roadmap.ai.gateLink' | transloco }}
+            <mat-icon class="!h-3.5 !w-3.5 !text-sm">open_in_new</mat-icon>
+          </a>
         </div>
       </div>
     </app-survey-card>
@@ -121,6 +130,7 @@ import { GRAPH_REPO_URL, graphFileUrl } from '../ui/survey-links';
 export class RoadmapShowcaseComponent {
   readonly graphRepo = GRAPH_REPO_URL;
   readonly evalDocs = graphFileUrl('applications/CodeMap/docs/06-prompt-transfer-findings.md');
+  readonly evalGate = graphFileUrl('applications/CodeMap/eval/ci/README.md');
 
   /** Status is a fact about the work, not a promise: `progress` has commits behind it, `next` has a design. */
   /**

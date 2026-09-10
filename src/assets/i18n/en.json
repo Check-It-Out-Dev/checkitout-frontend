@@ -3386,10 +3386,11 @@
         },
         "ai": {
           "title": "Evaluating the AI in the loop — now and next",
-          "present": "Built: prompts as XML contracts (24 documents, five generations), an evaluation harness with an exec-fp oracle — the answer compared with execution, not with an opinion — SFT/DPO evaluation ladders and a local model that abstains when the answer is not in the graph: abstention 1.0 on out-of-graph questions.",
-          "next": "Next: prompt and model evaluation as a CI gate — a question set with expected answers runs on every prompt change; and measuring the quality of an AI system in production: the share of answers grounded in the graph, the abstention rate, drift between graph version and model version.",
+          "present": "Built: prompts as XML contracts (24 documents, five generations), an evaluation harness with an exec-fp oracle — the answer compared with execution, not with an opinion — SFT/DPO evaluation ladders and a local model that abstains when the answer is not in the graph: abstention 1.0 on out-of-graph questions. That evaluation is now itself a CI gate, running on every push with no GPU and no model: the prompt's verb table must equal the parser's, every published figure must re-derive from the run it came from, every recorded DSL step must draw the same verdict from today's grammar, and each number in the prose is tied to the artifact behind it.",
+          "next": "Next: measuring the quality of an AI system in production — the share of answers grounded in the graph, the abstention rate, drift between graph version and model version; and putting the model itself back in the loop rather than replaying it, which needs the checkpoint and the graph pack published, not a bigger runner.",
           "link": "The method and the tooling on GitHub",
-          "evalLink": "Prompt-transfer evaluation findings"
+          "evalLink": "Prompt-transfer evaluation findings",
+          "gateLink": "How the evaluation gate works"
         }
       }
     }

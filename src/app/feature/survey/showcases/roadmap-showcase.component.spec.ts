@@ -54,7 +54,7 @@ describe('RoadmapShowcaseComponent', () => {
     expect(why!.compareDocumentPosition(items!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
-  it('the AI evaluation box exits to the graph-theory repository and its evaluation findings', () => {
+  it('the AI evaluation box exits to the graph-theory repository, its findings and the gate itself', () => {
     const hrefs = Array.from(
       el.querySelectorAll<HTMLAnchorElement>('[data-testid="roadmap-ai"] a'),
     ).map((a) => a.href);
@@ -62,5 +62,10 @@ describe('RoadmapShowcaseComponent', () => {
     expect(
       hrefs.some((h) => h.startsWith(`${GRAPH_REPO_URL}/blob/main/applications/CodeMap/docs/`)),
     ).toBe(true);
+    // the claim "that evaluation is now itself a CI gate" is only as good as the reader's
+    // ability to go and look at it
+    expect(hrefs).toContain(
+      `${GRAPH_REPO_URL}/blob/main/applications/CodeMap/eval/ci/README.md`,
+    );
   });
 });
