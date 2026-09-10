@@ -30,9 +30,10 @@ concurrency:
   group: nightly
   cancel-in-progress: false
 
+# The floor. Every tier that publishes to the Pages branch raises its own grant below, and the
+# security tier asks for the code-scanning scope itself, so nothing here holds more than it needs.
 permissions:
   contents: read
-  security-events: write
 
 jobs:
   browser:
@@ -40,22 +41,33 @@ jobs:
     uses: ./.github/workflows/browser-tiers.yml
     with:
       tiers: full
+    # A called workflow may never hold more than the job that calls it, and this one publishes
+    # its results to the Pages branch. Granted here rather than at the top of the file so the
+    # jobs that only read stay read-only.
+    permissions:
+      contents: write
     secrets: inherit
 
   full-stack:
     name: Full stack
     uses: ./.github/workflows/nightly-full-stack.yml
+    permissions:
+      contents: write
     secrets: inherit
 
   kubernetes:
     name: Kubernetes tier
     if: ${{ !inputs.skip_kubernetes }}
     uses: ./.github/workflows/k8s-test-execution.yml
+    permissions:
+      contents: write
     secrets: inherit
 
   lighthouse:
     name: Lighthouse
     uses: ./.github/workflows/lighthouse.yml
+    permissions:
+      contents: write
     secrets: inherit
 
   contract:
@@ -71,6 +83,9 @@ jobs:
   security:
     name: Security
     uses: ./.github/workflows/security.yml
+    permissions:
+      contents: read
+      security-events: write
     secrets: inherit
 
   verdict:

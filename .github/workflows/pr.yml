@@ -29,15 +29,21 @@ concurrency:
   group: pr-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+# The floor. Jobs that publish raise their own; see the two below. CodeQL runs through the
+# organisation's default setup, not from here, so no security-events scope is needed.
 permissions:
   contents: read
   pull-requests: read
-  security-events: write
 
 jobs:
   gates:
     name: Gate wall
     uses: ./.github/workflows/ci-tests.yml
+    # A called workflow may never hold more than the job that calls it, and this one publishes
+    # its results to the Pages branch. Granted here rather than at the top of the file so the
+    # jobs that only read stay read-only.
+    permissions:
+      contents: write
     secrets: inherit
 
   browser:
@@ -45,6 +51,11 @@ jobs:
     uses: ./.github/workflows/browser-tiers.yml
     with:
       tiers: fast
+    # A called workflow may never hold more than the job that calls it, and this one publishes
+    # its results to the Pages branch. Granted here rather than at the top of the file so the
+    # jobs that only read stay read-only.
+    permissions:
+      contents: write
     secrets: inherit
 
   sonar:
@@ -70,6 +81,11 @@ jobs:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    # comment-summary-in-pr writes the finding onto the pull request, which the read-only floor
+    # cannot do -- the option was set and silently unable to work.
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
       - uses: actions/checkout@v5
       - uses: actions/dependency-review-action@v4
