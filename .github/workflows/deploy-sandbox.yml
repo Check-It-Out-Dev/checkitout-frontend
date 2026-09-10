@@ -26,13 +26,25 @@ on:
       - "deploy/k8s/frontend/**"
       - ".github/workflows/deploy-sandbox.yml"
 
-# One deploy at a time, and never cancel one in flight -- a half-finished rollout is worse than a
-# queued one. The group was renamed from `sandbox` on 2026-09-10: three consecutive runs sat in
-# `pending` with zero jobs while nothing held the old group, no run was queued and Actions reported
-# operational. A wedged group is the only explanation left that is also cheap to disprove.
-concurrency:
-  group: sandbox-rollout
-  cancel-in-progress: false
+# The concurrency group is on the DEPLOY JOB, not on the workflow, and that is the whole fix for
+# a failure that looked like a GitHub fault for two days.
+#
+# Three consecutive runs sat in `pending` with zero jobs and no log. Nothing appeared to hold the
+# group, `?status=queued` was empty and Actions reported operational, so it was written up as
+# unexplained and left. It is explained: `?status=WAITING` had two entries. Two runs from the day
+# before were parked on the `sandbox` environment's approval gate, which nobody had answered.
+# A waiting run holds its concurrency group exactly like a running one, and with
+# cancel-in-progress: false every later run queues behind it -- forever, because an approval gate
+# has no timeout. GitHub reports that state as `pending` with an empty job list, which is also
+# what an invalid workflow file produces, and the two are told apart only by that WAITING query.
+#
+# With the group on the job, an unanswered gate no longer stops the image from being built, and a
+# stale deploy no longer blocks a fresh one from being offered for approval. Rollouts still
+# serialise, and one in flight is still never cancelled: a half-finished rollout is worse than a
+# queued one.
+#
+# When a deploy pends with zero jobs, the first thing to look at is:
+#   gh api "repos/<owner>/<repo>/actions/runs?status=waiting"
 
 permissions:
   contents: read
@@ -84,6 +96,11 @@ jobs:
     if: ${{ always() && (needs.image.result == 'success' || needs.image.result == 'skipped') }}
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    # One rollout at a time on the host, and never cancel one in flight. Scoped to this job so an
+    # unanswered approval gate cannot hold the whole workflow -- see the note at the top.
+    concurrency:
+      group: sandbox-rollout
+      cancel-in-progress: false
     environment:
       name: sandbox
       url: ${{ env.SANDBOX_URL }}
