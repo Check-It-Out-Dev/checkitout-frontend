@@ -1,0 +1,69 @@
+# SonarQube Cloud analysis — see the backend repository's copy for why this exists alongside CodeQL.
+#
+# Free for public repositories. Three one-off steps by the owner before it does anything:
+#   1. sign in at sonarcloud.io with GitHub and install the SonarQube Cloud app on Check-It-Out-Dev
+#   2. create the organisation and import this repository (project key in sonar-project.properties)
+#   3. put the generated token in this repository's secrets as SONAR_TOKEN
+# Until then the analysis step skips with a message rather than failing, so this costs nothing today.
+#
+# One thing Sonar can give this repository that nothing else does: a coverage TREND. Branch coverage
+# at 68.0 % and function coverage at 65.7 % are the frontend's one amber roadmap row, and a floor
+# that only says "do not get worse" cannot tell you whether the gap is closing.
+name: sonar
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: sonar-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  analysis:
+    name: SonarQube Cloud
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          # Sonar attributes issues to authors and measures new code against a baseline; a shallow
+          # clone leaves it guessing at both.
+          fetch-depth: 0
+
+      - name: Not configured yet
+        if: env.SONAR_TOKEN == ''
+        run: |
+          {
+            echo "### SonarQube Cloud is not configured"
+            echo
+            echo "No \`SONAR_TOKEN\` secret, so the analysis was skipped rather than failed."
+            echo "It is free for public repositories; see the header of this workflow for the three steps."
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/setup-node@v5
+        if: env.SONAR_TOKEN != ''
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - if: env.SONAR_TOKEN != ''
+        run: npm ci --prefer-offline --no-audit --loglevel=error
+
+      # Sonar reads coverage rather than measuring it. The same command the gate wall runs.
+      - name: Unit tier with coverage
+        if: env.SONAR_TOKEN != ''
+        run: npm test -- --ci --coverage
+
+      - name: Analyse
+        if: env.SONAR_TOKEN != ''
+        uses: SonarSource/sonarqube-scan-action@v7
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

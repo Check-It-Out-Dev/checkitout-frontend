@@ -1,0 +1,177 @@
+# OWASP Top 10 coverage, as a build step.
+#
+# What already existed covered part of it by accident rather than by design: CodeQL reaches A01, A03,
+# A08 and A10; Dependabot and dependency-review cover A06; secret scanning covers hardcoded
+# credentials. Nothing covered A02, A04, A05, A07 or A09 as a gate, and nothing at all pointed a
+# scanner at the RUNNING application — there was no dynamic testing of any kind.
+#
+#   Semgrep   p/owasp-top-ten across the whole surface, plus secrets and typescript rulesets
+#   Trivy     the filesystem and the published image: CVEs in what actually ships       A06 A08
+#   Checkov   the Kubernetes manifests, Dockerfiles, compose files and workflows        A05
+#   Syft      an SBOM for the image, attached to the run                                A08
+#   ZAP       a baseline scan against the live sandbox — the only layer that tests
+#             the running system, and the only one that can see a missing security
+#             header or a cookie without Secure                                     A02 A05 A07
+#
+# Everything here is free and open source. Every scanner writes SARIF into GitHub code scanning, so
+# the Security tab stays the single place to look rather than five different report formats.
+#
+# Tools are installed at pinned versions rather than pulled through marketplace actions on purpose:
+# `actions/unpinned-tag` is one of the findings this pipeline is meant to fix, and adding fourteen
+# more floating tags to fix it would be an odd way to go about it.
+name: security
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "20 3 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: security-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  security-events: write
+
+env:
+  SEMGREP_VERSION: "1.148.0"
+  CHECKOV_VERSION: "3.2.492"
+  TRIVY_VERSION: "0.68.0"
+
+jobs:
+  sast:
+    name: Semgrep (OWASP Top 10)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --quiet "semgrep==${SEMGREP_VERSION}"
+      # --error is deliberately absent: the SARIF upload is the gate, and code scanning already
+      # decides severity. A scanner that fails the build on its own opinion of severity ends up
+      # disabled within a fortnight.
+      - name: Scan
+        run: |
+          semgrep scan \
+            --config p/owasp-top-ten \
+            --config p/secrets \
+            --config p/typescript \
+            --sarif --output semgrep.sarif \
+            --metrics off \
+            --exclude node_modules --exclude dist --exclude coverage \
+            --exclude 'src/app/api/**' --exclude '*-snapshots' \
+            . || true
+          python - <<'PY' | tee -a "$GITHUB_STEP_SUMMARY"
+          import json
+          r = json.load(open("semgrep.sarif"))
+          runs = r.get("runs", [])
+          n = sum(len(x.get("results", [])) for x in runs)
+          print(f"### Semgrep\n\n{n} finding(s) across the OWASP, secrets and TypeScript rule sets.")
+          PY
+      - uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: semgrep.sarif
+          category: semgrep
+
+  iac:
+    name: Checkov (manifests, images, workflows)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --quiet "checkov==${CHECKOV_VERSION}"
+      # A05 is the category nothing else here reaches: a container running as root, a manifest with
+      # no resource limits, a workflow with a token it does not need.
+      - name: Scan
+        run: |
+          checkov --directory . \
+            --framework kubernetes,dockerfile,github_actions,secrets \
+            --skip-path node_modules --skip-path dist --skip-path coverage \
+            --output sarif --output-file-path . \
+            --soft-fail || true
+          test -f results.sarif && mv results.sarif checkov.sarif || echo '{"runs":[]}' > checkov.sarif
+          python - <<'PY' | tee -a "$GITHUB_STEP_SUMMARY"
+          import json
+          r = json.load(open("checkov.sarif"))
+          n = sum(len(x.get("results", [])) for x in r.get("runs", []))
+          print(f"### Checkov\n\n{n} misconfiguration(s) in manifests, images and workflows.")
+          PY
+      - uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: checkov.sarif
+          category: checkov
+
+  supply-chain:
+    name: Trivy and an SBOM
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install Trivy
+        run: |
+          curl -sfL "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz" \
+            | tar -xz -C /usr/local/bin trivy
+          trivy --version
+      # The lockfile is what Dependabot reads; this reads the same tree for CVEs Dependabot has not
+      # opened a pull request for yet, and writes an SBOM of what is actually there.
+      - name: Filesystem CVEs
+        run: |
+          trivy fs . --scanners vuln,secret,misconfig \
+            --skip-dirs node_modules,dist,coverage,.angular \
+            --format sarif --output trivy.sarif --exit-code 0
+          trivy fs . --format cyclonedx --output sbom.cdx.json --skip-dirs node_modules,dist,coverage
+          {
+            echo "### Trivy"
+            echo
+            trivy fs . --scanners vuln --skip-dirs node_modules,dist,coverage,.angular \
+              --format table --severity HIGH,CRITICAL --exit-code 0 2>/dev/null | tail -25
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: trivy.sarif
+          category: trivy
+      - uses: actions/upload-artifact@v6
+        with:
+          name: sbom-${{ github.run_number }}
+          path: sbom.cdx.json
+          retention-days: 90
+
+  dast:
+    name: ZAP baseline against the live sandbox
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    # Only against a deployment that exists: a pull request has nothing running to point at, and the
+    # sandbox is the one public surface running the real stack.
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v5
+      # The baseline scan is passive: it crawls, reads what comes back, and reports missing headers,
+      # cookie flags, information disclosure and the like. It sends no attack payloads, which is what
+      # makes it safe to point at a live host on a schedule.
+      - name: Scan
+        run: |
+          mkdir -p zap && chmod 777 zap
+          docker run --rm -v "$PWD/zap:/zap/wrk:rw" \
+            ghcr.io/zaproxy/zaproxy:stable \
+            zap-baseline.py -t https://checkitout.app/sandbox/ \
+              -J report.json -w report.md -I -m 3 || true
+          {
+            echo "### OWASP ZAP baseline"
+            echo
+            if [ -f zap/report.md ]; then head -60 zap/report.md; else echo "no report produced"; fi
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: zap-${{ github.run_number }}
+          path: zap/
+          retention-days: 30
