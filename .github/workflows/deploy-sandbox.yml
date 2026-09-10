@@ -26,8 +26,12 @@ on:
       - "deploy/k8s/frontend/**"
       - ".github/workflows/deploy-sandbox.yml"
 
+# One deploy at a time, and never cancel one in flight -- a half-finished rollout is worse than a
+# queued one. The group was renamed from `sandbox` on 2026-09-10: three consecutive runs sat in
+# `pending` with zero jobs while nothing held the old group, no run was queued and Actions reported
+# operational. A wedged group is the only explanation left that is also cheap to disprove.
 concurrency:
-  group: sandbox
+  group: sandbox-rollout
   cancel-in-progress: false
 
 permissions:
