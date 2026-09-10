@@ -1,1 +1,1 @@
-{"id":"d6836e588e6e2440e261a6e634595e2e","fullName":"integration/flows/security-advanced-session.spec.ts:374:7","name":"@scenario-8 @token-version old tokens blocked across multiple ban/unban cycles","status":"passed","testResultsByEnv":{"default":"8e88ba4f600123d215c9e106703bd7ac"}}
+{"id":"d6836e588e6e2440e261a6e634595e2e","fullName":"integration/flows/security-advanced-session.spec.ts:374:7","name":"@scenario-8 @token-version old tokens blocked across multiple ban/unban cycles","status":"skipped","testResultsByEnv":{"default":"b737e6bcce4cee505c80b7b3b9759c93"}}

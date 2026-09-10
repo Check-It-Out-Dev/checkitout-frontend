@@ -1,1 +1,1 @@
-{"id":"4976ad0d56aaeaed73b5c5a1ba5a4a22","fullName":"integration/flows/security-advanced-session.spec.ts:321:7","name":"@scenario-7 @session-lifecycle full ban-refresh-unban cycle","status":"passed","testResultsByEnv":{"default":"1a508fb06289758312712e7be773c18b"}}
+{"id":"4976ad0d56aaeaed73b5c5a1ba5a4a22","fullName":"integration/flows/security-advanced-session.spec.ts:321:7","name":"@scenario-7 @session-lifecycle full ban-refresh-unban cycle","status":"skipped","testResultsByEnv":{"default":"998e8be26119e605974b2f005bba8f21"}}

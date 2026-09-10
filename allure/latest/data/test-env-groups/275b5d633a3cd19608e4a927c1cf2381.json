@@ -1,1 +1,1 @@
-{"id":"275b5d633a3cd19608e4a927c1cf2381","fullName":"integration/plan-billing-load.spec.ts:30:7","name":"company1 sees plan/billing status + invoice list","status":"passed","testResultsByEnv":{"default":"cec98cf376b66a155318a43dd335033e"}}
+{"id":"275b5d633a3cd19608e4a927c1cf2381","fullName":"integration/plan-billing-load.spec.ts:30:7","name":"company1 sees plan/billing status + invoice list","status":"skipped","testResultsByEnv":{"default":"a8e73aebcc7ecf8a7f4c75e0829f21d8"}}

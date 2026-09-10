@@ -1,1 +1,1 @@
-{"id":"d1bad691a1b056bfdbaf51e9273bbd05","fullName":"e2e-tests/bdd/features/admin-platform-management.feature.spec.js:75:7","name":"Admin ban affects user sessions in real-time","status":"passed","testResultsByEnv":{"default":"8a97f39328a64a0ab18cf11fc23bd139"}}
+{"id":"d1bad691a1b056bfdbaf51e9273bbd05","fullName":"e2e-tests/bdd/features/admin-platform-management.feature.spec.js:75:7","name":"Admin ban affects user sessions in real-time","status":"skipped","testResultsByEnv":{"default":"b307b44769e1d24181e0e05b0fb49753"}}

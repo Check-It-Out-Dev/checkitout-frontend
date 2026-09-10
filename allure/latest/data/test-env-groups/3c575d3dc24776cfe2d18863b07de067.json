@@ -1,1 +1,1 @@
-{"id":"3c575d3dc24776cfe2d18863b07de067","fullName":"e2e-tests/bdd/features/magic-link-errors.feature.spec.js:54:9","name":"confirm-password-reset rejects invalid input: missing password","status":"passed","testResultsByEnv":{"default":"13bc32251cfde03f1dedaaee1c1caef5"}}
+{"id":"3c575d3dc24776cfe2d18863b07de067","fullName":"e2e-tests/bdd/features/magic-link-errors.feature.spec.js:54:9","name":"confirm-password-reset rejects invalid input: missing password","status":"skipped","testResultsByEnv":{"default":"9c9e145d3640cafc85efbcb468975348"}}

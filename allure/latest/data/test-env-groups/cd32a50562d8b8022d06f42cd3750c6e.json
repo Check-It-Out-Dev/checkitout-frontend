@@ -1,1 +1,1 @@
-{"id":"cd32a50562d8b8022d06f42cd3750c6e","fullName":"integration/flows/profile-validation.spec.ts:301:7","name":"@preferences communicationFrequency invalid enum returns 400","status":"passed","testResultsByEnv":{"default":"48ad567a4825ce4ed50ed9be37cfe888"}}
+{"id":"cd32a50562d8b8022d06f42cd3750c6e","fullName":"integration/flows/profile-validation.spec.ts:301:7","name":"@preferences communicationFrequency invalid enum returns 400","status":"skipped","testResultsByEnv":{"default":"0d5613dc946d652593df3605328324c9"}}

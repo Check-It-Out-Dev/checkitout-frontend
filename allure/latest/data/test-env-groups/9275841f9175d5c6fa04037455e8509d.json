@@ -1,1 +1,1 @@
-{"id":"9275841f9175d5c6fa04037455e8509d","fullName":"integration/flows/admin-geoip-analysis.spec.ts:210:7","name":"@scenario-2 @admin-endpoints admin can hit metrics + lookup + my-location","status":"passed","testResultsByEnv":{"default":"703aa381ff718c9169331baf460de312"}}
+{"id":"9275841f9175d5c6fa04037455e8509d","fullName":"integration/flows/admin-geoip-analysis.spec.ts:210:7","name":"@scenario-2 @admin-endpoints admin can hit metrics + lookup + my-location","status":"skipped","testResultsByEnv":{"default":"53c0af09705e09e504f95c99eeb8c60f"}}

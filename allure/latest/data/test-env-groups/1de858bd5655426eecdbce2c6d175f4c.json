@@ -1,1 +1,1 @@
-{"id":"1de858bd5655426eecdbce2c6d175f4c","fullName":"e2e-tests/bdd/features/admin-user-management.feature.spec.js:6:7","name":"Admin performs all user management operations (super consolidated)","status":"passed","testResultsByEnv":{"default":"fc53e6bce99681886f5d0a3f198b5c85"}}
+{"id":"1de858bd5655426eecdbce2c6d175f4c","fullName":"e2e-tests/bdd/features/admin-user-management.feature.spec.js:6:7","name":"Admin performs all user management operations (super consolidated)","status":"skipped","testResultsByEnv":{"default":"0fca82cfaa00eb05ac7c6e50ae53baf0"}}

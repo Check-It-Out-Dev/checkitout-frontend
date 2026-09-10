@@ -1,1 +1,1 @@
-{"id":"0aa8aeaa219a7bade16ea4422afe1e98","fullName":"e2e-tests/bdd/features/magic-link-errors.feature.spec.js:60:9","name":"confirm-password-reset rejects invalid input: password too short","status":"passed","testResultsByEnv":{"default":"50b6e4e5bbb9461408cb93a5264ff699"}}
+{"id":"0aa8aeaa219a7bade16ea4422afe1e98","fullName":"e2e-tests/bdd/features/magic-link-errors.feature.spec.js:60:9","name":"confirm-password-reset rejects invalid input: password too short","status":"skipped","testResultsByEnv":{"default":"f45ba6c6aad7d54117d9643cc02883d4"}}

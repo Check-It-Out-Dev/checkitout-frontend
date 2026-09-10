@@ -1,1 +1,1 @@
-{"id":"3404723f95c09a839a72c802e177f8d0","fullName":"e2e-tests/bdd/features/admin-platform-management.feature.spec.js:143:7","name":"Admin performs comprehensive user data management operations","status":"passed","testResultsByEnv":{"default":"ef96621f4bf4888bd6ae9d33ce1888bb"}}
+{"id":"3404723f95c09a839a72c802e177f8d0","fullName":"e2e-tests/bdd/features/admin-platform-management.feature.spec.js:143:7","name":"Admin performs comprehensive user data management operations","status":"skipped","testResultsByEnv":{"default":"9afd8daeedf79cabe912fd6a0065c79d"}}

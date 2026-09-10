@@ -1,1 +1,1 @@
-{"id":"4752ac040aaeafc2c3eba688f645b288","fullName":"integration/flows/security-advanced-session.spec.ts:145:7","name":"@scenario-2 @cross-user another users valid cookies are accepted (200, by design)","status":"passed","testResultsByEnv":{"default":"dfe49da7c7f8d97a22f7543e28ed8530"}}
+{"id":"4752ac040aaeafc2c3eba688f645b288","fullName":"integration/flows/security-advanced-session.spec.ts:145:7","name":"@scenario-2 @cross-user another users valid cookies are accepted (200, by design)","status":"skipped","testResultsByEnv":{"default":"4d1a9504855e953d7fce3c67a7e7f4d2"}}

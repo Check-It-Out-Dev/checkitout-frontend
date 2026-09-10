@@ -1,1 +1,1 @@
-{"id":"93da3e6a46727ebe059d8be0e63dead9","fullName":"e2e-tests/bdd/features/magic-link-errors.feature.spec.js:66:9","name":"confirm-password-reset rejects invalid input: password no digits","status":"passed","testResultsByEnv":{"default":"0b13473a78a3a4691031dbf1c4ff2162"}}
+{"id":"93da3e6a46727ebe059d8be0e63dead9","fullName":"e2e-tests/bdd/features/magic-link-errors.feature.spec.js:66:9","name":"confirm-password-reset rejects invalid input: password no digits","status":"skipped","testResultsByEnv":{"default":"895910425b94ba9816da1d31300e93d1"}}

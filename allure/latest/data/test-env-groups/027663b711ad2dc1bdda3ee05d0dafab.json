@@ -1,1 +1,1 @@
-{"id":"027663b711ad2dc1bdda3ee05d0dafab","fullName":"integration/flows/profile-validation.spec.ts:192:7","name":"@profilePicture overlong raw URL (> 2048 chars) returns 400","status":"passed","testResultsByEnv":{"default":"984d473bd2b3bdef949420093fd2583d"}}
+{"id":"027663b711ad2dc1bdda3ee05d0dafab","fullName":"integration/flows/profile-validation.spec.ts:192:7","name":"@profilePicture overlong raw URL (> 2048 chars) returns 400","status":"skipped","testResultsByEnv":{"default":"786950647dc3bc1d8dd33aff54671951"}}

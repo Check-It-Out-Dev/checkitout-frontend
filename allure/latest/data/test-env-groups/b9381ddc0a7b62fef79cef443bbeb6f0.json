@@ -1,1 +1,1 @@
-{"id":"b9381ddc0a7b62fef79cef443bbeb6f0","fullName":"e2e-tests/bdd/features/magic-link-errors.feature.spec.js:20:9","name":"verify-reset-code rejects blank or missing oobCode (blank oobCode)","status":"passed","testResultsByEnv":{"default":"b7c186339c636494f7fd438e5b97b4f6"}}
+{"id":"b9381ddc0a7b62fef79cef443bbeb6f0","fullName":"e2e-tests/bdd/features/magic-link-errors.feature.spec.js:20:9","name":"verify-reset-code rejects blank or missing oobCode (blank oobCode)","status":"skipped","testResultsByEnv":{"default":"cf28cddd8c68cdcd4206a53abad29182"}}

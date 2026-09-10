@@ -1,1 +1,1 @@
-{"id":"b45bdfff62ed3268a778c4752fe34665","fullName":"integration/flows/admin-platform-management.spec.ts:125:7","name":"@scenario-4 @system-monitoring admin can hit ~25 monitoring endpoints","status":"passed","testResultsByEnv":{"default":"ac6ae572d7b0021c216c344273d136f3"}}
+{"id":"b45bdfff62ed3268a778c4752fe34665","fullName":"integration/flows/admin-platform-management.spec.ts:125:7","name":"@scenario-4 @system-monitoring admin can hit ~25 monitoring endpoints","status":"skipped","testResultsByEnv":{"default":"aac5a668b7df64a00f7f68856e753ddd"}}

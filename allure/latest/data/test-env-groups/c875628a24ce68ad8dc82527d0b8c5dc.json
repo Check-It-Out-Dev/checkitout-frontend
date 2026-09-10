@@ -1,1 +1,1 @@
-{"id":"c875628a24ce68ad8dc82527d0b8c5dc","fullName":"integration/flows/magic-link-errors.spec.ts:100:7","name":"@tier-1 apply-action-code rejects missing oobCode field (400)","status":"passed","testResultsByEnv":{"default":"136415500e8cb24d089bb24c56ff78e9"}}
+{"id":"c875628a24ce68ad8dc82527d0b8c5dc","fullName":"integration/flows/magic-link-errors.spec.ts:100:7","name":"@tier-1 apply-action-code rejects missing oobCode field (400)","status":"skipped","testResultsByEnv":{"default":"45a234fad0cef37d8fb51d1e4fb14ada"}}

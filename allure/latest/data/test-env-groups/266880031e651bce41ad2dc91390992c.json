@@ -1,1 +1,1 @@
-{"id":"266880031e651bce41ad2dc91390992c","fullName":"e2e-tests/bdd/features/admin-platform-management.feature.spec.js:58:7","name":"Admin performs FAQ CRUD operations","status":"passed","testResultsByEnv":{"default":"5379ba82335f631f5385ae1a20933f25"}}
+{"id":"266880031e651bce41ad2dc91390992c","fullName":"e2e-tests/bdd/features/admin-platform-management.feature.spec.js:58:7","name":"Admin performs FAQ CRUD operations","status":"skipped","testResultsByEnv":{"default":"0993a337afb30475bac3ce14bad1a0ec"}}

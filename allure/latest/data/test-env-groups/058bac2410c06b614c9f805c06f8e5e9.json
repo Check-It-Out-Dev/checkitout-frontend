@@ -1,1 +1,1 @@
-{"id":"058bac2410c06b614c9f805c06f8e5e9","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:61:7","name":"Inactive company returns 409","status":"passed","testResultsByEnv":{"default":"573aef150bfa7237457c66d63737d037"}}
+{"id":"058bac2410c06b614c9f805c06f8e5e9","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:61:7","name":"Inactive company returns 409","status":"skipped","testResultsByEnv":{"default":"c6d648e8bf24504926c85d663fd926d4"}}

@@ -1,1 +1,1 @@
-{"id":"8b22649a6179f8faac41e81086ae0c35","fullName":"integration/flows/profile-validation.spec.ts:135:7","name":"@phone too long (> 25 chars) returns 400","status":"passed","testResultsByEnv":{"default":"1a6218b66a3c17375f90e03756e23147"}}
+{"id":"8b22649a6179f8faac41e81086ae0c35","fullName":"integration/flows/profile-validation.spec.ts:135:7","name":"@phone too long (> 25 chars) returns 400","status":"skipped","testResultsByEnv":{"default":"356ee8cf9f88d0896d1fd9577441c042"}}

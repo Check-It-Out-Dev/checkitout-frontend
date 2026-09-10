@@ -1,1 +1,1 @@
-{"id":"cd7d7e3ea3663fa585608759ef4bc88c","fullName":"integration/flows/magic-link-errors.spec.ts:131:7","name":"@tier-1 confirm-password-reset rejects blank newPassword (400)","status":"passed","testResultsByEnv":{"default":"b67870cecdd8c110dd81f12a7931e181"}}
+{"id":"cd7d7e3ea3663fa585608759ef4bc88c","fullName":"integration/flows/magic-link-errors.spec.ts:131:7","name":"@tier-1 confirm-password-reset rejects blank newPassword (400)","status":"skipped","testResultsByEnv":{"default":"58954f38e20996e34a0759176604e505"}}

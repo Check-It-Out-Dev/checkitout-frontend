@@ -1,1 +1,1 @@
-{"id":"d7607f171dfd35fd16030ad7e597b95f","fullName":"e2e-tests/bdd/features/rate-limiting.feature.spec.js:19:7","name":"Rate limit headers advertise the STANDARD contract","status":"passed","testResultsByEnv":{"default":"443e7cbde7f790af8a52adf48930725f"}}
+{"id":"d7607f171dfd35fd16030ad7e597b95f","fullName":"e2e-tests/bdd/features/rate-limiting.feature.spec.js:19:7","name":"Rate limit headers advertise the STANDARD contract","status":"skipped","testResultsByEnv":{"default":"78d805b1164484b75f4da58b4289d960"}}

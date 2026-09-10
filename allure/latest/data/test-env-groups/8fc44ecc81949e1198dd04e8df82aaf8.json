@@ -1,1 +1,1 @@
-{"id":"8fc44ecc81949e1198dd04e8df82aaf8","fullName":"e2e-tests/bdd/features/consent-module.feature.spec.js:65:7","name":"Anonymous cookie consent record gets linked to user after registration","status":"passed","testResultsByEnv":{"default":"d497416d2b0fffdd30eac29250beb624"}}
+{"id":"8fc44ecc81949e1198dd04e8df82aaf8","fullName":"e2e-tests/bdd/features/consent-module.feature.spec.js:65:7","name":"Anonymous cookie consent record gets linked to user after registration","status":"skipped","testResultsByEnv":{"default":"7cd2cb52373c8a193d8f20777dd3d101"}}

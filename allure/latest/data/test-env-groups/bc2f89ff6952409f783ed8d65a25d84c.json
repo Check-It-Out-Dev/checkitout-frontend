@@ -1,1 +1,1 @@
-{"id":"bc2f89ff6952409f783ed8d65a25d84c","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:131:7","name":"Get company data without prior confirm returns null","status":"passed","testResultsByEnv":{"default":"3e6ae1f9ec80d840113e59379d541e3e"}}
+{"id":"bc2f89ff6952409f783ed8d65a25d84c","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:131:7","name":"Get company data without prior confirm returns null","status":"skipped","testResultsByEnv":{"default":"d01c57f07db6c18a8b87b460186b9bbf"}}

@@ -1,1 +1,1 @@
-{"id":"f2667beaacdfd183d32329aa9978bf4f","fullName":"e2e-tests/bdd/features/partnership-flow.feature.spec.js:117:7","name":"Company reviews and approves content through the review page","status":"passed","testResultsByEnv":{"default":"84b8b59cd315a5124e90aaeab7a52b88"}}
+{"id":"f2667beaacdfd183d32329aa9978bf4f","fullName":"e2e-tests/bdd/features/partnership-flow.feature.spec.js:117:7","name":"Company reviews and approves content through the review page","status":"skipped","testResultsByEnv":{"default":"160d03f5cdfee4032e26a6e30e1f74f8"}}

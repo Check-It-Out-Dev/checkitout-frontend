@@ -1,1 +1,1 @@
-{"id":"4ce188e92ed9acd333802efac5290603","fullName":"integration/flows/rate-limiting.spec.ts:78:7","name":"@company @headers @standard-profile rate limit headers are present and well-formed","status":"passed","testResultsByEnv":{"default":"2c34d04d46dc253edf8016b8224412c6"}}
+{"id":"4ce188e92ed9acd333802efac5290603","fullName":"integration/flows/rate-limiting.spec.ts:78:7","name":"@company @headers @standard-profile rate limit headers are present and well-formed","status":"skipped","testResultsByEnv":{"default":"5e36325bb4af81731d0d8a93ee1dc9cb"}}

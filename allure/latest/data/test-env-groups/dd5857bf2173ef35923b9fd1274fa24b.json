@@ -1,1 +1,1 @@
-{"id":"dd5857bf2173ef35923b9fd1274fa24b","fullName":"integration/flows/magic-link-errors.spec.ts:157:7","name":"@tier-1 confirm-password-reset rejects password with no letters (400)","status":"passed","testResultsByEnv":{"default":"42438349e26946b48bf54b4afb1dbc8b"}}
+{"id":"dd5857bf2173ef35923b9fd1274fa24b","fullName":"integration/flows/magic-link-errors.spec.ts:157:7","name":"@tier-1 confirm-password-reset rejects password with no letters (400)","status":"skipped","testResultsByEnv":{"default":"085f41fc2d8afb64325a19a60fd2dd39"}}

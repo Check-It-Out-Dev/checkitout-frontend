@@ -1,1 +1,1 @@
-{"id":"e873af534022d9bc5680152f64955848","fullName":"scenarios/multi-user/company-and-influencer.scenario.spec.ts:28:7","name":"company and influencer have isolated browser contexts","status":"passed","testResultsByEnv":{"default":"d5a5f4b0d655018a010298dc9ced4c44"}}
+{"id":"e873af534022d9bc5680152f64955848","fullName":"scenarios/multi-user/company-and-influencer.scenario.spec.ts:28:7","name":"company and influencer have isolated browser contexts","status":"failed","testResultsByEnv":{"default":"25fd78dc4527c1925f55e0614c3c995e"}}

@@ -1,1 +1,1 @@
-{"id":"eb29414daf817f28ef1ce29125d6a664","fullName":"integration/flows/profile-non-critical.spec.ts:161:7","name":"@company address CRUD (create → update → delete)","status":"passed","testResultsByEnv":{"default":"7402901fcc03350beca52c2cbc744776"}}
+{"id":"eb29414daf817f28ef1ce29125d6a664","fullName":"integration/flows/profile-non-critical.spec.ts:161:7","name":"@company address CRUD (create → update → delete)","status":"skipped","testResultsByEnv":{"default":"609ceeeaf64106b06656f87c738fc711"}}

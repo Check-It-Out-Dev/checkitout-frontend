@@ -1,1 +1,1 @@
-{"id":"db66152ec339dfdff0cb7fcb6f50a480","fullName":"integration/flows/subscription-lifecycle.spec.ts:505:7","name":"@campaign-limit FREE plan blocks campaign creation at limit 5","status":"passed","testResultsByEnv":{"default":"43e264ec098be43a4eecf6826f729b2d"}}
+{"id":"db66152ec339dfdff0cb7fcb6f50a480","fullName":"integration/flows/subscription-lifecycle.spec.ts:505:7","name":"@campaign-limit FREE plan blocks campaign creation at limit 5","status":"skipped","testResultsByEnv":{"default":"e3e95ce803f87d6e64be7d81b2cf3b6d"}}

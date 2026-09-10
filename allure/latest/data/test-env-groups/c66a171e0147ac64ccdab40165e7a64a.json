@@ -1,1 +1,1 @@
-{"id":"c66a171e0147ac64ccdab40165e7a64a","fullName":"e2e-tests/bdd/features/payments-off.feature.spec.js:14:7","name":"Paid subscription endpoints are unreachable to anonymous clients","status":"passed","testResultsByEnv":{"default":"81be33a162e23e4eff9b29d359792125"}}
+{"id":"c66a171e0147ac64ccdab40165e7a64a","fullName":"e2e-tests/bdd/features/payments-off.feature.spec.js:14:7","name":"Paid subscription endpoints are unreachable to anonymous clients","status":"skipped","testResultsByEnv":{"default":"03bdcee97582ded8cbd3d0c0ef60a2bc"}}

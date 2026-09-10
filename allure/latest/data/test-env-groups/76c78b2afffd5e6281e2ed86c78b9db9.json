@@ -1,1 +1,1 @@
-{"id":"76c78b2afffd5e6281e2ed86c78b9db9","fullName":"integration/flows/step-up-email-required.spec.ts:265:7","name":"@step-up token cannot be reused (one-time consumption)","status":"passed","testResultsByEnv":{"default":"7ba56f1604629581afadd6fe0ab46148"}}
+{"id":"76c78b2afffd5e6281e2ed86c78b9db9","fullName":"integration/flows/step-up-email-required.spec.ts:265:7","name":"@step-up token cannot be reused (one-time consumption)","status":"skipped","testResultsByEnv":{"default":"75bbba5621a20c10a5df5c322b7c24c5"}}

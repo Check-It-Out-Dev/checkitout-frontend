@@ -1,1 +1,1 @@
-{"id":"b0462bd7af4261817f2c9c0405b235d8","fullName":"e2e-tests/bdd/features/magic-link-errors.feature.spec.js:85:7","name":"confirm-password-reset rejects completely empty body","status":"passed","testResultsByEnv":{"default":"0a6965a43534fe9eb32e4c3cd664417f"}}
+{"id":"b0462bd7af4261817f2c9c0405b235d8","fullName":"e2e-tests/bdd/features/magic-link-errors.feature.spec.js:85:7","name":"confirm-password-reset rejects completely empty body","status":"skipped","testResultsByEnv":{"default":"4cc2ccc5c9105022a8e20c2f87f23b39"}}

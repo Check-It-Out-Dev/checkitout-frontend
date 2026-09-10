@@ -1,1 +1,1 @@
-{"id":"13244ce9c74aae5f37cd9a880c8a102e","fullName":"e2e-tests/bdd/features/admin-platform-management.feature.spec.js:346:7","name":"Admin GDPR and Consent management operations","status":"passed","testResultsByEnv":{"default":"948225351852bcc553b3ff91ea28302d"}}
+{"id":"13244ce9c74aae5f37cd9a880c8a102e","fullName":"e2e-tests/bdd/features/admin-platform-management.feature.spec.js:346:7","name":"Admin GDPR and Consent management operations","status":"skipped","testResultsByEnv":{"default":"1f6d2607bf4cfb6b2a12591abe5fc466"}}

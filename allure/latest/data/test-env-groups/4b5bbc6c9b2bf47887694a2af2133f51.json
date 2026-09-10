@@ -1,1 +1,1 @@
-{"id":"4b5bbc6c9b2bf47887694a2af2133f51","fullName":"integration/flows/admin-user-management.spec.ts:128:7","name":"@group-a admin can view a COMPANY user profile","status":"passed","testResultsByEnv":{"default":"8cbb1a33bb43fdc8657bedc83335e388"}}
+{"id":"4b5bbc6c9b2bf47887694a2af2133f51","fullName":"integration/flows/admin-user-management.spec.ts:128:7","name":"@group-a admin can view a COMPANY user profile","status":"skipped","testResultsByEnv":{"default":"73060960dbcc4713dc661ec298453b07"}}

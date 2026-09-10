@@ -1,1 +1,1 @@
-{"id":"9ff05850ad119f9496abf07acb4ddca1","fullName":"e2e-tests/bdd/features/security-401-unauthorized.feature.spec.js:6:7","name":"Visitor without login cannot access protected profile endpoint","status":"passed","testResultsByEnv":{"default":"089d689563f0680035a1416352802ab4"}}
+{"id":"9ff05850ad119f9496abf07acb4ddca1","fullName":"e2e-tests/bdd/features/security-401-unauthorized.feature.spec.js:6:7","name":"Visitor without login cannot access protected profile endpoint","status":"skipped","testResultsByEnv":{"default":"8a4ec87fa5e44015ae7c7fd6906cd412"}}

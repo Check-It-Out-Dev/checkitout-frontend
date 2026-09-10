@@ -1,0 +1,98 @@
+
+=== Route smoke (anon) ===
+ok   | anon    | /                                                | /                                               
+ok   | anon    | /error/404                                       | /error/404                                      
+ok   | anon    | /auth/sign-in                                    | /auth/sign-in                                   
+ok   | anon    | /auth/sign-up                                    | /auth/sign-up                                   
+FAIL | anon    | /auth/sign-up/influencer                         | /auth/sign-up/influencer                         | 1 console | 1 5xx
+FAIL | anon    | /auth/sign-up/business                           | /auth/sign-up/business                           | 1 console | 1 5xx
+ok   | anon    | /auth/forgot-password                            | /auth/forgot-password                           
+ok   | anon    | /auth/confirmation-required                      | /auth/confirmation-required                     
+ok   | anon    | /auth/verify-email                               | /auth/verify-email                              
+ok   | anon    | /auth/reset-password                             | /auth/reset-password                            
+ok   | anon    | /auth/auth/error                                 | /error/404                                      
+ok   | anon    | /auth/error                                      | /auth/error                                     
+FAIL | anon    | /auth/2fa-setup                                  | /auth/2fa-setup                                  | 1 console | 1 5xx
+ok   | anon    | /auth/action                                     | /auth/action                                    
+FAIL | anon    | /collaborations/list                             | /auth/sign-in                                    | 1 console | 1 5xx
+FAIL | anon    | /collaborations/my-campaigns                     | /auth/sign-in                                    | 1 console | 1 5xx
+FAIL | anon    | /collaborations/create                           | /auth/sign-in                                    | 1 console | 1 5xx
+FAIL | anon    | /collaborations/dashboard                        | /auth/sign-in                                    | 1 console | 1 5xx
+FAIL | anon    | /collaborations/in-progress                      | /auth/sign-in                                    | 1 console | 1 5xx
+FAIL | anon    | /collaborations/registrations                    | /auth/sign-in                                    | 1 console | 1 5xx
+FAIL | anon    | /collaborations/finished                         | /auth/sign-in                                    | 1 console | 1 5xx
+FAIL | anon    | /user/settings/account                           | /auth/sign-in                                    | 1 console | 1 5xx
+FAIL | anon    | /user/settings/preferences                       | /auth/sign-in                                    | 1 console | 1 5xx
+FAIL | anon    | /user/settings/addresses                         | /auth/sign-in                                    | 1 console | 1 5xx
+FAIL | anon    | /user/settings/plan-billing                      | /auth/sign-in                                    | 1 console | 1 5xx
+FAIL | anon    | /user/list                                       | /auth/sign-in                                    | 1 console | 1 5xx
+FAIL | anon    | /company/setup                                   | /auth/sign-in                                    | 1 console | 1 5xx
+ok   | anon    | /team                                            | /team                                           
+ok   | anon    | /grants                                          | /grants                                         
+ok   | anon    | /support                                         | /support                                        
+ok   | anon    | /support/tickets/create                          | /support/tickets/create                         
+ok   | anon    | /support/tickets/status                          | /support/tickets/status                         
+FAIL | anon    | /support/tickets/my-tickets                      | /auth/sign-in                                    | 1 console | 1 5xx
+FAIL | anon    | /support/admin/tickets                           | /auth/sign-in                                    | 2 console | 2 5xx
+FAIL | anon    | /admin/dictionary                                | /auth/sign-in                                    | 1 console | 1 5xx
+
+=== Failures ===
+  /auth/sign-up/influencer
+    [error] Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+    HTTP 502
+  /auth/sign-up/business
+    [error] Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+    HTTP 502
+  /auth/2fa-setup
+    [error] Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+    HTTP 502
+  /collaborations/list
+    [error] Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+    HTTP 502
+  /collaborations/my-campaigns
+    [error] Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+    HTTP 502
+  /collaborations/create
+    [error] Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+    HTTP 502
+  /collaborations/dashboard
+    [error] Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+    HTTP 502
+  /collaborations/in-progress
+    [error] Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+    HTTP 502
+  /collaborations/registrations
+    [error] Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+    HTTP 502
+  /collaborations/finished
+    [error] Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+    HTTP 502
+  /user/settings/account
+    [error] Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+    HTTP 502
+  /user/settings/preferences
+    [error] Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+    HTTP 502
+  /user/settings/addresses
+    [error] Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+    HTTP 502
+  /user/settings/plan-billing
+    [error] Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+    HTTP 502
+  /user/list
+    [error] Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+    HTTP 502
+  /company/setup
+    [error] Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+    HTTP 502
+  /support/tickets/my-tickets
+    [error] Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+    HTTP 502
+  /support/admin/tickets
+    [error] Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+    [error] Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+    HTTP 502
+    HTTP 502
+  /admin/dictionary
+    [error] Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+    HTTP 502

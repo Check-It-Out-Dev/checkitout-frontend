@@ -1,1 +1,1 @@
-{"id":"254f373cd25309841da4916feea79ce1","fullName":"integration/flows/admin-user-management.spec.ts:147:7","name":"@group-a admin can view an INFLUENCER user profile","status":"passed","testResultsByEnv":{"default":"266a191520b0a209b086d97232058102"}}
+{"id":"254f373cd25309841da4916feea79ce1","fullName":"integration/flows/admin-user-management.spec.ts:147:7","name":"@group-a admin can view an INFLUENCER user profile","status":"skipped","testResultsByEnv":{"default":"aba591fe4dddc535092d8faeff3f422c"}}

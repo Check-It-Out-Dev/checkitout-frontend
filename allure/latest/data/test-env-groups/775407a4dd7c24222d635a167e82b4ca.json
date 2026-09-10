@@ -1,1 +1,1 @@
-{"id":"775407a4dd7c24222d635a167e82b4ca","fullName":"integration/flows/profile-non-critical.spec.ts:204:7","name":"@company preferences PATCH language + sharePhoneForPayments","status":"passed","testResultsByEnv":{"default":"84606af0af23bdaa3360573cd5ad1aab"}}
+{"id":"775407a4dd7c24222d635a167e82b4ca","fullName":"integration/flows/profile-non-critical.spec.ts:204:7","name":"@company preferences PATCH language + sharePhoneForPayments","status":"skipped","testResultsByEnv":{"default":"ae7953c8169ea9a0785a60d9338089fb"}}

@@ -1,1 +1,1 @@
-{"id":"67aef15b6b4a3dac82876a2c59b2c8d9","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:36:7","name":"Empty NIP returns 400","status":"passed","testResultsByEnv":{"default":"90c2fef2aef83588994cd7b5c4928194"}}
+{"id":"67aef15b6b4a3dac82876a2c59b2c8d9","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:36:7","name":"Empty NIP returns 400","status":"skipped","testResultsByEnv":{"default":"78b229d2e9ccf3fdc06ff734691f3a14"}}

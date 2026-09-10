@@ -1,1 +1,1 @@
-{"id":"3a8980180a2bfd6d7aafb0ea3d58a92b","fullName":"e2e-tests/bdd/features/login-errors.feature.spec.js:30:9","name":"Example #2","status":"passed","testResultsByEnv":{"default":"298bf0f673888b72fc64dcf40ae74e6f"}}
+{"id":"3a8980180a2bfd6d7aafb0ea3d58a92b","fullName":"e2e-tests/bdd/features/login-errors.feature.spec.js:30:9","name":"Example #2","status":"skipped","testResultsByEnv":{"default":"0fe7c326af4ba91738031a7f81ff3cf4"}}

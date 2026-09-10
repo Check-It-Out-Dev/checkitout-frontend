@@ -1,1 +1,1 @@
-{"id":"5e9bbe3dbc5e73a60dd899ea9dd93abf","fullName":"e2e-tests/bdd/features/partnership-flow.feature.spec.js:11:7","name":"Company creates a partnership opportunity successfully","status":"passed","testResultsByEnv":{"default":"bbbbc92a7a00454fa3d66acfb66fa1bd"}}
+{"id":"5e9bbe3dbc5e73a60dd899ea9dd93abf","fullName":"e2e-tests/bdd/features/partnership-flow.feature.spec.js:11:7","name":"Company creates a partnership opportunity successfully","status":"skipped","testResultsByEnv":{"default":"7b8fd22b5f44637eef25d1838fddced5"}}

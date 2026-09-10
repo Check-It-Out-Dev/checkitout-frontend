@@ -1,1 +1,1 @@
-{"id":"7424ec7f67ec3910fae8f49150d8d77b","fullName":"integration/flows/consent-extras.spec.ts:152:7","name":"@consent-status authenticated user can GET /legal/consent/my","status":"passed","testResultsByEnv":{"default":"11d27878d04a086db5e1ae7777ec56e9"}}
+{"id":"7424ec7f67ec3910fae8f49150d8d77b","fullName":"integration/flows/consent-extras.spec.ts:152:7","name":"@consent-status authenticated user can GET /legal/consent/my","status":"skipped","testResultsByEnv":{"default":"29658b8455b2bfba125f2db596f4efbb"}}

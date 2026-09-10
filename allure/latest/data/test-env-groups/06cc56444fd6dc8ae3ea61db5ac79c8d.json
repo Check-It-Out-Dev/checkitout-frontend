@@ -1,1 +1,1 @@
-{"id":"06cc56444fd6dc8ae3ea61db5ac79c8d","fullName":"integration/flows/step-up-email-required.spec.ts:135:7","name":"@step-up non-email PATCH succeeds without step-up token (setup-complete COMPANY)","status":"passed","testResultsByEnv":{"default":"c2f30c89fe1576bd11f5ece047bca1c8"}}
+{"id":"06cc56444fd6dc8ae3ea61db5ac79c8d","fullName":"integration/flows/step-up-email-required.spec.ts:135:7","name":"@step-up non-email PATCH succeeds without step-up token (setup-complete COMPANY)","status":"skipped","testResultsByEnv":{"default":"71727bde10a2c3d7cd3f7928e1841239"}}

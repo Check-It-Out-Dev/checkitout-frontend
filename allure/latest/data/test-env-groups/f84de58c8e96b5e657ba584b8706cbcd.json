@@ -1,1 +1,1 @@
-{"id":"f84de58c8e96b5e657ba584b8706cbcd","fullName":"integration/auth/security-unauth.spec.ts:277:9","name":"active-cooperation endpoints reject unauthenticated requests","status":"passed","testResultsByEnv":{"default":"b60a3f0bab82ac10a82f53618b618afa"}}
+{"id":"f84de58c8e96b5e657ba584b8706cbcd","fullName":"integration/auth/security-unauth.spec.ts:277:9","name":"active-cooperation endpoints reject unauthenticated requests","status":"skipped","testResultsByEnv":{"default":"76ccae43d260dcd2735a7c84af266e38"}}

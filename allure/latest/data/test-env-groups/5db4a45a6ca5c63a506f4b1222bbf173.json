@@ -1,1 +1,1 @@
-{"id":"5db4a45a6ca5c63a506f4b1222bbf173","fullName":"integration/flows/admin-geoip-analysis.spec.ts:273:7","name":"@scenario-4 @validation negative minutes returns 400","status":"passed","testResultsByEnv":{"default":"adf291718a2d107715e59ea328a372cc"}}
+{"id":"5db4a45a6ca5c63a506f4b1222bbf173","fullName":"integration/flows/admin-geoip-analysis.spec.ts:273:7","name":"@scenario-4 @validation negative minutes returns 400","status":"skipped","testResultsByEnv":{"default":"c19c217df7399d5252c811b56a05ba28"}}

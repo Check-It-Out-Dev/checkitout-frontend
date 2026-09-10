@@ -1,1 +1,1 @@
-{"id":"59134f234bd588a9013e5cdeca9422ec","fullName":"integration/flows/file-upload-signed-url.spec.ts:152:7","name":"@company @validation invalid content type returns 400","status":"passed","testResultsByEnv":{"default":"3f0fa3b0bec3a6562c3b3c433c1a6395"}}
+{"id":"59134f234bd588a9013e5cdeca9422ec","fullName":"integration/flows/file-upload-signed-url.spec.ts:152:7","name":"@company @validation invalid content type returns 400","status":"skipped","testResultsByEnv":{"default":"fcc6faefd91f499b8843c2ae5b55e2e1"}}

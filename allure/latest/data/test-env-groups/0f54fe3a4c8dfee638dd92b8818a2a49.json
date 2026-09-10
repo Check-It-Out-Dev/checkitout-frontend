@@ -1,1 +1,1 @@
-{"id":"0f54fe3a4c8dfee638dd92b8818a2a49","fullName":"integration/flows/admin-geoip-analysis.spec.ts:239:7","name":"@scenario-3 @non-admin COMPANY actor is 403 on GeoIP admin endpoints","status":"passed","testResultsByEnv":{"default":"aac5f5db6d8acd8df52bf8ca74e6d06b"}}
+{"id":"0f54fe3a4c8dfee638dd92b8818a2a49","fullName":"integration/flows/admin-geoip-analysis.spec.ts:239:7","name":"@scenario-3 @non-admin COMPANY actor is 403 on GeoIP admin endpoints","status":"skipped","testResultsByEnv":{"default":"960f4ad30cfe5ce464598144bd9f62ac"}}

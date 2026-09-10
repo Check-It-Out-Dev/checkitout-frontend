@@ -1,1 +1,1 @@
-{"id":"1e4205c19c3cb969b1eac4558f2625f3","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:145:7","name":"Influencer user cannot access registry","status":"passed","testResultsByEnv":{"default":"491e9b2580d30ff4edf774c5049046a3"}}
+{"id":"1e4205c19c3cb969b1eac4558f2625f3","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:145:7","name":"Influencer user cannot access registry","status":"skipped","testResultsByEnv":{"default":"df4b14fdaddba7787bb353df5afa665a"}}

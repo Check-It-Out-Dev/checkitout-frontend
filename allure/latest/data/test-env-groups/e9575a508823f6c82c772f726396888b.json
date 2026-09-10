@@ -1,1 +1,1 @@
-{"id":"e9575a508823f6c82c772f726396888b","fullName":"integration/flows/profile-validation.spec.ts:277:7","name":"@preferences language too long (> 10 chars) returns 400","status":"passed","testResultsByEnv":{"default":"6bf3f09e4fb8f12ac72bdf92e5160fb6"}}
+{"id":"e9575a508823f6c82c772f726396888b","fullName":"integration/flows/profile-validation.spec.ts:277:7","name":"@preferences language too long (> 10 chars) returns 400","status":"skipped","testResultsByEnv":{"default":"fa0715906f53888d10f4ab41b2b41d9c"}}

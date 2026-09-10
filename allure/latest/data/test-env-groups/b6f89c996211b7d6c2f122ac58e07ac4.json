@@ -1,1 +1,1 @@
-{"id":"b6f89c996211b7d6c2f122ac58e07ac4","fullName":"integration/flows/profile-validation.spec.ts:63:7","name":"@firstName too short (< 2 chars) returns 400","status":"passed","testResultsByEnv":{"default":"2a826c1e0bc3c995219c76adcae9dacc"}}
+{"id":"b6f89c996211b7d6c2f122ac58e07ac4","fullName":"integration/flows/profile-validation.spec.ts:63:7","name":"@firstName too short (< 2 chars) returns 400","status":"skipped","testResultsByEnv":{"default":"78448a8eadf61a069150fb28a95a2f0b"}}

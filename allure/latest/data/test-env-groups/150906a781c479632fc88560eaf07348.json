@@ -1,1 +1,1 @@
-{"id":"150906a781c479632fc88560eaf07348","fullName":"integration/flows/profile-validation.spec.ts:244:7","name":"@nip too long (> 20 chars) returns 400","status":"passed","testResultsByEnv":{"default":"92a65d2d498f5cb13a2bd3625d6a800f"}}
+{"id":"150906a781c479632fc88560eaf07348","fullName":"integration/flows/profile-validation.spec.ts:244:7","name":"@nip too long (> 20 chars) returns 400","status":"skipped","testResultsByEnv":{"default":"eefbbcaae11507d319449eb625d96967"}}

@@ -1,1 +1,1 @@
-{"id":"fc3184b27eef02c5d3d0ea75ad8ce686","fullName":"integration/flows/admin-geoip-analysis.spec.ts:266:7","name":"@scenario-4 @validation invalid IP returns 400","status":"passed","testResultsByEnv":{"default":"5f6c7b4ae72048953573899b84d5ceb7"}}
+{"id":"fc3184b27eef02c5d3d0ea75ad8ce686","fullName":"integration/flows/admin-geoip-analysis.spec.ts:266:7","name":"@scenario-4 @validation invalid IP returns 400","status":"skipped","testResultsByEnv":{"default":"6564864fc8b1bf8229784754af7f9e19"}}

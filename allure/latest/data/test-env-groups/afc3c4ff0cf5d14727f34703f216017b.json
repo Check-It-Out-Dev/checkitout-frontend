@@ -1,1 +1,1 @@
-{"id":"afc3c4ff0cf5d14727f34703f216017b","fullName":"integration/flows/profile-validation.spec.ts:232:7","name":"@companyDescription boundary (1000 chars) returns 200","status":"passed","testResultsByEnv":{"default":"a390d7a745c55069feca25b85f1968ef"}}
+{"id":"afc3c4ff0cf5d14727f34703f216017b","fullName":"integration/flows/profile-validation.spec.ts:232:7","name":"@companyDescription boundary (1000 chars) returns 200","status":"skipped","testResultsByEnv":{"default":"38cd80f3e82ac1b2eccbe5fc84f06bb0"}}

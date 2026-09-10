@@ -1,1 +1,1 @@
-{"id":"170f4e5208f21b410c7c3925cadd9031","fullName":"e2e-tests/bdd/features/rate-limiting.feature.spec.js:38:7","name":"Rate limit headers include reset timestamp","status":"passed","testResultsByEnv":{"default":"26635f1e6d7de2eca32d68ee6e31c57e"}}
+{"id":"170f4e5208f21b410c7c3925cadd9031","fullName":"e2e-tests/bdd/features/rate-limiting.feature.spec.js:38:7","name":"Rate limit headers include reset timestamp","status":"skipped","testResultsByEnv":{"default":"f700c99e23c92e1fae51e97caa671900"}}

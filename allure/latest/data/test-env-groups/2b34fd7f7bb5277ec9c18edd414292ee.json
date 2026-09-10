@@ -1,1 +1,1 @@
-{"id":"2b34fd7f7bb5277ec9c18edd414292ee","fullName":"e2e-tests/bdd/features/consent-module.feature.spec.js:12:7","name":"Record anonymous cookie banner consent","status":"passed","testResultsByEnv":{"default":"3c612ecb213dbc2203c8c79198d7ad8c"}}
+{"id":"2b34fd7f7bb5277ec9c18edd414292ee","fullName":"e2e-tests/bdd/features/consent-module.feature.spec.js:12:7","name":"Record anonymous cookie banner consent","status":"skipped","testResultsByEnv":{"default":"2a4e2505d310834a94f553eb35bf8bc6"}}

@@ -1,1 +1,1 @@
-{"id":"dae72a026796260f6056a50af5694f55","fullName":"e2e-tests/bdd/features/magic-link-errors.feature.spec.js:42:9","name":"confirm-password-reset rejects invalid input: missing oobCode","status":"passed","testResultsByEnv":{"default":"49ab11d00dff3188cfbc434f1cd8e32d"}}
+{"id":"dae72a026796260f6056a50af5694f55","fullName":"e2e-tests/bdd/features/magic-link-errors.feature.spec.js:42:9","name":"confirm-password-reset rejects invalid input: missing oobCode","status":"skipped","testResultsByEnv":{"default":"727a72eb3281b2d8d18a4c64fec15d6c"}}

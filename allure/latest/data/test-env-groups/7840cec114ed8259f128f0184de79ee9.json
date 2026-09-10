@@ -1,1 +1,1 @@
-{"id":"7840cec114ed8259f128f0184de79ee9","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:186:7","name":"Refresh updates company data from registries","status":"passed","testResultsByEnv":{"default":"9785df50fc55636ea64868a95f537ebc"}}
+{"id":"7840cec114ed8259f128f0184de79ee9","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:186:7","name":"Refresh updates company data from registries","status":"skipped","testResultsByEnv":{"default":"ea81d948fa4e14d748e788319921610a"}}

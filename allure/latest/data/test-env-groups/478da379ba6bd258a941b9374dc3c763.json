@@ -1,1 +1,1 @@
-{"id":"478da379ba6bd258a941b9374dc3c763","fullName":"e2e-tests/bdd/features/consent-lifecycle.feature.spec.js:101:7","name":"Blocked COMPANY re-consents and regains access","status":"passed","testResultsByEnv":{"default":"66b57079485d4a4e893c41d55f17188d"}}
+{"id":"478da379ba6bd258a941b9374dc3c763","fullName":"e2e-tests/bdd/features/consent-lifecycle.feature.spec.js:101:7","name":"Blocked COMPANY re-consents and regains access","status":"skipped","testResultsByEnv":{"default":"65b810b9ed74d321431e05e0f6cfea78"}}

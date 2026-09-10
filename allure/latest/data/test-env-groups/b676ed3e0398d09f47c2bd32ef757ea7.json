@@ -1,1 +1,1 @@
-{"id":"b676ed3e0398d09f47c2bd32ef757ea7","fullName":"integration/auth/security-unauth.spec.ts:277:9","name":"applied-opportunity-content endpoints reject unauthenticated requests","status":"passed","testResultsByEnv":{"default":"b3219570cb978c4c95bf26a5ae6a9f98"}}
+{"id":"b676ed3e0398d09f47c2bd32ef757ea7","fullName":"integration/auth/security-unauth.spec.ts:277:9","name":"applied-opportunity-content endpoints reject unauthenticated requests","status":"skipped","testResultsByEnv":{"default":"7df97a87889b6a966a49e228cdd236c8"}}

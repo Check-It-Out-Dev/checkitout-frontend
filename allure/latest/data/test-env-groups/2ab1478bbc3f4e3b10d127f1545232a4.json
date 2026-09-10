@@ -1,1 +1,1 @@
-{"id":"2ab1478bbc3f4e3b10d127f1545232a4","fullName":"integration/flows/step-up-email-required.spec.ts:326:7","name":"@step-up 5 wrong codes triggers cooldown (429)","status":"passed","testResultsByEnv":{"default":"0f0e548c4943d0f70a534a53dee3bf06"}}
+{"id":"2ab1478bbc3f4e3b10d127f1545232a4","fullName":"integration/flows/step-up-email-required.spec.ts:326:7","name":"@step-up 5 wrong codes triggers cooldown (429)","status":"skipped","testResultsByEnv":{"default":"12f24bd538fdebbf10dc573ea12b2505"}}
