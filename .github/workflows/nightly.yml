@@ -46,14 +46,19 @@ jobs:
     # jobs that only read stay read-only.
     permissions:
       contents: write
-    secrets: inherit
+    # No `secrets: inherit`. It hands a called workflow EVERY secret the repository and its
+    # environments hold, whether the callee has a use for them or not. The GITHUB_TOKEN a called
+    # workflow needs is passed automatically, bounded by the `permissions` above, and the one tier
+    # that does need repository secrets -- the Kubernetes run's k6 remote write -- reaches them
+    # through its own `environment: grafana-cloud`, not through here. Reported by Semgrep's
+    # yaml.github-actions.security.secrets-inherit.
 
   full-stack:
     name: Full stack
     uses: ./.github/workflows/nightly-full-stack.yml
     permissions:
       contents: write
-    secrets: inherit
+    # No `secrets: inherit`, and nothing to pass: see the note on the first tier above.
 
   kubernetes:
     name: Kubernetes tier
@@ -61,19 +66,19 @@ jobs:
     uses: ./.github/workflows/k8s-test-execution.yml
     permissions:
       contents: write
-    secrets: inherit
+    # No `secrets: inherit`, and nothing to pass: see the note on the first tier above.
 
   lighthouse:
     name: Lighthouse
     uses: ./.github/workflows/lighthouse.yml
     permissions:
       contents: write
-    secrets: inherit
+    # No `secrets: inherit`, and nothing to pass: see the note on the first tier above.
 
   contract:
     name: Contract
     uses: ./.github/workflows/contract-check.yml
-    secrets: inherit
+    # No `secrets: inherit`, and nothing to pass: see the note on the first tier above.
 
   mutation:
     name: Mutation
@@ -82,7 +87,7 @@ jobs:
     # and a called workflow may never hold more than the job that calls it.
     permissions:
       contents: write
-    secrets: inherit
+    # No `secrets: inherit`, and nothing to pass: see the note on the first tier above.
 
   security:
     name: Security
@@ -91,7 +96,7 @@ jobs:
       # write, because the tier now also publishes its finding count for the dashboard to trend.
       contents: write
       security-events: write
-    secrets: inherit
+    # No `secrets: inherit`, and nothing to pass: see the note on the first tier above.
 
   verdict:
     name: One night, one verdict

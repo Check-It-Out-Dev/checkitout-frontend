@@ -13,6 +13,14 @@ name: sonar
 
 on:
   workflow_call:
+    secrets:
+      SONAR_TOKEN:
+        description: SonarCloud analysis token. The only secret any called tier needs.
+        required: true
+    secrets:
+      SONAR_TOKEN:
+        description: SonarCloud analysis token. The only secret any called tier needs.
+        required: true
   workflow_dispatch:
 
 
