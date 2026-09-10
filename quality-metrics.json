@@ -2,14 +2,14 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 54,
-    "id": 34505120136,
-    "sha": "b155cb6",
+    "number": 56,
+    "id": 34507070565,
+    "sha": "ccca5c3",
     "branch": "main",
     "workflow": "browser-tiers",
-    "startedAt": "2026-09-10T16:56:08Z",
-    "durationSec": 200,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34505120136",
+    "startedAt": "2026-09-10T17:15:19Z",
+    "durationSec": 195,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34507070565",
     "status": "green"
   },
   "tests": {
@@ -20,8 +20,8 @@
     "skipped": 24,
     "passRate": 1,
     "flakyRate": 0,
-    "durationMeanSec": 0.15,
-    "durationP95Sec": 0.94,
+    "durationMeanSec": 0.16,
+    "durationP95Sec": 0.93,
     "tiers": {
       "jest": {
         "total": 1184,
@@ -29,7 +29,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
-        "durationSec": 65
+        "durationSec": 79
       },
       "msw": {
         "total": 2,
@@ -45,15 +45,15 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 22,
-        "durationSec": 132
+        "durationSec": 131
       }
     }
   },
   "coverage": {
-    "lines": 77.87,
-    "statements": 76.38,
-    "branches": 67.8,
-    "functions": 65.52
+    "lines": 77.9,
+    "statements": 76.4,
+    "branches": 67.79,
+    "functions": 65.54
   },
   "lighthouse": {
     "url": "/",
@@ -71,7 +71,7 @@
       "runsFailed": 0,
       "lastSeen": 61,
       "history": [
-        "pass",
+        "absent",
         "absent",
         "absent",
         "absent",
@@ -85,7 +85,7 @@
     }
   ],
   "reports": {
-    "playwright": "playwright/54/",
-    "allure": "allure/54/"
+    "playwright": "playwright/56/",
+    "allure": "allure/56/"
   }
 }
