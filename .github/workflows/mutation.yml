@@ -46,10 +46,17 @@ jobs:
           cache: npm
       - run: npm ci --prefer-offline --no-audit --loglevel=error
 
+      # Two notes, both earned.
+      #
       # `inPlace` rewrites the working tree as it goes and restores it afterwards. On a fresh
       # checkout that is free; see the note in stryker.conf.json for why it is not optional.
+      #
+      # `npm run`, not `npx`. npx does not fail when a binary is missing -- it goes to the registry
+      # and installs whatever carries that name. With the devDependencies briefly absent from
+      # package.json, `npx stryker` quietly fetched stryker@1.0.1 from 2019 and died inside it on a
+      # missing `rx` module. npm run resolves the local bin or says plainly that it cannot.
       - name: Mutate
-        run: npx stryker run --fileLogLevel off
+        run: npm run test:mutation -- --fileLogLevel off
 
       # Separate step so the report is published and the survivors are listed even when the score
       # is under the floor. Stryker's own `break` would fail the job before either happened.
