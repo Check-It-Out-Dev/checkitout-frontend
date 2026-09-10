@@ -190,21 +190,39 @@ jobs:
       # provisions a secret it already knows, through the backend's own endpoint, so the application
       # seals it with the cipher configured above and the suite never decrypts anything. The endpoint
       # is idempotent and refuses to exist on the public sandbox.
+      # The 2FA scenarios need the suite and the application to agree on one secret. Rather than read
+      # one back and decrypt it -- which is what needs Cloud KMS and a service account -- the run
+      # provisions a secret it already knows, through the backend's own endpoint, so the application
+      # seals it with the cipher configured above and the suite never decrypts anything. The endpoint
+      # is idempotent and refuses to exist on the public sandbox.
+      #
+      # It retries, and it never fails the shard. The first version did both the other way round and
+      # took three shards down with it: the backend's Firestore channel is opened at startup, when the
+      # emulators are not up yet, and the first call after they appear can still land on a connection
+      # that is backing off -- 409, "A data integrity error occurred", from an UNAVAILABLE underneath.
+      # A seeding convenience must not be able to fail a tier that would otherwise have run. The
+      # scenarios that need the secret skip without it and say so, which is the honest outcome.
       - name: The admin's TOTP secret, provisioned rather than decrypted
         run: |
-          set -euo pipefail
-          # One line per command and no backslash continuations: a continuation inside a YAML block
-          # scalar is folded away before the shell ever sees it.
+          set -uo pipefail
           url=http://127.0.0.1:8080/api/test/auth/provision-totp
           payload=$(printf '{"firebaseUid":"%s","secret":"%s"}' "$ADMIN_FIREBASE_UID" "$E2E_TOTP_SECRET")
-          code=$(curl -sS -o /tmp/totp.json -w '%{http_code}' -X POST "$url" -H 'Content-Type: application/json' -d "$payload")
-          echo "provision-totp -> HTTP $code"; cat /tmp/totp.json; echo
-          # A 404 means the backend image predates the endpoint. Say so plainly rather than letting
-          # every 2FA scenario skip with a message about a missing bridge.
-          if [ "$code" = "404" ]; then
-            echo "::warning::the backend image has no /test/auth/provision-totp - 2FA scenarios will skip"
-          elif [ "$code" != "200" ]; then
-            echo "::error::provision-totp answered $code"; exit 1
+          code=000
+          for attempt in 1 2 3 4 5 6; do
+            code=$(curl -sS -o /tmp/totp.json -w '%{http_code}' -X POST "$url" -H 'Content-Type: application/json' -d "$payload" || echo 000)
+            echo "attempt $attempt: provision-totp -> HTTP $code"
+            [ "$code" = "200" ] && break
+            [ "$code" = "404" ] && break
+            sleep 5
+          done
+          cat /tmp/totp.json 2>/dev/null || true
+          echo
+          if [ "$code" = "200" ]; then
+            echo "the admin's TOTP secret is in place"
+          elif [ "$code" = "404" ]; then
+            echo "::warning::this backend image has no /test/auth/provision-totp - the 2FA scenarios will skip"
+          else
+            echo "::warning::provision-totp answered $code after 6 attempts - the 2FA scenarios will skip"
           fi
 
       - name: Emulator log
