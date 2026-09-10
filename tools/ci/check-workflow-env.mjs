@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
- * Two defects that a YAML parser and `bash -n` both wave through, and that took a release chain
- * down for six hours without producing a single line of log.
+ * Three defects that a YAML parser and `bash -n` both wave through. The first took a release chain
+ * down for six hours without producing a single line of log; the third quietly switched half of a
+ * dashboard off for a day and kept every job green while it did.
  *
  * 1. A DUPLICATE KEY in a step's `env:` block. YAML libraries keep the last one silently -- js-yaml
  *    and PyYAML both do -- so the file parses, the shell script parses, and every local check is
@@ -17,6 +18,14 @@
  *    single quotes were doing real work, keeping the interpolated JSON in one word -- into an env
  *    reference, where they now prevent the expansion entirely. Downstream `jq` gets the string
  *    "${IN_CONFIG_JSON}" and fails somewhere far from the cause.
+ *
+ * 3. A LITERAL BACKSLASH-N where a line continuation was meant: `foo \n            bar`, the two
+ *    characters rather than a real newline. It is what an editing script leaves behind when its own
+ *    escaping collapses, and the eye reads it as a wrapped line. bash reads `\n` as an escaped `n`,
+ *    so the command gains a bare argument `n` and the flags after it land somewhere the tool never
+ *    looks. Nothing fails: the step exits 0, the job is green, and those flags simply had no
+ *    effect. That is how the backend's dashboard came to trend tests and coverage but never
+ *    mutation or security, with `--mutation` and `--security` sitting right there in the workflow.
  *
  * Scans every workflow in the repositories given on the command line (default: this one).
  *
@@ -73,6 +82,23 @@ function deadSingleQuotedExpansions(text) {
   return found;
 }
 
+/** A literal backslash-n with whitespace on both sides. Inside quotes it is a legitimate escape
+ *  (`printf 'a\nb'`, `tr '\n' ' '`), so the quote parity before it has to be even on both kinds of
+ *  quote, which is the same test the rule above uses. */
+function literalBackslashN(text) {
+  const lines = text.replace(/\r\n/g, '\n').split('\n');
+  const found = [];
+  lines.forEach((line, idx) => {
+    const m = /\s\\n\s/.exec(line);
+    if (!m) return;
+    const before = line.slice(0, m.index + 1);
+    if ((before.match(/'/g) || []).length % 2 === 1) return;
+    if ((before.match(/"/g) || []).length % 2 === 1) return;
+    found.push({ line: idx + 1, text: line.trim() });
+  });
+  return found;
+}
+
 let problems = 0;
 let scanned = 0;
 for (const root of roots) {
@@ -95,6 +121,13 @@ for (const root of roots) {
         `${path}:${d.line}: single-quoted expansion never expands in bash — ${d.text}`,
       );
     }
+    for (const d of literalBackslashN(text)) {
+      problems++;
+      console.error(
+        `${path}:${d.line}: literal backslash-n where a line continuation was meant — bash ` +
+          `passes a bare argument \`n\` and silently drops the flags after it — ${d.text}`,
+      );
+    }
   }
 }
 
@@ -102,4 +135,7 @@ if (problems) {
   console.error(`\ncheck:workflow-env FAILED — ${problems} problem(s) across ${scanned} workflow(s).`);
   process.exit(1);
 }
-console.log(`check:workflow-env OK — ${scanned} workflow(s), no duplicate env keys, no dead expansions.`);
+console.log(
+  `check:workflow-env OK — ${scanned} workflow(s): no duplicate env keys, no dead expansions,` +
+    ` no literal backslash-n.`,
+);
