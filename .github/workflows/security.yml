@@ -40,7 +40,7 @@ permissions:
 env:
   SEMGREP_VERSION: "1.148.0"
   CHECKOV_VERSION: "3.2.492"
-  TRIVY_VERSION: "0.68.0"
+  TRIVY_VERSION: "0.74.0"
 
 jobs:
   sast:
@@ -98,7 +98,7 @@ jobs:
             --skip-path node_modules --skip-path dist --skip-path coverage \
             --output sarif --output-file-path . \
             --soft-fail || true
-          test -f results.sarif && mv results.sarif checkov.sarif || echo '{"runs":[]}' > checkov.sarif
+          if [ -f results.sarif ]; then mv results.sarif checkov.sarif; fi
           python - <<'PY' | tee -a "$GITHUB_STEP_SUMMARY"
           import json
           r = json.load(open("checkov.sarif"))
@@ -106,6 +106,7 @@ jobs:
           print(f"### Checkov\n\n{n} misconfiguration(s) in manifests, images and workflows.")
           PY
       - uses: github/codeql-action/upload-sarif@v4
+        if: hashFiles('checkov.sarif') != ''
         with:
           sarif_file: checkov.sarif
           category: checkov
@@ -118,8 +119,12 @@ jobs:
       - uses: actions/checkout@v5
       - name: Install Trivy
         run: |
-          curl -sfL "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz" \
-            | tar -xz -C /usr/local/bin trivy
+          set -euo pipefail
+          url="https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
+          # --fail-with-body, not a bare -f: a 404 page piped into tar dies with
+          # "Error is not recoverable", which says nothing about the version being wrong. It was.
+          curl -sSL --fail-with-body -o /tmp/trivy.tgz "$url"
+          tar -xzf /tmp/trivy.tgz -C /usr/local/bin trivy
           trivy --version
       # The lockfile is what Dependabot reads; this reads the same tree for CVEs Dependabot has not
       # opened a pull request for yet, and writes an SBOM of what is actually there.
