@@ -2,25 +2,25 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 33,
-    "id": 34428917980,
-    "sha": "4b0cd19",
+    "number": 34,
+    "id": 34432832788,
+    "sha": "2ca961e",
     "branch": "main",
     "workflow": "browser-tiers",
-    "startedAt": "2026-09-10T02:18:16Z",
-    "durationSec": 1151,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34428917980",
+    "startedAt": "2026-09-10T03:18:36Z",
+    "durationSec": 1161,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34432832788",
     "status": "green"
   },
   "tests": {
     "total": 1761,
-    "passed": 1682,
+    "passed": 1681,
     "failed": 0,
-    "flaky": 0,
+    "flaky": 1,
     "skipped": 79,
-    "passRate": 1,
-    "flakyRate": 0,
-    "durationMeanSec": 1.47,
+    "passRate": 0.9994,
+    "flakyRate": 0.0006,
+    "durationMeanSec": 1.56,
     "durationP95Sec": 2,
     "tiers": {
       "jest": {
@@ -29,7 +29,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
-        "durationSec": 59
+        "durationSec": 76
       },
       "visual": {
         "total": 284,
@@ -37,7 +37,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 1,
-        "durationSec": 354
+        "durationSec": 431
       },
       "visual-parity": {
         "total": 82,
@@ -45,7 +45,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 54,
-        "durationSec": 77
+        "durationSec": 83
       },
       "msw": {
         "total": 2,
@@ -61,15 +61,15 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 22,
-        "durationSec": 120
+        "durationSec": 129
       },
       "perf": {
         "total": 82,
-        "passed": 82,
+        "passed": 81,
         "failed": 0,
-        "flaky": 0,
+        "flaky": 1,
         "skipped": 0,
-        "durationSec": 1944
+        "durationSec": 1986
       }
     }
   },
@@ -81,12 +81,32 @@
   },
   "lighthouse": {
     "url": "/",
-    "performance": 99,
+    "performance": 100,
     "accessibility": 97,
     "bestPractices": 100,
     "seo": 92
   },
   "flaky": [
+    {
+      "title": "Demo smoothness › a simulator that never fires holds the step instead of narrating it [perf]",
+      "file": "perf/demo-smoothness.spec.ts",
+      "window": 10,
+      "runsFlaky": 2,
+      "runsFailed": 0,
+      "lastSeen": 34,
+      "history": [
+        "flaky",
+        "pass",
+        "pass",
+        "pass",
+        "absent",
+        "pass",
+        "absent",
+        "pass",
+        "pass",
+        "flaky"
+      ]
+    },
     {
       "title": "Visual snapshots · Sandbox fixtures › fixture survey-cicd-runs [chromium-desktop]",
       "file": "visual/sandbox-snapshots.spec.ts",
@@ -95,7 +115,6 @@
       "runsFailed": 1,
       "lastSeen": 28,
       "history": [
-        "absent",
         "pass",
         "absent",
         "pass",
@@ -103,6 +122,7 @@
         "absent",
         "absent",
         "absent",
+        "pass",
         "pass",
         "pass"
       ]
@@ -115,7 +135,6 @@
       "runsFailed": 1,
       "lastSeen": 28,
       "history": [
-        "absent",
         "pass",
         "absent",
         "pass",
@@ -124,32 +143,13 @@
         "absent",
         "absent",
         "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "Demo smoothness › a simulator that never fires holds the step instead of narrating it [perf]",
-      "file": "perf/demo-smoothness.spec.ts",
-      "window": 10,
-      "runsFlaky": 1,
-      "runsFailed": 0,
-      "lastSeen": 25,
-      "history": [
-        "pass",
-        "flaky",
-        "pass",
-        "pass",
-        "pass",
-        "absent",
-        "pass",
-        "absent",
         "pass",
         "pass"
       ]
     }
   ],
   "reports": {
-    "playwright": "playwright/33/",
-    "allure": "allure/33/"
+    "playwright": "playwright/34/",
+    "allure": "allure/34/"
   }
 }
