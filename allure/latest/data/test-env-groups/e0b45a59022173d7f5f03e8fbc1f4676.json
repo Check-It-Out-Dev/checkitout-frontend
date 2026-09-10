@@ -1,1 +1,1 @@
-{"id":"e0b45a59022173d7f5f03e8fbc1f4676","fullName":"scenarios/auth/login.scenario.spec.ts:60:7","name":"@influencer unauthenticated visit to a protected route bounces to sign-in","status":"passed","testResultsByEnv":{"default":"9f756de2d50c1060ea448ef8aad2131f"}}
+{"id":"e0b45a59022173d7f5f03e8fbc1f4676","fullName":"scenarios/auth/login.scenario.spec.ts:60:7","name":"@influencer unauthenticated visit to a protected route bounces to sign-in","status":"passed","testResultsByEnv":{"default":"e2dbf233e72b1ffadf0b6d4af6a3f0c5"}}

@@ -1,1 +1,1 @@
-{"id":"dbd6b726a7ef953aa0e0437706dba13d","fullName":"integration/auth/login-real.spec.ts:41:7","name":"@company @full-auth — company logs in with real Firebase + receives session cookie","status":"passed","testResultsByEnv":{"default":"2e33553cc1c42dd2760a7698f3b91baf"}}
+{"id":"dbd6b726a7ef953aa0e0437706dba13d","fullName":"integration/auth/login-real.spec.ts:41:7","name":"@company @full-auth — company logs in with real Firebase + receives session cookie","status":"passed","testResultsByEnv":{"default":"55203f97846edccf53df573a9460bf20"}}

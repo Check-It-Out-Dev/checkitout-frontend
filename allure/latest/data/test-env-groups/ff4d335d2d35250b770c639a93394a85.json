@@ -1,1 +1,1 @@
-{"id":"ff4d335d2d35250b770c639a93394a85","fullName":"integration/flows/registry-company-flow.spec.ts:92:7","name":"@lookup invalid NIP format returns 400","status":"passed","testResultsByEnv":{"default":"888c58a1813de94ad3ece4426c90568e"}}
+{"id":"ff4d335d2d35250b770c639a93394a85","fullName":"integration/flows/registry-company-flow.spec.ts:92:7","name":"@lookup invalid NIP format returns 400","status":"passed","testResultsByEnv":{"default":"c25ed0bd7c77482003fe5cdd857cc2ce"}}

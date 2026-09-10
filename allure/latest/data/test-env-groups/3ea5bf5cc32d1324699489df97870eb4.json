@@ -1,1 +1,1 @@
-{"id":"3ea5bf5cc32d1324699489df97870eb4","fullName":"integration/flows/security-cross-role.spec.ts:171:7","name":"@company-forbidden @admin-write COMPANY → admin PUT/PATCH/DELETE return 400|403","status":"passed","testResultsByEnv":{"default":"b94b175f6f5e7511c2bbd33f45a035dc"}}
+{"id":"3ea5bf5cc32d1324699489df97870eb4","fullName":"integration/flows/security-cross-role.spec.ts:171:7","name":"@company-forbidden @admin-write COMPANY → admin PUT/PATCH/DELETE return 400|403","status":"passed","testResultsByEnv":{"default":"a90d8a947b4c3a4f24aadb8663e15fc7"}}
