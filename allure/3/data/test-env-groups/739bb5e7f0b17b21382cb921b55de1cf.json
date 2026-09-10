@@ -1,0 +1,1 @@
+{"id":"739bb5e7f0b17b21382cb921b55de1cf","fullName":"scenarios/auth/login.scenario.spec.ts:60:7","name":"@influencer unauthenticated visit to a protected route bounces to sign-in","status":"passed","testResultsByEnv":{"default":"7bc508d5520dc9b44a133ded2d5eaa03"}}

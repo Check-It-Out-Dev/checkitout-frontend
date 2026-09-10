@@ -1,0 +1,1 @@
+{"id":"44dfa9b890b15ba188f2958e7b7fdcd1","fullName":"integration/flows/profile-validation.spec.ts:289:7","name":"@preferences timezone too long (> 50 chars) returns 400","status":"passed","testResultsByEnv":{"default":"65e714e9437eb29b89f67f658e23c4ea"}}

@@ -1,0 +1,1 @@
+{"id":"6cbfebd3a62b9335beb08e5bacbb9242","fullName":"integration/flows/profile-non-critical.spec.ts:133:7","name":"@company batch update profilePicture + companyDescription in one PATCH","status":"passed","testResultsByEnv":{"default":"8fef026a2d3078cad4d04964760d0e4d"}}

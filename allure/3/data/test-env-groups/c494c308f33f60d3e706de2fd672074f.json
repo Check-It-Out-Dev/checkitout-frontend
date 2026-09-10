@@ -1,0 +1,1 @@
+{"id":"c494c308f33f60d3e706de2fd672074f","fullName":"integration/auth/login-errors.spec.ts:103:7","name":"@company nonexistent email surfaces error UI","status":"passed","testResultsByEnv":{"default":"c7744b483c7bfd418acac0d6d81c03ee"}}

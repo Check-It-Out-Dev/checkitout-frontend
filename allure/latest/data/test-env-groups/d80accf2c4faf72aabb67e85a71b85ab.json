@@ -1,1 +1,0 @@
-{"id":"d80accf2c4faf72aabb67e85a71b85ab","fullName":"survey-graph-map.spec.ts:90:7","name":"a pointer sweep around the whole ring never drops a frame and never touches the base","status":"passed","testResultsByEnv":{"default":"346412311d2d27a46653f16ba35b3a2f"}}

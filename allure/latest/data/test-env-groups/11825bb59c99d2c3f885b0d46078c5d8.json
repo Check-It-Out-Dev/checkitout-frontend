@@ -1,0 +1,1 @@
+{"id":"11825bb59c99d2c3f885b0d46078c5d8","fullName":"integration/auth/security-unauth.spec.ts:277:9","name":"social-connection endpoints reject unauthenticated requests","status":"passed","testResultsByEnv":{"default":"799cfe03355f1355b300616c433abe7d"}}

@@ -1,0 +1,1 @@
+{"id":"2b209a1751e8c84a32d5af060406cd53","fullName":"integration/flows/security-cross-role.spec.ts:145:7","name":"@company-forbidden @admin-post COMPANY → admin POST action endpoints return 400|403","status":"passed","testResultsByEnv":{"default":"d58683c1202b0687cfd5cbd08b972f3d"}}

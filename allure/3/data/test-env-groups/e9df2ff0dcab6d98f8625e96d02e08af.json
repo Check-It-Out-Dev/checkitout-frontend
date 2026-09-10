@@ -1,0 +1,1 @@
+{"id":"e9df2ff0dcab6d98f8625e96d02e08af","fullName":"integration/flows/security-cross-role.spec.ts:277:7","name":"@influencer-forbidden @admin-write INFLUENCER → admin write ops return 400|403","status":"passed","testResultsByEnv":{"default":"adda84842886350ec732ec1e66aa7b6f"}}

@@ -1,0 +1,1 @@
+{"id":"3a3fb026f3f09718ec4cc61113e02255","fullName":"integration/flows/security-advanced-session.spec.ts:145:7","name":"@scenario-2 @cross-user another users valid cookies are accepted (200, by design)","status":"passed","testResultsByEnv":{"default":"df1cbebdcccfbe28591c40a4716029fd"}}

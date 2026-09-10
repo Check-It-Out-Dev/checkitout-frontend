@@ -1,0 +1,1 @@
+{"id":"1be534515c2ff2c97623fc6ed4d4c56e","fullName":"integration/flows/profile-non-critical.spec.ts:84:7","name":"@company profilePicture + companyDescription PATCH succeed (no token invalidation)","status":"passed","testResultsByEnv":{"default":"c81fda50225de72d8fff6951508582af"}}

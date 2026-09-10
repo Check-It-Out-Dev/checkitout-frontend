@@ -1,0 +1,1 @@
+{"id":"be1126ec6850d9e0c7fe6514398aa83c","fullName":"integration/flows/notification-lifecycle.spec.ts:177:7","name":"@notification-lifecycle COMPANY receives APPLICATION_RECEIVED, can read/archive/isolation","status":"skipped","testResultsByEnv":{"default":"19795fd3b19863d32ed805475ab037ae"}}

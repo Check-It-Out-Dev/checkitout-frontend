@@ -2,26 +2,26 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 34,
-    "id": 34432832788,
+    "number": 3,
+    "id": 34446570153,
     "sha": "2ca961e",
     "branch": "main",
-    "workflow": "browser-tiers",
-    "startedAt": "2026-09-10T03:18:36Z",
-    "durationSec": 1161,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34432832788",
+    "workflow": "k8s-test-execution",
+    "startedAt": "2026-09-10T06:44:24Z",
+    "durationSec": 633,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34446570153",
     "status": "green"
   },
   "tests": {
-    "total": 1761,
-    "passed": 1681,
+    "total": 1468,
+    "passed": 1434,
     "failed": 0,
-    "flaky": 1,
-    "skipped": 79,
-    "passRate": 0.9994,
-    "flakyRate": 0.0006,
-    "durationMeanSec": 1.56,
-    "durationP95Sec": 2,
+    "flaky": 0,
+    "skipped": 34,
+    "passRate": 1,
+    "flakyRate": 0,
+    "durationMeanSec": 0.2,
+    "durationP95Sec": 0.88,
     "tiers": {
       "jest": {
         "total": 1183,
@@ -31,45 +31,29 @@
         "skipped": 0,
         "durationSec": 76
       },
-      "visual": {
-        "total": 284,
-        "passed": 283,
+      "integration": {
+        "total": 215,
+        "passed": 183,
         "failed": 0,
         "flaky": 0,
-        "skipped": 1,
-        "durationSec": 431
+        "skipped": 32,
+        "durationSec": 145
       },
-      "visual-parity": {
-        "total": 82,
-        "passed": 28,
-        "failed": 0,
-        "flaky": 0,
-        "skipped": 54,
-        "durationSec": 83
-      },
-      "msw": {
-        "total": 2,
-        "passed": 0,
+      "sandbox": {
+        "total": 64,
+        "passed": 62,
         "failed": 0,
         "flaky": 0,
         "skipped": 2,
-        "durationSec": 0
+        "durationSec": 64
       },
-      "sandbox": {
-        "total": 128,
-        "passed": 106,
+      "scenarios": {
+        "total": 6,
+        "passed": 6,
         "failed": 0,
         "flaky": 0,
-        "skipped": 22,
-        "durationSec": 129
-      },
-      "perf": {
-        "total": 82,
-        "passed": 81,
-        "failed": 0,
-        "flaky": 1,
         "skipped": 0,
-        "durationSec": 1986
+        "durationSec": 9
       }
     }
   },
@@ -79,6 +63,29 @@
     "branches": 67.8,
     "functions": 65.52
   },
+  "perf": {
+    "k6": {
+      "profile": "load",
+      "requests": 199,
+      "failedRate": 0,
+      "p95Ms": 153.75,
+      "thresholdsOk": true,
+      "journeys": {
+        "apply": {
+          "p95Ms": 344.56,
+          "p99Ms": 389.08,
+          "budgetMs": 1500,
+          "ok": true
+        },
+        "browse": {
+          "p95Ms": 90.31,
+          "p99Ms": 115.86,
+          "budgetMs": 800,
+          "ok": true
+        }
+      }
+    }
+  },
   "lighthouse": {
     "url": "/",
     "performance": 100,
@@ -86,70 +93,15 @@
     "bestPractices": 100,
     "seo": 92
   },
-  "flaky": [
-    {
-      "title": "Demo smoothness › a simulator that never fires holds the step instead of narrating it [perf]",
-      "file": "perf/demo-smoothness.spec.ts",
-      "window": 10,
-      "runsFlaky": 2,
-      "runsFailed": 0,
-      "lastSeen": 34,
-      "history": [
-        "flaky",
-        "pass",
-        "pass",
-        "pass",
-        "absent",
-        "pass",
-        "absent",
-        "pass",
-        "pass",
-        "flaky"
-      ]
-    },
-    {
-      "title": "Visual snapshots · Sandbox fixtures › fixture survey-cicd-runs [chromium-desktop]",
-      "file": "visual/sandbox-snapshots.spec.ts",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 28,
-      "history": [
-        "pass",
-        "absent",
-        "pass",
-        "fail",
-        "absent",
-        "absent",
-        "absent",
-        "pass",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "Visual snapshots · Sandbox fixtures › fixture survey-cicd-runs [mobile-chrome]",
-      "file": "visual/sandbox-snapshots.spec.ts",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 28,
-      "history": [
-        "pass",
-        "absent",
-        "pass",
-        "fail",
-        "absent",
-        "absent",
-        "absent",
-        "pass",
-        "pass",
-        "pass"
-      ]
-    }
-  ],
+  "kubernetes": {
+    "shards": 4,
+    "wallSec": 92,
+    "k6Runners": 2
+  },
+  "flaky": [],
   "reports": {
-    "playwright": "playwright/34/",
-    "allure": "allure/34/"
+    "playwright": "playwright/3/",
+    "k6": "k6/3/",
+    "allure": "allure/3/"
   }
 }

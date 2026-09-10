@@ -1,0 +1,1 @@
+{"id":"c64c689a15eb7ceaaad7404adbf8af0c","fullName":"sandbox/cookie-banner.spec.ts:6:7","name":"renders banner with both CTAs when consent is pending (clean state)","status":"passed","testResultsByEnv":{"default":"c7a85a01be6f5853ce6afc751b74fdb0"}}
