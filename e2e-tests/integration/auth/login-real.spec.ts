@@ -156,13 +156,29 @@ test.describe('@login-real — real-Firebase happy-path login (T4)', () => {
         `2FA verify with real TOTP must succeed (got ${verifyRes.status()}: ${await verifyRes.text()})`,
       ).toBe(200);
 
-      // Step 4: re-exchange to upgrade partial → full session. Mirrors
-      // the FE's SignInComponent post-2FA branch.
+      // Step 4: re-exchange to upgrade partial → full session. Mirrors the FE's SignInComponent
+      // post-2FA branch, which posts an EMPTY body: the backend re-reads the Firebase ID token
+      // from the FirebaseIdToken cookie pair it re-set alongside the partial session.
+      //
+      // Which is why that pair is asserted here rather than left to be inferred. Without it the
+      // exchange answers 400 and the log says "ID token is null or empty", three layers away from
+      // "the cookie the previous call set did not come back".
+      const beforeFinal = await context.cookies(GREENFIELD_URL);
+      const carried = beforeFinal.map((c) => c.name);
+      expect(
+        carried,
+        `the partial-session step must leave the Firebase token cookies for the re-exchange to ` +
+          `read; the jar holds: ${carried.join(', ') || '(nothing)'}`,
+      ).toEqual(expect.arrayContaining(['FirebaseIdToken', 'FirebaseIdToken_sig']));
+
       const finalExchange = await page.request.post(`${GREENFIELD_URL}/api/auth/exchange-token`, {
         data: {},
         ignoreHTTPSErrors: true,
       });
-      expect(finalExchange.status(), 'final exchange-token must be 200').toBe(200);
+      expect(
+        finalExchange.status(),
+        `final exchange-token must be 200 (got ${finalExchange.status()}: ${await finalExchange.text()})`,
+      ).toBe(200);
 
       // Step 5: /users/me round-trips with the admin role.
       const meRes = await page.request.get(`${GREENFIELD_URL}/api/users/me`, {
