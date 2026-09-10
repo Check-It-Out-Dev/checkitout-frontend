@@ -71,8 +71,20 @@
   },
   "private": true,
   "overrides": {
+    "@grpc/grpc-js@1": "1.14.4",
+    "axios@1": "1.18.0",
+    "brace-expansion@1": "1.1.18",
     "brace-expansion@2": "2.1.4",
-    "qs@6": "6.16.0"
+    "brace-expansion@5": "5.0.9",
+    "form-data@2": "2.5.6",
+    "form-data@4": "4.0.6",
+    "gaxios@6": "6.7.2",
+    "protobufjs@7": "7.6.5",
+    "qs@6": "6.16.0",
+    "shell-quote@1": "1.9.0",
+    "uuid@11": "11.1.1",
+    "websocket-driver@0": "0.7.5",
+    "ws@8": "8.21.0"
   },
   "dependencies": {
     "@angular/animations": "^22.0.8",
@@ -100,7 +112,7 @@
     "@angular/compiler-cli": "^22.0.8",
     "@faker-js/faker": "^10.6.0",
     "@google-cloud/kms": "^5.5.0",
-    "@openapitools/openapi-generator-cli": "^2.32.0",
+    "@openapitools/openapi-generator-cli": "^2.41.0",
     "@playwright/test": "1.59.1",
     "@stryker-mutator/core": "^10.0.0",
     "@stryker-mutator/jest-runner": "^10.0.0",
