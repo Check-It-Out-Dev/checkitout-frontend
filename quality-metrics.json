@@ -2,26 +2,26 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 8,
-    "id": 34507105361,
-    "sha": "ccca5c3",
+    "number": 9,
+    "id": 34508817408,
+    "sha": "7c6cfe6",
     "branch": "main",
     "workflow": "nightly-full-stack",
-    "startedAt": "2026-09-10T17:15:37Z",
-    "durationSec": 394,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34507105361",
+    "startedAt": "2026-09-10T17:32:16Z",
+    "durationSec": 389,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34508817408",
     "status": "red"
   },
   "tests": {
-    "total": 1291,
-    "passed": 1274,
-    "failed": 2,
+    "total": 1617,
+    "passed": 1571,
+    "failed": 7,
     "flaky": 0,
-    "skipped": 15,
-    "passRate": 0.9984,
+    "skipped": 39,
+    "passRate": 0.9956,
     "flakyRate": 0,
-    "durationMeanSec": 0.13,
-    "durationP95Sec": 0.34,
+    "durationMeanSec": 0.2,
+    "durationP95Sec": 0.78,
     "tiers": {
       "jest": {
         "total": 1184,
@@ -29,15 +29,39 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
-        "durationSec": 79
+        "durationSec": 81
       },
-      "integration": {
-        "total": 107,
-        "passed": 90,
+      "bdd": {
+        "total": 148,
+        "passed": 138,
         "failed": 2,
         "flaky": 0,
-        "skipped": 15,
-        "durationSec": 93
+        "skipped": 8,
+        "durationSec": 47
+      },
+      "sandbox": {
+        "total": 64,
+        "passed": 62,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 2,
+        "durationSec": 56
+      },
+      "scenarios": {
+        "total": 6,
+        "passed": 6,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "durationSec": 11
+      },
+      "integration": {
+        "total": 215,
+        "passed": 181,
+        "failed": 5,
+        "flaky": 0,
+        "skipped": 29,
+        "durationSec": 120
       }
     }
   },
@@ -58,55 +82,126 @@
     {
       "title": "@notification-lifecycle — port of notification-e2e.feature › @notification-preferences disabled prefs suppress APPLICATION_RECEIVED [chromium-desktop]",
       "file": "integration/flows/notification-lifecycle.spec.ts",
-      "window": 6,
+      "window": 7,
       "runsFlaky": 0,
-      "runsFailed": 6,
-      "lastSeen": 8,
+      "runsFailed": 7,
+      "lastSeen": 9,
       "history": [
         "fail",
         "fail",
         "fail",
         "fail",
         "fail",
-        "fail"
-      ]
-    },
-    {
-      "title": "@security-advanced-session — port of security-advanced-session.feature › @scenario-7-prod @session-lifecycle production refresh-session against real Firebase user [chromium-desktop]",
-      "file": "integration/flows/security-advanced-session.spec.ts",
-      "window": 6,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 8,
-      "history": [
-        "skipped",
-        "skipped",
-        "skipped",
-        "skipped",
-        "skipped",
+        "fail",
         "fail"
       ]
     },
     {
       "title": "Notification System E2E with Real Email Delivery › Full notification lifecycle with email delivery, archive, and cross-user isolation [bdd]",
       "file": "../.features-gen/e2e-tests/bdd/features/notification-e2e.feature.spec.js",
-      "window": 6,
+      "window": 7,
       "runsFlaky": 0,
-      "runsFailed": 5,
-      "lastSeen": 7,
+      "runsFailed": 6,
+      "lastSeen": 9,
       "history": [
         "fail",
         "fail",
         "fail",
         "fail",
         "fail",
-        "absent"
+        "absent",
+        "fail"
+      ]
+    },
+    {
+      "title": "@security-advanced-session — port of security-advanced-session.feature › @scenario-7-prod @session-lifecycle production refresh-session against real Firebase user [chromium-desktop]",
+      "file": "integration/flows/security-advanced-session.spec.ts",
+      "window": 7,
+      "runsFlaky": 0,
+      "runsFailed": 2,
+      "lastSeen": 9,
+      "history": [
+        "skipped",
+        "skipped",
+        "skipped",
+        "skipped",
+        "skipped",
+        "fail",
+        "fail"
+      ]
+    },
+    {
+      "title": "@login-real — real-Firebase happy-path login (T4) › @company @full-auth — company logs in with real Firebase + receives session cookie [chromium-desktop]",
+      "file": "integration/auth/login-real.spec.ts",
+      "window": 7,
+      "runsFlaky": 0,
+      "runsFailed": 1,
+      "lastSeen": 9,
+      "history": [
+        "skipped",
+        "skipped",
+        "skipped",
+        "skipped",
+        "skipped",
+        "absent",
+        "fail"
+      ]
+    },
+    {
+      "title": "@login-ui-real — real-Firebase UI sign-in (T4-UI) › @company @full-auth — company signs in via the form and lands on a protected route [chromium-desktop]",
+      "file": "integration/auth/login-ui-real.spec.ts",
+      "window": 7,
+      "runsFlaky": 0,
+      "runsFailed": 1,
+      "lastSeen": 9,
+      "history": [
+        "skipped",
+        "skipped",
+        "skipped",
+        "skipped",
+        "skipped",
+        "absent",
+        "fail"
+      ]
+    },
+    {
+      "title": "@multi-user @session-isolation — port of multi-user-session-isolation.feature › @smoke @company Company user logs in via multi-user infrastructure [chromium-desktop]",
+      "file": "integration/flows/multi-user-session-isolation.spec.ts",
+      "window": 7,
+      "runsFlaky": 0,
+      "runsFailed": 1,
+      "lastSeen": 9,
+      "history": [
+        "skipped",
+        "skipped",
+        "skipped",
+        "skipped",
+        "skipped",
+        "absent",
+        "fail"
+      ]
+    },
+    {
+      "title": "Magic Link Happy Path › Email verification succeeds with valid oobCode [bdd]",
+      "file": "../.features-gen/e2e-tests/bdd/features/magic-link-happy-path.feature.spec.js",
+      "window": 7,
+      "runsFlaky": 0,
+      "runsFailed": 1,
+      "lastSeen": 9,
+      "history": [
+        "skipped",
+        "skipped",
+        "skipped",
+        "skipped",
+        "skipped",
+        "absent",
+        "fail"
       ]
     },
     {
       "title": "Profile Validation Edge Cases (Consolidated) › Company profile validation - all edge cases (consolidated - 20+ assertions) [bdd]",
       "file": "../.features-gen/e2e-tests/bdd/features/profile-validation-edge-cases.feature.spec.js",
-      "window": 6,
+      "window": 7,
       "runsFlaky": 0,
       "runsFailed": 5,
       "lastSeen": 7,
@@ -116,13 +211,14 @@
         "fail",
         "fail",
         "fail",
-        "absent"
+        "absent",
+        "pass"
       ]
     },
     {
       "title": "Authentication Error Handling › Influencer OAuth fails with non-existent Firebase UID [bdd]",
       "file": "../.features-gen/e2e-tests/bdd/features/login-errors.feature.spec.js",
-      "window": 6,
+      "window": 7,
       "runsFlaky": 0,
       "runsFailed": 4,
       "lastSeen": 6,
@@ -132,13 +228,14 @@
         "fail",
         "fail",
         "pass",
-        "absent"
+        "absent",
+        "pass"
       ]
     },
     {
       "title": "Influencer email verification with password setup › Influencer can re-verify after reset [bdd]",
       "file": "../.features-gen/e2e-tests/bdd/features/influencer-verification-password.feature.spec.js",
-      "window": 6,
+      "window": 7,
       "runsFlaky": 0,
       "runsFailed": 4,
       "lastSeen": 6,
@@ -148,13 +245,14 @@
         "fail",
         "fail",
         "pass",
-        "absent"
+        "absent",
+        "pass"
       ]
     },
     {
       "title": "Influencer email verification with password setup › Influencer receives ACCOUNT_ACTIVATED notification after verification [bdd]",
       "file": "../.features-gen/e2e-tests/bdd/features/influencer-verification-password.feature.spec.js",
-      "window": 6,
+      "window": 7,
       "runsFlaky": 0,
       "runsFailed": 4,
       "lastSeen": 6,
@@ -164,13 +262,14 @@
         "fail",
         "fail",
         "pass",
-        "absent"
+        "absent",
+        "pass"
       ]
     },
     {
       "title": "Influencer email verification with password setup › Influencer verifies email and sets password via complete-verification [bdd]",
       "file": "../.features-gen/e2e-tests/bdd/features/influencer-verification-password.feature.spec.js",
-      "window": 6,
+      "window": 7,
       "runsFlaky": 0,
       "runsFailed": 4,
       "lastSeen": 6,
@@ -180,13 +279,14 @@
         "fail",
         "fail",
         "pass",
-        "absent"
+        "absent",
+        "pass"
       ]
     },
     {
       "title": "Influencer email verification with password setup › Invalid oobCode returns error [bdd]",
       "file": "../.features-gen/e2e-tests/bdd/features/influencer-verification-password.feature.spec.js",
-      "window": 6,
+      "window": 7,
       "runsFlaky": 0,
       "runsFailed": 4,
       "lastSeen": 6,
@@ -196,13 +296,14 @@
         "fail",
         "fail",
         "pass",
-        "absent"
+        "absent",
+        "pass"
       ]
     },
     {
       "title": "User Login › Influencer logs in via OAuth with the Instagram token from Firestore [bdd]",
       "file": "../.features-gen/e2e-tests/bdd/features/login.feature.spec.js",
-      "window": 6,
+      "window": 7,
       "runsFlaky": 0,
       "runsFailed": 4,
       "lastSeen": 6,
@@ -212,13 +313,14 @@
         "fail",
         "fail",
         "pass",
-        "absent"
+        "absent",
+        "pass"
       ]
     },
     {
       "title": "File Upload via Signed URLs (Consolidated) › Company file upload - all scenarios via signed URL (consolidated - 15+ assertions) [bdd]",
       "file": "../.features-gen/e2e-tests/bdd/features/file-upload-signed-url.feature.spec.js",
-      "window": 6,
+      "window": 7,
       "runsFlaky": 0,
       "runsFailed": 2,
       "lastSeen": 4,
@@ -228,12 +330,13 @@
         "pass",
         "pass",
         "pass",
-        "absent"
+        "absent",
+        "pass"
       ]
     }
   ],
   "reports": {
-    "playwright": "playwright/8/",
-    "allure": "allure/8/"
+    "playwright": "playwright/9/",
+    "allure": "allure/9/"
   }
 }

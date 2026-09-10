@@ -1,1 +1,1 @@
-{"id":"3ce21a7f4cb5c0df60c0e864900766a1","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:19:7","name":"JDG lookup returns company data with owner name","status":"passed","testResultsByEnv":{"default":"082fe5b4642e0b792ac9f5f861099cff"}}
+{"id":"3ce21a7f4cb5c0df60c0e864900766a1","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:19:7","name":"JDG lookup returns company data with owner name","status":"passed","testResultsByEnv":{"default":"2b9dd35bb5528732c5a5b1584ea3f216"}}

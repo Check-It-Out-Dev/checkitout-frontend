@@ -1,1 +1,1 @@
-{"id":"e0441852b4b6713b69bb93028cd18e35","fullName":"integration/auth/login-ui-real.spec.ts:45:7","name":"@company @full-auth — company signs in via the form and lands on a protected route","status":"skipped","testResultsByEnv":{"default":"66692e35efd5fdb8c9b111343d1a604c"}}
+{"id":"e0441852b4b6713b69bb93028cd18e35","fullName":"integration/auth/login-ui-real.spec.ts:45:7","name":"@company @full-auth — company signs in via the form and lands on a protected route","status":"failed","testResultsByEnv":{"default":"fe91503bffd814257d8d58424e560d0d"}}

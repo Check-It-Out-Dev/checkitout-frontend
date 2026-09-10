@@ -1,1 +1,1 @@
-{"id":"fabd09d17d93856b0049ec93867026c8","fullName":"integration/flows/registry-company-flow.spec.ts:418:7","name":"@confirm KRS confirm without emailVerified does NOT auto-activate","status":"passed","testResultsByEnv":{"default":"846376794b2ec785e95bc9c3eddaa667"}}
+{"id":"fabd09d17d93856b0049ec93867026c8","fullName":"integration/flows/registry-company-flow.spec.ts:418:7","name":"@confirm KRS confirm without emailVerified does NOT auto-activate","status":"passed","testResultsByEnv":{"default":"6bb495d2d6956a3d72df1def4db3db90"}}

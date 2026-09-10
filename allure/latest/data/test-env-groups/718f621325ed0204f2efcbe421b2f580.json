@@ -1,1 +1,1 @@
-{"id":"718f621325ed0204f2efcbe421b2f580","fullName":"e2e-tests/bdd/features/logout.feature.spec.js:6:7","name":"Company user logs out and the session is cleared","status":"passed","testResultsByEnv":{"default":"5ce8f44b6f5440973013f637a47a50b4"}}
+{"id":"718f621325ed0204f2efcbe421b2f580","fullName":"e2e-tests/bdd/features/logout.feature.spec.js:6:7","name":"Company user logs out and the session is cleared","status":"passed","testResultsByEnv":{"default":"e5c572ad967842dfc811580a3963c67d"}}

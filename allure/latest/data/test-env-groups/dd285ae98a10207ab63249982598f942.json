@@ -1,1 +1,1 @@
-{"id":"dd285ae98a10207ab63249982598f942","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:83:7","name":"KRS confirm without emailVerified does not auto-activate","status":"passed","testResultsByEnv":{"default":"b5319c3f64be2f459a4780974135a561"}}
+{"id":"dd285ae98a10207ab63249982598f942","fullName":"e2e-tests/bdd/features/registry-company-flow.feature.spec.js:83:7","name":"KRS confirm without emailVerified does not auto-activate","status":"passed","testResultsByEnv":{"default":"546d2d9448d771301bfc05469733a07f"}}

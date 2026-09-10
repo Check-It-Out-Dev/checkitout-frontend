@@ -1,1 +1,1 @@
-{"id":"97ced9f4a574d01d87c3df5d21ce4177","fullName":"integration/flows/registry-company-flow.spec.ts:259:7","name":"@lookup GUS not found returns 404","status":"passed","testResultsByEnv":{"default":"b0fd88b345d077f5e77e0686ad7b74eb"}}
+{"id":"97ced9f4a574d01d87c3df5d21ce4177","fullName":"integration/flows/registry-company-flow.spec.ts:259:7","name":"@lookup GUS not found returns 404","status":"passed","testResultsByEnv":{"default":"a5743d8e123e5b0a4fa9997bb131cf68"}}

@@ -1,1 +1,1 @@
-{"id":"8a2325588090ad48be236e506a0e1032","fullName":"integration/flows/profile-critical-fields.spec.ts:94:7","name":"@company firstName + lastName + phoneNumber + name + nip PATCH keep session ACTIVE","status":"passed","testResultsByEnv":{"default":"2b3bf0bb723103b8fe5b56b6a530bfe3"}}
+{"id":"8a2325588090ad48be236e506a0e1032","fullName":"integration/flows/profile-critical-fields.spec.ts:94:7","name":"@company firstName + lastName + phoneNumber + name + nip PATCH keep session ACTIVE","status":"passed","testResultsByEnv":{"default":"bff97277c6986e6a74e587b9b4c4fca2"}}

@@ -1,1 +1,1 @@
-{"id":"9e97c68ad5ceaf331d2b0ee2c5eb582d","fullName":"e2e-tests/bdd/features/security-401-unauthorized.feature.spec.js:14:7","name":"User with expired session cannot access protected endpoints","status":"passed","testResultsByEnv":{"default":"f3d9f802ad0d788831dee8538513117e"}}
+{"id":"9e97c68ad5ceaf331d2b0ee2c5eb582d","fullName":"e2e-tests/bdd/features/security-401-unauthorized.feature.spec.js:14:7","name":"User with expired session cannot access protected endpoints","status":"passed","testResultsByEnv":{"default":"71ccf7c6c62303965c98da5d2f537e0a"}}

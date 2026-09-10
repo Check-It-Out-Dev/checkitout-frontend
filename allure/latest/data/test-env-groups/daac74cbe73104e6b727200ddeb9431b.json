@@ -1,1 +1,1 @@
-{"id":"daac74cbe73104e6b727200ddeb9431b","fullName":"integration/flows/registry-company-flow.spec.ts:107:7","name":"@lookup empty NIP returns 400","status":"passed","testResultsByEnv":{"default":"b57eb3c21929487d8c045160afc8222d"}}
+{"id":"daac74cbe73104e6b727200ddeb9431b","fullName":"integration/flows/registry-company-flow.spec.ts:107:7","name":"@lookup empty NIP returns 400","status":"passed","testResultsByEnv":{"default":"c1f438b0b320e567c3f109c6582fd988"}}
