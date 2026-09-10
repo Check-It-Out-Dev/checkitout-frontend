@@ -31,20 +31,20 @@ jobs:
     env:
       BACKEND_REF: ${{ inputs.backend_ref || github.event.client_payload.sha || 'main' }}
     steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
           path: frontend
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
           repository: Check-It-Out-Dev/checkitout-backend
           ref: ${{ env.BACKEND_REF }}
           path: backend
-      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961  # v5
+      - uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c  # v6.0.0
         with:
           distribution: temurin
           java-version: 21
           cache: maven
-      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444  # v5
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020  # v7.0.0
         with:
           node-version-file: frontend/.nvmrc
           cache: npm
@@ -90,7 +90,7 @@ jobs:
           npm run check:contract-coverage
           echo "The frontend compiles against the new contract. Commit the spec and the regenerated client (the three-commit repair flow)." >> "$GITHUB_STEP_SUMMARY"
 
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         if: always()
         with:
           name: contract-${{ github.run_number }}
