@@ -68,6 +68,11 @@ npm run check:contract-coverage || exit 1
 #     regenerated font + manifest.
 npm run check:icon-subset || exit 1
 
+# 10a. Every form control has an accessible name. Sonar reports 67 of these and
+#      66 are its checker not understanding that Material associates a mat-label
+#      at runtime; this states the rule the code actually follows instead.
+npm run check:input-labels || exit 1
+
 # 10b. The translation cache-buster must match the translation files. A stale
 #      stamp serves yesterday's strings from cache to anyone still holding them.
 #      This check lived only in check:static until 2026-09-10 and drifted; the
