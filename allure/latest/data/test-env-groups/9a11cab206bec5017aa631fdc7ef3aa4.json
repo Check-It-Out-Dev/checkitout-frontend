@@ -1,1 +1,0 @@
-{"id":"9a11cab206bec5017aa631fdc7ef3aa4","fullName":"integration/flows/magic-link-errors.spec.ts:196:7","name":"@tier-1 apply-action-code rejects malformed JSON (400)","status":"passed","testResultsByEnv":{"default":"e9dadff6ee2290ab4d7a3a15f311fd5c"}}

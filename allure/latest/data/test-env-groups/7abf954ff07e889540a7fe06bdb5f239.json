@@ -1,1 +1,0 @@
-{"id":"7abf954ff07e889540a7fe06bdb5f239","fullName":"integration/flows/registry-company-flow.spec.ts:123:7","name":"@get-data get company data without prior confirm returns 200 + empty body","status":"passed","testResultsByEnv":{"default":"49d8a17a6ce065dd0cda6ea6f4339c8a"}}

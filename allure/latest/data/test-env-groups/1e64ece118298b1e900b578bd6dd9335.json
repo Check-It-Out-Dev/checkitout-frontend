@@ -1,1 +1,0 @@
-{"id":"1e64ece118298b1e900b578bd6dd9335","fullName":"integration/auth/security-unauth.spec.ts:314:7","name":"helper sanity: /users/me unauthed is rejected","status":"passed","testResultsByEnv":{"default":"a0f3f35d4af8c337f1606fd2ca2f3e8c"}}

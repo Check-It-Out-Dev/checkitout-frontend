@@ -1,1 +1,0 @@
-{"id":"6b96c23c0003c8508f0b0ed310603819","fullName":"integration/flows/security-cross-role.spec.ts:108:7","name":"@company-forbidden @admin-get COMPANY → all admin GET endpoints return 403","status":"passed","testResultsByEnv":{"default":"fbf9b2a5aa6cb020ccc817c5105f7e6c"}}

@@ -1,1 +1,0 @@
-{"id":"3ea5bf5cc32d1324699489df97870eb4","fullName":"integration/flows/security-cross-role.spec.ts:171:7","name":"@company-forbidden @admin-write COMPANY → admin PUT/PATCH/DELETE return 400|403","status":"passed","testResultsByEnv":{"default":"6ddd59602258f3787d327b3027b0aed8"}}

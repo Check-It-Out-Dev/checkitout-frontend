@@ -2,26 +2,26 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 1,
-    "id": 34428573575,
-    "sha": "a082614",
+    "number": 33,
+    "id": 34428917980,
+    "sha": "4b0cd19",
     "branch": "main",
-    "workflow": "nightly-full-stack",
-    "startedAt": "2026-09-10T02:13:13Z",
-    "durationSec": 371,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34428573575",
-    "status": "red"
+    "workflow": "browser-tiers",
+    "startedAt": "2026-09-10T02:18:16Z",
+    "durationSec": 1151,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34428917980",
+    "status": "green"
   },
   "tests": {
-    "total": 1616,
-    "passed": 1549,
-    "failed": 16,
+    "total": 1761,
+    "passed": 1682,
+    "failed": 0,
     "flaky": 0,
-    "skipped": 51,
-    "passRate": 0.9898,
+    "skipped": 79,
+    "passRate": 1,
     "flakyRate": 0,
-    "durationMeanSec": 0.21,
-    "durationP95Sec": 0.76,
+    "durationMeanSec": 1.47,
+    "durationP95Sec": 2,
     "tiers": {
       "jest": {
         "total": 1183,
@@ -29,45 +29,53 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
-        "durationSec": 78
+        "durationSec": 59
       },
-      "bdd": {
-        "total": 148,
-        "passed": 116,
-        "failed": 15,
+      "visual": {
+        "total": 284,
+        "passed": 283,
+        "failed": 0,
         "flaky": 0,
-        "skipped": 17,
-        "durationSec": 78
+        "skipped": 1,
+        "durationSec": 354
       },
-      "sandbox": {
-        "total": 64,
-        "passed": 62,
+      "visual-parity": {
+        "total": 82,
+        "passed": 28,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 54,
+        "durationSec": 77
+      },
+      "msw": {
+        "total": 2,
+        "passed": 0,
         "failed": 0,
         "flaky": 0,
         "skipped": 2,
-        "durationSec": 57
+        "durationSec": 0
       },
-      "scenarios": {
-        "total": 6,
-        "passed": 6,
+      "sandbox": {
+        "total": 128,
+        "passed": 106,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 22,
+        "durationSec": 120
+      },
+      "perf": {
+        "total": 82,
+        "passed": 82,
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
-        "durationSec": 11
-      },
-      "integration": {
-        "total": 215,
-        "passed": 182,
-        "failed": 1,
-        "flaky": 0,
-        "skipped": 32,
-        "durationSec": 110
+        "durationSec": 1944
       }
     }
   },
   "coverage": {
     "lines": 77.87,
-    "statements": 76.37,
+    "statements": 76.38,
     "branches": 67.8,
     "functions": 65.52
   },
@@ -80,184 +88,68 @@
   },
   "flaky": [
     {
-      "title": "@notification-lifecycle — port of notification-e2e.feature › @notification-preferences disabled prefs suppress APPLICATION_RECEIVED [chromium-desktop]",
-      "file": "integration/flows/notification-lifecycle.spec.ts",
-      "window": 1,
+      "title": "Visual snapshots · Sandbox fixtures › fixture survey-cicd-runs [chromium-desktop]",
+      "file": "visual/sandbox-snapshots.spec.ts",
+      "window": 10,
       "runsFlaky": 0,
       "runsFailed": 1,
-      "lastSeen": 1,
+      "lastSeen": 28,
       "history": [
-        "fail"
+        "absent",
+        "pass",
+        "absent",
+        "pass",
+        "fail",
+        "absent",
+        "absent",
+        "absent",
+        "pass",
+        "pass"
       ]
     },
     {
-      "title": "Account Activation Notifications (NTF-003) › Company receives ACCOUNT_ACTIVATED notification after email verified and company data confirmed [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/account-activation-e2e.feature.spec.js",
-      "window": 1,
+      "title": "Visual snapshots · Sandbox fixtures › fixture survey-cicd-runs [mobile-chrome]",
+      "file": "visual/sandbox-snapshots.spec.ts",
+      "window": 10,
       "runsFlaky": 0,
       "runsFailed": 1,
-      "lastSeen": 1,
+      "lastSeen": 28,
       "history": [
-        "fail"
+        "absent",
+        "pass",
+        "absent",
+        "pass",
+        "fail",
+        "absent",
+        "absent",
+        "absent",
+        "pass",
+        "pass"
       ]
     },
     {
-      "title": "Authentication Error Handling › Admin login fails with invalid credentials › Example #1 [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/login-errors.feature.spec.js",
-      "window": 1,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 1,
+      "title": "Demo smoothness › a simulator that never fires holds the step instead of narrating it [perf]",
+      "file": "perf/demo-smoothness.spec.ts",
+      "window": 10,
+      "runsFlaky": 1,
+      "runsFailed": 0,
+      "lastSeen": 25,
       "history": [
-        "fail"
-      ]
-    },
-    {
-      "title": "Authentication Error Handling › Admin login fails with invalid credentials › Example #2 [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/login-errors.feature.spec.js",
-      "window": 1,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 1,
-      "history": [
-        "fail"
-      ]
-    },
-    {
-      "title": "Authentication Error Handling › Company login fails with invalid credentials › Example #1 [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/login-errors.feature.spec.js",
-      "window": 1,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 1,
-      "history": [
-        "fail"
-      ]
-    },
-    {
-      "title": "Authentication Error Handling › Company login fails with invalid credentials › Example #2 [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/login-errors.feature.spec.js",
-      "window": 1,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 1,
-      "history": [
-        "fail"
-      ]
-    },
-    {
-      "title": "Authentication Error Handling › Influencer OAuth fails with non-existent Firebase UID [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/login-errors.feature.spec.js",
-      "window": 1,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 1,
-      "history": [
-        "fail"
-      ]
-    },
-    {
-      "title": "File Upload via Signed URLs (Consolidated) › Company file upload - all scenarios via signed URL (consolidated - 15+ assertions) [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/file-upload-signed-url.feature.spec.js",
-      "window": 1,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 1,
-      "history": [
-        "fail"
-      ]
-    },
-    {
-      "title": "Influencer email verification with password setup › Influencer can re-verify after reset [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/influencer-verification-password.feature.spec.js",
-      "window": 1,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 1,
-      "history": [
-        "fail"
-      ]
-    },
-    {
-      "title": "Influencer email verification with password setup › Influencer receives ACCOUNT_ACTIVATED notification after verification [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/influencer-verification-password.feature.spec.js",
-      "window": 1,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 1,
-      "history": [
-        "fail"
-      ]
-    },
-    {
-      "title": "Influencer email verification with password setup › Influencer verifies email and sets password via complete-verification [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/influencer-verification-password.feature.spec.js",
-      "window": 1,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 1,
-      "history": [
-        "fail"
-      ]
-    },
-    {
-      "title": "Influencer email verification with password setup › Invalid oobCode returns error [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/influencer-verification-password.feature.spec.js",
-      "window": 1,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 1,
-      "history": [
-        "fail"
-      ]
-    },
-    {
-      "title": "Magic Link Error Handling › All magic link endpoints reject garbage oobCode (consolidated) [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/magic-link-errors.feature.spec.js",
-      "window": 1,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 1,
-      "history": [
-        "fail"
-      ]
-    },
-    {
-      "title": "Notification System E2E with Real Email Delivery › Full notification lifecycle with email delivery, archive, and cross-user isolation [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/notification-e2e.feature.spec.js",
-      "window": 1,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 1,
-      "history": [
-        "fail"
-      ]
-    },
-    {
-      "title": "Profile Validation Edge Cases (Consolidated) › Company profile validation - all edge cases (consolidated - 20+ assertions) [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/profile-validation-edge-cases.feature.spec.js",
-      "window": 1,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 1,
-      "history": [
-        "fail"
-      ]
-    },
-    {
-      "title": "User Login › Influencer logs in via OAuth with the Instagram token from Firestore [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/login.feature.spec.js",
-      "window": 1,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 1,
-      "history": [
-        "fail"
+        "pass",
+        "flaky",
+        "pass",
+        "pass",
+        "pass",
+        "absent",
+        "pass",
+        "absent",
+        "pass",
+        "pass"
       ]
     }
   ],
   "reports": {
-    "playwright": "playwright/1/",
-    "allure": "allure/1/"
+    "playwright": "playwright/33/",
+    "allure": "allure/33/"
   }
 }

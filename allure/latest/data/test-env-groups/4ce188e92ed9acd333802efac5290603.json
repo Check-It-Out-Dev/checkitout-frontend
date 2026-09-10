@@ -1,1 +1,0 @@
-{"id":"4ce188e92ed9acd333802efac5290603","fullName":"integration/flows/rate-limiting.spec.ts:78:7","name":"@company @headers @standard-profile rate limit headers are present and well-formed","status":"passed","testResultsByEnv":{"default":"c30a1b2a971cad298387aa9644549cd7"}}

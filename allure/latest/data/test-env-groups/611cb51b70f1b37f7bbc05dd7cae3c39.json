@@ -1,1 +1,0 @@
-{"id":"611cb51b70f1b37f7bbc05dd7cae3c39","fullName":"e2e-tests/bdd/features/account-activation-e2e.feature.spec.js:6:7","name":"Company receives ACCOUNT_ACTIVATED notification after email verified and company data confirmed","status":"failed","testResultsByEnv":{"default":"b63ed3402116e4b4d2300c6dd8a1a33e"}}

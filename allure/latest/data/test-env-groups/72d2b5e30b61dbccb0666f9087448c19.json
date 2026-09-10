@@ -1,1 +1,0 @@
-{"id":"72d2b5e30b61dbccb0666f9087448c19","fullName":"integration/auth/security-unauth.spec.ts:277:9","name":"applied-opportunity endpoints reject unauthenticated requests","status":"passed","testResultsByEnv":{"default":"0498cf189a38235d92caf202037b7696"}}

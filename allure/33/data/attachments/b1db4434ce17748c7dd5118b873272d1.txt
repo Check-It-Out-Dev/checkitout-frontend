@@ -1,0 +1,1 @@
+  idle: 117 frames, mean 16.7 ms, worst 17 ms

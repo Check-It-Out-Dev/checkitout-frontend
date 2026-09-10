@@ -1,1 +1,0 @@
-{"id":"e0af90c58d801f36257e5f53443e08ad","fullName":"integration/flows/security-advanced.spec.ts:194:7","name":"@admin-2fa partial-session blocked on admin endpoints; full-session allowed","status":"passed","testResultsByEnv":{"default":"da5461f72e35cffd6de8a61671e42afe"}}

@@ -1,1 +1,0 @@
-{"id":"f017a841e91a2e45a04731fd7e0f46f3","fullName":"integration/auth/login-real.spec.ts:95:7","name":"@admin @full-auth @2fa — admin completes partial-then-full session with real TOTP","status":"skipped","testResultsByEnv":{"default":"ace7ed2ca9df3ad17a0f84e724afa101"}}

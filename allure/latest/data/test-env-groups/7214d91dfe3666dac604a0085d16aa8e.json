@@ -1,1 +1,0 @@
-{"id":"7214d91dfe3666dac604a0085d16aa8e","fullName":"e2e-tests/bdd/features/magic-link-errors.feature.spec.js:101:7","name":"All magic link endpoints reject garbage oobCode (consolidated)","status":"failed","testResultsByEnv":{"default":"dc3920cbe572a38853e3a089fbd151b6"}}
