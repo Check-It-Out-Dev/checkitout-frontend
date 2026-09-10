@@ -170,22 +170,34 @@ jobs:
       # The backend runs as a service container, so its log is not in this job's output and a failure
       # inside it reads only as an HTTP 500 in a test. Several scenarios fail with
       # `error.network.external_service`, which is the backend saying it could not reach something --
-      # and which something is a question only its own log answers. Captured on failure rather than
-      # always, so a green night stays readable.
-      - name: Backend log on failure
-        if: failure()
+      # and which something is a question only its own log answers.
+      #
+      # `always()`, not `failure()`, and that distinction cost a run: the blob reporter does not fail
+      # this job when tests fail. The shards all end green and the merge job downstream decides the
+      # verdict, so a step conditioned on this job failing can never run. What is printed is a grep
+      # first; the tail only follows if the grep found something, so a healthy night stays readable.
+      - name: Backend log
+        if: always()
         run: |
           id=$(docker ps -a --filter "ancestor=ghcr.io/check-it-out-dev/checkitout-backend:${{ inputs.backend_tag || 'main' }}" --format '{{.ID}}' | head -1)
           if [ -z "$id" ]; then
             id=$(docker ps -a --format '{{.ID}} {{.Image}}' | grep checkitout-backend | head -1 | cut -d' ' -f1)
           fi
-          if [ -n "$id" ]; then
-            echo "### Backend container log (tail)" >> "$GITHUB_STEP_SUMMARY"
-            docker logs "$id" 2>&1 | tail -120 | tee -a "$GITHUB_STEP_SUMMARY"
-            echo "--- lines mentioning the emulator or an external call ---"
-            docker logs "$id" 2>&1 | grep -iE "emulator|identitytoolkit|firestore|external_service|Connection refused|UnknownHost" | tail -40 || true
+          if [ -z "$id" ]; then echo "no backend container found to read a log from"; exit 0; fi
+          echo "### Backend: what it said about reaching anything"
+          hits=$(docker logs "$id" 2>&1 | grep -iE "emulator|identitytoolkit|securetoken|firestore|external_service|Connection refused|UnknownHost|NetworkTranslatable" | tail -60 || true)
+          if [ -n "$hits" ]; then
+            echo "$hits"
+            {
+              echo "### Backend: emulator and external-call lines"
+              echo '```'
+              echo "$hits"
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+            echo "--- tail, for context ---"
+            docker logs "$id" 2>&1 | tail -80
           else
-            echo "no backend container found to read a log from"
+            echo "nothing about emulators or external calls in the backend log"
           fi
 
       - name: Frontend behind nginx, /api proxied to the backend service on the host
