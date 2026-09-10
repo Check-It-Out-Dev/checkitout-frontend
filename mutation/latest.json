@@ -1,0 +1,144 @@
+{
+ "mutationScore": 72.84,
+ "coveredScore": 83.29,
+ "mutants": {
+  "total": 486,
+  "Killed": 351,
+  "Survived": 71,
+  "NoCoverage": 61,
+  "Timeout": 3,
+  "CompileError": 0,
+  "RuntimeError": 0,
+  "Ignored": 0
+ },
+ "floor": 70,
+ "ran": true,
+ "files": [
+  {
+   "file": "src/app/core/interceptors/ssr-cookie-forward.interceptor.ts",
+   "score": 0,
+   "killed": 0,
+   "survived": 0,
+   "noCoverage": 25
+  },
+  {
+   "file": "src/app/core/auth/auth-api.service.ts",
+   "score": 25.71,
+   "killed": 9,
+   "survived": 1,
+   "noCoverage": 25
+  },
+  {
+   "file": "src/app/core/legal/legal-api.service.ts",
+   "score": 50,
+   "killed": 7,
+   "survived": 0,
+   "noCoverage": 7
+  },
+  {
+   "file": "src/app/core/interceptors/language.interceptor.ts",
+   "score": 52.94,
+   "killed": 9,
+   "survived": 7,
+   "noCoverage": 1
+  },
+  {
+   "file": "src/app/core/auth/sandbox-personas.ts",
+   "score": 63.64,
+   "killed": 7,
+   "survived": 4,
+   "noCoverage": 0
+  },
+  {
+   "file": "src/app/core/auth/social-platform-config.service.ts",
+   "score": 72.5,
+   "killed": 58,
+   "survived": 20,
+   "noCoverage": 2
+  },
+  {
+   "file": "src/app/core/consent/consent.service.ts",
+   "score": 73.13,
+   "killed": 49,
+   "survived": 18,
+   "noCoverage": 0
+  },
+  {
+   "file": "src/app/core/interceptors/rate-limit-cache.interceptor.ts",
+   "score": 78.95,
+   "killed": 15,
+   "survived": 4,
+   "noCoverage": 0
+  },
+  {
+   "file": "src/app/core/interceptors/set-to-array.interceptor.ts",
+   "score": 80,
+   "killed": 52,
+   "survived": 13,
+   "noCoverage": 0
+  },
+  {
+   "file": "src/app/core/auth/auth.guards.ts",
+   "score": 91.43,
+   "killed": 32,
+   "survived": 2,
+   "noCoverage": 1
+  },
+  {
+   "file": "src/app/core/auth/social-auth.service.ts",
+   "score": 92.31,
+   "killed": 12,
+   "survived": 1,
+   "noCoverage": 0
+  },
+  {
+   "file": "src/app/core/auth/session-state.service.ts",
+   "score": 94.44,
+   "killed": 17,
+   "survived": 1,
+   "noCoverage": 0
+  },
+  {
+   "file": "src/app/core/auth/location-redirect.service.ts",
+   "score": 100,
+   "killed": 4,
+   "survived": 0,
+   "noCoverage": 0
+  },
+  {
+   "file": "src/app/core/auth/sandbox-auth.service.ts",
+   "score": 100,
+   "killed": 6,
+   "survived": 0,
+   "noCoverage": 0
+  },
+  {
+   "file": "src/app/core/interceptors/error.interceptor.ts",
+   "score": 100,
+   "killed": 62,
+   "survived": 0,
+   "noCoverage": 0
+  },
+  {
+   "file": "src/app/core/interceptors/shell-headers.interceptor.ts",
+   "score": 100,
+   "killed": 6,
+   "survived": 0,
+   "noCoverage": 0
+  },
+  {
+   "file": "src/app/core/interceptors/step-up.interceptor.ts",
+   "score": 100,
+   "killed": 6,
+   "survived": 0,
+   "noCoverage": 0
+  },
+  {
+   "file": "src/app/core/preferences/preferences.service.ts",
+   "score": 100,
+   "killed": 3,
+   "survived": 0,
+   "noCoverage": 0
+  }
+ ]
+}
