@@ -257,6 +257,13 @@ jobs:
 
       - name: ${{ matrix.queue }}
         run: ${{ matrix.command }}
+        env:
+          CI: "1"
+          PW_EXTERNAL_SERVER: "1"
+          PW_BASE_URL: http://localhost:4300
+          BE_URL: http://localhost:8080
+          PLAYWRIGHT_BLOB_OUTPUT_DIR: blob-report
+        continue-on-error: true
 
       # After the tests, not before them. This block sat above the test step and captured a log
       # that stopped at startup -- which is why an investigation into a 401 during the run found
@@ -311,14 +318,6 @@ jobs:
           path: /tmp/backend.log
           if-no-files-found: ignore
           retention-days: 14
-
-        env:
-          CI: "1"
-          PW_EXTERNAL_SERVER: "1"
-          PW_BASE_URL: http://localhost:4300
-          BE_URL: http://localhost:8080
-          PLAYWRIGHT_BLOB_OUTPUT_DIR: blob-report
-        continue-on-error: true
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         if: always()
