@@ -88,6 +88,15 @@ npm run check:i18n-cache-buster || exit 1
 #     `npm run measure:counts`, then update the surfaces it names.
 npm run check:published-numbers || exit 1
 
+# 11b. Two workflow defects a YAML parser and `bash -n` both wave through: a
+#      duplicate key inside a step's `env:` block (parsers silently keep the
+#      last; GitHub rejects the file with a zero-job startup failure and no
+#      log at all), and a single-quoted `'${VAR}'` in a run block, which in
+#      bash is a literal string rather than the value. Both were introduced
+#      by one mechanical rewrite and took the backend's release chain down
+#      for six hours with nothing to read.
+npm run check:workflow-env || exit 1
+
 # 12. The hook and check:static are two hand-written lists of the same set.
 #     This fails the commit when they stop agreeing.
 npm run check:gate-parity || exit 1
