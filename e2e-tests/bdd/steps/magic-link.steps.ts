@@ -1,6 +1,9 @@
 import { REAL_COMPANY_FIREBASE_UID } from '../../_framework/actor';
 import { AuthFlowsApi } from '../../_framework/api/auth-flows.api';
-import { TestSession } from '../../_framework/api/test-session';
+import { ApiHttp } from '../../_framework/api/http-client';
+import type { APIRequestContext } from '@playwright/test';
+import { BE_URL } from '../../integration/_actor';
+import { TestSession, type PlaywrightRequestFactory } from '../../_framework/api/test-session';
 import { clearInbox, waitForEmail } from '../../_framework/test-email';
 import { After, Given, Then, When, expect } from './fixtures';
 
@@ -44,11 +47,35 @@ interface MagicLinkWorld {
   lastEmailBody?: string;
   oobCode?: string;
   lastResponse?: { status: number; headers: Record<string, string>; body?: string };
+  /** The /test staging transport; see hooks() below for why it is not the session's. */
+  hookCtx?: APIRequestContext;
 }
 
 function flows(world: MagicLinkWorld): AuthFlowsApi {
   if (!world.magicSession) throw new Error('magic-link session not opened — Background missing?');
   return new AuthFlowsApi(world.magicSession.api);
+}
+
+/**
+ * The same API, on a request context that belongs to no session.
+ *
+ * The `/test` hooks below need no authentication, but driving them through the magic-link
+ * session's own context leaves that context unable to authenticate afterwards: the scenario
+ * staged emailVerified, then asked for a verification email, and the backend saw no principal at
+ * all -- FirebaseUID=null, and no session-validation line for the request. The same shape cost the
+ * notification tier two rounds before it was recognised.
+ *
+ * So the staging calls get their own transport, created once per scenario and disposed with it,
+ * and the session's context is used only for the call under test.
+ */
+async function hooks(playwright: PlaywrightRequestFactory, world: MagicLinkWorld): Promise<AuthFlowsApi> {
+  if (!world.hookCtx) {
+    world.hookCtx = await playwright.request.newContext({
+      baseURL: BE_URL,
+      ignoreHTTPSErrors: true,
+    });
+  }
+  return new AuthFlowsApi(new ApiHttp(world.hookCtx!));
 }
 
 /**
@@ -112,14 +139,19 @@ Given(
 
 After(async ({ world }) => {
   await world.magicSession?.dispose();
+  await world.hookCtx?.dispose();
+  world.hookCtx = undefined;
 });
 
-Given('the Firebase user has emailVerified set to {word}', async ({ world }, value: string) => {
-  await flows(world).setEmailVerified(COMPANY_FIREBASE_UID, value === 'true');
-});
+Given(
+  'the Firebase user has emailVerified set to {word}',
+  async ({ playwright, world }, value: string) => {
+    await (await hooks(playwright, world)).setEmailVerified(COMPANY_FIREBASE_UID, value === 'true');
+  },
+);
 
-Given('the password reset cooldown is cleared', async ({ world }) => {
-  await flows(world).clearPasswordResetCooldown(COMPANY_FIREBASE_UID);
+Given('the password reset cooldown is cleared', async ({ playwright, world }) => {
+  await (await hooks(playwright, world)).clearPasswordResetCooldown(COMPANY_FIREBASE_UID);
 });
 
 Given('the GreenMail inbox is cleared', async ({ world }) => {

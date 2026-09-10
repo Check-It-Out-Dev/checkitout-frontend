@@ -127,6 +127,20 @@ if (existsSync(mergedPath)) {
     incomplete = true;
     missing.push(`${expectShards - shards.length} of ${expectShards} shards left no exit file`);
   }
+  // A shard that ended badly is RED, not merely noted. The exit codes used to be printed and
+  // otherwise ignored, so a shard whose runner died before a single test started -- leaving a blob
+  // with nothing in it -- contributed nothing to the counts and nothing to the verdict either. The
+  // night was then green on whatever the other shards happened to manage.
+  const brokeDown = shards.filter((s) => s.exit !== '0');
+  if (brokeDown.length) {
+    red = true;
+    say();
+    say(
+      `Shard${brokeDown.length > 1 ? 's' : ''} ${brokeDown.map((s) => s.shard).join(', ')} ` +
+        `did not finish cleanly, so ${brokeDown.length > 1 ? 'their' : 'its'} tests are missing ` +
+        `from the counts above: those counts are a floor, not a result.`,
+    );
+  }
   if (tests.unexpectedTitles.length) {
     red = true;
     say();

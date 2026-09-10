@@ -78,7 +78,6 @@
     "brace-expansion@5": "5.0.9",
     "form-data@2": "2.5.6",
     "form-data@4": "4.0.6",
-    "gaxios@6": "6.7.2",
     "protobufjs@7": "7.6.5",
     "qs@6": "6.16.0",
     "shell-quote@1": "1.9.0",

@@ -291,6 +291,7 @@ jobs:
           fi
 
       - name: ${{ matrix.queue }}
+        id: tests
         run: ${{ matrix.command }}
         env:
           CI: "1"
@@ -299,6 +300,21 @@ jobs:
           BE_URL: http://localhost:8080
           PLAYWRIGHT_BLOB_OUTPUT_DIR: blob-report
         continue-on-error: true
+
+      # The shard says whether it finished, in a file, because its job status cannot.
+      #
+      # continue-on-error is deliberate -- one shard's failure must not cancel the other three, and
+      # the verdict job makes the call. The cost is that the JOB reports success whatever happened,
+      # so the verdict has to learn it some other way. On 2026-09-10 it did not: `npx bddgen` died
+      # with ERR_MODULE_NOT_FOUND, the shard produced no blob at all, two others produced empty
+      # ones, and the night was declared green on the 68 tests the fourth shard managed to run.
+      # Silence read as success, which is the one thing the verdict exists to prevent.
+      - name: This shard's exit code, for the verdict to count
+        if: always()
+        run: |
+          if [ "${{ steps.tests.outcome }}" = "success" ]; then echo 0; else echo 1; fi \
+            > shard-${{ matrix.shard }}.exit
+          echo "shard ${{ matrix.shard }} → ${{ steps.tests.outcome }}"
 
       # After the tests, not before them. This block sat above the test step and captured a log
       # that stopped at startup -- which is why an investigation into a 401 during the run found
@@ -360,6 +376,7 @@ jobs:
           name: nightly-blob-${{ matrix.shard }}
           path: |
             blob-report
+            shard-${{ matrix.shard }}.exit
             backend-${{ matrix.shard }}.log
           retention-days: 7
           if-no-files-found: warn
@@ -388,6 +405,12 @@ jobs:
         run: |
           mkdir -p ci-reports/blobs
           find fragments -name '*.zip' -exec cp {} ci-reports/blobs/ \;
+          # ...and the exit files beside the merged report, where the verdict reads them. They
+          # arrive inside the same artifacts as the blobs but only the .zip files were copied out,
+          # so the first run with --expect-shards reported all four shards missing while all four
+          # had in fact written one.
+          find fragments -name 'shard-*.exit' -exec cp {} ci-reports/ \;
+          echo "exit files found:"; ls -1 ci-reports/shard-*.exit 2>/dev/null || echo "  none"
           PLAYWRIGHT_HTML_OUTPUT_DIR=ci-reports/merged PLAYWRIGHT_HTML_REPORT=ci-reports/merged PLAYWRIGHT_JSON_OUTPUT_NAME=ci-reports/merged.json \
             npx playwright merge-reports --reporter html,json ci-reports/blobs
       # The verdict is recorded here but does not stop the job: a red or an incomplete run must still publish
@@ -397,7 +420,11 @@ jobs:
         continue-on-error: true
         env:
           NEEDS: ${{ toJSON(needs) }}
-        run: set -o pipefail; node tools/ci/k8s-summary.mjs ci-reports --needs "$NEEDS" --json ci-reports/summary.json | tee -a "$GITHUB_STEP_SUMMARY"
+        run: |
+          set -o pipefail
+          # --expect-shards is the whole point: four shards ran, so four exit files must arrive.
+          # Without it a night where three of them published nothing was reported as green.
+          node tools/ci/k8s-summary.mjs ci-reports --needs "$NEEDS" --expect-shards 4             --json ci-reports/summary.json | tee -a "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         if: always()
         with:

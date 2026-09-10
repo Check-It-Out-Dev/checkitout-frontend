@@ -1,4 +1,5 @@
 import { expect } from '@playwright/test';
+import type { APIRequestContext } from '@playwright/test';
 import { createBdd, test as base } from 'playwright-bdd';
 import type { ActorProfile } from '../../_framework/actor';
 import type { TestSession } from '../../_framework/api/test-session';
@@ -39,6 +40,15 @@ interface World {
   applications?: Record<string, { id: number; [k: string]: unknown }>;
   /** name -> { id, dto } of a submitted content record (dto reused for the Instagram PUT). */
   contents?: Record<string, { id: number; dto: Record<string, unknown> }>;
+  /**
+   * A request context for /test staging hooks, belonging to no session.
+   *
+   * Driving a credential-free /test hook through a session's own context leaves that context
+   * unable to authenticate afterwards -- the magic-link scenario staged emailVerified and then
+   * asked for a verification email, and the backend saw no principal at all. Scenarios that stage
+   * state open this instead, and use their session only for the call under test.
+   */
+  hookCtx?: APIRequestContext;
   /** Magic-link oracle: session bound to the real company account + captured email state. */
   magicSession?: TestSession;
   magicEmail?: string;
