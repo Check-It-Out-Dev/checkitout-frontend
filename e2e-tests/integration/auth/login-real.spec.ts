@@ -116,9 +116,13 @@ test.describe('@login-real — real-Firebase happy-path login (T4)', () => {
     try {
       const page = await context.newPage();
 
-      // Step 1: realLogin admin → Identity Toolkit ID token → BE issues
-      // PARTIAL session cookie + body contains `requires2FA: true`.
-      await realLogin(context, ACTORS['admin1']!, GREENFIELD_URL);
+      // Step 1: sign in the way the sign-in screen does -- /auth/firebase/login first, then
+      // /auth/exchange-token -- because the admin path needs both. The proxy login is what leaves
+      // the FirebaseIdToken cookie pair the post-2FA re-exchange reads; the exchange then issues a
+      // PARTIAL session and a body with `requires2FA: true`.
+      await realLogin(context, ACTORS['admin1']!, GREENFIELD_URL, undefined, {
+        viaProxyLogin: true,
+      });
 
       // Step 2: read + KMS-decrypt the seeded TOTP secret for this admin
       // out of Firestore. The bridge handles the

@@ -168,9 +168,32 @@ export async function realLogin(
   profile: ActorProfile,
   origin: string = GREENFIELD_URL,
   expirationDays?: number,
+  options: { viaProxyLogin?: boolean } = {},
 ): Promise<void> {
   const { email, password, apiKey } = resolveCredentials(profile.role);
   const idToken = await mintFirebaseIdToken(context, email, password, apiKey);
+
+  // `viaProxyLogin` adds the step the sign-in screen takes and this helper skips.
+  //
+  // SignInComponent posts to /auth/firebase/login and THEN to /auth/exchange-token; this shortcut
+  // has always gone straight to the exchange, which is equivalent for every role that gets a full
+  // session on the first call. It is not equivalent for ADMIN: the exchange issues a PARTIAL
+  // session, and the re-exchange after 2FA posts an empty body because the backend re-reads the ID
+  // token from the FirebaseIdToken cookie pair -- and only /auth/firebase/login sets that pair
+  // (FirebaseAuthProxyController:132). Without it the re-exchange answers 400, "ID token is null
+  // or empty", and the backend is right: nothing ever gave it one.
+  if (options.viaProxyLogin) {
+    const loginRes = await context.request.post(`${origin}/api/auth/firebase/login`, {
+      data: { email, password },
+      ignoreHTTPSErrors: true,
+    });
+    if (!loginRes.ok()) {
+      throw new Error(
+        `firebase/login failed at ${origin} for ${email}: ${loginRes.status()} ${await loginRes.text()}`,
+      );
+    }
+  }
+
   const body: { idToken: string; expirationDays?: number } = { idToken };
   if (expirationDays !== undefined) {
     body.expirationDays = expirationDays;
