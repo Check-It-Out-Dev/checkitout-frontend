@@ -1,1 +1,1 @@
-{"id":"9fa817cbaf59433c8eca781f0aa8a440","fullName":"integration/flows/multi-user-session-isolation.spec.ts:273:7","name":"@interaction Company and influencer can interact with isolated sessions","status":"passed","testResultsByEnv":{"default":"fa3e40f2596242c608cbcf78f92f3e2f"}}
+{"id":"9fa817cbaf59433c8eca781f0aa8a440","fullName":"integration/flows/multi-user-session-isolation.spec.ts:273:7","name":"@interaction Company and influencer can interact with isolated sessions","status":"passed","testResultsByEnv":{"default":"487c0b4c3c5188da2db74c5d0636bf93"}}

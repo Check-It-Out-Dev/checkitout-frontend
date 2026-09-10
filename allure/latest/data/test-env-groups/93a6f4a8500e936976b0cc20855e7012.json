@@ -1,1 +1,1 @@
-{"id":"93a6f4a8500e936976b0cc20855e7012","fullName":"integration/flows/profile-validation.spec.ts:295:7","name":"@preferences communicationFrequency IMMEDIATE returns 200","status":"passed","testResultsByEnv":{"default":"7f347cf805269f533a27cc435270e149"}}
+{"id":"93a6f4a8500e936976b0cc20855e7012","fullName":"integration/flows/profile-validation.spec.ts:295:7","name":"@preferences communicationFrequency IMMEDIATE returns 200","status":"passed","testResultsByEnv":{"default":"3be95762f834fd56f652eb066db72d65"}}

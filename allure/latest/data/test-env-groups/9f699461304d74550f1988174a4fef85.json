@@ -1,1 +1,1 @@
-{"id":"9f699461304d74550f1988174a4fef85","fullName":"integration/flows/registry-company-flow.spec.ts:151:7","name":"@permissions unauthenticated registry lookup returns 401","status":"passed","testResultsByEnv":{"default":"c5d5b04e95b91868bddfa6d07fc7a9f5"}}
+{"id":"9f699461304d74550f1988174a4fef85","fullName":"integration/flows/registry-company-flow.spec.ts:151:7","name":"@permissions unauthenticated registry lookup returns 401","status":"passed","testResultsByEnv":{"default":"1940c2570c31a85717afa73504ebbf8d"}}

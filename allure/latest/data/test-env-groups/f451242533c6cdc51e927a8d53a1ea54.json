@@ -1,1 +1,1 @@
-{"id":"f451242533c6cdc51e927a8d53a1ea54","fullName":"integration/flows/registry-company-flow.spec.ts:167:7","name":"@permissions INFLUENCER cannot access registry — returns 409","status":"passed","testResultsByEnv":{"default":"7866a497cb0348a2961684956cc90f09"}}
+{"id":"f451242533c6cdc51e927a8d53a1ea54","fullName":"integration/flows/registry-company-flow.spec.ts:167:7","name":"@permissions INFLUENCER cannot access registry — returns 409","status":"passed","testResultsByEnv":{"default":"d767cdc0e4ad3853f9fe5e0d31345951"}}
