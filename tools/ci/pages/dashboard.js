@@ -30,22 +30,25 @@
   })();
 
   /**
-   * The URL of one of this report's own files — and the last word on where a fetch may go.
+   * The URL of one of this report's own files. The origin is not checked here — it cannot be
+   * written in the first place.
    *
-   * The allow-list above constrains the INPUT; this checks the OUTPUT, which is the thing that
-   * actually matters. Whatever `?data=` said, the resolved absolute URL must sit on this origin
-   * and under this page's own directory, or the page reads its own directory instead. Two
-   * independent checks on the same question is the point: the first has to be right about every
-   * way to write an absolute URL, and this one only has to compare two origins.
+   * The allow-list above constrains the input, and an earlier version then compared the resolved
+   * URL's origin against this one. Comparing is weaker than not being able to differ: this builds
+   * from `location.href` and assigns only the PATHNAME, from segments that have already passed the
+   * allow-list. There is no expression here in which a scheme, a host or a port could appear, so
+   * the fetch is same-origin by construction rather than by inspection, and `..` cannot travel up
+   * because a segment equal to `..` never reaches this array.
    */
-  const HERE = new URL('.', location.href);
+  const SEGMENTS = BASE === '.' ? [] : BASE.split('/');
   function reportUrl(file) {
-    const wanted = new URL(`${BASE}/${file}`, HERE);
-    if (wanted.origin !== location.origin || !wanted.pathname.startsWith(HERE.pathname)) {
-      console.warn('dashboard: %s resolves off this report — reading ./%s instead', wanted, file);
-      return new URL(file, HERE).href;
-    }
-    return wanted.href;
+    const url = new URL(location.href);
+    url.search = '';
+    url.hash = '';
+    // everything up to and including this page's own directory, then our own segments
+    const dir = url.pathname.replace(/[^/]*$/, '');
+    url.pathname = dir + [...SEGMENTS, ...file.split('/')].join('/');
+    return url.href;
   }
   const WINDOW = 30;
   const FLAKY_WINDOW = 10;
@@ -435,8 +438,8 @@
     if (r.k6) items.push(['k6 summaries', 'One per runner, HTML and JSON', r.k6]);
     if (r.lighthouse) items.push(['Lighthouse report', 'Performance, accessibility, best practices, SEO', r.lighthouse]);
     items.push(['Workflow run on GitHub', `${m.run.workflow}, run ${m.run.number}`, m.run.url]);
-    items.push(['quality-metrics.json', 'The data behind this page', `${BASE}/quality-metrics.json`]);
-    items.push(['metrics/history.jsonl', 'One line per run, never pruned', `${BASE}/metrics/history.jsonl`]);
+    items.push(['quality-metrics.json', 'The data behind this page', reportUrl('quality-metrics.json')]);
+    items.push(['metrics/history.jsonl', 'One line per run, never pruned', reportUrl('metrics/history.jsonl')]);
     box.append(el('ul', { class: 'reports' }, items.map(([title, sub, href]) => el('li', {}, el('a', { href, text: title }), el('small', { text: sub })))));
     if (r.allure) box.append(el('p', { class: 'note' }, 'The newest Allure report is always at ', el('a', { href: r.allure.replace(/\d+\/?$/, 'latest/'), text: 'allure/latest' }), '.'));
     return repoUrl;
@@ -459,7 +462,7 @@
     $('verdictMeta').textContent = 'The first workflow run writes quality-metrics.json next to this page; until then there is nothing to measure.';
     $('ribbonSection').hidden = true;
     $('tiles').hidden = true;
-    $('foot').textContent = `Could not read ${BASE}/quality-metrics.json (${err && err.message ? err.message : err}).`;
+    $('foot').textContent = `Could not read ${reportUrl('quality-metrics.json')} (${err && err.message ? err.message : err}).`;
   }
 
   async function main() {
