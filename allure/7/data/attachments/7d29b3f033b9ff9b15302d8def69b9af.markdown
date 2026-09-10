@@ -1,0 +1,390 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: ../.features-gen/e2e-tests/bdd/features/profile-validation-edge-cases.feature.spec.js >> Profile Validation Edge Cases (Consolidated) >> Company profile validation - all edge cases (consolidated - 20+ assertions)
+- Location: .features-gen/e2e-tests/bdd/features/profile-validation-edge-cases.feature.spec.js:6:7
+
+# Error details
+
+```
+Error: response status; response body: {"error":"rate_limit_exceeded","message":"Rate limit exceeded. Please try again later.","retry_after":25,"status":429,"path":"/api/users/2541","requestId":"REQ-496a6cfe","timestamp":"2026-09-10T14:44:31.669961769"}
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: 400
+Received: 429
+```
+
+```
+Error: response status; response body: {"error":"rate_limit_exceeded","message":"Rate limit exceeded. Please try again later.","retry_after":25,"status":429,"path":"/api/users/2541","requestId":"REQ-d47f47c8","timestamp":"2026-09-10T14:44:31.698852236"}
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: 400
+Received: 429
+```
+
+```
+Error: response status; response body: {"error":"rate_limit_exceeded","message":"Rate limit exceeded. Please try again later.","retry_after":25,"status":429,"path":"/api/users/2541","requestId":"REQ-cb20a26c","timestamp":"2026-09-10T14:44:31.717591034"}
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: 200
+Received: 429
+```
+
+```
+Error: response status; response body: {"error":"rate_limit_exceeded","message":"Rate limit exceeded. Please try again later.","retry_after":25,"status":429,"path":"/api/users/2541","requestId":"REQ-2841c6d2","timestamp":"2026-09-10T14:44:31.758555863"}
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: 200
+Received: 429
+```
+
+```
+Error: response status; response body: {"error":"rate_limit_exceeded","message":"Rate limit exceeded. Please try again later.","retry_after":25,"status":429,"path":"/api/users/2541","requestId":"REQ-f139a653","timestamp":"2026-09-10T14:44:31.788847789"}
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: 400
+Received: 429
+```
+
+```
+Error: response status; response body: {"error":"rate_limit_exceeded","message":"Rate limit exceeded. Please try again later.","retry_after":25,"status":429,"path":"/api/users/2541","requestId":"REQ-e7d4bc0e","timestamp":"2026-09-10T14:44:31.801524571"}
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: 400
+Received: 429
+```
+
+```
+Error: response status; response body: {"error":"rate_limit_exceeded","message":"Rate limit exceeded. Please try again later.","retry_after":25,"status":429,"path":"/api/users/2541","requestId":"REQ-acc7067e","timestamp":"2026-09-10T14:44:31.812336759"}
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: 400
+Received: 429
+```
+
+```
+Error: response status; response body: {"error":"rate_limit_exceeded","message":"Rate limit exceeded. Please try again later.","retry_after":25,"status":429,"path":"/api/users/2541","requestId":"REQ-253b318a","timestamp":"2026-09-10T14:44:31.823276289"}
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: 400
+Received: 429
+```
+
+```
+Error: response status; response body: {"error":"rate_limit_exceeded","message":"Rate limit exceeded. Please try again later.","retry_after":25,"status":429,"path":"/api/users/2541","requestId":"REQ-2f8d5eb4","timestamp":"2026-09-10T14:44:31.834563667"}
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: 400
+Received: 429
+```
+
+```
+Error: response status; response body: {"error":"rate_limit_exceeded","message":"Rate limit exceeded. Please try again later.","retry_after":25,"status":429,"path":"/api/users/2541","requestId":"REQ-2d374106","timestamp":"2026-09-10T14:44:31.848892117"}
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: 200
+Received: 429
+```
+
+```
+Error: response status; response body: {"error":"rate_limit_exceeded","message":"Rate limit exceeded. Please try again later.","retry_after":25,"status":429,"path":"/api/users/2541","requestId":"REQ-6d38a0fc","timestamp":"2026-09-10T14:44:31.884234857"}
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: 200
+Received: 429
+```
+
+```
+Error: response status; response body: {"error":"rate_limit_exceeded","message":"Rate limit exceeded. Please try again later.","retry_after":25,"status":429,"path":"/api/users/2541","requestId":"REQ-c046e579","timestamp":"2026-09-10T14:44:31.911360729"}
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: 400
+Received: 429
+```
+
+```
+Error: response status; response body: {"error":"rate_limit_exceeded","message":"Rate limit exceeded. Please try again later.","retry_after":25,"status":429,"path":"/api/users/2541","requestId":"REQ-bd117110","timestamp":"2026-09-10T14:44:31.921300603"}
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: 400
+Received: 429
+```
+
+```
+Error: response status; response body: {"error":"rate_limit_exceeded","message":"Rate limit exceeded. Please try again later.","retry_after":25,"status":429,"path":"/api/users/2541","requestId":"REQ-14100d0f","timestamp":"2026-09-10T14:44:31.932421697"}
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: 400
+Received: 429
+```
+
+```
+Error: response status; response body: {"error":"rate_limit_exceeded","message":"Rate limit exceeded. Please try again later.","retry_after":25,"status":429,"path":"/api/users/2541","requestId":"REQ-79af0cdf","timestamp":"2026-09-10T14:44:31.948098577"}
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: 400
+Received: 429
+```
+
+```
+Error: response status; response body: {"error":"rate_limit_exceeded","message":"Rate limit exceeded. Please try again later.","retry_after":25,"status":429,"path":"/api/users/2541","requestId":"REQ-58303526","timestamp":"2026-09-10T14:44:31.964164962"}
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: 400
+Received: 429
+```
+
+```
+Error: response status; response body: {"error":"rate_limit_exceeded","message":"Rate limit exceeded. Please try again later.","retry_after":25,"status":429,"path":"/api/users/2541","requestId":"REQ-d342d71b","timestamp":"2026-09-10T14:44:31.980669834"}
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: 200
+Received: 429
+```
+
+```
+Error: response status; response body: {"error":"rate_limit_exceeded","message":"Rate limit exceeded. Please try again later.","retry_after":25,"status":429,"path":"/api/users/2541","requestId":"REQ-c0216f33","timestamp":"2026-09-10T14:44:31.999143261"}
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: 400
+Received: 429
+```
+
+```
+Error: response status; response body: {"error":"rate_limit_exceeded","message":"Rate limit exceeded. Please try again later.","retry_after":24,"status":429,"path":"/api/users/2541","requestId":"REQ-422aad0d","timestamp":"2026-09-10T14:44:32.016448612"}
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: 200
+Received: 429
+```
+
+# Test source
+
+```ts
+  8   | import {
+  9   |   AddressDtoInAddressTypeEnum,
+  10  |   type AddressDtoIn,
+  11  | } from '../../../src/app/api/model/address-dto-in';
+  12  | import {
+  13  |   FileUploadRequestContentTypeEnum,
+  14  |   type FileUploadRequest,
+  15  | } from '../../../src/app/api/model/file-upload-request';
+  16  | import type { FileUploadResponse } from '../../../src/app/api/model/file-upload-response';
+  17  | import {
+  18  |   UserPreferencesDtoInCommunicationFrequencyEnum,
+  19  |   UserPreferencesDtoInLanguageEnum,
+  20  |   type UserPreferencesDtoIn,
+  21  | } from '../../../src/app/api/model/user-preferences-dto-in';
+  22  | 
+  23  | /**
+  24  |  * Profile oracle — Layer 2 (functional), for the three BE profile features
+  25  |  * (profile-critical-consolidated / profile-non-critical-consolidated /
+  26  |  * validation-edge-cases), driven THROUGH the Layer-1 ProfileApi against the
+  27  |  * LIVE BE, mirroring the BE glue (ProfileUpdateSteps.java +
+  28  |  * FileUploadSteps.java + the token checks from AdvancedSessionSecuritySteps).
+  29  |  *
+  30  |  * One edited actor per scenario (company1 or influencer1 mock-session) plus an
+  31  |  * optional admin session for the restore steps. The edited actor's TestSession
+  32  |  * doubles as the BE's "stored original token": the HttpOnly cookie jar minted
+  33  |  * at sign-in keeps calling /users/me after each critical-field PATCH — if the
+  34  |  * BE started invalidating sessions on profile edits, those calls would 401/419.
+  35  |  *
+  36  |  * Soft assertions are Playwright expect.soft — failures accumulate and fail
+  37  |  * the scenario at teardown, exactly like the BE SoftAssertionContext; the
+  38  |  * "all soft assertions should pass" step is the flush marker.
+  39  |  *
+  40  |  * State lives on a local World view (cast pattern — fixtures.ts untouched)
+  41  |  * under profile*-prefixed keys so the other oracles' After hooks ignore it.
+  42  |  */
+  43  | 
+  44  | interface ProfileWorld {
+  45  |   /** Session of the actor whose profile is being edited (the "original token"). */
+  46  |   profileSession?: TestSession;
+  47  |   /** Admin session for the restore/cleanup steps. */
+  48  |   profileAdminSession?: TestSession;
+  49  |   /** Numeric user id of the edited actor (PATCH /users/{id}). */
+  50  |   profileUserId?: number;
+  51  |   /** firstName/lastName captured at scenario start, for the admin restore. */
+  52  |   profileOriginal?: { firstName?: string; lastName?: string };
+  53  |   /** id of the address created by the last create-address step. */
+  54  |   profileAddressId?: number;
+  55  |   /** Last companyDescription value set, for the GET /users/me echo assert. */
+  56  |   profileLastDescription?: string;
+  57  |   /** Signed-URL response of the last /upload/signed-url call. */
+  58  |   profileUpload?: FileUploadResponse;
+  59  |   /** Content type the signed URL was requested with (the PUT must match it). */
+  60  |   profileUploadContentType?: string;
+  61  |   lastResponse?: { status: number; headers: Record<string, string>; body?: string };
+  62  | }
+  63  | 
+  64  | // ── Helpers ──────────────────────────────────────────────────────────────────
+  65  | 
+  66  | function record(w: ProfileWorld, r: ApiResult): void {
+  67  |   w.lastResponse = { status: r.status, headers: r.headers, body: r.body };
+  68  | }
+  69  | 
+  70  | function snippet(w: ProfileWorld): string {
+  71  |   return (w.lastResponse?.body ?? '(none)').slice(0, 300);
+  72  | }
+  73  | 
+  74  | function requireSession(w: ProfileWorld): TestSession {
+  75  |   if (!w.profileSession) throw new Error('no profile actor session — did the signed-in Given run?');
+  76  |   return w.profileSession;
+  77  | }
+  78  | 
+  79  | function profileApi(w: ProfileWorld): ProfileApi {
+  80  |   return new ProfileApi(requireSession(w));
+  81  | }
+  82  | 
+  83  | function adminApi(w: ProfileWorld): ProfileApi {
+  84  |   if (!w.profileAdminSession) throw new Error('no admin session — did the admin Given run?');
+  85  |   return new ProfileApi(w.profileAdminSession);
+  86  | }
+  87  | 
+  88  | function requireUserId(w: ProfileWorld): number {
+  89  |   if (w.profileUserId == null) throw new Error('no profile user id — did the signed-in Given run?');
+  90  |   return w.profileUserId;
+  91  | }
+  92  | 
+  93  | function requireOriginal(w: ProfileWorld): { firstName?: string; lastName?: string } {
+  94  |   if (!w.profileOriginal) {
+  95  |     throw new Error('no stored original profile values — did the stores-original Given run?');
+  96  |   }
+  97  |   return w.profileOriginal;
+  98  | }
+  99  | 
+  100 | function requireUpload(w: ProfileWorld): FileUploadResponse {
+  101 |   if (!w.profileUpload) throw new Error('no signed-url response — did the request step run?');
+  102 |   return w.profileUpload;
+  103 | }
+  104 | 
+  105 | function softStatus(w: ProfileWorld, expected: number, label: string): void {
+  106 |   expect
+  107 |     .soft(w.lastResponse?.status, `${label} status; response body: ${snippet(w)}`)
+> 108 |     .toBe(expected);
+      |      ^ Error: response status; response body: {"error":"rate_limit_exceeded","message":"Rate limit exceeded. Please try again later.","retry_after":24,"status":429,"path":"/api/users/2541","requestId":"REQ-422aad0d","timestamp":"2026-09-10T14:44:32.016448612"}
+  109 | }
+  110 | 
+  111 | function softStatusIn(w: ProfileWorld, allowed: number[], label: string): void {
+  112 |   const status = w.lastResponse?.status ?? -1;
+  113 |   expect
+  114 |     .soft(allowed, `${label} status — got ${status}; response body: ${snippet(w)}`)
+  115 |     .toContain(status);
+  116 | }
+  117 | 
+  118 | /**
+  119 |  * Typed sparse-PATCH body for one profile field. Each branch is checked
+  120 |  * against the generated models (UserProfilePatch), so a renamed/removed DTO
+  121 |  * field breaks this oracle at compile time.
+  122 |  */
+  123 | function userPatchFor(field: string, value: string): UserProfilePatch {
+  124 |   switch (field) {
+  125 |     case 'firstName':
+  126 |       return { firstName: value };
+  127 |     case 'lastName':
+  128 |       return { lastName: value };
+  129 |     case 'phoneNumber':
+  130 |       return { phoneNumber: value };
+  131 |     case 'name':
+  132 |       return { name: value };
+  133 |     case 'email':
+  134 |       return { email: value };
+  135 |     case 'profilePicture':
+  136 |       return { profilePicture: value };
+  137 |     case 'companyDescription':
+  138 |       return { companyDescription: value };
+  139 |     case 'nip':
+  140 |       return { nip: value };
+  141 |     default:
+  142 |       throw new Error(`unsupported profile field "${field}"`);
+  143 |   }
+  144 | }
+  145 | 
+  146 | /**
+  147 |  * users.phone_number is DB-UNIQUE, and the corpus' literal phone constants
+  148 |  * are already held by the BE Cucumber suite's real actors (both suites run
+  149 |  * against the same database). Rotate every digit by an actor-derived offset
+  150 |  * — length, charset and layout are preserved, so format/boundary semantics
+  151 |  * stay exactly what the corpus tests, while values become collision-free
+  152 |  * per actor (a fixed literal would 409 "already exists").
+  153 |  */
+  154 | function actorUniquePhone(w: ProfileWorld, value: string): string {
+  155 |   const offset = requireUserId(w) % 9 || 1;
+  156 |   return value.replace(/\d/g, (d) => String((Number(d) + offset) % 10));
+  157 | }
+  158 | 
+  159 | async function patchProfileField(w: ProfileWorld, field: string, value: string): Promise<void> {
+  160 |   const body =
+  161 |     field === 'phoneNumber'
+  162 |       ? userPatchFor(field, actorUniquePhone(w, value))
+  163 |       : userPatchFor(field, value);
+  164 |   const r = await profileApi(w).patchUser(requireUserId(w), body);
+  165 |   record(w, r);
+  166 |   if (field === 'companyDescription') w.profileLastDescription = value;
+  167 | }
+  168 | 
+  169 | /**
+  170 |  * Typed preferences patch for one field. Enum-backed fields are guarded
+  171 |  * against the generated enums, so a contract change breaks the oracle.
+  172 |  */
+  173 | function prefsPatchFor(field: string, value: string): UserPreferencesDtoIn {
+  174 |   switch (field) {
+  175 |     case 'language': {
+  176 |       const languages = Object.values(UserPreferencesDtoInLanguageEnum) as string[];
+  177 |       if (!languages.includes(value)) {
+  178 |         throw new Error(`"${value}" is not a UserPreferencesDtoInLanguageEnum member`);
+  179 |       }
+  180 |       return { language: value as UserPreferencesDtoInLanguageEnum };
+  181 |     }
+  182 |     case 'timezone':
+  183 |       return { timezone: value };
+  184 |     case 'communicationFrequency': {
+  185 |       const frequencies = Object.values(UserPreferencesDtoInCommunicationFrequencyEnum) as string[];
+  186 |       if (!frequencies.includes(value)) {
+  187 |         throw new Error(
+  188 |           `"${value}" is not a UserPreferencesDtoInCommunicationFrequencyEnum member`,
+  189 |         );
+  190 |       }
+  191 |       return { communicationFrequency: value as UserPreferencesDtoInCommunicationFrequencyEnum };
+  192 |     }
+  193 |     case 'gdprMarketingConsent':
+  194 |       return { gdprMarketingConsent: value === 'true' };
+  195 |     case 'sharePhoneForPayments':
+  196 |       return { sharePhoneForPayments: value === 'true' };
+  197 |     default:
+  198 |       throw new Error(`unsupported preferences field "${field}"`);
+  199 |   }
+  200 | }
+  201 | 
+  202 | /** The BE glue's full valid address, on the generated contract enum. */
+  203 | function baseAddress(): AddressDtoIn {
+  204 |   return {
+  205 |     street: 'Test Street',
+  206 |     city: 'Test City',
+  207 |     postalCode: '00-001',
+  208 |     country: 'Poland',
+```
