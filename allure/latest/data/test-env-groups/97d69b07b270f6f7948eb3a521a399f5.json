@@ -1,1 +1,1 @@
-{"id":"97d69b07b270f6f7948eb3a521a399f5","fullName":"integration/auth/logout.spec.ts:84:7","name":"@influencer influencer1 logs out and session is cleared","status":"passed","testResultsByEnv":{"default":"404b0b161f85061620f504da0a386ea7"}}
+{"id":"97d69b07b270f6f7948eb3a521a399f5","fullName":"integration/auth/logout.spec.ts:84:7","name":"@influencer influencer1 logs out and session is cleared","status":"passed","testResultsByEnv":{"default":"9994f48a6c36e147f03e1ac530d99a16"}}

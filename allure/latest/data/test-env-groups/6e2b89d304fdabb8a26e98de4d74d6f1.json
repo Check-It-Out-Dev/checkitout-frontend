@@ -1,1 +1,1 @@
-{"id":"6e2b89d304fdabb8a26e98de4d74d6f1","fullName":"e2e-tests/bdd/features/payments-off.feature.spec.js:6:7","name":"GET /api/public-config returns paymentsEnabled=false anonymously","status":"passed","testResultsByEnv":{"default":"e7d255e2d22a7731d572e8c2334c267d"}}
+{"id":"6e2b89d304fdabb8a26e98de4d74d6f1","fullName":"e2e-tests/bdd/features/payments-off.feature.spec.js:6:7","name":"GET /api/public-config returns paymentsEnabled=false anonymously","status":"passed","testResultsByEnv":{"default":"3983a5f0031426bac13067643d7b9090"}}

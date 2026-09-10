@@ -1,1 +1,1 @@
-{"id":"04cf81511ebaab57e2b06d11124b7ffc","fullName":"e2e-tests/bdd/features/logout.feature.spec.js:13:7","name":"Influencer logs out and the session is cleared","status":"passed","testResultsByEnv":{"default":"316032c383b05360e529ceb60e8fd4c0"}}
+{"id":"04cf81511ebaab57e2b06d11124b7ffc","fullName":"e2e-tests/bdd/features/logout.feature.spec.js:13:7","name":"Influencer logs out and the session is cleared","status":"passed","testResultsByEnv":{"default":"1b1578c0131a8b76f677359366c2f795"}}

@@ -1,1 +1,1 @@
-{"id":"91bb705f8842237723566443f032d449","fullName":"e2e-tests/bdd/features/admin-platform-management.feature.spec.js:10:7","name":"Admin manages full ticket lifecycle from creation to resolution","status":"passed","testResultsByEnv":{"default":"7de2a923987b498f82517e501ca17b0f"}}
+{"id":"91bb705f8842237723566443f032d449","fullName":"e2e-tests/bdd/features/admin-platform-management.feature.spec.js:10:7","name":"Admin manages full ticket lifecycle from creation to resolution","status":"passed","testResultsByEnv":{"default":"c7da1977a4b66890f750ba5a4290b126"}}
