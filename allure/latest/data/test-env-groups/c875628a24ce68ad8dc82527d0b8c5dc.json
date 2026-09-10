@@ -1,1 +1,0 @@
-{"id":"c875628a24ce68ad8dc82527d0b8c5dc","fullName":"integration/flows/magic-link-errors.spec.ts:100:7","name":"@tier-1 apply-action-code rejects missing oobCode field (400)","status":"passed","testResultsByEnv":{"default":"c2764350061eadb9245f46ab1cbde09d"}}

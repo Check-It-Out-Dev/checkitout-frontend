@@ -1,1 +1,0 @@
-{"id":"9491e9e193dcb65e5ef594bfe7e774c3","fullName":"integration/flows/registry-company-flow.spec.ts:359:7","name":"@lookup inactive company returns 409 with no-longer-active","status":"passed","testResultsByEnv":{"default":"ee3fd70fb83d9fcec40327ae7f94e81b"}}
