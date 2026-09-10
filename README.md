@@ -14,18 +14,18 @@ it is ever a bug. Every tier above that re-proves the same truth at a higher lev
 [![Coverage](https://img.shields.io/endpoint?url=https://check-it-out-dev.github.io/checkitout-frontend/badges/coverage.json)](https://check-it-out-dev.github.io/checkitout-frontend/)
 [![Flaky](https://img.shields.io/endpoint?url=https://check-it-out-dev.github.io/checkitout-frontend/badges/flaky.json)](https://check-it-out-dev.github.io/checkitout-frontend/)
 [![Lighthouse](https://img.shields.io/endpoint?url=https://check-it-out-dev.github.io/checkitout-frontend/badges/lighthouse.json)](https://check-it-out-dev.github.io/checkitout-frontend/lighthouse/latest.json)
+[![Mutation](https://img.shields.io/endpoint?url=https://check-it-out-dev.github.io/checkitout-frontend/badges/mutation.json)](https://check-it-out-dev.github.io/checkitout-frontend/#quality)
+[![Security](https://img.shields.io/endpoint?url=https://check-it-out-dev.github.io/checkitout-frontend/badges/security.json)](https://check-it-out-dev.github.io/checkitout-frontend/#quality)
 
-[![gates](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/ci-tests.yml/badge.svg)](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/ci-tests.yml)
-[![browser tiers](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/browser-tiers.yml/badge.svg)](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/browser-tiers.yml)
-[![kubernetes](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/k8s-test-execution.yml/badge.svg)](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/k8s-test-execution.yml)
-[![security](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/security.yml/badge.svg)](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/security.yml)
+[![pull-request pipeline](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/pr.yml/badge.svg)](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/pr.yml)
+[![nightly pipeline](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/nightly.yml/badge.svg)](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/nightly.yml)
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=Check-It-Out-Dev_checkitout-frontend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Check-It-Out-Dev_checkitout-frontend)
-[![contract](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/contract-check.yml/badge.svg)](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/contract-check.yml)
-[![dependency review](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/dependency-review.yml)
+[![deploy sandbox](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/deploy-sandbox.yml/badge.svg)](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/deploy-sandbox.yml)
 
-<sub>Only the test count is static — 1884 across every tier, measured 2026-09-08 and gated by G15.
-Coverage, the flaky list and the Lighthouse scores are read live from the
-<a href="https://check-it-out-dev.github.io/checkitout-frontend/">quality dashboard</a>, which every run on <code>main</code> republishes.</sub>
+<sub>Two workflow badges, because there are two pipelines: everything else runs inside one of them.
+Only the test count is static — 1884 across every tier, measured 2026-09-08 and gated by G15.
+Coverage, the flaky list, mutation score, security findings and the Lighthouse scores are read live
+from the <a href="https://check-it-out-dev.github.io/checkitout-frontend/">quality dashboard</a>, which every run on <code>main</code> republishes.</sub>
 
 ### ▶ [**checkitout.app**](https://checkitout.app) — the live demo
 
@@ -124,6 +124,14 @@ npm run measure:counts    # re-ask the runners; writes docs/testing/measured-cou
 ---
 
 ## 🔺 Testing
+
+> **The results, live** — [quality dashboard](https://check-it-out-dev.github.io/checkitout-frontend/) · [Allure with history](https://check-it-out-dev.github.io/checkitout-frontend/allure/latest/) ·
+> [Lighthouse](https://check-it-out-dev.github.io/checkitout-frontend/lighthouse/latest.json) · [k6 in Grafana](https://checkitoutapp.grafana.net/public-dashboards/bc4987ccdb234296a33afd3a794f1f4e)
+>
+> The dashboard is what this section describes, after it has run: pass rate and its trend, mutation
+> score, security findings, every test that failed or flaked in the last ten runs, per-tier
+> durations, and links to the reports themselves. The numbers below are the design; the dashboard is
+> the measurement.
 
 **1,884 tests.** Five layers in the pyramid, four tiers beside it. The point is not the count — it
 is that the layers are **connected**: each is built from the artifacts of the one below, so a
@@ -315,27 +323,44 @@ the hook does not — a gap worth knowing about rather than papering over.
 
 ## ⚙️ CI/CD
 
-Everything below runs on GitHub-hosted runners on the free tier. Speed comes from sharding across
-several of them, never from a bigger one — and no workflow on this public repository runs on
-self-hosted infrastructure, so a fork's pull request can never reach the box.
+Everything runs on GitHub-hosted runners on the free tier. Speed comes from sharding across several
+of them, never from a bigger one — and no workflow on this public repository runs on self-hosted
+infrastructure, so a fork's pull request can never reach the box.
 
-| Pipeline                                                             | Trigger                          | What runs                                                                                                                                                                                                                                                                                                                                 | Time          |
-| :------------------------------------------------------------------- | :------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------ |
-| [`ci-tests.yml`](.github/workflows/ci-tests.yml)                     | push, pull request               | The same fifteen gates as the pre-commit hook: eleven static gates, two typechecks, `ng build` with strictTemplates, the Jest suite with coverage. **Hermetic** — no backend, no browsers, no Docker.                                                                                                                                     | ~150 s        |
-| [`browser-tiers.yml`](.github/workflows/browser-tiers.yml)           | push, pull request               | Nine runners: sandbox and MSW over four shards, the smoothness tier over three (one worker each, because two workers on one machine drop frames in each other's measurements), and the visual tier inside the pinned Playwright image. Blob reports merged into one HTML report, one Allure report and one verdict.                       | ~20 min       |
-| [`k8s-test-execution.yml`](.github/workflows/k8s-test-execution.yml) | weekly, on demand                | A kind cluster on the runner: PostgreSQL, Redis, the backend image on `dev-lite`, the frontend behind nginx. Playwright runs as an **Indexed Job** of four pods, k6-operator as a `TestRun` of two, generating load against the in-cluster services. Metrics remote-written to Grafana Cloud.                                             | ~11 min       |
-| [`nightly-full-stack.yml`](.github/workflows/nightly-full-stack.yml) | 02:00 UTC, on demand             | Four shards — BDD, integration ×2, scenarios and sandbox — each with its own PostgreSQL 16, Redis 7 and GreenMail, against the published backend image.                                                                                                                                                                                   | 75 min budget |
-| [`lighthouse.yml`](.github/workflows/lighthouse.yml)                 | push, on demand                  | Lighthouse CI against the demo build served in the job, asserted against `lighthouserc.json` and `budget.json`.                                                                                                                                                                                                                           | ~4 min        |
-| [`contract-check.yml`](.github/workflows/contract-check.yml)         | daily, on demand                 | Boots the backend on the runner, takes the OpenAPI document from it, and compares it with the copy committed here. On a difference it regenerates the TypeScript client and compiles against it, so drift is a build error rather than a runtime surprise.                                                                                | ~6 min        |
-| [`dependency-review.yml`](.github/workflows/dependency-review.yml)   | pull request                     | Compares the dependency manifests of the base and the head and fails a pull request that introduces a known high-severity advisory. CodeQL is not here: the organisation runs it through **default setup** on the extended query suite, and the two cannot coexist — GitHub refuses SARIF from a workflow while default setup is enabled. | ~2 min        |
-| [`security.yml`](.github/workflows/security.yml)                     | push, pull request, weekly       | Semgrep, Checkov, Trivy and an SBOM on every push; a ZAP baseline against the live sandbox on the weekly run. Every scanner writes SARIF into code scanning.                                                                                                                                                                              | ~6 min        |
-| [`sonar.yml`](.github/workflows/sonar.yml)                           | push, pull request               | SonarQube Cloud, fed the same lcov coverage the gate wall measures.                                                                                                                                                                                                                                                                       | ~4 min        |
-| [`deploy-sandbox.yml`](.github/workflows/deploy-sandbox.yml)         | push to main                     | Builds the image, then waits for a human in the `sandbox` environment. Rollout keeps the previous tags, gates on health, and rolls back by itself when the gate does not clear.                                                                                                                                                           | ~4 min        |
-| Demo — [`tools/deploy-demo.mjs`](tools/deploy-demo.mjs)              | `npm run deploy:demo -- --build` | Demo build, tar over SSH, atomic directory swap with three rollback copies, CDN purge, the served bundle hash verified on both domains past the cache.                                                                                                                                                                                    | ~3 min        |
+**Two pipelines, two verdicts.** There used to be nine workflows firing on every push, which is the
+same thing as none: nine status checks with nine outcomes make "is this safe to merge" a paragraph
+you assemble by hand. Every tier below is now a reusable workflow with no trigger of its own — still
+dispatchable on its own while you work on it, never firing by itself — and each pipeline ends in one
+line that says whether the answer is yes.
 
-Every run publishes to the [quality dashboard](https://check-it-out-dev.github.io/checkitout-frontend/): pass rate, flaky list over the last ten
-runs, per-tier durations, and the reports themselves — [Allure](https://check-it-out-dev.github.io/checkitout-frontend/allure/latest/) with history,
-the merged Playwright report, k6 summaries and Lighthouse. Two public Grafana dashboards carry the k6
+| Pipeline | Trigger | What it calls | Budget |
+| :--- | :--- | :--- | :--- |
+| [`pr.yml`](.github/workflows/pr.yml) | pull request, push to `main` | gate wall · browser tiers (sandbox + MSW, four shards) · Sonar's new-code gate · dependency review | ~10 min |
+| [`nightly.yml`](.github/workflows/nightly.yml) | 02:00 UTC, on demand | browser tiers in full · full stack · Kubernetes · Lighthouse · contract · mutation · security, then one table and one word | as long as it takes |
+
+| Tier | What runs | Time |
+| :--- | :--- | :--- |
+| [`ci-tests.yml`](.github/workflows/ci-tests.yml) | The same fifteen gates as the pre-commit hook: eleven static gates, two typechecks, `ng build` with strictTemplates, the Jest suite with coverage. **Hermetic** — no backend, no browsers, no Docker. | ~150 s |
+| [`browser-tiers.yml`](.github/workflows/browser-tiers.yml) | Up to nine runners: sandbox and MSW over four shards, the smoothness tier over three (one worker each, because two workers on one machine drop frames in each other's measurements), and the visual tier inside the pinned Playwright image. Blob reports merged into one HTML report, one Allure report and one verdict. The pull-request pipeline takes only the fast half. | 6–20 min |
+| [`nightly-full-stack.yml`](.github/workflows/nightly-full-stack.yml) | Four shards — BDD, integration ×2, scenarios and sandbox — each with its own PostgreSQL 16, Redis 7 and GreenMail, against the published backend image. | 75 min budget |
+| [`k8s-test-execution.yml`](.github/workflows/k8s-test-execution.yml) | A kind cluster on the runner: PostgreSQL, Redis, the backend image on `dev-lite`, the frontend behind nginx. Playwright runs as an **Indexed Job** of four pods, k6-operator as a `TestRun` of two, generating load against the in-cluster services. Metrics remote-written to Grafana Cloud. | ~11 min |
+| [`lighthouse.yml`](.github/workflows/lighthouse.yml) | Lighthouse CI against the demo build served in the job, asserted against `lighthouserc.json` and `budget.json`. `color-contrast` and the accessibility category are **errors**, not warnings. | ~4 min |
+| [`contract-check.yml`](.github/workflows/contract-check.yml) | Boots the backend on the runner, takes the OpenAPI document from it, and compares it with the copy committed here. On a difference it regenerates the TypeScript client and compiles against it, so drift is a build error rather than a runtime surprise. | ~6 min |
+| [`mutation.yml`](.github/workflows/mutation.yml) | Stryker over the five core areas that have specs. Coverage says a line ran; this says whether anything checked the result. Publishes the score for the dashboard to trend. | ~10 min |
+| [`security.yml`](.github/workflows/security.yml) | Semgrep, Checkov, Trivy and an SBOM, plus a ZAP baseline against the live sandbox. Every scanner writes SARIF into code scanning, and one job counts what they all found so the number can be trended. CodeQL is deliberately absent: the organisation runs it through **default setup**, and the two cannot coexist — GitHub refuses SARIF from a workflow while default setup is enabled. | ~6 min |
+| [`sonar.yml`](.github/workflows/sonar.yml) | SonarQube Cloud, fed the same lcov coverage the gate wall measures. | ~4 min |
+
+Outside the two pipelines, because deployment is not a test:
+
+| | Trigger | What runs | Time |
+| :--- | :--- | :--- | :--- |
+| [`deploy-sandbox.yml`](.github/workflows/deploy-sandbox.yml) | push to `main` | Builds the image, then waits for a human in the `sandbox` environment. Rollout keeps the previous tags, gates on health, and rolls back by itself when the gate does not clear. | ~4 min |
+| Demo — [`tools/deploy-demo.mjs`](tools/deploy-demo.mjs) | `npm run deploy:demo -- --build` | Demo build, tar over SSH, atomic directory swap with three rollback copies, CDN purge, the served bundle hash verified on both domains past the cache. | ~3 min |
+
+Every run publishes to the [quality dashboard](https://check-it-out-dev.github.io/checkitout-frontend/): pass rate and its trend, **mutation score**,
+**security findings**, the flaky list over the last ten runs, per-tier durations, and the reports
+themselves — [Allure](https://check-it-out-dev.github.io/checkitout-frontend/allure/latest/) with history, the merged Playwright report, k6 summaries
+and Lighthouse. Two public Grafana dashboards carry the k6
 [API journeys](https://checkitoutapp.grafana.net/public-dashboards/bc4987ccdb234296a33afd3a794f1f4e)
 and the [sandbox](https://checkitoutapp.grafana.net/public-dashboards/f48c40b8b3244bdfa019117fa9fdcbbe).
 
@@ -368,6 +393,9 @@ shipped · 🟡 under way · ⬜ designed, not started.
 | 🟡  | Branch and function coverage                             | 68.0 % and 65.7 %. The floors stop a slide; they do not fix the gap.                                                                                                                                                                                                                                                                                               |
 | 🟡  | Nightly full-stack run on a schedule                     | Runs at 02:00 UTC against the published backend image; the first scheduled run passed all four shards and went red on 16 Firebase-dependent scenarios, because the nightly's backend service has no emulator beside it the way the backend's own tier does                                                                                                         |
 | ✅  | Report aggregation and a flaky list                      | Allure 3 with history on Pages, plus a dashboard listing every test that failed or flaked in the last ten runs. Quarantine remains a policy question, not a tooling one.                                                                                                                                                                                           |
+| ✅  | Two pipelines instead of nine workflows                   | `pr.yml` answers "safe to merge" in about ten minutes; `nightly.yml` answers "is the system healthy" and takes as long as it takes. Every tier is a reusable workflow with no trigger of its own, so nothing fires by itself and each pipeline ends in one line.                                                                                                     |
+| ✅  | Mutation testing in both repositories                     | Stryker over the five frontend core areas that have specs: **72.84 %**, or **83.29 %** on covered code, 486 mutants. PIT over the backend's security, rate-limit and auth services: **43.35 %**, **69.22 %** on the code the unit suite reaches. Both floors are ratchets, and both reports list survivors by file rather than only a score. |
+| ✅  | Quality and security metrics over time                    | The dashboard trends mutation score and the security finding count run by run, beside pass rate, coverage, k6 and Lighthouse. Counted from the scanners' own SARIF, so a tool that runs and finds nothing reads as zero rather than as absence.                                                                                              |
 | ✅  | Lighthouse CI and web-vitals budgets                     | `lighthouserc.json` and `budget.json` on every push; the scores are the badge above                                                                                                                                                                                                                                                                                |
 | ✅  | Secret scanning, push protection, CodeQL                 | Enabled 2026-09-09 after a credential was found in the backend's test corpus; dependency review fails a pull request that adds a high-severity advisory                                                                                                                                                                                                            |
 | ✅  | Schemathesis against the running backend                 | Property-based fuzzing of the running provider, in the backend repository where it lives. It found the gap on its first run: every secured operation answered 401 while the document declared none — a contract defect, since this repository's client is generated from that document                                                                             |
