@@ -19,11 +19,14 @@ import { execFileSync } from 'node:child_process';
 import { createSecureServer } from 'node:http2';
 import { existsSync, mkdtempSync, readFileSync, statSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { extname, join, normalize } from 'node:path';
+import { extname, isAbsolute, join, relative, resolve } from 'node:path';
 import { gzipSync } from 'node:zlib';
 
 const port = Number(process.argv[2] ?? 4299);
 const dist = process.argv[3] ?? join(import.meta.dirname, '..', 'dist', 'check-it-out-fe-greenfield', 'browser');
+// Resolved once: every containment check below compares against this, not against a relative form
+// that would depend on the process's working directory.
+const root = resolve(dist);
 
 const certDir = mkdtempSync(join(tmpdir(), 'lh-cert-'));
 execFileSync('openssl', [
@@ -60,9 +63,23 @@ const server = createSecureServer({
 // h1.1 requests; the raw 'stream' event only fires for h2.
 server.on('request', (req, res) => {
   const reqPath = (req.url ?? '/').split('?')[0];
-  let file = normalize(join(dist, decodeURIComponent(reqPath)));
-  if (!file.startsWith(normalize(dist))) file = join(dist, 'index.html');
-  if (!existsSync(file) || statSync(file).isDirectory()) file = join(dist, 'index.html');
+  const index = join(root, 'index.html');
+
+  // Containment by `relative`, not by `startsWith`. A prefix test says a path is inside the root
+  // when it merely begins with the root's characters, so a sibling directory named
+  // `...-browser-something` passes it while being entirely outside (jssecurity:S8707). `relative`
+  // answers the question actually being asked: a contained path never starts with `..` and is never
+  // absolute. decodeURIComponent can also throw on a malformed escape, which would take the server
+  // down rather than refuse one request.
+  let file = index;
+  try {
+    const candidate = resolve(root, '.' + decodeURIComponent(reqPath));
+    const rel = relative(root, candidate);
+    if (rel !== '' && !rel.startsWith('..') && !isAbsolute(rel)) file = candidate;
+  } catch {
+    file = index;
+  }
+  if (!existsSync(file) || statSync(file).isDirectory()) file = index;
 
   const ext = extname(file).toLowerCase();
   let body = readFileSync(file);
