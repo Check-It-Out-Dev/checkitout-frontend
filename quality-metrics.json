@@ -2,14 +2,14 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 55,
-    "id": 34506303785,
-    "sha": "83971bd",
+    "number": 54,
+    "id": 34505120136,
+    "sha": "b155cb6",
     "branch": "main",
     "workflow": "browser-tiers",
-    "startedAt": "2026-09-10T17:07:47Z",
-    "durationSec": 203,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34506303785",
+    "startedAt": "2026-09-10T16:56:08Z",
+    "durationSec": 200,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34505120136",
     "status": "green"
   },
   "tests": {
@@ -45,7 +45,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 22,
-        "durationSec": 135
+        "durationSec": 132
       }
     }
   },
@@ -71,7 +71,7 @@
       "runsFailed": 0,
       "lastSeen": 61,
       "history": [
-        "absent",
+        "pass",
         "absent",
         "absent",
         "absent",
@@ -85,7 +85,7 @@
     }
   ],
   "reports": {
-    "playwright": "playwright/55/",
-    "allure": "allure/55/"
+    "playwright": "playwright/54/",
+    "allure": "allure/54/"
   }
 }
