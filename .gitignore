@@ -103,6 +103,14 @@ e2e-tests/perf/k6/results/
 
 # Reports written by the Kubernetes test-execution substrate (deploy/k8s), collected through the kind mount
 ci-reports/
+
+# Anything `gh run download` leaves behind. A downloaded backend.log was swept into a public
+# commit by `git add -A` because the download ran with the working directory inside the repo;
+# nothing in a run artifact belongs in git, and the run's own log is already public anyway.
+*.log
+backend-log-*/
+nightly-blob-*/
+nightly-report-*/
 # Allure 3: results merged out of the Playwright blobs, the generated report, and the history file
 # the CI jobs carry on the Pages site. All three are build output.
 allure-results/
