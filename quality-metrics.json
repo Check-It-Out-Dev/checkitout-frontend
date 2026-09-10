@@ -2,14 +2,14 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 33,
-    "id": 34494084662,
-    "sha": "09dc58e",
+    "number": 42,
+    "id": 34495042857,
+    "sha": "53d3257",
     "branch": "main",
     "workflow": "browser-tiers",
-    "startedAt": "2026-09-10T15:12:44Z",
-    "durationSec": 189,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34494084662",
+    "startedAt": "2026-09-10T15:20:55Z",
+    "durationSec": 186,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34495042857",
     "status": "green"
   },
   "tests": {
@@ -45,7 +45,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 22,
-        "durationSec": 129
+        "durationSec": 131
       }
     }
   },
@@ -67,17 +67,17 @@
       "title": "Demo smoothness › a simulator that never fires holds the step instead of narrating it [perf]",
       "file": "perf/demo-smoothness.spec.ts",
       "window": 10,
-      "runsFlaky": 4,
+      "runsFlaky": 3,
       "runsFailed": 0,
       "lastSeen": 61,
       "history": [
-        "flaky",
         "flaky",
         "pass",
         "flaky",
         "pass",
         "absent",
         "pass",
+        "absent",
         "absent",
         "flaky",
         "pass"
@@ -85,7 +85,7 @@
     }
   ],
   "reports": {
-    "playwright": "playwright/33/",
-    "allure": "allure/33/"
+    "playwright": "playwright/42/",
+    "allure": "allure/42/"
   }
 }
