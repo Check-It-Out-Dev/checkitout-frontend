@@ -29,7 +29,7 @@ export interface ActorProfile {
 }
 
 /** The real Firebase company account's UID (BE corpus login.feature Examples). */
-export const REAL_COMPANY_FIREBASE_UID = 'WWXA9DehxZghyLq849TpyE4vYzZ2';
+export const REAL_COMPANY_FIREBASE_UID = 'E2E_COMPANY_001';
 
 export const ACTORS: Readonly<Record<string, ActorProfile>> = Object.freeze({
   company1: { id: 'company1', email: 'company1@e2e.test', role: 'COMPANY' },

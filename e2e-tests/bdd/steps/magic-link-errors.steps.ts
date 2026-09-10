@@ -37,7 +37,7 @@ import type { VerifyResetCodeRequest } from '../../../src/app/api/model/verify-r
 
 /** The BE corpus's company Firebase UID (same constant as magic-link.steps.ts,
  *  which keeps it module-private; shared files are never edited by ports). */
-const COMPANY_FIREBASE_UID = 'WWXA9DehxZghyLq849TpyE4vYzZ2';
+const COMPANY_FIREBASE_UID = 'E2E_COMPANY_001';
 
 interface MagicLinkErrorsWorld {
   /** Anonymous transport for the unauthenticated Tier 1-2 error contracts. */

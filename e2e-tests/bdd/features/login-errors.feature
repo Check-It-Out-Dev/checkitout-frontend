@@ -29,7 +29,7 @@ Feature: Authentication Error Handling
     Examples:
       | email                              | password          |
       | nonexistent.user@example.com       | AnyPassword123!   |
-      | norbert.marchewka4444431@gmail.com | WrongPassword123! |
+      | e2e.company@test.com | WrongPassword123! |
 
   @admin @invalid-credentials
   Scenario Outline: Admin login fails with invalid credentials
@@ -40,7 +40,7 @@ Feature: Authentication Error Handling
     Examples:
       | email                         | password          |
       | nonexistent.admin@example.com | AnyPassword123!   |
-      | norbert.marchewka44@gmail.com | WrongPassword123! |
+      | e2e.admin@test.com | WrongPassword123! |
 
   @admin @invalid-totp @2fa @kms @consolidated
   Scenario: Admin 2FA fails with all invalid TOTP codes (consolidated)

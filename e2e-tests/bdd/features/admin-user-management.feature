@@ -12,7 +12,7 @@
 #   answers 200 — a partial (2FA-pending) session is rejected there, so the
 #   200 is exactly what a verified-2FA session buys on the FE surface.
 # - TARGETS: the BE operates on the two REAL prod-account Firebase UIDs
-#   ("WWXA9DehxZghyLq849TpyE4vYzZ2" company / "SEWgduxUjRh4KDqxVWFs6zgThIa2"
+#   ("E2E_COMPANY_001" company / "E2E_INFLUENCER_001"
 #   influencer) "synced from Firestore" via the uid-keyed
 #   /test/auth/sync-user-from-firestore hook. The FE oracle provisions
 #   DISPOSABLE mock-session users (unique @e2e.test emails) under the aliases
@@ -64,7 +64,7 @@ Feature: Admin User Management (CONSOLIDATED)
     And the response should contain pagination info
 
     # ----- VIEW COMPANY USER PROFILE -----
-    # BE: the target user "WWXA9DehxZghyLq849TpyE4vYzZ2" is synced from Firestore
+    # BE: the target user "E2E_COMPANY_001" is synced from Firestore
     Given the target user "companyTarget" is provisioned as a disposable COMPANY user
     When the admin views user "companyTarget" profile
     Then the response status should be 200
@@ -72,7 +72,7 @@ Feature: Admin User Management (CONSOLIDATED)
     And the response should contain the user's account status
 
     # ----- VIEW INFLUENCER USER PROFILE -----
-    # BE: the target user "SEWgduxUjRh4KDqxVWFs6zgThIa2" is synced from Firestore
+    # BE: the target user "E2E_INFLUENCER_001" is synced from Firestore
     Given the target user "influencerTarget" is provisioned as a disposable INFLUENCER user
     When the admin views user "influencerTarget" profile
     Then the response status should be 200

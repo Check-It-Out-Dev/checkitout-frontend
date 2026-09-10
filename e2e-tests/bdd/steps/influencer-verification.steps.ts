@@ -20,7 +20,7 @@ import { After, Given, Then, When, expect } from './fixtures';
  */
 
 /** The BE corpus's influencer Firebase UID (Firestore instagramUsers/{uid}). */
-const INFLUENCER_UID = 'SEWgduxUjRh4KDqxVWFs6zgThIa2';
+const INFLUENCER_UID = 'E2E_INFLUENCER_001';
 
 interface InfluencerWorld {
   influencerSession?: TestSession;

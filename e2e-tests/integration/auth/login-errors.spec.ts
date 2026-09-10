@@ -110,7 +110,7 @@ test.describe('@authentication @login @negative — port of login-errors.feature
 
   test('@company existing email + wrong password surfaces error UI', async ({ page }) => {
     await attemptBadLogin(page, {
-      email: 'norbert.marchewka4444431@gmail.com',
+      email: 'e2e.company@test.com',
       password: 'WrongPassword123!',
       role: 'company',
     });
@@ -128,7 +128,7 @@ test.describe('@authentication @login @negative — port of login-errors.feature
 
   test('@admin existing email + wrong password surfaces error UI', async ({ page }) => {
     await attemptBadLogin(page, {
-      email: 'norbert.marchewka44@gmail.com',
+      email: 'e2e.admin@test.com',
       password: 'WrongPassword123!',
       role: 'admin',
     });
