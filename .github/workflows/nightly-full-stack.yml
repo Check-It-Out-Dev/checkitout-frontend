@@ -163,9 +163,22 @@ jobs:
           JSON
           firebase emulators:start --only auth,firestore --project demo-checkitout             --config /tmp/firebase.json > /tmp/emulators.log 2>&1 &
           FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099           FIRESTORE_EMULATOR_HOST=127.0.0.1:8085           FIREBASE_PROJECT_ID=demo-checkitout             node tools/ci/seed-firebase-emulator.mjs
-      - name: Emulator log on failure
-        if: failure()
-        run: tail -60 /tmp/emulators.log || true
+      # `always()` for the same reason the backend log below says: the blob reporter does not
+      # fail this job when tests fail, so `failure()` here could never fire. It stays quiet on a
+      # healthy night -- only lines the emulators themselves flagged are printed, and the tail
+      # follows only if there were any.
+      - name: Emulator log
+        if: always()
+        run: |
+          if [ ! -f /tmp/emulators.log ]; then echo 'the emulators never wrote a log'; exit 0; fi
+          hits=$(grep -iE 'error|exception|refused|failed|denied' /tmp/emulators.log | tail -40 || true)
+          if [ -n "$hits" ]; then
+            echo "$hits"
+            echo '--- tail, for context ---'
+            tail -60 /tmp/emulators.log
+          else
+            echo 'the emulators logged nothing that looks like a problem'
+          fi
 
       # The backend runs as a service container, so its log is not in this job's output and a failure
       # inside it reads only as an HTTP 500 in a test. Several scenarios fail with
