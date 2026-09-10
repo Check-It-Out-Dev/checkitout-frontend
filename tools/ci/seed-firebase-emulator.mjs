@@ -48,30 +48,67 @@ const INSTAGRAM_PROFILE = {
 const authBase = `http://${AUTH}/identitytoolkit.googleapis.com/v1/projects/${PROJECT}`;
 const storeBase = `http://${STORE}/v1/projects/${PROJECT}/databases/(default)/documents`;
 
-async function call(url, body, method = 'POST') {
-  const res = await fetch(url, {
-    method,
-    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer owner' },
-    body: JSON.stringify(body),
-  });
-  const text = await res.text();
-  if (!res.ok) throw new Error(`${method} ${url} -> ${res.status} ${text.slice(0, 300)}`);
-  return text ? JSON.parse(text) : {};
+/**
+ * One call, retried only on a transport failure.
+ *
+ * An emulator that answers 400 has an opinion and repeating the request will not change it; an
+ * emulator that refuses the connection is still starting, and the difference matters — the first
+ * cold CI run failed on exactly that, two seconds after the hub said everything was ready.
+ */
+async function call(url, body, method = 'POST', attempts = 10) {
+  let lastTransportError;
+  for (let i = 0; i < attempts; i++) {
+    let res;
+    try {
+      res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer owner' },
+        body: JSON.stringify(body),
+      });
+    } catch (e) {
+      lastTransportError = e;
+      await sleep(1000);
+      continue;
+    }
+    const text = await res.text();
+    if (!res.ok) throw new Error(`${method} ${url} -> ${res.status} ${text.slice(0, 300)}`);
+    return text ? JSON.parse(text) : {};
+  }
+  throw new Error(`${method} ${url} unreachable after ${attempts} attempts: ${lastTransportError}`);
 }
 
-/** The emulator hub answers as soon as both emulators are listening. */
-async function waitForEmulators(seconds = 90) {
-  const hub = `http://${AUTH.split(':')[0]}:4400/emulators`;
-  for (let i = 0; i < seconds; i++) {
-    try {
-      const res = await fetch(hub);
-      if (res.ok) return;
-    } catch {
-      /* not up yet */
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+/**
+ * Wait for the emulators themselves, not for the hub.
+ *
+ * The hub on 4400 answers well before Auth and Firestore have bound their own ports, so polling it
+ * is a race that a warm local emulator wins and a cold CI one loses — `fetch failed` two seconds in,
+ * on an emulator that was still starting. Each service is asked a harmless question of its own
+ * instead, which is true only once it is actually listening.
+ */
+async function waitForEmulators(seconds = 120) {
+  const probes = [
+    [`http://${AUTH}/identitytoolkit.googleapis.com/v1/projects/${PROJECT}/accounts:lookup`, 'auth'],
+    [`http://${STORE}/v1/projects/${PROJECT}/databases/(default)/documents/_probe/_probe`, 'firestore'],
+  ];
+  const pending = new Map(probes);
+  for (let i = 0; i < seconds && pending.size; i++) {
+    for (const [url, name] of [...pending]) {
+      try {
+        // Any HTTP answer means the port is listening; 404 and 400 are both fine.
+        await fetch(url, { headers: { Authorization: 'Bearer owner' } });
+        pending.delete(url);
+        console.log(`  ${name} is up after ${i + 1}s`);
+      } catch {
+        /* still starting */
+      }
     }
-    await new Promise((r) => setTimeout(r, 1000));
+    if (pending.size) await sleep(1000);
   }
-  throw new Error(`the emulator hub at ${hub} did not answer in ${seconds}s`);
+  if (pending.size) {
+    throw new Error(`${[...pending.values()].join(' and ')} did not listen within ${seconds}s`);
+  }
 }
 
 async function upsert(actor) {
