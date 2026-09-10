@@ -2,34 +2,34 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 42,
-    "id": 34495042857,
-    "sha": "53d3257",
+    "number": 46,
+    "id": 34495140840,
+    "sha": "3cead68",
     "branch": "main",
     "workflow": "browser-tiers",
-    "startedAt": "2026-09-10T15:20:55Z",
-    "durationSec": 186,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34495042857",
+    "startedAt": "2026-09-10T15:21:49Z",
+    "durationSec": 442,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34495140840",
     "status": "green"
   },
   "tests": {
-    "total": 1313,
-    "passed": 1289,
+    "total": 1314,
+    "passed": 1290,
     "failed": 0,
     "flaky": 0,
     "skipped": 24,
     "passRate": 1,
     "flakyRate": 0,
-    "durationMeanSec": 0.14,
+    "durationMeanSec": 0.16,
     "durationP95Sec": 0.92,
     "tiers": {
       "jest": {
-        "total": 1183,
-        "passed": 1183,
+        "total": 1184,
+        "passed": 1184,
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
-        "durationSec": 54
+        "durationSec": 78
       },
       "msw": {
         "total": 2,
@@ -45,7 +45,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 22,
-        "durationSec": 131
+        "durationSec": 127
       }
     }
   },
@@ -67,16 +67,16 @@
       "title": "Demo smoothness › a simulator that never fires holds the step instead of narrating it [perf]",
       "file": "perf/demo-smoothness.spec.ts",
       "window": 10,
-      "runsFlaky": 3,
+      "runsFlaky": 2,
       "runsFailed": 0,
       "lastSeen": 61,
       "history": [
-        "flaky",
         "pass",
         "flaky",
         "pass",
         "absent",
         "pass",
+        "absent",
         "absent",
         "absent",
         "flaky",
@@ -85,7 +85,7 @@
     }
   ],
   "reports": {
-    "playwright": "playwright/42/",
-    "allure": "allure/42/"
+    "playwright": "playwright/46/",
+    "allure": "allure/46/"
   }
 }
