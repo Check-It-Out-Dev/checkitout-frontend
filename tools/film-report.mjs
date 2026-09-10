@@ -36,7 +36,7 @@ function pickRun() {
   const runs = readdirSync(root, { withFileTypes: true })
     .filter((e) => e.isDirectory())
     .map((e) => e.name)
-    .sort();
+    .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
   if (!runs.length) throw new Error('qa-film holds no runs');
   return join(root, runs.at(-1));
 }
@@ -189,9 +189,7 @@ function filmSection(cut, reviews) {
       out.push(
         `- **${g.phase}** — the DOM says the step ${g.dom}, the frames say \`${g.seen}\`.` +
           (g.unmetChecks.length ? ` Checks unmet: ${g.unmetChecks.join(', ')}.` : '') +
-          (g.unmetRequirements.length
-            ? ` Not visible: ${g.unmetRequirements.join(', ')}.`
-            : ''),
+          (g.unmetRequirements.length ? ` Not visible: ${g.unmetRequirements.join(', ')}.` : ''),
       );
     }
     out.push('');
@@ -240,6 +238,10 @@ if (friction.length) {
 writeFileSync(join(run, 'report.md'), md.join('\n'));
 writeFileSync(
   join(run, 'report.json'),
-  JSON.stringify({ run, films: cuts.length, reviewed: reviews.size, gaps: allGaps, friction }, null, 2),
+  JSON.stringify(
+    { run, films: cuts.length, reviewed: reviews.size, gaps: allGaps, friction },
+    null,
+    2,
+  ),
 );
 log(`${join(run, 'report.md')} — ${String(allGaps.length)} DOM/picture disagreement(s)`);

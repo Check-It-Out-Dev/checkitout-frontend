@@ -55,8 +55,7 @@ const INDEX_HTML = join(SRC, 'index.html');
 // hard refresh — reported 2026-09-02). Stamping the content hash makes every
 // regen bust the cache in dev AND prod. The gate (--check) fails if the stamp
 // drifts from the font, so a font regen can't land without the URL update.
-const FONT_URL_RE =
-  /url\(\/assets\/fonts\/materialicons_v145_subset\.woff2(?:\?v=[a-f0-9]+)?\)/;
+const FONT_URL_RE = /url\(\/assets\/fonts\/materialicons_v145_subset\.woff2(?:\?v=[a-f0-9]+)?\)/;
 // The index.html <link rel="preload"> for the same woff2 must carry the SAME
 // ?v=<hash> or the preloaded URL never matches the CSS request → a
 // "preloaded but not used" console warning (caught by route-smoke) plus a
@@ -65,8 +64,7 @@ const FONT_URL_RE =
 // other than "/" (the sandbox build serves at /sandbox/) a relative preload
 // resolves against the base while the stylesheet's absolute url() does not,
 // so the two name different files and the preload never pairs.
-const PRELOAD_URL_RE =
-  /href="\/assets\/fonts\/materialicons_v145_subset\.woff2(?:\?v=[a-f0-9]+)?"/;
+const PRELOAD_URL_RE = /href="\/assets\/fonts\/materialicons_v145_subset\.woff2(?:\?v=[a-f0-9]+)?"/;
 
 function fontHash() {
   return createHash('sha256').update(readFileSync(OUT_FONT)).digest('hex').slice(0, 12);
@@ -145,7 +143,7 @@ function scanIconNames() {
       if (t && !t.startsWith('#') && NAME.test(t)) names.add(t);
     }
   }
-  return [...names].sort();
+  return [...names].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
 }
 
 const scanned = scanIconNames();
@@ -158,25 +156,41 @@ if (mode === 'check') {
   if (missing.length > 0 || !existsSync(OUT_FONT)) {
     console.error('check:icon-subset FAILED — icon names used in src/ but absent from the shipped');
     console.error('Material Icons subset:', missing.join(', ') || '(subset font file missing)');
-    console.error('Run: node tools/subset-material-icons.mjs --write   (then commit the regenerated');
+    console.error(
+      'Run: node tools/subset-material-icons.mjs --write   (then commit the regenerated',
+    );
     console.error(`font + manifest). Manifest: ${MANIFEST}`);
     process.exit(1);
   }
   const wantStamp = fontHash();
   const haveStamp = readStamp();
   if (haveStamp !== wantStamp) {
-    console.error('check:icon-subset FAILED — the @font-face cache-buster in styles.scss is stale.');
-    console.error(`   styles.scss carries ?v=${haveStamp ?? '(none)'} but the shipped font hashes to ${wantStamp}.`);
+    console.error(
+      'check:icon-subset FAILED — the @font-face cache-buster in styles.scss is stale.',
+    );
+    console.error(
+      `   styles.scss carries ?v=${haveStamp ?? '(none)'} but the shipped font hashes to ${wantStamp}.`,
+    );
     console.error('   A cached browser would keep rendering the old font (blank icons). Run:');
-    console.error('       node tools/subset-material-icons.mjs --write   (re-stamps the URL), then commit styles.scss.');
+    console.error(
+      '       node tools/subset-material-icons.mjs --write   (re-stamps the URL), then commit styles.scss.',
+    );
     process.exit(1);
   }
   const havePreload = readPreloadStamp();
   if (havePreload !== wantStamp) {
-    console.error('check:icon-subset FAILED — the index.html font <link rel="preload"> cache-buster is stale.');
-    console.error(`   index.html carries ?v=${havePreload ?? '(none)'} but the shipped font hashes to ${wantStamp}.`);
-    console.error('   Mismatch → "preloaded but not used" console warning + a wasted double-fetch. Run:');
-    console.error('       node tools/subset-material-icons.mjs --write   (re-stamps both), then commit index.html.');
+    console.error(
+      'check:icon-subset FAILED — the index.html font <link rel="preload"> cache-buster is stale.',
+    );
+    console.error(
+      `   index.html carries ?v=${havePreload ?? '(none)'} but the shipped font hashes to ${wantStamp}.`,
+    );
+    console.error(
+      '   Mismatch → "preloaded but not used" console warning + a wasted double-fetch. Run:',
+    );
+    console.error(
+      '       node tools/subset-material-icons.mjs --write   (re-stamps both), then commit index.html.',
+    );
     process.exit(1);
   }
   console.log(

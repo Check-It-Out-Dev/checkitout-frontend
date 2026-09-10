@@ -67,7 +67,7 @@ function pickRun() {
   const runs = readdirSync(root, { withFileTypes: true })
     .filter((e) => e.isDirectory())
     .map((e) => e.name)
-    .sort();
+    .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
   if (!runs.length) throw new Error('qa-film exists but holds no runs');
   return join(root, runs.at(-1));
 }
@@ -187,8 +187,23 @@ function cutOne(dir) {
 
   // 1 — the movie
   // `-fps_mode vfr`, not `-vsync`: the latter was removed in ffmpeg 9.
-  ffmpeg(['-f', 'concat', '-safe', '0', '-i', join(dir, 'frames.txt'), '-fps_mode', 'vfr',
-          '-pix_fmt', 'yuv420p', '-c:v', 'libx264', '-crf', '24', join(dir, 'movie.mp4')]);
+  ffmpeg([
+    '-f',
+    'concat',
+    '-safe',
+    '0',
+    '-i',
+    join(dir, 'frames.txt'),
+    '-fps_mode',
+    'vfr',
+    '-pix_fmt',
+    'yuv420p',
+    '-c:v',
+    'libx264',
+    '-crf',
+    '24',
+    join(dir, 'movie.mp4'),
+  ]);
 
   // 2 — the machine's half
   const wins = windows(samples, phases.business);
@@ -503,7 +518,8 @@ function cutOne(dir) {
     mine.forEach((f, i) => {
       const label = `${f.file.slice(0, 6)}  ${rel(f.t)}ms`.replace(/:/g, '\\:');
       ffmpeg([
-        '-i', join(dir, 'frames', f.file),
+        '-i',
+        join(dir, 'frames', f.file),
         '-vf',
         `scale=${CELL_W}:-2,drawtext=fontfile='${FONT}':text='${label}':x=8:y=8:` +
           `fontsize=20:fontcolor=yellow:box=1:boxcolor=black@0.65:boxborderw=5`,
@@ -516,10 +532,14 @@ function cutOne(dir) {
     for (let s = 0; s * per < mine.length; s++) {
       const name = `${win.step}_${String(s + 1).padStart(2, '0')}.jpg`;
       ffmpeg([
-        '-start_number', String(s * per),
-        '-i', join(tmp, 'c%03d.jpg'),
-        '-frames:v', '1',
-        '-vf', `tile=${SHEET_COLS}x${SHEET_ROWS}:margin=6:padding=4:color=0x111111`,
+        '-start_number',
+        String(s * per),
+        '-i',
+        join(tmp, 'c%03d.jpg'),
+        '-frames:v',
+        '1',
+        '-vf',
+        `tile=${SHEET_COLS}x${SHEET_ROWS}:margin=6:padding=4:color=0x111111`,
         join(shot, name),
       ]);
       sheets.push(name);
@@ -558,11 +578,13 @@ function cutOne(dir) {
       const name = `${win.step}_${req.id}.jpg`;
       try {
         ffmpeg([
-          '-i', join(dir, 'frames', near.file),
+          '-i',
+          join(dir, 'frames', near.file),
           '-vf',
           `crop=${w + CROP_PAD * 2}:${h + CROP_PAD * 2}:${cx}:${cy},` +
             `scale=iw*${CROP_ZOOM}:ih*${CROP_ZOOM}:flags=lanczos`,
-          '-q:v', '2',
+          '-q:v',
+          '2',
           join(shot, name),
         ]);
       } catch {
@@ -589,7 +611,12 @@ function cutOne(dir) {
       fromMs: rel(win.from),
       toMs: rel(win.to),
       sheets,
-      frames: mine.map((f) => ({ frame: f.file.slice(0, 6), atMs: rel(f.t), file: f.file, why: f.why })),
+      frames: mine.map((f) => ({
+        frame: f.file.slice(0, 6),
+        atMs: rel(f.t),
+        file: f.file,
+        why: f.why,
+      })),
     });
   }
 

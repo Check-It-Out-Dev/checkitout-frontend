@@ -59,7 +59,7 @@ function resolveJava21() {
     const jdks = join(homedir(), '.jdks');
     const c = readdirSync(jdks)
       .filter((d) => d.startsWith('corretto-21'))
-      .sort()
+      .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
       .reverse();
     if (c.length) return join(jdks, c[0]);
   } catch {

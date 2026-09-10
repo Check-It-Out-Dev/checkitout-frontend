@@ -30,7 +30,17 @@
 //
 // The run identity comes from the GitHub environment (GITHUB_REPOSITORY, GITHUB_RUN_NUMBER, GITHUB_RUN_ID,
 // GITHUB_SHA, GITHUB_REF_NAME, GITHUB_SERVER_URL) or from --repo/--run-number/--run-id/--sha/--branch.
-import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync, appendFileSync } from 'node:fs';
+import {
+  cpSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+  appendFileSync,
+} from 'node:fs';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { flakyList } from './flaky-report.mjs';
@@ -76,7 +86,13 @@ function glob(pattern) {
   // failsafe-reports/<suite>/TEST-*.xml and no single-directory pattern can reach them.
   const norm = pattern.replace(/\\/g, '/');
   const re = (name) =>
-    new RegExp('^' + basename(name).replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$');
+    new RegExp(
+      '^' +
+        basename(name)
+          .replace(/[.+^${}()|[\]\\]/g, '\\$&')
+          .replace(/\*/g, '.*') +
+        '$',
+    );
   if (norm.includes('**')) {
     const [head, tail] = norm.split(/\/?\*\*\/?/, 2);
     const filePattern = re(tail || '*');
@@ -91,12 +107,15 @@ function glob(pattern) {
       }
     };
     walk(root);
-    return out.sort();
+    return out.sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
   }
   const dir = dirname(norm);
   const filePattern = re(norm);
   if (!existsSync(dir)) return [];
-  return readdirSync(dir).filter((f) => filePattern.test(f)).map((f) => join(dir, f)).sort();
+  return readdirSync(dir)
+    .filter((f) => filePattern.test(f))
+    .map((f) => join(dir, f))
+    .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
 }
 const r2 = (x) => Math.round(x * 100) / 100;
 const r4 = (x) => Math.round(x * 10000) / 10000;
@@ -104,7 +123,8 @@ const r4 = (x) => Math.round(x * 10000) / 10000;
 /* ---------- tests: tiers and per-test outcomes ---------- */
 const tiers = {};
 const tests = []; // { id, status: pass|flaky|fail|skipped, durationSec, retries }
-const tier = (name) => (tiers[name] ??= { total: 0, passed: 0, failed: 0, flaky: 0, skipped: 0, durationSec: 0 });
+const tier = (name) =>
+  (tiers[name] ??= { total: 0, passed: 0, failed: 0, flaky: 0, skipped: 0, durationSec: 0 });
 function record(name, status, durationSec, id, retries = 0) {
   const t = tier(name);
   t.total++;
@@ -135,11 +155,24 @@ if (opt.playwright && existsSync(opt.playwright)) {
     const f = suite.file || file;
     for (const spec of suite.specs || []) {
       for (const t of spec.tests || []) {
-        const status = t.status === 'expected' ? 'pass' : t.status === 'unexpected' ? 'fail' : t.status === 'flaky' ? 'flaky' : 'skipped';
+        const status =
+          t.status === 'expected'
+            ? 'pass'
+            : t.status === 'unexpected'
+              ? 'fail'
+              : t.status === 'flaky'
+                ? 'flaky'
+                : 'skipped';
         const results = t.results || [];
         const dur = results.reduce((s, r) => s + (r.duration || 0), 0) / 1000;
         const title = [...path, spec.title].join(' › ');
-        record(playwrightTier(f), status, dur, `${f} › ${title} [${t.projectName || 'default'}]`, Math.max(0, results.length - 1));
+        record(
+          playwrightTier(f),
+          status,
+          dur,
+          `${f} › ${title} [${t.projectName || 'default'}]`,
+          Math.max(0, results.length - 1),
+        );
       }
     }
     for (const s of suite.suites || []) walk(s, [...path, s.title], f);
@@ -159,13 +192,27 @@ function parseJunit(xml) {
   const re = /<testcase\b([^>]*?)(\/>|>([\s\S]*?)<\/testcase>)/g;
   let m;
   while ((m = re.exec(xml))) {
-    const attrs = Object.fromEntries([...m[1].matchAll(/(\w+)="([^"]*)"/g)].map((a) => [a[1], a[2].replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')]));
+    const attrs = Object.fromEntries(
+      [...m[1].matchAll(/(\w+)="([^"]*)"/g)].map((a) => [
+        a[1],
+        a[2]
+          .replace(/&quot;/g, '"')
+          .replace(/&amp;/g, '&')
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>'),
+      ]),
+    );
     const body = m[3] || '';
     let status = 'pass';
     if (/<skipped\b/.test(body)) status = 'skipped';
     else if (/<(failure|error)\b/.test(body)) status = 'fail';
     else if (/<(flakyFailure|flakyError|rerunFailure|rerunError)\b/.test(body)) status = 'flaky';
-    cases.push({ name: attrs.name || '', classname: attrs.classname || '', time: Number(attrs.time || 0), status });
+    cases.push({
+      name: attrs.name || '',
+      classname: attrs.classname || '',
+      time: Number(attrs.time || 0),
+      status,
+    });
   }
   return cases;
 }
@@ -191,21 +238,48 @@ if (tests.length === 0) {
     const tree = (dir, depth = 0) => {
       if (depth > 2 || !existsSync(dir)) return [];
       return readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
-        e.isDirectory() ? [`${'  '.repeat(depth)}${e.name}/`, ...tree(join(dir, e.name), depth + 1)] : [`${'  '.repeat(depth)}${e.name}`],
+        e.isDirectory()
+          ? [`${'  '.repeat(depth)}${e.name}/`, ...tree(join(dir, e.name), depth + 1)]
+          : [`${'  '.repeat(depth)}${e.name}`],
       );
     };
-    const roots = [...new Set(inputs.map((i) => i.split(' ')[1].split(/[/\\]/)[0]).filter((r) => r && !r.startsWith('-')))];
+    const roots = [
+      ...new Set(
+        inputs.map((i) => i.split(' ')[1].split(/[/\\]/)[0]).filter((r) => r && !r.startsWith('-')),
+      ),
+    ];
     die(
       `not one test was read, so there is nothing to publish. Inputs given:\n  ${inputs.join('\n  ')}\n` +
-        roots.map((r) => `What is actually under ${r}/:\n${tree(r).slice(0, 60).map((l) => '  ' + l).join('\n') || '  (nothing)'}`).join('\n'),
+        roots
+          .map(
+            (r) =>
+              `What is actually under ${r}/:\n${
+                tree(r)
+                  .slice(0, 60)
+                  .map((l) => '  ' + l)
+                  .join('\n') || '  (nothing)'
+              }`,
+          )
+          .join('\n'),
     );
   }
 }
 
 const scored = tests.filter((t) => t.status !== 'skipped');
 const durations = scored.map((t) => t.durationSec).sort((a, b) => a - b);
-const p95 = durations.length ? durations[Math.min(durations.length - 1, Math.floor(durations.length * 0.95))] : 0;
-const totals = Object.values(tiers).reduce((a, t) => ({ total: a.total + t.total, passed: a.passed + t.passed, failed: a.failed + t.failed, flaky: a.flaky + t.flaky, skipped: a.skipped + t.skipped }), { total: 0, passed: 0, failed: 0, flaky: 0, skipped: 0 });
+const p95 = durations.length
+  ? durations[Math.min(durations.length - 1, Math.floor(durations.length * 0.95))]
+  : 0;
+const totals = Object.values(tiers).reduce(
+  (a, t) => ({
+    total: a.total + t.total,
+    passed: a.passed + t.passed,
+    failed: a.failed + t.failed,
+    flaky: a.flaky + t.flaky,
+    skipped: a.skipped + t.skipped,
+  }),
+  { total: 0, passed: 0, failed: 0, flaky: 0, skipped: 0 },
+);
 const scoredCount = totals.passed + totals.failed + totals.flaky;
 for (const t of Object.values(tiers)) t.durationSec = Math.round(t.durationSec);
 
@@ -213,7 +287,12 @@ for (const t of Object.values(tiers)) t.durationSec = Math.round(t.durationSec);
 let coverage;
 if (opt.coverage && existsSync(opt.coverage)) {
   const c = readJson(opt.coverage).total;
-  coverage = { lines: r2(c.lines.pct), statements: r2(c.statements.pct), branches: r2(c.branches.pct), functions: r2(c.functions.pct) };
+  coverage = {
+    lines: r2(c.lines.pct),
+    statements: r2(c.statements.pct),
+    branches: r2(c.branches.pct),
+    functions: r2(c.functions.pct),
+  };
 } else if (opt.jacoco && existsSync(opt.jacoco)) {
   const xml = readFileSync(opt.jacoco, 'utf8');
   const tail = xml.slice(xml.lastIndexOf('</package>'));
@@ -221,14 +300,23 @@ if (opt.coverage && existsSync(opt.coverage)) {
     const m = new RegExp(`<counter type="${type}" missed="(\\d+)" covered="(\\d+)"`).exec(tail);
     return m ? r2((100 * Number(m[2])) / (Number(m[1]) + Number(m[2]) || 1)) : undefined;
   };
-  coverage = { lines: pick('LINE'), statements: pick('INSTRUCTION'), branches: pick('BRANCH'), functions: pick('METHOD') };
+  coverage = {
+    lines: pick('LINE'),
+    statements: pick('INSTRUCTION'),
+    branches: pick('BRANCH'),
+    functions: pick('METHOD'),
+  };
 }
 
 /* ---------- k6 ---------- */
 let perf;
 const k6Files = multi.k6.flatMap(glob);
 if (k6Files.length) {
-  let requests = 0, failed = 0, p95Ms = 0, thresholdsOk = true, profile = 'unknown';
+  let requests = 0,
+    failed = 0,
+    p95Ms = 0,
+    thresholdsOk = true,
+    profile = 'unknown';
   const journeys = {};
   for (const f of k6Files) {
     const m = readJson(f).metrics || {};
@@ -239,7 +327,8 @@ if (k6Files.length) {
     failed += m.http_req_failed ? m.http_req_failed.values.rate * reqs : 0;
     p95Ms = Math.max(p95Ms, m.http_req_duration?.values?.['p(95)'] || 0);
     for (const [name, metric] of Object.entries(m)) {
-      if (metric.thresholds && !Object.values(metric.thresholds).every((t) => t.ok)) thresholdsOk = false;
+      if (metric.thresholds && !Object.values(metric.thresholds).every((t) => t.ok))
+        thresholdsOk = false;
       const jm = /^http_req_duration\{journey:([a-z_]+)\}$/.exec(name);
       if (jm) {
         const j = (journeys[jm[1]] ??= { p95Ms: 0, p99Ms: 0, budgetMs: null, ok: true });
@@ -253,15 +342,33 @@ if (k6Files.length) {
       }
     }
   }
-  for (const j of Object.values(journeys)) { j.p95Ms = r2(j.p95Ms); j.p99Ms = r2(j.p99Ms); }
-  perf = { k6: { profile, requests, failedRate: r4(requests ? failed / requests : 0), p95Ms: r2(p95Ms), thresholdsOk, journeys } };
+  for (const j of Object.values(journeys)) {
+    j.p95Ms = r2(j.p95Ms);
+    j.p99Ms = r2(j.p99Ms);
+  }
+  perf = {
+    k6: {
+      profile,
+      requests,
+      failedRate: r4(requests ? failed / requests : 0),
+      p95Ms: r2(p95Ms),
+      thresholdsOk,
+      journeys,
+    },
+  };
 }
 
 /* ---------- lighthouse, kubernetes ---------- */
 let lighthouse;
 if (opt.lighthouse && existsSync(opt.lighthouse)) {
   const l = readJson(opt.lighthouse);
-  lighthouse = { url: l.url, performance: l.performance, accessibility: l.accessibility, bestPractices: l.bestPractices, seo: l.seo };
+  lighthouse = {
+    url: l.url,
+    performance: l.performance,
+    accessibility: l.accessibility,
+    bestPractices: l.bestPractices,
+    seo: l.seo,
+  };
 }
 let kubernetes;
 if (opt.kubernetes) kubernetes = JSON.parse(opt.kubernetes);
@@ -279,7 +386,9 @@ if (opt.mutation && existsSync(opt.mutation)) {
       mutants: m.mutants?.total ?? null,
       survived: m.mutants?.Survived ?? m.mutants?.SURVIVED ?? null,
       floor: m.floor ?? null,
-      ...(m.classesWithNoUnitTest !== undefined ? { classesWithNoUnitTest: m.classesWithNoUnitTest } : {}),
+      ...(m.classesWithNoUnitTest !== undefined
+        ? { classesWithNoUnitTest: m.classesWithNoUnitTest }
+        : {}),
     };
   }
 }
@@ -315,7 +424,12 @@ if (!security && sarifFiles.length) {
       }
     }
   }
-  security = { total: byLevel.error + byLevel.warning + byLevel.note, ...byLevel, tools: byTool, scans: sarifFiles.length };
+  security = {
+    total: byLevel.error + byLevel.warning + byLevel.note,
+    ...byLevel,
+    tools: byTool,
+    scans: sarifFiles.length,
+  };
 }
 
 /* ---------- the site: reports, tests file, flaky list, metrics, history, badges, dashboard ---------- */
@@ -324,7 +438,10 @@ mkdirSync(join(out, 'badges'), { recursive: true });
 const reports = {};
 for (const spec of multi.copy) {
   const [name, dir] = spec.split('=');
-  if (!dir || !existsSync(dir)) { console.warn(`quality-metrics: no ${name} report at ${dir}, skipped`); continue; }
+  if (!dir || !existsSync(dir)) {
+    console.warn(`quality-metrics: no ${name} report at ${dir}, skipped`);
+    continue;
+  }
   const dest = join(out, name, String(runNumber));
   rmSync(dest, { recursive: true, force: true });
   cpSync(dir, dest, { recursive: true });
@@ -339,7 +456,10 @@ for (const spec of multi.copy) {
 // suites. Without the prefix they share one file name, one history line and one flaky window — the second
 // one to publish deletes the first, and "the last ten runs" mixes two suites.
 const runKey = `${workflow}-${runNumber}`;
-writeFileSync(join(out, 'metrics', 'tests', `${runKey}.json`), JSON.stringify({ run: runNumber, workflow, tests }));
+writeFileSync(
+  join(out, 'metrics', 'tests', `${runKey}.json`),
+  JSON.stringify({ run: runNumber, workflow, tests }),
+);
 const { list: flaky } = flakyList(join(out, 'metrics', 'tests'), windowRuns, workflow);
 
 // A run whose jobs did not all finish is `incomplete`: its counts are partial and it must never be read,
@@ -350,12 +470,24 @@ const runStatus = (verdict && verdict.status) || null;
 const metrics = {
   schema: 1,
   repo,
-  run: { number: runNumber, id: runId, sha, branch, workflow, startedAt, durationSec, url: `${server}/${repo}/actions/runs/${runId}`, ...(runStatus ? { status: runStatus } : {}) },
+  run: {
+    number: runNumber,
+    id: runId,
+    sha,
+    branch,
+    workflow,
+    startedAt,
+    durationSec,
+    url: `${server}/${repo}/actions/runs/${runId}`,
+    ...(runStatus ? { status: runStatus } : {}),
+  },
   tests: {
     ...totals,
     passRate: r4(scoredCount ? totals.passed / scoredCount : 1),
     flakyRate: r4(scoredCount ? totals.flaky / scoredCount : 0),
-    durationMeanSec: r2(durations.length ? durations.reduce((a, b) => a + b, 0) / durations.length : 0),
+    durationMeanSec: r2(
+      durations.length ? durations.reduce((a, b) => a + b, 0) / durations.length : 0,
+    ),
     durationP95Sec: r2(p95),
     tiers,
   },
@@ -371,18 +503,34 @@ const metrics = {
 writeFileSync(join(out, 'quality-metrics.json'), JSON.stringify(metrics, null, 2));
 
 const line = {
-  run: runNumber, id: runId, sha, at: startedAt, workflow, durationSec,
+  run: runNumber,
+  id: runId,
+  sha,
+  at: startedAt,
+  workflow,
+  durationSec,
   ...(runStatus ? { status: runStatus } : {}),
-  total: totals.total, passed: totals.passed, failed: totals.failed, flaky: totals.flaky, skipped: totals.skipped,
-  passRate: metrics.tests.passRate, flakyRate: metrics.tests.flakyRate,
+  total: totals.total,
+  passed: totals.passed,
+  failed: totals.failed,
+  flaky: totals.flaky,
+  skipped: totals.skipped,
+  passRate: metrics.tests.passRate,
+  flakyRate: metrics.tests.flakyRate,
   ...(coverage ? { coverageLines: coverage.lines } : {}),
   ...(perf ? { k6P95Ms: perf.k6.p95Ms, k6FailedRate: perf.k6.failedRate } : {}),
-  ...(lighthouse ? { lhPerformance: lighthouse.performance, lhAccessibility: lighthouse.accessibility } : {}),
-  ...(mutation ? { mutationScore: mutation.score, mutationCoveredScore: mutation.coveredScore } : {}),
+  ...(lighthouse
+    ? { lhPerformance: lighthouse.performance, lhAccessibility: lighthouse.accessibility }
+    : {}),
+  ...(mutation
+    ? { mutationScore: mutation.score, mutationCoveredScore: mutation.coveredScore }
+    : {}),
   ...(security ? { securityFindings: security.total, securityErrors: security.error } : {}),
 };
 const historyPath = join(out, 'metrics', 'history.jsonl');
-const existing = existsSync(historyPath) ? readFileSync(historyPath, 'utf8').split('\n').filter(Boolean) : [];
+const existing = existsSync(historyPath)
+  ? readFileSync(historyPath, 'utf8').split('\n').filter(Boolean)
+  : [];
 const kept = existing.filter((l) => {
   try {
     const h = JSON.parse(l);
@@ -393,43 +541,101 @@ const kept = existing.filter((l) => {
 });
 writeFileSync(historyPath, kept.concat(JSON.stringify(line)).join('\n') + '\n');
 
-const badge = (name, label, message, color) => writeFileSync(join(out, 'badges', `${name}.json`), JSON.stringify({ schemaVersion: 1, label, message, color }));
-badge('tests', 'tests', `${totals.passed} passed${totals.flaky ? ` · ${totals.flaky} flaky` : ''}${totals.failed ? ` · ${totals.failed} failed` : ''}`, totals.failed ? 'red' : totals.flaky ? 'yellow' : 'brightgreen');
-if (coverage) badge('coverage', 'coverage', `${coverage.lines.toFixed(1)} %`, coverage.lines >= 75 ? 'brightgreen' : coverage.lines >= 60 ? 'yellow' : 'red');
-if (perf) badge('k6', 'k6 p95', `${perf.k6.p95Ms >= 1000 ? (perf.k6.p95Ms / 1000).toFixed(2) + ' s' : perf.k6.p95Ms.toFixed(0) + ' ms'} · ${(perf.k6.failedRate * 100).toFixed(0)} % failed`, perf.k6.thresholdsOk ? 'brightgreen' : 'red');
+const badge = (name, label, message, color) =>
+  writeFileSync(
+    join(out, 'badges', `${name}.json`),
+    JSON.stringify({ schemaVersion: 1, label, message, color }),
+  );
+badge(
+  'tests',
+  'tests',
+  `${totals.passed} passed${totals.flaky ? ` · ${totals.flaky} flaky` : ''}${totals.failed ? ` · ${totals.failed} failed` : ''}`,
+  totals.failed ? 'red' : totals.flaky ? 'yellow' : 'brightgreen',
+);
+if (coverage)
+  badge(
+    'coverage',
+    'coverage',
+    `${coverage.lines.toFixed(1)} %`,
+    coverage.lines >= 75 ? 'brightgreen' : coverage.lines >= 60 ? 'yellow' : 'red',
+  );
+if (perf)
+  badge(
+    'k6',
+    'k6 p95',
+    `${perf.k6.p95Ms >= 1000 ? (perf.k6.p95Ms / 1000).toFixed(2) + ' s' : perf.k6.p95Ms.toFixed(0) + ' ms'} · ${(perf.k6.failedRate * 100).toFixed(0)} % failed`,
+    perf.k6.thresholdsOk ? 'brightgreen' : 'red',
+  );
 if (mutation) {
   // Coloured against the tier's own floor rather than a universal number: 72 % is strong for a
   // frontend scoped to core services and weak for a hand-written parser. The floor is the contract.
   const f = mutation.floor ?? 60;
-  badge('mutation', 'mutation', `${mutation.score.toFixed(1)} %${mutation.coveredScore != null ? ` · ${mutation.coveredScore.toFixed(1)} % covered` : ''}`,
-    mutation.score >= f + 10 ? 'brightgreen' : mutation.score >= f ? 'yellow' : 'red');
+  badge(
+    'mutation',
+    'mutation',
+    `${mutation.score.toFixed(1)} %${mutation.coveredScore != null ? ` · ${mutation.coveredScore.toFixed(1)} % covered` : ''}`,
+    mutation.score >= f + 10 ? 'brightgreen' : mutation.score >= f ? 'yellow' : 'red',
+  );
 }
 if (security) {
   // Errors are the number that matters; warnings and notes are counted but do not colour the badge,
   // because a scanner that reports 400 style notes would otherwise make the estate look on fire.
-  badge('security', 'security', security.total ? `${security.error} error${security.error === 1 ? '' : 's'} · ${security.warning} warning${security.warning === 1 ? '' : 's'}` : 'no findings',
-    security.error ? 'red' : security.warning ? 'yellow' : 'brightgreen');
+  badge(
+    'security',
+    'security',
+    security.total
+      ? `${security.error} error${security.error === 1 ? '' : 's'} · ${security.warning} warning${security.warning === 1 ? '' : 's'}`
+      : 'no findings',
+    security.error ? 'red' : security.warning ? 'yellow' : 'brightgreen',
+  );
 }
 if (lighthouse) {
-  const low = Math.min(lighthouse.performance, lighthouse.accessibility, lighthouse.bestPractices, lighthouse.seo);
-  badge('lighthouse', 'lighthouse', `${lighthouse.performance} · ${lighthouse.accessibility} · ${lighthouse.bestPractices} · ${lighthouse.seo}`, low >= 90 ? 'brightgreen' : low >= 75 ? 'yellow' : 'red');
+  const low = Math.min(
+    lighthouse.performance,
+    lighthouse.accessibility,
+    lighthouse.bestPractices,
+    lighthouse.seo,
+  );
+  badge(
+    'lighthouse',
+    'lighthouse',
+    `${lighthouse.performance} · ${lighthouse.accessibility} · ${lighthouse.bestPractices} · ${lighthouse.seo}`,
+    low >= 90 ? 'brightgreen' : low >= 75 ? 'yellow' : 'red',
+  );
 }
-badge('flaky', `flaky (${windowRuns} runs)`, `${flaky.length} ${flaky.length === 1 ? 'test' : 'tests'}`, flaky.length === 0 ? 'brightgreen' : flaky.length <= 3 ? 'yellow' : 'red');
+badge(
+  'flaky',
+  `flaky (${windowRuns} runs)`,
+  `${flaky.length} ${flaky.length === 1 ? 'test' : 'tests'}`,
+  flaky.length === 0 ? 'brightgreen' : flaky.length <= 3 ? 'yellow' : 'red',
+);
 
-for (const f of ['index.html', 'styles.css', 'dashboard.js']) cpSync(join(here, 'pages', f), join(out, f));
+for (const f of ['index.html', 'styles.css', 'dashboard.js'])
+  cpSync(join(here, 'pages', f), join(out, f));
 writeFileSync(join(out, '.nojekyll'), '');
 
 // Prune: keep the newest N run directories per report kind and N outcome files; history.jsonl stays.
 const prune = (dir, isRun, numberOf = (f) => Number(f.replace('.json', ''))) => {
   if (!existsSync(dir)) return;
-  const runs = readdirSync(dir).filter(isRun).map((f) => ({ f, n: numberOf(f) })).filter((x) => Number.isFinite(x.n)).sort((a, b) => b.n - a.n);
+  const runs = readdirSync(dir)
+    .filter(isRun)
+    .map((f) => ({ f, n: numberOf(f) }))
+    .filter((x) => Number.isFinite(x.n))
+    .sort((a, b) => b.n - a.n);
   for (const x of runs.slice(keep)) rmSync(join(dir, x.f), { recursive: true, force: true });
 };
-for (const name of ['allure', 'playwright', 'k6', 'lighthouse']) prune(join(out, name), (f) => /^\d+$/.test(f) && statSync(join(out, name, f)).isDirectory());
+for (const name of ['allure', 'playwright', 'k6', 'lighthouse'])
+  prune(join(out, name), (f) => /^\d+$/.test(f) && statSync(join(out, name, f)).isDirectory());
 // Per workflow, so a busy workflow cannot prune away another one's window. Files with no prefix are the
 // pre-namespace ones: they cannot be attributed to a workflow, so they go.
-prune(join(out, 'metrics', 'tests'), (f) => new RegExp(`^${workflow}-\\d+\\.json$`).test(f), (f) => Number(f.slice(workflow.length + 1).replace('.json', '')));
-for (const f of existsSync(join(out, 'metrics', 'tests')) ? readdirSync(join(out, 'metrics', 'tests')) : []) {
+prune(
+  join(out, 'metrics', 'tests'),
+  (f) => new RegExp(`^${workflow}-\\d+\\.json$`).test(f),
+  (f) => Number(f.slice(workflow.length + 1).replace('.json', '')),
+);
+for (const f of existsSync(join(out, 'metrics', 'tests'))
+  ? readdirSync(join(out, 'metrics', 'tests'))
+  : []) {
   if (/^\d+\.json$/.test(f)) rmSync(join(out, 'metrics', 'tests', f), { force: true });
 }
 
@@ -439,13 +645,32 @@ lines.push(`### Quality metrics, run ${runNumber}`);
 lines.push('');
 lines.push('| tier | tests | passed | failed | flaky | skipped | took |');
 lines.push('| --- | --- | --- | --- | --- | --- | --- |');
-for (const [name, t] of Object.entries(tiers)) lines.push(`| ${name} | ${t.total} | ${t.passed} | ${t.failed} | ${t.flaky} | ${t.skipped} | ${t.durationSec} s |`);
-lines.push(`| **all** | ${totals.total} | ${totals.passed} | ${totals.failed} | ${totals.flaky} | ${totals.skipped} | ${durationSec} s |`);
+for (const [name, t] of Object.entries(tiers))
+  lines.push(
+    `| ${name} | ${t.total} | ${t.passed} | ${t.failed} | ${t.flaky} | ${t.skipped} | ${t.durationSec} s |`,
+  );
+lines.push(
+  `| **all** | ${totals.total} | ${totals.passed} | ${totals.failed} | ${totals.flaky} | ${totals.skipped} | ${durationSec} s |`,
+);
 lines.push('');
-const bits = [`pass rate ${(metrics.tests.passRate * 100).toFixed(2)} %`, `flaky in the last ${windowRuns} runs: ${flaky.length}`];
+const bits = [
+  `pass rate ${(metrics.tests.passRate * 100).toFixed(2)} %`,
+  `flaky in the last ${windowRuns} runs: ${flaky.length}`,
+];
 if (coverage) bits.push(`line coverage ${coverage.lines.toFixed(1)} %`);
-if (perf) bits.push(`k6 p95 ${perf.k6.p95Ms.toFixed(0)} ms, ${(perf.k6.failedRate * 100).toFixed(2)} % failed, thresholds ${perf.k6.thresholdsOk ? 'ok' : 'crossed'}`);
-if (lighthouse) bits.push(`Lighthouse ${lighthouse.performance}/${lighthouse.accessibility}/${lighthouse.bestPractices}/${lighthouse.seo}`);
+if (perf)
+  bits.push(
+    `k6 p95 ${perf.k6.p95Ms.toFixed(0)} ms, ${(perf.k6.failedRate * 100).toFixed(2)} % failed, thresholds ${perf.k6.thresholdsOk ? 'ok' : 'crossed'}`,
+  );
+if (lighthouse)
+  bits.push(
+    `Lighthouse ${lighthouse.performance}/${lighthouse.accessibility}/${lighthouse.bestPractices}/${lighthouse.seo}`,
+  );
 lines.push(bits.join(' · ') + '.');
-if (Object.keys(reports).length) lines.push(`Reports: ${Object.entries(reports).map(([k, v]) => `${k} → ${v}`).join(', ')}.`);
+if (Object.keys(reports).length)
+  lines.push(
+    `Reports: ${Object.entries(reports)
+      .map(([k, v]) => `${k} → ${v}`)
+      .join(', ')}.`,
+  );
 console.log(lines.join('\n'));

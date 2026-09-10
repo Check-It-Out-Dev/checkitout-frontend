@@ -32,7 +32,15 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
-const BE_FEATURES_DIR = resolve(ROOT, '..', 'checkitout-backend', 'src', 'test', 'resources', 'features');
+const BE_FEATURES_DIR = resolve(
+  ROOT,
+  '..',
+  'checkitout-backend',
+  'src',
+  'test',
+  'resources',
+  'features',
+);
 const FE_FEATURES_DIR = join(ROOT, 'e2e-tests', 'bdd', 'features');
 const WAIVERS_FILE = join(ROOT, 'e2e-tests', 'bdd', 'CORPUS-WAIVERS.md');
 
@@ -104,8 +112,12 @@ async function main() {
 
   const beSet = new Set(beRel);
   const missing = beRel.filter((p) => !ported.has(p) && !waived.has(p));
-  const staleWaivers = [...waived].filter((p) => !beSet.has(p)).sort();
-  const doubleCovered = [...waived].filter((p) => ported.has(p)).sort();
+  const staleWaivers = [...waived]
+    .filter((p) => !beSet.has(p))
+    .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+  const doubleCovered = [...waived]
+    .filter((p) => ported.has(p))
+    .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
 
   const problems = [];
   if (missing.length) {

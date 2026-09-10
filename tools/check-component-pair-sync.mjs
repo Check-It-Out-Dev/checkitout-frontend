@@ -65,7 +65,8 @@ function extractPairTargets() {
   // array is the top-level only in this file (no semicolon-terminated
   // expressions inside), so a simple search works.
   const arrayEnd = text.indexOf('];', arrayStart);
-  if (arrayStart === -1 || arrayEnd === -1) throw new Error('COMPONENT_PAIRS array bounds not found');
+  if (arrayStart === -1 || arrayEnd === -1)
+    throw new Error('COMPONENT_PAIRS array bounds not found');
   const body = text.slice(arrayStart + 1, arrayEnd);
 
   const targets = [];
@@ -130,14 +131,16 @@ const orphanPairs = pairTargets.filter((p) => !sandboxIds.has(p.sandboxTarget));
 const classifiedSandboxIds = new Set(pairTargets.map((p) => p.sandboxTarget));
 const unclassifiedSandboxes = [...sandboxIds]
   .filter((id) => !classifiedSandboxIds.has(id) && !UNCLASSIFIED_OK.has(id))
-  .sort();
+  .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
 
 const ok = orphanPairs.length === 0;
 
 if (orphanPairs.length > 0) {
   console.error('Component-pair sync FAILED — pairs reference unknown sandbox fixtures:');
   for (const p of orphanPairs) {
-    console.error(`  - pair id="${p.id}" → sandboxTarget="${p.sandboxTarget}" (no matching fixture)`);
+    console.error(
+      `  - pair id="${p.id}" → sandboxTarget="${p.sandboxTarget}" (no matching fixture)`,
+    );
   }
   console.error('');
   console.error(

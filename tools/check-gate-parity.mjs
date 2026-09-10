@@ -32,20 +32,32 @@ const staticChecks = executedChecks(pkg.scripts['check:static'] ?? '');
 // `check:static` is an aggregate; the hook may name it or its members, never both halfway.
 hook.delete('check:static');
 
-const missingFromHook = [...staticChecks].filter((c) => !hook.has(c)).sort();
-const missingFromStatic = [...hook].filter((c) => !staticChecks.has(c)).sort();
+const missingFromHook = [...staticChecks]
+  .filter((c) => !hook.has(c))
+  .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+const missingFromStatic = [...hook]
+  .filter((c) => !staticChecks.has(c))
+  .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
 
 if (missingFromHook.length === 0 && missingFromStatic.length === 0) {
-  console.log(`check:gate-parity OK — the hook and check:static run the same ${staticChecks.size} checks.`);
+  console.log(
+    `check:gate-parity OK — the hook and check:static run the same ${staticChecks.size} checks.`,
+  );
   process.exit(0);
 }
 
 if (missingFromHook.length) {
-  console.error(`check:gate-parity FAILED — in check:static but NOT run by .husky/pre-commit: ${missingFromHook.join(', ')}`);
+  console.error(
+    `check:gate-parity FAILED — in check:static but NOT run by .husky/pre-commit: ${missingFromHook.join(', ')}`,
+  );
   console.error('  A check nobody runs at commit time is a check that drifts. Add it to the hook.');
 }
 if (missingFromStatic.length) {
-  console.error(`check:gate-parity FAILED — run by .husky/pre-commit but NOT in check:static: ${missingFromStatic.join(', ')}`);
-  console.error('  CI runs check:static; a check only the hook knows about does not gate a pull request.');
+  console.error(
+    `check:gate-parity FAILED — run by .husky/pre-commit but NOT in check:static: ${missingFromStatic.join(', ')}`,
+  );
+  console.error(
+    '  CI runs check:static; a check only the hook knows about does not gate a pull request.',
+  );
 }
 process.exit(1);

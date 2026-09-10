@@ -38,7 +38,7 @@ function pickRun() {
   const runs = readdirSync(root, { withFileTypes: true })
     .filter((e) => e.isDirectory())
     .map((e) => e.name)
-    .sort();
+    .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
   if (!runs.length) throw new Error('qa-film holds no runs');
   return join(root, runs.at(-1));
 }
@@ -194,7 +194,9 @@ function check(run) {
   // Not `validation.json` — this used to write its own report into the very
   // directory it globs for verdicts, so every run after the first rejected its
   // own output and exited 1.
-  for (const file of readdirSync(dir).filter((f) => f.endsWith('.json') && f !== 'validation.json')) {
+  for (const file of readdirSync(dir).filter(
+    (f) => f.endsWith('.json') && f !== 'validation.json',
+  )) {
     let verdict;
     try {
       verdict = parseLoosely(readFileSync(join(dir, file), 'utf8'));

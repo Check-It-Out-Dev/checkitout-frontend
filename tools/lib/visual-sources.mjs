@@ -35,7 +35,9 @@ export function resolveWatchedSources() {
       }
     }
   }
-  return [...out].map((p) => relative(REPO_ROOT, p).split('\\').join('/')).sort();
+  return [...out]
+    .map((p) => relative(REPO_ROOT, p).split('\\').join('/'))
+    .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
 }
 
 /**
