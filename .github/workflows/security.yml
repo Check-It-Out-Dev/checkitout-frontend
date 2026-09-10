@@ -78,7 +78,7 @@ jobs:
           n = sum(len(x.get("results", [])) for x in runs)
           print(f"### Semgrep\n\n{n} finding(s) across the OWASP, secrets and TypeScript rule sets.")
           PY
-      - uses: github/codeql-action/upload-sarif@v4
+      - uses: github/codeql-action/upload-sarif@b96794f015dfd88f77b49b1c93e0fa7110f94c63  # v4.38.0
         with:
           sarif_file: semgrep.sarif
       # Kept as an artifact as well as uploaded to code scanning, so the summary job below can
@@ -119,7 +119,7 @@ jobs:
           n = sum(len(x.get("results", [])) for x in r.get("runs", []))
           print(f"### Checkov\n\n{n} misconfiguration(s) in manifests, images and workflows.")
           PY
-      - uses: github/codeql-action/upload-sarif@v4
+      - uses: github/codeql-action/upload-sarif@b96794f015dfd88f77b49b1c93e0fa7110f94c63  # v4.38.0
         if: hashFiles('checkov.sarif') != ''
         with:
           sarif_file: checkov.sarif
@@ -164,7 +164,7 @@ jobs:
             trivy fs . --scanners vuln --skip-dirs node_modules,dist,coverage,.angular \
               --format table --severity HIGH,CRITICAL --exit-code 0 2>/dev/null | tail -25
           } | tee -a "$GITHUB_STEP_SUMMARY"
-      - uses: github/codeql-action/upload-sarif@v4
+      - uses: github/codeql-action/upload-sarif@b96794f015dfd88f77b49b1c93e0fa7110f94c63  # v4.38.0
         with:
           sarif_file: trivy.sarif
       # Kept as an artifact as well as uploaded to code scanning, so the summary job below can

@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 /**
- * Three defects that a YAML parser and `bash -n` both wave through. The first took a release chain
- * down for six hours without producing a single line of log; the third quietly switched half of a
- * dashboard off for a day and kept every job green while it did.
+ * Four things a YAML parser and `bash -n` both wave through. The first took a release chain down
+ * for six hours without producing a single line of log; the third quietly switched half of a
+ * dashboard off for a day and kept every job green while it did; the fourth is the one that would
+ * not announce itself at all.
  *
  * 1. A DUPLICATE KEY in a step's `env:` block. YAML libraries keep the last one silently -- js-yaml
  *    and PyYAML both do -- so the file parses, the shell script parses, and every local check is
@@ -26,6 +27,16 @@
  *    looks. Nothing fails: the step exits 0, the job is green, and those flags simply had no
  *    effect. That is how the backend's dashboard came to trend tests and coverage but never
  *    mutation or security, with `--mutation` and `--security` sitting right there in the workflow.
+ *
+ * 4. AN ACTION ON A MUTABLE REF, `uses: owner/action@v4`. A tag is a pointer its owner can move,
+ *    so the step that ran yesterday is not necessarily the step that runs today, and a compromised
+ *    or retagged action executes with whatever the job's token can reach. Pinning to the commit
+ *    SHA is what makes a workflow reproducible and what a supply-chain review asks for first.
+ *    Semgrep's github-actions-mutable-action-tag finds these, but only in the security tier and
+ *    only as a warning, and by then the change is on main; this is the same check on the PR gate.
+ *    Keep the version in a trailing comment -- `@<sha>  # v4.38.0` -- because the SHA is the
+ *    contract and the comment is how a human reads it. Local `./.github/workflows/...` references
+ *    and `docker://` images are not tags and are left alone.
  *
  * Scans every workflow in the repositories given on the command line (default: this one).
  *
@@ -99,6 +110,29 @@ function literalBackslashN(text) {
   return found;
 }
 
+/** `uses:` on anything that is not a 40-hex commit SHA. Local paths and docker images are not
+ *  pinnable refs and are skipped; everything else has to name a commit. */
+function mutableActionRefs(text) {
+  const lines = text.replace(/\r\n/g, '\n').split('\n');
+  const found = [];
+  lines.forEach((line, idx) => {
+    const m = /^\s*(?:-\s*)?uses:\s*(\S+)/.exec(line);
+    if (!m) return;
+    const ref = m[1].replace(/^['"]|['"]$/g, '');
+    if (ref.startsWith('./') || ref.startsWith('docker://')) return;
+    const at = ref.lastIndexOf('@');
+    if (at < 0) {
+      found.push({ line: idx + 1, ref, why: 'no ref at all' });
+      return;
+    }
+    const version = ref.slice(at + 1);
+    if (!/^[0-9a-f]{40}$/.test(version)) {
+      found.push({ line: idx + 1, ref, why: `@${version} is a tag or branch, not a commit` });
+    }
+  });
+  return found;
+}
+
 let problems = 0;
 let scanned = 0;
 for (const root of roots) {
@@ -128,6 +162,13 @@ for (const root of roots) {
           `passes a bare argument \`n\` and silently drops the flags after it — ${d.text}`,
       );
     }
+    for (const d of mutableActionRefs(text)) {
+      problems++;
+      console.error(
+        `${path}:${d.line}: ${d.ref} is not pinned to a commit SHA — ${d.why} — a tag is a ` +
+          `pointer its owner can move, so pin the SHA and keep the version in a trailing comment`,
+      );
+    }
   }
 }
 
@@ -137,5 +178,5 @@ if (problems) {
 }
 console.log(
   `check:workflow-env OK — ${scanned} workflow(s): no duplicate env keys, no dead expansions,` +
-    ` no literal backslash-n.`,
+    ` no literal backslash-n, every action pinned to a commit.`,
 );
