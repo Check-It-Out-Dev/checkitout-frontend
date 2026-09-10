@@ -1,0 +1,73 @@
+{
+  "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "_comment": [
+    "Mutation testing asks the question coverage cannot: not whether a line ran, but whether the",
+    "tests would NOTICE if it were wrong. A line can be covered by a test that asserts nothing.",
+    "",
+    "Scope is deliberate, not lazy. Mutating 65,000 lines would take hours and produce a number",
+    "nobody acts on. These five areas are where a surviving mutant is a real defect waiting to",
+    "happen - authentication, the HTTP interceptor chain, consent, legal acceptance and user",
+    "preferences - and every one of them has specs already. Components are mostly template binding,",
+    "where a surviving mutant usually means a snapshot moved rather than behaviour broke.",
+    "",
+    "Two settings here are not preferences, they are the price of running Stryker against an",
+    "Angular project at all. Both cost an afternoon to find, so they are written down:",
+    "",
+    "  inPlace  Stryker's jest runner reads `configFile` from the real project, so `<rootDir>` in",
+    "           our testMatch resolves to the real project - but it runs jest with `roots` pointing",
+    "           at the sandbox copy. The two never intersect and jest reports `No tests were found`,",
+    "           which looks like a config error and is not one. Mutating in place is the escape",
+    "           Stryker documents for projects that depend on file locations. CI checks out fresh,",
+    "           so it costs nothing there; locally Stryker restores from .stryker-tmp/backup-* .",
+    "",
+    "  jsdom    jest.config.js states `testEnvironment: 'jsdom'` explicitly. Stryker reads the",
+    "           resolved config without expanding the preset, defaults to node, and then every",
+    "           Angular spec dies on `window is not defined`.",
+    "",
+    "`break` stays null on purpose: the floor is enforced by tools/ci/mutation-summary.mjs instead,",
+    "so a run below the floor still publishes its report and still tells you WHICH mutants lived.",
+    "Stryker breaking the build first would take the report down with it.",
+    "",
+    "First measurement (2026-09-10, 486 mutants over 18 files): 72.84 % overall, 83.29 % on covered",
+    "code. The floor in the workflow sits at 70 - a ratchet, raised when the score rises, never",
+    "lowered to make a red run green."
+  ],
+  "packageManager": "npm",
+  "testRunner": "jest",
+  "jest": {
+    "projectType": "custom",
+    "configFile": "jest.config.js"
+  },
+  "reporters": ["html", "json", "clear-text", "progress"],
+  "jsonReporter": {
+    "fileName": "reports/mutation/mutation.json"
+  },
+  "clearTextReporter": {
+    "maxTestsToLog": 3
+  },
+  "mutate": [
+    "src/app/core/auth/**/*.ts",
+    "src/app/core/interceptors/**/*.ts",
+    "src/app/core/consent/**/*.ts",
+    "src/app/core/legal/**/*.ts",
+    "src/app/core/preferences/**/*.ts",
+    "!**/*.spec.ts",
+    "!**/*.mock.ts",
+    "!**/*.model.ts",
+    "!src/app/core/api-frozen/**"
+  ],
+  "thresholds": {
+    "high": 80,
+    "low": 60,
+    "break": null
+  },
+  "timeoutMS": 60000,
+  "concurrency": 2,
+  "disableTypeChecks": true,
+  "tempDirName": ".stryker-tmp",
+  "cleanTempDir": true,
+  "inPlace": true,
+  "htmlReporter": {
+    "fileName": "reports/mutation/mutation.html"
+  }
+}

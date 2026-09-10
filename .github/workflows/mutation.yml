@@ -1,0 +1,87 @@
+# Stryker: would the tests notice if the code were wrong?
+#
+# Coverage answers a weaker question than most dashboards imply. It says a line executed during a
+# test run - not that anything checked the result. Mutation testing changes the code on purpose,
+# one small edit at a time, and reports which edits the suite failed to catch. Every survivor is a
+# line that could break tomorrow with every gate still green.
+#
+# It runs at night rather than on pull requests because it is minutes rather than seconds, and
+# because its output is a reading list, not a merge decision. Scope, and the two Angular-specific
+# settings that make Stryker run at all, are in stryker.conf.json.
+name: mutation
+
+on:
+  workflow_call:
+    inputs:
+      floor:
+        description: Fail below this mutation score. A ratchet - raise it, never lower it.
+        type: number
+        default: 70
+  workflow_dispatch:
+    inputs:
+      floor:
+        description: Fail below this mutation score
+        type: number
+        default: 70
+
+# The group is keyed by the CALLING pipeline as well as the ref. Without `github.workflow` --
+# which under workflow_call is the caller's name -- a push to main starts `pr`, `pr` calls this
+# tier, and it cancels the copy the night is already running. That happened on the first night:
+# three shards cancelled mid-run and the verdict correctly called the night incomplete.
+concurrency:
+  group: mutation-${{ github.workflow }}-${{ github.ref }}
+  # The caller's event, because under workflow_call that is whose event it is: a superseded
+  # pull-request run is waste, but a superseded push to main loses the record of what main
+  # did, and a night is never worth cancelling.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  stryker:
+    name: Stryker
+    runs-on: ubuntu-latest
+    # Measured at 7 minutes on the dev box over 486 mutants with two workers. The limit is set
+    # well above that so a slow runner reports a score rather than a cancellation.
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --prefer-offline --no-audit --loglevel=error
+
+      # Two notes, both earned.
+      #
+      # `inPlace` rewrites the working tree as it goes and restores it afterwards. On a fresh
+      # checkout that is free; see the note in stryker.conf.json for why it is not optional.
+      #
+      # `npm run`, not `npx`. npx does not fail when a binary is missing -- it goes to the registry
+      # and installs whatever carries that name. With the devDependencies briefly absent from
+      # package.json, `npx stryker` quietly fetched stryker@1.0.1 from 2019 and died inside it on a
+      # missing `rx` module. npm run resolves the local bin or says plainly that it cannot.
+      - name: Mutate
+        run: npm run test:mutation -- --fileLogLevel off
+
+      # Separate step so the report is published and the survivors are listed even when the score
+      # is under the floor. Stryker's own `break` would fail the job before either happened.
+      - name: What survived
+        if: always()
+        run: |
+          set -o pipefail
+          node tools/ci/mutation-summary.mjs \
+            --break "${{ inputs.floor || 70 }}" \
+            --json mutation-summary.json | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Publish the report
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: mutation-${{ github.run_number }}
+          path: |
+            reports/mutation/mutation.html
+            reports/mutation/mutation.json
+            mutation-summary.json
+          retention-days: 90

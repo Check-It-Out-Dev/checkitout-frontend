@@ -11,6 +11,7 @@
 // is what happened on main at 16:15 on 2026-09-09.
 //
 //   node tools/ci/k8s-summary.mjs [ci-reports] [--json out.json] [--needs <json>] [--expect-shards <n>]
+//                                 [--optional job1,job2]   jobs allowed to be skipped deliberately
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -22,6 +23,8 @@ const flag = (name) => {
 };
 const jsonOut = flag('json');
 const needsRaw = flag('needs');
+// Jobs this run was never going to execute, comma separated - see the note by the needs loop.
+const optional = new Set((flag('optional') || '').split(',').map((s) => s.trim()).filter(Boolean));
 const expectShards = Number(flag('expect-shards') || 0);
 const lines = [];
 const say = (s = '') => lines.push(s);
@@ -39,9 +42,13 @@ if (needsRaw) {
     incomplete = true;
     missing.push('the needs context could not be parsed');
   }
+  // A job that was deliberately not run is not a hole in the report: the pull-request pipeline
+  // skips the slow tiers on purpose, and calling that "incomplete" on every pull request would
+  // train everyone to ignore the word. A CANCELLED job is still incomplete however it was named -
+  // that one is always an accident.
   for (const [job, v] of Object.entries(needs || {})) {
     const result = (v && v.result) || 'unknown';
-    if (result === 'cancelled' || result === 'skipped') {
+    if (result === 'cancelled' || (result === 'skipped' && !optional.has(job))) {
       incomplete = true;
       missing.push(`job ${job} was ${result}`);
     }

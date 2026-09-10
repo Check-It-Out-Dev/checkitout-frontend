@@ -6,14 +6,31 @@
 name: browser-tiers
 
 on:
-  pull_request:
-  push:
-    branches: [main]
+  workflow_call:
+    inputs:
+      tiers:
+        description: fast (sandbox and MSW only) or full (adds smoothness and visual)
+        type: string
+        default: full
   workflow_dispatch:
+    inputs:
+      tiers:
+        description: fast or full
+        type: choice
+        options: [full, fast]
+        default: full
 
+
+# The group is keyed by the CALLING pipeline as well as the ref. Without `github.workflow` --
+# which under workflow_call is the caller's name -- a push to main starts `pr`, `pr` calls this
+# tier, and it cancels the copy the night is already running. That happened on the first night:
+# three shards cancelled mid-run and the verdict correctly called the night incomplete.
 concurrency:
-  group: browser-tiers-${{ github.ref }}
-  cancel-in-progress: true
+  group: browser-tiers-${{ github.workflow }}-${{ github.ref }}
+  # The caller's event, because under workflow_call that is whose event it is: a superseded
+  # pull-request run is waste, but a superseded push to main loses the record of what main
+  # did, and a night is never worth cancelling.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
@@ -57,6 +74,8 @@ jobs:
     # tier is spread over three runners instead: the film spec alone records fourteen tours at 27 to 120 s
     # each, and the whole tier ran past 30 minutes on a single ubuntu-latest runner.
     name: smoothness, shard ${{ matrix.shard }}/3
+    # The smoothness tier is three shards of 9-19 minutes; the pull-request pipeline skips it and the nightly runs it.
+    if: ${{ inputs.tiers != 'fast' }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
     strategy:
@@ -88,6 +107,8 @@ jobs:
 
   visual:
     name: visual (pinned rasteriser)
+    # Rasterising in the pinned container is minutes of pull, for a tier that only moves when a baseline does.
+    if: ${{ inputs.tiers != 'fast' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -165,7 +186,7 @@ jobs:
         env:
           # Every job this verdict speaks for: a cancelled shard makes the run incomplete, never green.
           NEEDS: ${{ toJSON(needs) }}
-        run: set -o pipefail; node tools/ci/k8s-summary.mjs ci-reports --needs "$NEEDS" --json ci-reports/summary.json | tee -a "$GITHUB_STEP_SUMMARY"
+        run: set -o pipefail; node tools/ci/k8s-summary.mjs ci-reports --needs "$NEEDS" --optional perf,visual --json ci-reports/summary.json | tee -a "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v6
         if: always()
         with:
@@ -211,12 +232,12 @@ jobs:
             --jest site/jest/latest.json --coverage site/coverage/latest.json --lighthouse site/lighthouse/latest.json --copy allure=allure-report | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Publish
         if: github.event_name != 'pull_request'
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: site
-          keep_files: false
-          commit_message: "browser-tiers run ${{ github.run_number }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # A retrying overlay push rather than the action, because several tiers publish in parallel
+        # now and the loser of the race used to drop its whole report. See the script's header.
+        run: |
+          bash tools/ci/publish-pages.sh site "browser-tiers run ${{ github.run_number }}"
       - name: The verdict decides the job
         if: always() && steps.verdict.outcome == 'failure'
         run: |

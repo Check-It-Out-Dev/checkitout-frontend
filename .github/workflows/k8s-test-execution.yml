@@ -7,22 +7,20 @@
 name: k8s-test-execution
 
 on:
-  schedule:
-    - cron: "0 3 * * 0"
+  workflow_call:
   workflow_dispatch:
-    inputs:
-      backend_tag:
-        description: Backend image tag on ghcr.io
-        type: string
-        default: main
-      shards:
-        description: Playwright shards (pods)
-        type: number
-        default: 4
 
+
+# The group is keyed by the CALLING pipeline as well as the ref. Without `github.workflow` --
+# which under workflow_call is the caller's name -- a push to main starts `pr`, `pr` calls this
+# tier, and it cancels the copy the night is already running. That happened on the first night:
+# three shards cancelled mid-run and the verdict correctly called the night incomplete.
 concurrency:
-  group: k8s-test-execution
-  cancel-in-progress: false
+  group: k8s-test-execution-${{ github.workflow }}-${{ github.ref }}
+  # The caller's event, because under workflow_call that is whose event it is: a superseded
+  # pull-request run is waste, but a superseded push to main loses the record of what main
+  # did, and a night is never worth cancelling.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: write
@@ -231,12 +229,12 @@ jobs:
             --jest site/jest/latest.json --coverage site/coverage/latest.json --lighthouse site/lighthouse/latest.json --copy allure=allure-report | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Publish
         if: always()
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: site
-          keep_files: false
-          commit_message: "k8s-test-execution run ${{ github.run_number }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # A retrying overlay push rather than the action, because several tiers publish in parallel
+        # now and the loser of the race used to drop its whole report. See the script's header.
+        run: |
+          bash tools/ci/publish-pages.sh site "k8s-test-execution run ${{ github.run_number }}"
       - name: Delete the cluster (the runner is ephemeral; deleting keeps the logs honest)
         if: always()
         run: kind delete cluster --name "$KIND_CLUSTER" || true

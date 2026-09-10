@@ -108,3 +108,14 @@ ci-reports/
 allure-results/
 allure-report/
 history.jsonl
+
+# Stryker mutates the working tree in place (see stryker.conf.json for why it has to) and
+# keeps its backup here; the reports are derived from a run and belong to the artifact, not
+# to the repository.
+.stryker-tmp/
+reports/
+
+# Firebase emulator debug logs, written wherever the emulator is started from.
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
