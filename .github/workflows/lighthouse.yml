@@ -73,9 +73,12 @@ jobs:
           cp lhci-report/lighthouse.json site/lighthouse/latest.json
           ls -d site/lighthouse/[0-9]* | sort -t/ -k3 -n | head -n -30 | xargs -r rm -rf
       - name: Publish
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: site
-          keep_files: false
-          commit_message: "lighthouse run ${{ github.run_number }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # This tier prunes all but the last thirty runs above, and the overlay push only ever adds
+          # unless a path is declared ours. Without this the branch would grow forever.
+          PAGES_REPLACE: lighthouse
+        # A retrying overlay push rather than the action, because several tiers publish in parallel
+        # now and the loser of the race used to drop its whole report. See the script's header.
+        run: |
+          bash tools/ci/publish-pages.sh site "lighthouse run ${{ github.run_number }}"

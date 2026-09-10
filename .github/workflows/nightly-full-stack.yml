@@ -269,12 +269,12 @@ jobs:
             --playwright ci-reports/merged.json --verdict ci-reports/summary.json --copy playwright=ci-reports/merged \
             --jest site/jest/latest.json --coverage site/coverage/latest.json --lighthouse site/lighthouse/latest.json --copy allure=allure-report | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Publish
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: site
-          keep_files: false
-          commit_message: "nightly-full-stack run ${{ github.run_number }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # A retrying overlay push rather than the action, because several tiers publish in parallel
+        # now and the loser of the race used to drop its whole report. See the script's header.
+        run: |
+          bash tools/ci/publish-pages.sh site "nightly-full-stack run ${{ github.run_number }}"
       - name: The verdict decides the job
         if: always() && steps.verdict.outcome == 'failure'
         run: |

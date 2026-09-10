@@ -145,9 +145,9 @@ jobs:
           cp coverage/coverage-summary.json site/coverage/latest.json
       - name: Publish
         if: github.event_name == 'push'
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: site
-          keep_files: false
-          commit_message: "ci-tests run ${{ github.run_number }}: unit results and coverage"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # A retrying overlay push rather than the action, because several tiers publish in parallel
+        # now and the loser of the race used to drop its whole report. See the script's header.
+        run: |
+          bash tools/ci/publish-pages.sh site "ci-tests run ${{ github.run_number }}: unit results and coverage"
