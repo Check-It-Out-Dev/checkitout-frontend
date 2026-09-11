@@ -2,14 +2,14 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 110,
-    "id": 34560717681,
-    "sha": "2919d6d",
+    "number": 112,
+    "id": 34560747517,
+    "sha": "45d963a",
     "branch": "main",
     "workflow": "browser-tiers",
-    "startedAt": "2026-09-11T04:02:56Z",
-    "durationSec": 205,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34560717681",
+    "startedAt": "2026-09-11T04:03:26Z",
+    "durationSec": 419,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34560747517",
     "status": "green"
   },
   "tests": {
@@ -21,7 +21,7 @@
     "passRate": 1,
     "flakyRate": 0,
     "durationMeanSec": 0.16,
-    "durationP95Sec": 0.93,
+    "durationP95Sec": 0.92,
     "tiers": {
       "jest": {
         "total": 1211,
@@ -37,7 +37,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
-        "durationSec": 8
+        "durationSec": 9
       },
       "msw": {
         "total": 2,
@@ -53,7 +53,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 22,
-        "durationSec": 129
+        "durationSec": 128
       }
     }
   },
@@ -90,7 +90,7 @@
   },
   "flaky": [],
   "reports": {
-    "playwright": "playwright/110/",
-    "allure": "allure/110/"
+    "playwright": "playwright/112/",
+    "allure": "allure/112/"
   }
 }
