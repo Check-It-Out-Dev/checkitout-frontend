@@ -2,26 +2,26 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 4,
-    "id": 34593703780,
-    "sha": "97f0602",
+    "number": 133,
+    "id": 34596323507,
+    "sha": "e07509d",
     "branch": "main",
     "workflow": "browser-tiers",
-    "startedAt": "2026-09-11T11:22:27Z",
-    "durationSec": 1179,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34593703780",
+    "startedAt": "2026-09-11T11:55:04Z",
+    "durationSec": 174,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34596323507",
     "status": "green"
   },
   "tests": {
-    "total": 1818,
-    "passed": 1738,
+    "total": 1370,
+    "passed": 1346,
     "failed": 0,
-    "flaky": 1,
-    "skipped": 79,
-    "passRate": 0.9994,
-    "flakyRate": 0.0006,
-    "durationMeanSec": 1.5,
-    "durationP95Sec": 1.81,
+    "flaky": 0,
+    "skipped": 24,
+    "passRate": 1,
+    "flakyRate": 0,
+    "durationMeanSec": 0.14,
+    "durationP95Sec": 0.89,
     "tiers": {
       "jest": {
         "total": 1234,
@@ -30,22 +30,6 @@
         "flaky": 0,
         "skipped": 0,
         "durationSec": 62
-      },
-      "visual": {
-        "total": 284,
-        "passed": 283,
-        "failed": 0,
-        "flaky": 0,
-        "skipped": 1,
-        "durationSec": 441
-      },
-      "visual-parity": {
-        "total": 82,
-        "passed": 28,
-        "failed": 0,
-        "flaky": 0,
-        "skipped": 54,
-        "durationSec": 83
       },
       "published-reports": {
         "total": 6,
@@ -69,15 +53,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 22,
-        "durationSec": 125
-      },
-      "perf": {
-        "total": 82,
-        "passed": 81,
-        "failed": 0,
-        "flaky": 1,
-        "skipped": 0,
-        "durationSec": 1972
+        "durationSec": 123
       }
     }
   },
@@ -114,6 +90,6 @@
   },
   "flaky": [],
   "reports": {
-    "playwright": "playwright/browser-tiers-4/"
+    "playwright": "playwright/browser-tiers-133/"
   }
 }
