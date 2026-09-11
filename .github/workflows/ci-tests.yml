@@ -121,14 +121,22 @@ jobs:
 
       - name: 📋 Summary
         if: always()
+        # Through env, not interpolated. `github.ref_name` is a branch name, and a branch name
+        # is whatever the person who opened the pull request typed - including `$(...)`, which
+        # a shell expands before echo ever sees it. The others are GitHub's own values and are
+        # here for consistency: a rule with exceptions is a rule nobody applies.
+        env:
+          REF_NAME: ${{ github.ref_name }}
+          COMMIT_SHA: ${{ github.sha }}
+          JOB_STATUS: ${{ job.status }}
         run: |
           echo "========================================="
           echo "QUALITY GATES SUMMARY"
           echo "========================================="
-          echo "Ref: ${{ github.ref_name }}"
-          echo "Commit: ${{ github.sha }}"
-          echo "Status: ${{ job.status }}"
-          if [ "${{ job.status }}" = "success" ]; then
+          echo "Ref: $REF_NAME"
+          echo "Commit: $COMMIT_SHA"
+          echo "Status: $JOB_STATUS"
+          if [ "$JOB_STATUS" = "success" ]; then
               echo "✅ Gate wall green — same bar as the local pre-commit hook."
           else
               echo "❌ Gate wall failed — run 'npm run check:full' locally;"

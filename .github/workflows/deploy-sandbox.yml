@@ -117,16 +117,24 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
 
       - name: Deploy key (forced command on the host, see deploy/sandbox/rollout.sh)
+        # Through env rather than interpolated into the script. A secret pasted into a run
+        # body is one `set -x` away from the log and one awkward character away from being a
+        # syntax error in the middle of a deploy; as a variable it is a value, not source.
+        env:
+          SSH_KEY: ${{ secrets.SANDBOX_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.SANDBOX_KNOWN_HOSTS }}
         run: |
           mkdir -p ~/.ssh && chmod 700 ~/.ssh
-          printf '%s\n' "${{ secrets.SANDBOX_SSH_KEY }}" > ~/.ssh/sandbox
-          printf '%s\n' "${{ secrets.SANDBOX_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/sandbox
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/sandbox ~/.ssh/known_hosts
 
       - name: Roll out on the host
+        env:
+          HOST: ${{ secrets.SANDBOX_HOST }}
         run: |
           ssh -i ~/.ssh/sandbox -o BatchMode=yes -o IdentitiesOnly=yes -o ConnectTimeout=15 \
-            "deploy@${{ secrets.SANDBOX_HOST }}" "deploy $FE_TAG $BE_TAG $GITHUB_SHA"
+            "deploy@$HOST" "deploy $FE_TAG $BE_TAG $GITHUB_SHA"
 
       # From the outside, but not through Cloudflare: the zone runs Bot Fight Mode, which answers a
       # datacentre curl with 403 whatever the sandbox is doing. Run 34382570406 rolled a healthy release
@@ -161,18 +169,22 @@ jobs:
 
       - name: Roll back
         if: failure()
+        env:
+          HOST: ${{ secrets.SANDBOX_HOST }}
         run: |
-          ssh -i ~/.ssh/sandbox -o BatchMode=yes -o IdentitiesOnly=yes "deploy@${{ secrets.SANDBOX_HOST }}" rollback
+          ssh -i ~/.ssh/sandbox -o BatchMode=yes -o IdentitiesOnly=yes "deploy@$HOST" rollback
 
       - name: Summary
         if: always()
+        env:
+          JOB_STATUS: ${{ job.status }}
         run: |
           {
             echo "### Sandbox rollout"
             echo
             echo "| frontend | backend | bundle | result |"
             echo "| --- | --- | --- | --- |"
-            echo "| \`$FE_TAG\` | \`$BE_TAG\` | \`${GITHUB_SHA::7}\` | ${{ job.status }} |"
+            echo "| \`$FE_TAG\` | \`$BE_TAG\` | \`${GITHUB_SHA::7}\` | $JOB_STATUS |"
             echo
             echo "Live: $SANDBOX_URL · OpenAPI: $SANDBOX_URL/api/v3/api-docs · Swagger UI: $SANDBOX_URL/api/swagger-ui/index.html"
           } >> "$GITHUB_STEP_SUMMARY"

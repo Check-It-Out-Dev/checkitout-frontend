@@ -332,8 +332,12 @@ jobs:
       # first; the tail only follows if the grep found something, so a healthy night stays readable.
       - name: Backend log
         if: always()
+        # Through env: a dispatch input inside a docker filter string is an argument this
+        # shell builds, and the person dispatching chooses the text.
+        env:
+          BACKEND_TAG: ${{ inputs.backend_tag || 'main' }}
         run: |
-          id=$(docker ps -a --filter "ancestor=ghcr.io/check-it-out-dev/checkitout-backend:${{ inputs.backend_tag || 'main' }}" --format '{{.ID}}' | head -1)
+          id=$(docker ps -a --filter "ancestor=ghcr.io/check-it-out-dev/checkitout-backend:$BACKEND_TAG" --format '{{.ID}}' | head -1)
           if [ -z "$id" ]; then
             id=$(docker ps -a --format '{{.ID}} {{.Image}}' | grep checkitout-backend | head -1 | cut -d' ' -f1)
           fi
