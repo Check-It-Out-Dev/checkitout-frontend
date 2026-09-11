@@ -53,7 +53,18 @@ ATTEMPTS=${PAGES_ATTEMPTS:-6}
 # belong to a tier that published a second ago.
 REPLACE=${PAGES_REPLACE:-}
 # How many per-run report directories to keep under each top-level directory. 0 disables pruning.
+# PAGES_KEEP_<dir> overrides it for one directory, because "thirty reports" means very different
+# things depending on the report: a Lighthouse run is 20 files, and an Allure report for a
+# twelve-thousand-test suite is 24,000. Thirty of the latter is three quarters of a million files
+# and a Pages deployment that sits in `syncing_files` until it gives up, which is what happened on
+# 2026-09-11. Three is a week of night runs; every run's report is also in its own artifact for 30
+# days, and the trend lives in history-*.jsonl, which is one small file and is never pruned.
 KEEP=${PAGES_KEEP:-30}
+KEEP_allure=${PAGES_KEEP_allure:-3}
+
+keep_for() {
+  eval "printf '%s' \"\${KEEP_$1:-$KEEP}\"" 2>/dev/null || printf '%s' "$KEEP"
+}
 WORK=$(mktemp -d)
 ERRFILE=$(mktemp)
 
@@ -116,10 +127,17 @@ for attempt in $(seq 1 "$ATTEMPTS"); do
   if [ "$KEEP" -gt 0 ]; then
     for parent in "$WORK"/*/; do
       [ -d "$parent" ] || continue
+      name=$(basename "$parent")
+      # Only a name a shell variable can carry; anything else takes the default.
+      case "$name" in
+        *[!A-Za-z0-9_]*) keep=$KEEP ;;
+        *) keep=$(keep_for "$name") ;;
+      esac
+      [ "$keep" -gt 0 ] 2>/dev/null || keep=$KEEP
       find "$parent" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' 2>/dev/null |
         sed -n 's/^\(.*[^0-9]\)\{0,1\}\([0-9][0-9]*\)$/\1\t\2\t&/p' |
         sort -t "$(printf '\t')" -k1,1 -k2,2nr |
-        awk -F'\t' -v keep="$KEEP" '{ n[$1]++; if (n[$1] > keep) print $3 }' |
+        awk -F'\t' -v keep="$keep" '{ n[$1]++; if (n[$1] > keep) print $3 }' |
         while read -r old; do
           [ -n "$old" ] || continue
           rm -rf "${parent:?}${old}"
