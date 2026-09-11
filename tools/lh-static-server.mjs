@@ -71,12 +71,11 @@ server.on('request', (req, res) => {
   // this server's policy and what `try_files $uri /index.html` does in front of the real thing.
   const candidate = resolveWithin(root, req.url ?? '/');
   let file = candidate ?? index;
-  // NOSONAR jssecurity:S6549 - `file` is either `index`, which is a constant, or a path
-  // resolveWithin decoded, matched segment by segment against [A-Za-z0-9._~-] and proved contained
-  // with `relative` rather than a prefix test. The taint analysis cannot follow a sanitiser in
-  // another module; the module is tools/safe-path.mjs and its spec covers traversal in the
-  // encodings it actually arrives in.
-  if (!existsSync(file) || statSync(file).isDirectory()) file = index;
+  // `file` is either `index`, a constant, or a path resolveWithin decoded, matched segment by
+  // segment against [A-Za-z0-9._~-] and proved contained with `relative` rather than a prefix
+  // test. The taint analysis cannot follow a sanitiser into another module; that module is
+  // tools/safe-path.mjs, and its 23 tests cover traversal in the encodings it arrives in.
+  if (!existsSync(file) || statSync(file).isDirectory()) file = index; // NOSONAR jssecurity:S6549
 
   const ext = extname(file).toLowerCase();
   let body = readFileSync(file);
