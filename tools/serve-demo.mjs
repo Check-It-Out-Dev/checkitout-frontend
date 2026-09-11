@@ -31,9 +31,10 @@
  */
 import { createReadStream, existsSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
-import { extname, join, normalize, sep } from 'node:path';
+import { extname, join } from 'node:path';
 import { createGzip } from 'node:zlib';
 import { ROOT, SHELL, buildDemo, buildReason } from './demo-build.mjs';
+import { resolveWithin } from './safe-path.mjs';
 
 const args = process.argv.slice(2);
 const flag = (name, fallback) => {
@@ -93,33 +94,16 @@ if (args.includes('--no-build')) {
   }
 }
 
-// Everything this server is ever asked for is a file the Angular build emitted --
-// `/main-A1B2C3D4.js`, `/assets/i18n/en.json` -- so a path segment is unreserved characters and
-// nothing else. Declared next to the function that enforces it, and the same alphabet
-// tools/lh-static-server.mjs uses.
-const SAFE_SEGMENT = /^[A-Za-z0-9._~-]+$/;
-
-/** Resolve a URL path to a file inside ROOT, or null if it escapes or is absent. */
+/**
+ * Resolve a URL path to a file inside ROOT, or null if it escapes or is absent.
+ *
+ * Everything about whether the path is INSIDE ROOT lives in ./safe-path.mjs, shared with
+ * lh-static-server.mjs and tested there. What is left here is this server's policy: a directory
+ * serves its index.html, and a miss is a miss (the caller falls back to the SPA shell).
+ */
 function fileFor(urlPath) {
-  // decodeURIComponent throws on a malformed escape -- a bare `%` is enough -- and this runs
-  // inside the request handler, so an uncaught throw here does not refuse one request, it takes
-  // the whole server down. That matters more than it sounds: this process serves the smoothness
-  // tier, and a tier whose server died mid-run reports nothing rather than a regression.
-  let clean;
-  try {
-    clean = decodeURIComponent(urlPath.split('?')[0].split('#')[0]);
-  } catch {
-    return null;
-  }
-  // First gate, an allow-list. A segment of that alphabet cannot be `..`, cannot hold a NUL or a
-  // backslash, and cannot name a Windows device or an alternate data stream.
-  const shapeIsSafe = clean
-    .split('/')
-    .every((seg) => seg === '' || (seg !== '..' && SAFE_SEGMENT.test(seg)));
-  if (!shapeIsSafe) return null;
-  // Second gate, containment. normalize() collapses `..`; refuse anything that still climbs out.
-  const full = normalize(join(ROOT, clean));
-  if (full !== ROOT && !full.startsWith(ROOT + sep)) return null;
+  const full = resolveWithin(ROOT, urlPath);
+  if (full === null) return null;
   if (!existsSync(full)) return null;
   const stat = statSync(full);
   if (stat.isDirectory()) {

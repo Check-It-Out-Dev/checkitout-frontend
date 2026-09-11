@@ -22,6 +22,10 @@ module.exports = {
     // with no browser in it, so it belongs in the fast gate rather than in the
     // tier that needs a served build.
     '<rootDir>/e2e-tests/perf/**/*.unit.spec.ts',
+    // The build and serving tools. They are plain .mjs with no framework in them, and two of them
+    // bind a port, so the path-safety logic they share is worth a test in the fast gate rather
+    // than a comment claiming it holds.
+    '<rootDir>/tools/**/*.unit.spec.ts',
   ],
   moduleFileExtensions: ['ts', 'html', 'js', 'json', 'mjs'],
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],

@@ -19,7 +19,8 @@ import { execFileSync } from 'node:child_process';
 import { createSecureServer } from 'node:http2';
 import { existsSync, mkdtempSync, readFileSync, statSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { extname, isAbsolute, join, relative, resolve } from 'node:path';
+import { extname, join, resolve } from 'node:path';
+import { resolveWithin } from './safe-path.mjs';
 import { gzipSync } from 'node:zlib';
 
 const port = Number(process.argv[2] ?? 4299);
@@ -59,43 +60,17 @@ const server = createSecureServer({
   allowHTTP1: true,
 });
 
-// Everything this server is asked for is a file the Angular build emitted, so a path segment is
-// unreserved characters and nothing else. Declared next to the request handler that enforces it.
-const SAFE_SEGMENT = /^[A-Za-z0-9._~-]+$/;
-
 // Compat API ('request') fires for BOTH h2 streams and ALPN-downgraded
 // h1.1 requests; the raw 'stream' event only fires for h2.
 server.on('request', (req, res) => {
-  const reqPath = (req.url ?? '/').split('?')[0];
   const index = join(root, 'index.html');
 
-  // Two gates, because one of them has to be right about a list it cannot see the end of.
-  // decodeURIComponent can also throw on a malformed escape, which would take the server down
-  // rather than refuse one request (jssecurity:S8707, S6549).
-  let file = index;
-  try {
-    const decoded = decodeURIComponent(reqPath);
-    // First gate, an allow-list: everything this server is ever asked for is a file Angular
-    // emitted -- `/main-A1B2C3D4.js`, `/assets/i18n/en.json` -- so the alphabet is unreserved
-    // characters and `/`. A segment of that alphabet cannot be `..`, cannot contain a NUL or a
-    // backslash, and cannot name a Windows device or an alternate data stream.
-    const safeShape =
-      decoded.startsWith('/') &&
-      decoded
-        .slice(1)
-        .split('/')
-        .every((s) => s === '' || (s !== '..' && SAFE_SEGMENT.test(s)));
-    if (safeShape) {
-      // Second gate, containment by `relative` rather than `startsWith`. A prefix test says a path
-      // is inside the root when it merely begins with the root's characters, so a sibling directory
-      // named `...-browser-something` passes it while being entirely outside.
-      const candidate = resolve(root, '.' + decoded);
-      const rel = relative(root, candidate);
-      if (rel !== '' && !rel.startsWith('..') && !isAbsolute(rel)) file = candidate;
-    }
-  } catch {
-    file = index;
-  }
+  // Decoding, the segment allow-list and containment all live in ./safe-path.mjs, shared with
+  // serve-demo.mjs and tested there. Anything it refuses -- a malformed escape, a segment outside
+  // the alphabet, a path that resolves outside the root -- falls through to the shell, which is
+  // this server's policy and what `try_files $uri /index.html` does in front of the real thing.
+  const candidate = resolveWithin(root, req.url ?? '/');
+  let file = candidate ?? index;
   if (!existsSync(file) || statSync(file).isDirectory()) file = index;
 
   const ext = extname(file).toLowerCase();
