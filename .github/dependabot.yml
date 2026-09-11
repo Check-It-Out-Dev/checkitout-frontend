@@ -18,6 +18,17 @@ updates:
       interval: weekly
       day: monday
     open-pull-requests-limit: 5
+    # A version that was published an hour ago has been reviewed by nobody. The supply-chain
+    # attacks that matter - event-stream, ua-parser-js, the 2025 npm worm - were all caught within
+    # days of publication, by which time the malicious release had already been pulled. Waiting is
+    # therefore not caution, it is the whole defence: a package that sits untouched for a week is a
+    # package somebody else has already been burned by. Longer for majors, which need reading
+    # anyway; shortest for patches, which is where security fixes arrive.
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
+      semver-minor-days: 7
+      semver-patch-days: 3
     groups:
       github-official:
         patterns:
@@ -38,6 +49,17 @@ updates:
       interval: weekly
       day: monday
     open-pull-requests-limit: 8
+    # A version that was published an hour ago has been reviewed by nobody. The supply-chain
+    # attacks that matter - event-stream, ua-parser-js, the 2025 npm worm - were all caught within
+    # days of publication, by which time the malicious release had already been pulled. Waiting is
+    # therefore not caution, it is the whole defence: a package that sits untouched for a week is a
+    # package somebody else has already been burned by. Longer for majors, which need reading
+    # anyway; shortest for patches, which is where security fixes arrive.
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
+      semver-minor-days: 7
+      semver-patch-days: 3
     groups:
       # Angular releases as a set; one package at a time does not build.
       angular:
