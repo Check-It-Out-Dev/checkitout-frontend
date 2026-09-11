@@ -1,1 +1,0 @@
-{"id":"31d1861fcbb2c8d5a296a5a10a79944c","fullName":"integration/flows/profile-validation.spec.ts:223:7","name":"@companyDescription too long (> 1000 chars) returns 400","status":"passed","testResultsByEnv":{"default":"a5a341a623f31d89596504abf006f048"}}

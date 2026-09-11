@@ -1,1 +1,0 @@
-{"id":"cd32a50562d8b8022d06f42cd3750c6e","fullName":"integration/flows/profile-validation.spec.ts:301:7","name":"@preferences communicationFrequency invalid enum returns 400","status":"passed","testResultsByEnv":{"default":"79f1e4c61cd9df93b3d54e73ffa824cd"}}

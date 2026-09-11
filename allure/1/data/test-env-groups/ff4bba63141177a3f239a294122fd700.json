@@ -1,1 +1,0 @@
-{"id":"ff4bba63141177a3f239a294122fd700","fullName":"integration/auth/security-unauth.spec.ts:277:9","name":"auth-refresh endpoints reject unauthenticated requests","status":"passed","testResultsByEnv":{"default":"d69435e5ff8566370fd55bd4705a15b6"}}

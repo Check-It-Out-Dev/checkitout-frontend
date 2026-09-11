@@ -1,1 +1,0 @@
-{"id":"bdd7e4b78e63c7a4d34b112d66f18f40","fullName":"e2e-tests/bdd/features/subscription-e2e.feature.spec.js:89:7","name":"Terms change moves company to TERMS_PENDING then restores on accept","status":"passed","testResultsByEnv":{"default":"2e1750a2fba23cd42986656c9f2f5eb7"}}

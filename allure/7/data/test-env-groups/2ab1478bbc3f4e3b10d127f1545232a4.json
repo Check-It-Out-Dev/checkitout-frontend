@@ -1,1 +1,0 @@
-{"id":"2ab1478bbc3f4e3b10d127f1545232a4","fullName":"integration/flows/step-up-email-required.spec.ts:326:7","name":"@step-up 5 wrong codes triggers cooldown (429)","status":"passed","testResultsByEnv":{"default":"0264b6669086bf823864e7fb1148078f"}}

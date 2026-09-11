@@ -1,1 +1,0 @@
-{"id":"fa48f85076f859560d64b2587c4f8332","fullName":"integration/flows/magic-link-errors.spec.ts:149:7","name":"@tier-1 confirm-password-reset rejects password with no digits (400)","status":"passed","testResultsByEnv":{"default":"c1e7a413afe93571255d9aed86256e94"}}

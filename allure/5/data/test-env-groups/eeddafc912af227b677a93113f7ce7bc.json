@@ -1,1 +1,0 @@
-{"id":"eeddafc912af227b677a93113f7ce7bc","fullName":"integration/auth/security-unauth.spec.ts:277:9","name":"upload endpoints reject unauthenticated requests","status":"passed","testResultsByEnv":{"default":"f921a6b730f1bb6dcbbd25df56f99a62"}}

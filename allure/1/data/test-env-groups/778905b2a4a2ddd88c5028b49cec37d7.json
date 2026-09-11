@@ -1,1 +1,0 @@
-{"id":"778905b2a4a2ddd88c5028b49cec37d7","fullName":"e2e-tests/bdd/features/oauth-consent-cookie-survival.feature.spec.js:55:7","name":"Consent cookies have correct SameSite=Lax attribute for redirect survival","status":"passed","testResultsByEnv":{"default":"c29eb859253a578206328a8f0b44b576"}}

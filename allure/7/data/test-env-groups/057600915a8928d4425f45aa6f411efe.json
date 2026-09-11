@@ -1,1 +1,0 @@
-{"id":"057600915a8928d4425f45aa6f411efe","fullName":"integration/flows/rate-limiting.spec.ts:62:8","name":"@company @429-response @standard-profile COMPANY receives 429 when exceeding STANDARD limit (5 req/60s)","status":"skipped","testResultsByEnv":{"default":"3b3b4d67a0dfdc650d5867c118275046"}}

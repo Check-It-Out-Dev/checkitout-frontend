@@ -1,1 +1,0 @@
-{"id":"dae72a026796260f6056a50af5694f55","fullName":"e2e-tests/bdd/features/magic-link-errors.feature.spec.js:42:9","name":"confirm-password-reset rejects invalid input: missing oobCode","status":"passed","testResultsByEnv":{"default":"0591eb1b57c6a1fa86418354f7a71c26"}}

@@ -1,8 +1,0 @@
-
-  every transient the seven tours showed
-       650 ms    7w  answered  admin-2fa/two-factor-verify-error  "Kod wygasł. Wygeneruj nowy i spróbuj ponownie."
-      1368 ms   22w  answered  stepup-email/mat-dialog-container  "shield Potwierdź swoją tożsamość Dodatkowe potwierdzenie Wys"
-      2488 ms   18w  answered  admin-2fa/mat-dialog-container  "lock Potwierdź logowanie Uwierzytelnianie dwuskładnikowe Wpr"
-
-  nothing vanished before it could be read
-

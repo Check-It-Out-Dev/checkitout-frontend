@@ -1,1 +1,0 @@
-{"id":"e9575a508823f6c82c772f726396888b","fullName":"integration/flows/profile-validation.spec.ts:277:7","name":"@preferences language too long (> 10 chars) returns 400","status":"passed","testResultsByEnv":{"default":"1bede550b3a11201b25ddc56f6d3fb9b"}}

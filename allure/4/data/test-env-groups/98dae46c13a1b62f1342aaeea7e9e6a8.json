@@ -1,1 +1,0 @@
-{"id":"98dae46c13a1b62f1342aaeea7e9e6a8","fullName":"integration/flows/admin-platform-management.spec.ts:328:7","name":"@cross-role COMPANY actor is 403 on /admin/* endpoints (sanity)","status":"passed","testResultsByEnv":{"default":"3b121a8cb82a3fe85363f91eb85728e4"}}

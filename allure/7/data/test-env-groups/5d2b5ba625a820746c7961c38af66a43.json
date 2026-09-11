@@ -1,1 +1,0 @@
-{"id":"5d2b5ba625a820746c7961c38af66a43","fullName":"integration/flows/multi-user-session-isolation.spec.ts:196:7","name":"@all-types COMPANY + INFLUENCER + ADMIN logged in simultaneously stay isolated","status":"passed","testResultsByEnv":{"default":"0ede8f2d10eacc740cd72510e58ecbb1"}}

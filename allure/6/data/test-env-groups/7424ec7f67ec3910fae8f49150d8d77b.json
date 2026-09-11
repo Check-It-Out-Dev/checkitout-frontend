@@ -1,1 +1,0 @@
-{"id":"7424ec7f67ec3910fae8f49150d8d77b","fullName":"integration/flows/consent-extras.spec.ts:152:7","name":"@consent-status authenticated user can GET /legal/consent/my","status":"passed","testResultsByEnv":{"default":"1c6b0542e991c58ea694e7fe7106c0e9"}}

@@ -1,1 +1,0 @@
-{"id":"06cc56444fd6dc8ae3ea61db5ac79c8d","fullName":"integration/flows/step-up-email-required.spec.ts:135:7","name":"@step-up non-email PATCH succeeds without step-up token (setup-complete COMPANY)","status":"passed","testResultsByEnv":{"default":"c2f3b0d3d87371155d6eeeb3f1831c69"}}

@@ -1,1 +1,0 @@
-{"id":"31084842892be84fef3c0ff40cff98bd","fullName":"integration/flows/security-advanced-session.spec.ts:111:7","name":"@scenario-1 @hmac-forgery wrong sig cookie returns 401","status":"passed","testResultsByEnv":{"default":"f0462efef022cb2df0363b4b8839b082"}}

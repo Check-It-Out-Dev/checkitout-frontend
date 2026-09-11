@@ -1,1 +1,0 @@
-{"id":"8a2325588090ad48be236e506a0e1032","fullName":"integration/flows/profile-critical-fields.spec.ts:94:7","name":"@company firstName + lastName + phoneNumber + name + nip PATCH keep session ACTIVE","status":"passed","testResultsByEnv":{"default":"e62ff83c90e4b8dda69e1e2f0b83e628"}}

@@ -1,1 +1,0 @@
-{"id":"90188c50691b5207c34d14daea9c8a7b","fullName":"integration/auth/step-up.spec.ts:81:7","name":"COMPANY non-email PATCH succeeds without step-up token","status":"passed","testResultsByEnv":{"default":"e20cc13a0844a6b34be9837d7132b7c7"}}

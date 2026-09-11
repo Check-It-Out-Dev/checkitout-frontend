@@ -1,1 +1,0 @@
-  company-campaign hand: 2119 frames over 120.7s → qa-film/2026-09-10/company-campaign-hand

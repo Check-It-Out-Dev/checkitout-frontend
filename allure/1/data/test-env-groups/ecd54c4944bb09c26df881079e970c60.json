@@ -1,1 +1,0 @@
-{"id":"ecd54c4944bb09c26df881079e970c60","fullName":"integration/auth/consent.spec.ts:53:7","name":"@public-api current legal documents endpoint returns 3 expected types","status":"passed","testResultsByEnv":{"default":"422f6a142f9b5fdf17958203d9da8bfb"}}

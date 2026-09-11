@@ -1,1 +1,0 @@
-{"id":"daac74cbe73104e6b727200ddeb9431b","fullName":"integration/flows/registry-company-flow.spec.ts:107:7","name":"@lookup empty NIP returns 400","status":"passed","testResultsByEnv":{"default":"1a6dde1f59399377d21786220fa0931d"}}

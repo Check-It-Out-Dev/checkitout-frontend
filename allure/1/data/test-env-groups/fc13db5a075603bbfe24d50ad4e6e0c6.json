@@ -1,1 +1,0 @@
-{"id":"fc13db5a075603bbfe24d50ad4e6e0c6","fullName":"integration/auth/security-unauth.spec.ts:277:9","name":"partnership endpoints reject unauthenticated requests","status":"passed","testResultsByEnv":{"default":"e087706437f9b528369e16bd7bb9114d"}}

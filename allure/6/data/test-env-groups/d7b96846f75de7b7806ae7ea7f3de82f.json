@@ -1,1 +1,0 @@
-{"id":"d7b96846f75de7b7806ae7ea7f3de82f","fullName":"integration/flows/subscription-lifecycle.spec.ts:188:7","name":"@upgrade-flow Company upgrades from FREE to BUSINESS via simulated webhook","status":"passed","testResultsByEnv":{"default":"1684f0d7f6fe4ea65245d7ceacff6f3b"}}

@@ -1,1 +1,0 @@
-{"id":"610caa2028612a925b22842d2a0f7ac5","fullName":"integration/flows/subscription-lifecycle.spec.ts:397:7","name":"@terms-versioning Terms change → TERMS_PENDING → accept restores BUSINESS_ACTIVE","status":"passed","testResultsByEnv":{"default":"8f12f9bf0136785a31ba6cd0c96f3f1f"}}

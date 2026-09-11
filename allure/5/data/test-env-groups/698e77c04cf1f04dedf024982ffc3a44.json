@@ -1,1 +1,0 @@
-{"id":"698e77c04cf1f04dedf024982ffc3a44","fullName":"e2e-tests/bdd/features/magic-link-errors.feature.spec.js:36:9","name":"confirm-password-reset rejects invalid input: blank oobCode","status":"passed","testResultsByEnv":{"default":"46cc07654a4285e1259a5c35c949970f"}}

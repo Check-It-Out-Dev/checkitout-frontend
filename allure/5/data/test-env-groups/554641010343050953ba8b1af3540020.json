@@ -1,1 +1,0 @@
-{"id":"554641010343050953ba8b1af3540020","fullName":"integration/flows/security-cross-role.spec.ts:213:7","name":"@influencer-forbidden @admin-get INFLUENCER → admin GET endpoints return 403","status":"passed","testResultsByEnv":{"default":"733d4efe8c3b18ad55bfaeb31c23e133"}}

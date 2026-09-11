@@ -1,1 +1,0 @@
-{"id":"2d488a6841c76db17b6783acad040561","fullName":"integration/flows/step-up-email-required.spec.ts:113:7","name":"@step-up email PATCH without X-Step-Up-Token returns 401 (setup-complete COMPANY)","status":"passed","testResultsByEnv":{"default":"910978e60223e26fea535610cce14b8d"}}

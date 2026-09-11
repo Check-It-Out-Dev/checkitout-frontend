@@ -1,1 +1,0 @@
-{"id":"b9381ddc0a7b62fef79cef443bbeb6f0","fullName":"e2e-tests/bdd/features/magic-link-errors.feature.spec.js:20:9","name":"verify-reset-code rejects blank or missing oobCode (blank oobCode)","status":"passed","testResultsByEnv":{"default":"55ba6bb1c24a06133561d69398dac4ce"}}

@@ -1,1 +1,0 @@
-{"id":"f85012eb6ae742eb14a4b423bffd755e","fullName":"msw/health-check.spec.ts:36:8","name":"intercepts /api/health when mock=1","status":"skipped","testResultsByEnv":{"default":"ab8c54df5b24d1e69753f1c1224c98d2"}}

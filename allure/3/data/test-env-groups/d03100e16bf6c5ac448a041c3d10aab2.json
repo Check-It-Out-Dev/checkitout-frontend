@@ -1,1 +1,0 @@
-{"id":"d03100e16bf6c5ac448a041c3d10aab2","fullName":"integration/flows/profile-validation.spec.ts:128:7","name":"@phone too short (< 7 chars) returns 400","status":"passed","testResultsByEnv":{"default":"fcc87edbf81a6db59decd8da12488dce"}}

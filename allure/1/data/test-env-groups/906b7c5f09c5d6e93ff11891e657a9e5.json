@@ -1,1 +1,0 @@
-{"id":"906b7c5f09c5d6e93ff11891e657a9e5","fullName":"integration/flows/security-advanced-session.spec.ts:75:7","name":"@scenario-1 @cookie-tamper modified session cookie content returns 401","status":"passed","testResultsByEnv":{"default":"fe15d9d57df5b7dd8272fb7c27f5fd05"}}

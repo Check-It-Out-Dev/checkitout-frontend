@@ -1,1 +1,0 @@
-{"id":"84c70508f47561db3d1303d98c5a261c","fullName":"integration/flows/magic-link-errors.spec.ts:131:7","name":"@tier-1 confirm-password-reset rejects blank newPassword (400)","status":"passed","testResultsByEnv":{"default":"56f5fffc5c69410f6b9c9c9807e9e4ed"}}

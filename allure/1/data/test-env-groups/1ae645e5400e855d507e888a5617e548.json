@@ -1,1 +1,0 @@
-{"id":"1ae645e5400e855d507e888a5617e548","fullName":"integration/auth/security-unauth.spec.ts:277:9","name":"2fa endpoints reject unauthenticated requests","status":"passed","testResultsByEnv":{"default":"b8adddda6aca987ca30885a42bf47f98"}}

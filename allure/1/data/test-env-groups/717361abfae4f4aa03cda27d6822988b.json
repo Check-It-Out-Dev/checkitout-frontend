@@ -1,1 +1,0 @@
-{"id":"717361abfae4f4aa03cda27d6822988b","fullName":"e2e-tests/bdd/features/payments-off.feature.spec.js:25:7","name":"Stripe webhook endpoint returns 404 when payments are off","status":"passed","testResultsByEnv":{"default":"8c485982b70d94a5d999beb3358026a3"}}

@@ -1,1 +1,0 @@
-{"id":"928ceb161392e20ae7a0ce0d9a988222","fullName":"e2e-tests/bdd/features/rate-limiting.feature.spec.js:10:7","name":"Company user receives 429 when exceeding the STANDARD rate limit","status":"passed","testResultsByEnv":{"default":"e122f015708fa2b0cf74a503e15e1124"}}

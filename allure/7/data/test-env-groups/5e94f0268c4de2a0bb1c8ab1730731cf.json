@@ -1,1 +1,0 @@
-{"id":"5e94f0268c4de2a0bb1c8ab1730731cf","fullName":"integration/flows/admin-geoip-analysis.spec.ts:252:7","name":"@scenario-3 @non-admin INFLUENCER actor is 403 on GeoIP admin endpoints","status":"passed","testResultsByEnv":{"default":"220f532a1b09eaa8f393cbf34a5edaa3"}}

@@ -1,1 +1,0 @@
-  company-campaign: fault-injected 3 ringed step(s) — [data-testid="opp-form-submit"], [data-testid="opportunity-detail-manage"], [data-testid^="applicant-accept-"]

@@ -1,1 +1,0 @@
-{"id":"3bc5a367376100adcd499dd01dbf53ab","fullName":"integration/flows/security-advanced-session.spec.ts:209:8","name":"@scenario-3 @ua-mismatch different User-Agent terminates the session","status":"skipped","testResultsByEnv":{"default":"78563dcf462fd33feb7cc21abc4af745"}}
