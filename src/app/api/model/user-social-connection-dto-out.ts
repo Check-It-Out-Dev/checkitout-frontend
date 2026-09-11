@@ -15,13 +15,22 @@ import { ServiceTypeDto } from './service-type-dto';
 
 export interface UserSocialConnectionDtoOut { 
     connectionStatus?: ConnectionStatus;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     createdTime?: string;
     displayName?: string;
     email?: string;
     followersCount?: number;
     id?: number;
     isPrimary?: boolean;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     lastSyncTime?: string;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     lastUpdateTime?: string;
     note?: string;
     platform?: PlatformDto;

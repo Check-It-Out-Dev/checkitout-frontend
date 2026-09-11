@@ -15,12 +15,21 @@ export interface CascadeDeleteTaskDto {
     adminFirebaseId?: string;
     archiveUrl?: string;
     canRetry?: boolean;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     completedAt?: string;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     createdAt?: string;
     entityType?: string;
     errorDetails?: string;
     firebaseUserId?: string;
     fullyCompleted?: boolean;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     lastAttemptAt?: string;
     reason?: string;
     retryCount?: number;

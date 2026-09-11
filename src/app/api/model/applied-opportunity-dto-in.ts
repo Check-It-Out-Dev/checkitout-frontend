@@ -14,6 +14,9 @@ import { RateStatus } from './rate-status';
 
 export interface AppliedOpportunityDtoIn { 
     companyRateStatus?: RateStatus;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     executionDate?: string;
     influencer?: number;
     note?: string;

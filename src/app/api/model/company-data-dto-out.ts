@@ -16,6 +16,9 @@ export interface CompanyDataDtoOut {
     companyName?: string;
     companyType?: CompanyType;
     correspondenceAddress?: { [key: string]: string; };
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     createdTime?: string;
     dataVerified?: boolean;
     id?: number;
@@ -25,6 +28,9 @@ export interface CompanyDataDtoOut {
     ownerName?: string;
     pkdCodes?: Array<{ [key: string]: object; }>;
     registeredAddress?: { [key: string]: string; };
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     registryDataFetchedAt?: string;
     regon?: string;
     /**

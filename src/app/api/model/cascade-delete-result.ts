@@ -16,10 +16,16 @@ export interface CascadeDeleteResult {
     archiveUrl?: string;
     auditTrailId?: string;
     canRetry?: boolean;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     completedAt?: string;
     deletedByType?: Array<EntityTypeCount>;
     firebaseUserId?: string;
     partialSuccess?: boolean;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     startedAt?: string;
     success?: boolean;
     systemStatuses?: SystemStatuses;

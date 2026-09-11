@@ -15,6 +15,9 @@ export interface TicketResponseDtoOut {
     adminName?: string;
     attachments?: Array<ResponseAttachmentDtoOut>;
     content?: string;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     createdTime?: string;
     fromAdmin?: boolean;
     id?: number;

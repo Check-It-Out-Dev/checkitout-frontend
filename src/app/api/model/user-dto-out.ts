@@ -18,6 +18,9 @@ export interface UserDtoOut {
     accountStatus?: AccountStatusDtoOut;
     addresses?: Array<AddressNoUserDtoOut>;
     companyDescription?: string;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     createdTime?: string;
     daysToAcceptNewTerms?: number;
     email?: string;
@@ -27,6 +30,9 @@ export interface UserDtoOut {
     id?: number;
     initialAccountSetupCompleted?: boolean;
     lastName?: string;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     lastUpdateTime?: string;
     lastVerifiedEmail?: string;
     name?: string;

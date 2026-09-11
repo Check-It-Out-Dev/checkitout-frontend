@@ -134,7 +134,8 @@
             "type" : "string"
           },
           "createdTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "id" : {
@@ -142,7 +143,8 @@
             "type" : "integer"
           },
           "lastUpdateTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "partnershipOpportunityId" : {
@@ -196,7 +198,8 @@
             "type" : "string"
           },
           "createdTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "id" : {
@@ -204,7 +207,8 @@
             "type" : "integer"
           },
           "lastUpdateTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "postalCode" : {
@@ -298,7 +302,8 @@
             "type" : "integer"
           },
           "contentCreationDate" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "contentTypeId" : {
@@ -316,7 +321,8 @@
             "type" : "string"
           },
           "submissionDate" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "tags" : {
@@ -355,7 +361,8 @@
             "type" : "integer"
           },
           "contentCreationDate" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "contentTypeId" : {
@@ -366,7 +373,8 @@
             "type" : "string"
           },
           "createdTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "description" : {
@@ -377,7 +385,8 @@
             "type" : "integer"
           },
           "lastUpdateTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "likesCount" : {
@@ -392,7 +401,8 @@
             "type" : "string"
           },
           "submissionDate" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "tags" : {
@@ -438,7 +448,8 @@
             "type" : "string"
           },
           "submissionDate" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "urls" : {
@@ -460,7 +471,8 @@
             "$ref" : "#/components/schemas/RateStatus"
           },
           "executionDate" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "influencer" : {
@@ -502,11 +514,13 @@
             "type" : "array"
           },
           "createdTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "executionDate" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "id" : {
@@ -521,7 +535,8 @@
             } ]
           },
           "lastUpdateTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "note" : {
@@ -558,11 +573,13 @@
             "type" : "array"
           },
           "createdTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "executionDate" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "id" : {
@@ -573,7 +590,8 @@
             "$ref" : "#/components/schemas/InfluencerPublicProfileDto"
           },
           "lastUpdateTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "note" : {
@@ -622,7 +640,8 @@
             "type" : "string"
           },
           "changedAt" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "changedByFirebaseId" : {
@@ -881,7 +900,8 @@
             "type" : "boolean"
           },
           "completedAt" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "deletedByType" : {
@@ -897,7 +917,8 @@
             "type" : "boolean"
           },
           "startedAt" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "success" : {
@@ -939,11 +960,13 @@
             "type" : "boolean"
           },
           "completedAt" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "createdAt" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "entityType" : {
@@ -959,7 +982,8 @@
             "type" : "boolean"
           },
           "lastAttemptAt" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "reason" : {
@@ -1107,7 +1131,8 @@
             "type" : "object"
           },
           "createdTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "dataVerified" : {
@@ -1145,7 +1170,8 @@
             "type" : "object"
           },
           "registryDataFetchedAt" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "regon" : {
@@ -1338,7 +1364,8 @@
             "type" : "string"
           },
           "createdAt" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "description" : {
@@ -1358,7 +1385,8 @@
             "type" : "string"
           },
           "updatedAt" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "versions" : {
@@ -1373,6 +1401,7 @@
       "ConsentPrepareRequest" : {
         "properties" : {
           "documentHash" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "documentType" : {
@@ -1389,7 +1418,7 @@
             "type" : "integer"
           }
         },
-        "required" : [ "version" ],
+        "required" : [ "proof", "version" ],
         "type" : "object"
       },
       "ConsentProofDtoIn" : {
@@ -1445,7 +1474,8 @@
             "type" : "string"
           },
           "timestamp" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "userAgent" : {
@@ -1563,11 +1593,13 @@
             "type" : "string"
           },
           "effectiveFrom" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "effectiveUntil" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "policyUrl" : {
@@ -1594,15 +1626,18 @@
             "type" : "string"
           },
           "createdAt" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "effectiveFrom" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "effectiveUntil" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "id" : {
@@ -1943,7 +1978,8 @@
             "type" : "string"
           },
           "createdAt" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "id" : {
@@ -1957,7 +1993,8 @@
             "type" : "string"
           },
           "updatedAt" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "updaterId" : {
@@ -2028,7 +2065,8 @@
             "type" : "boolean"
           },
           "createdTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "description" : {
@@ -2049,7 +2087,8 @@
             "type" : "integer"
           },
           "lastUpdateTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "name" : {
@@ -2103,7 +2142,8 @@
             "type" : "string"
           },
           "createdTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "displayOrder" : {
@@ -2115,7 +2155,8 @@
             "type" : "integer"
           },
           "lastUpdateTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "question" : {
@@ -2396,7 +2437,8 @@
               "$ref" : "#/components/schemas/AccountStatusDtoOut"
             },
             "createdTime" : {
-              "format" : "date-time",
+              "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+              "example" : "2026-09-11T09:05:26.114536",
               "type" : "string"
             },
             "displayName" : {
@@ -2607,7 +2649,8 @@
             "type" : "string"
           },
           "createdAt" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "groupKey" : {
@@ -2632,7 +2675,8 @@
             "type" : "string"
           },
           "readAt" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "snapshot" : {
@@ -3760,7 +3804,8 @@
             "uniqueItems" : true
           },
           "createdTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "currency" : {
@@ -3773,7 +3818,8 @@
             "type" : "string"
           },
           "endDate" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "followersMax" : {
@@ -3791,7 +3837,8 @@
             "type" : "integer"
           },
           "lastUpdateTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "name" : {
@@ -3825,7 +3872,8 @@
             "type" : "integer"
           },
           "startDate" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "title" : {
@@ -3883,7 +3931,8 @@
             "uniqueItems" : true
           },
           "createdTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "currency" : {
@@ -3893,7 +3942,8 @@
             "type" : "string"
           },
           "endDate" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "followersMax" : {
@@ -3909,7 +3959,8 @@
             "type" : "integer"
           },
           "lastUpdateTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "name" : {
@@ -3935,7 +3986,8 @@
             "$ref" : "#/components/schemas/ServiceTypeDtoOut"
           },
           "startDate" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "title" : {
@@ -4033,7 +4085,8 @@
             "uniqueItems" : true
           },
           "createdTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "currency" : {
@@ -4043,7 +4096,8 @@
             "type" : "string"
           },
           "endDate" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "followersMax" : {
@@ -4059,7 +4113,8 @@
             "type" : "integer"
           },
           "lastUpdateTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "name" : {
@@ -4085,7 +4140,8 @@
             "$ref" : "#/components/schemas/ServiceTypeDtoOut"
           },
           "startDate" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "title" : {
@@ -4376,7 +4432,8 @@
             "type" : "integer"
           },
           "uploadTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           }
         },
@@ -4607,7 +4664,8 @@
             "type" : "string"
           },
           "createdTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "description" : {
@@ -4618,14 +4676,16 @@
             "type" : "integer"
           },
           "lastUpdateTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "resolved" : {
             "type" : "boolean"
           },
           "resolvedTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "responses" : {
@@ -4713,7 +4773,8 @@
             "type" : "integer"
           },
           "uploadTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           }
         },
@@ -4748,7 +4809,8 @@
             "type" : "string"
           },
           "createdTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "fromAdmin" : {
@@ -4912,7 +4974,8 @@
             "$ref" : "#/components/schemas/ConsentVersionDtoOut"
           },
           "createdAt" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "id" : {
@@ -4947,11 +5010,13 @@
             "type" : "string"
           },
           "grantedAt" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "lastUpdated" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "name" : {
@@ -4965,7 +5030,8 @@
             "type" : "integer"
           },
           "withdrawnAt" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           }
         },
@@ -5057,7 +5123,8 @@
             "type" : "string"
           },
           "createdTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "daysToAcceptNewTerms" : {
@@ -5087,7 +5154,8 @@
             "type" : "string"
           },
           "lastUpdateTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "lastVerifiedEmail" : {
@@ -5206,7 +5274,8 @@
             "type" : "string"
           },
           "createdTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "darkModeEnabled" : {
@@ -5225,7 +5294,8 @@
             "type" : "string"
           },
           "lastUpdateTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "notificationEmailEnabled" : {
@@ -5326,7 +5396,8 @@
             "$ref" : "#/components/schemas/ConnectionStatus"
           },
           "createdTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "displayName" : {
@@ -5347,11 +5418,13 @@
             "type" : "boolean"
           },
           "lastSyncTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "lastUpdateTime" : {
-            "format" : "date-time",
+            "description" : "Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.",
+            "example" : "2026-09-11T09:05:26.114536",
             "type" : "string"
           },
           "note" : {
@@ -5478,6 +5551,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -5530,6 +5606,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -5584,6 +5663,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -5624,6 +5706,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -5663,6 +5748,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -5752,6 +5840,9 @@
             },
             "description" : "Addresses returned successfully"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -5819,6 +5910,9 @@
             },
             "description" : "Address created successfully"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -5871,6 +5965,9 @@
               }
             },
             "description" : "Primary address returned successfully"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -5932,6 +6029,9 @@
               }
             },
             "description" : "Addresses returned successfully"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -5999,6 +6099,9 @@
               }
             },
             "description" : "Successful search"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -6076,6 +6179,9 @@
             },
             "description" : "Addresses found successfully"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -6140,6 +6246,9 @@
               }
             },
             "description" : "Addresses returned successfully"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -6208,6 +6317,9 @@
             },
             "description" : "Address created successfully"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -6260,6 +6372,9 @@
               }
             },
             "description" : "Primary address returned successfully"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -6321,6 +6436,9 @@
               }
             },
             "description" : "Addresses returned successfully"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -6413,6 +6531,9 @@
               }
             },
             "description" : "Address found successfully"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -6610,6 +6731,9 @@
             },
             "description" : "Address set as primary successfully"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -6671,6 +6795,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -6703,6 +6830,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -6746,6 +6876,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -6784,6 +6917,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -6828,6 +6964,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -6860,6 +6999,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -6907,6 +7049,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -6940,6 +7085,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -6972,6 +7120,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -7010,6 +7161,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -7043,6 +7197,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -7087,6 +7244,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -7119,6 +7279,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -7179,6 +7342,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -7214,6 +7380,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -7258,6 +7427,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -7291,6 +7463,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -7355,6 +7530,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -7472,6 +7650,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -7538,6 +7719,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -7574,6 +7758,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -7704,6 +7891,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -7756,6 +7946,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -7794,6 +7987,9 @@
         "responses" : {
           "200" : {
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -7883,6 +8079,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -7928,6 +8127,9 @@
               }
             },
             "description" : "Content retrieved successfully"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -8004,6 +8206,9 @@
               }
             },
             "description" : "Content retrieved successfully"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -8088,6 +8293,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -8115,6 +8323,9 @@
         "responses" : {
           "200" : {
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -8148,6 +8359,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -8192,6 +8406,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -8226,6 +8443,9 @@
         "responses" : {
           "200" : {
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -8287,6 +8507,9 @@
           "200" : {
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -8321,6 +8544,9 @@
         "responses" : {
           "200" : {
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -8365,6 +8591,9 @@
               }
             },
             "description" : "Successful search"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -8430,6 +8659,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -8494,6 +8726,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -8529,6 +8764,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -8597,6 +8835,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -8664,6 +8905,9 @@
               }
             },
             "description" : "Entity found"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -8866,6 +9110,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -8906,6 +9153,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -8938,6 +9188,9 @@
               }
             },
             "description" : "Contact data retrieved successfully"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -8990,6 +9243,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           }
         },
         "tags" : [ "auth-controller" ]
@@ -9018,6 +9274,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           }
         },
         "tags" : [ "auth-controller" ]
@@ -9046,6 +9305,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           }
         },
         "tags" : [ "firebase-auth-proxy-controller" ]
@@ -9074,6 +9336,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           }
         },
         "tags" : [ "firebase-auth-proxy-controller" ]
@@ -9102,6 +9367,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           }
         },
         "tags" : [ "firebase-auth-proxy-controller" ]
@@ -9130,6 +9398,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           }
         },
         "tags" : [ "firebase-auth-proxy-controller" ]
@@ -9158,6 +9429,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           }
         },
         "tags" : [ "firebase-auth-proxy-controller" ]
@@ -9195,6 +9469,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           }
         },
         "tags" : [ "firebase-auth-proxy-controller" ]
@@ -9223,6 +9500,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           }
         },
         "tags" : [ "firebase-auth-proxy-controller" ]
@@ -9251,6 +9531,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           }
         },
         "tags" : [ "firebase-auth-proxy-controller" ]
@@ -9279,6 +9562,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           }
         },
         "tags" : [ "firebase-auth-proxy-controller" ]
@@ -9307,6 +9593,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           }
         },
         "tags" : [ "firebase-auth-proxy-controller" ]
@@ -9335,6 +9624,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           }
         },
         "tags" : [ "firebase-auth-proxy-controller" ]
@@ -9363,6 +9655,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           }
         },
         "tags" : [ "firebase-auth-proxy-controller" ]
@@ -9411,6 +9706,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           }
         },
         "tags" : [ "instagram-callback-controller" ]
@@ -9431,6 +9729,9 @@
         "responses" : {
           "200" : {
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           }
         },
         "tags" : [ "instagram-callback-controller" ]
@@ -9457,6 +9758,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           }
         },
         "tags" : [ "instagram-callback-controller" ]
@@ -9503,6 +9807,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           }
         },
         "tags" : [ "auth-controller" ]
@@ -9599,6 +9906,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           }
         },
         "tags" : [ "auth-controller" ]
@@ -9712,6 +10022,9 @@
             },
             "description" : "Successful search"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -9797,6 +10110,9 @@
               }
             },
             "description" : "Entity found"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -10018,6 +10334,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -10052,6 +10371,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -10149,6 +10471,9 @@
             },
             "description" : "Successful search"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -10234,6 +10559,9 @@
               }
             },
             "description" : "Entity found"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -10492,6 +10820,9 @@
             },
             "description" : "Successful search"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -10577,6 +10908,9 @@
               }
             },
             "description" : "Entity found"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -10829,6 +11163,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -10854,6 +11191,9 @@
         "responses" : {
           "200" : {
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -10886,6 +11226,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -10926,6 +11269,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -10960,6 +11306,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -10992,6 +11341,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -11023,6 +11375,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -11060,6 +11415,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -11124,6 +11482,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -11158,6 +11519,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -11195,6 +11559,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -11231,6 +11598,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -11265,6 +11635,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -11291,6 +11664,9 @@
         "responses" : {
           "200" : {
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -11343,6 +11719,9 @@
           "200" : {
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -11369,6 +11748,9 @@
         "responses" : {
           "200" : {
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -11477,6 +11859,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -11511,6 +11896,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -11548,6 +11936,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -11583,6 +11974,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -11673,6 +12067,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -11719,6 +12116,9 @@
             },
             "description" : "Notifications retrieved successfully"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "content" : {
               "*/*" : {
@@ -11763,6 +12163,9 @@
               }
             },
             "description" : "Notifications retrieved"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "content" : {
@@ -11869,6 +12272,9 @@
           "204" : {
             "description" : "Notification archived"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "Unauthorized"
           },
@@ -11905,6 +12311,9 @@
               }
             },
             "description" : "Notification found"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "content" : {
@@ -11958,6 +12367,9 @@
               }
             },
             "description" : "Notification marked as read"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "content" : {
@@ -12210,6 +12622,9 @@
               }
             },
             "description" : "Partnership opportunity found"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -12468,6 +12883,9 @@
             },
             "description" : "Successful search"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -12553,6 +12971,9 @@
               }
             },
             "description" : "Entity found"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -13157,6 +13578,9 @@
             },
             "description" : "Successful search"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -13242,6 +13666,9 @@
               }
             },
             "description" : "Entity found"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -13436,6 +13863,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -13473,6 +13903,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -13506,6 +13939,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -13616,6 +14052,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           }
         },
         "tags" : [ "faq-controller" ]
@@ -13728,6 +14167,9 @@
             },
             "description" : "Successful search"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "403" : {
             "content" : {
               "*/*" : {
@@ -13810,6 +14252,9 @@
               }
             },
             "description" : "Entity found"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "403" : {
             "content" : {
@@ -14010,6 +14455,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -14035,6 +14483,9 @@
         "responses" : {
           "200" : {
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -14078,6 +14529,9 @@
               }
             },
             "description" : "Successful search"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "403" : {
             "content" : {
@@ -14128,6 +14582,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           }
         },
         "tags" : [ "faq-controller" ]
@@ -14190,6 +14647,9 @@
               }
             },
             "description" : "Entity found"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "403" : {
             "content" : {
@@ -14390,6 +14850,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -14415,6 +14878,9 @@
         "responses" : {
           "200" : {
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -14469,6 +14935,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -14500,6 +14969,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           }
         },
         "tags" : [ "support-ticket-controller" ]
@@ -14526,6 +14998,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           }
         },
         "tags" : [ "support-ticket-controller" ]
@@ -14552,6 +15027,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -14601,6 +15079,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           }
         },
         "tags" : [ "support-ticket-controller" ]
@@ -14645,6 +15126,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -14683,6 +15167,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           }
         },
         "tags" : [ "support-ticket-controller" ]
@@ -14710,6 +15197,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -14753,6 +15243,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -14802,6 +15295,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           }
         },
         "tags" : [ "support-ticket-controller" ]
@@ -14836,6 +15332,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -14913,6 +15412,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -14946,6 +15448,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -15029,6 +15534,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -15062,6 +15570,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -15102,6 +15613,9 @@
               }
             },
             "description" : "Upload confirmed"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -15390,6 +15904,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -15421,6 +15938,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -15464,6 +15984,9 @@
               }
             },
             "description" : "Successful search"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -15516,6 +16039,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -15559,6 +16085,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -15627,6 +16156,9 @@
               }
             },
             "description" : "Entity found"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -15885,6 +16417,9 @@
             },
             "description" : "Successful search"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -15970,6 +16505,9 @@
               }
             },
             "description" : "Entity found"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -16245,6 +16783,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -16273,6 +16814,9 @@
         "responses" : {
           "200" : {
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -16306,6 +16850,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -16398,6 +16945,9 @@
             },
             "description" : "Successful search"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -16458,6 +17008,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -16516,6 +17069,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -16584,6 +17140,9 @@
               }
             },
             "description" : "Entity found"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -16779,6 +17338,9 @@
             },
             "description" : "OK"
           },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
+          },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
           },
@@ -16818,6 +17380,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."
@@ -16863,6 +17428,9 @@
               }
             },
             "description" : "OK"
+          },
+          "400" : {
+            "description" : "The request was rejected before it reached the handler: a field the constraints refuse, a parameter that will not parse, or a body that is not the JSON it claims to be."
           },
           "401" : {
             "description" : "No valid session: the request carried no credentials, or they had expired."

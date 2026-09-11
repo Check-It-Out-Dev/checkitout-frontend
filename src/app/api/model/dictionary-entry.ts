@@ -13,10 +13,16 @@
 export interface DictionaryEntry { 
     autoUpdaterId?: string;
     category?: string;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     createdAt?: string;
     id?: string;
     key?: string;
     languageCode?: string;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     updatedAt?: string;
     updaterId?: string;
     value?: string;

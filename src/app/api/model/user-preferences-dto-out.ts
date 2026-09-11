@@ -15,6 +15,9 @@ export interface UserPreferencesDtoOut {
      * EmailFrequency enum name
      */
     communicationFrequency?: UserPreferencesDtoOutCommunicationFrequencyEnum;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     createdTime?: string;
     darkModeEnabled?: boolean;
     gdprMarketingConsent?: boolean;
@@ -23,6 +26,9 @@ export interface UserPreferencesDtoOut {
      * UI language code
      */
     language?: UserPreferencesDtoOutLanguageEnum;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     lastUpdateTime?: string;
     notificationEmailEnabled?: boolean;
     notificationEmailPartnershipEnabled?: boolean;

@@ -20,11 +20,20 @@ export interface SupportTicketDtoOut {
     category?: TicketCategory;
     categoryDisplay?: string;
     contactEmail?: string;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     createdTime?: string;
     description?: string;
     id?: number;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     lastUpdateTime?: string;
     resolved?: boolean;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     resolvedTime?: string;
     responses?: Array<TicketResponseDtoOut>;
     status?: TicketStatus;

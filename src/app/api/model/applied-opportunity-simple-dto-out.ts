@@ -17,10 +17,19 @@ import { AppliedOpportunityContentSimpleDtoOut } from './applied-opportunity-con
 export interface AppliedOpportunitySimpleDtoOut { 
     companyRateStatus?: RateStatusDtoOut;
     contentSubmissions?: Array<AppliedOpportunityContentSimpleDtoOut>;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     createdTime?: string;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     executionDate?: string;
     id?: number;
     influencer?: InfluencerPublicProfileDto;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     lastUpdateTime?: string;
     note?: string;
     opportunityStatus?: OpportunityStatusDtoOut;
