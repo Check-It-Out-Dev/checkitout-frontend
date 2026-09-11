@@ -1,1 +1,1 @@
-{"id":"e22d87daf9b8d221023b71160239d451","fullName":"integration/flows/profile-non-critical.spec.ts:133:7","name":"@company batch update profilePicture + companyDescription in one PATCH","status":"passed","testResultsByEnv":{"default":"85005aa86962ff9571ee9e1f11b17742"}}
+{"id":"e22d87daf9b8d221023b71160239d451","fullName":"integration/flows/profile-non-critical.spec.ts:133:7","name":"@company batch update profilePicture + companyDescription in one PATCH","status":"passed","testResultsByEnv":{"default":"d3be373938fd9b1fb069de6e9d4562cc"}}

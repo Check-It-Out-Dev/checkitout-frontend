@@ -1,1 +1,1 @@
-{"id":"853778e9a770eba586ee14b55c81e160","fullName":"e2e-tests/bdd/features/email-verification-enforcement.feature.spec.js:6:7","name":"Unverified influencer is blocked from POST /applied-opportunity","status":"passed","testResultsByEnv":{"default":"2aaa43870295b4fcdcaa50c29b063c73"}}
+{"id":"853778e9a770eba586ee14b55c81e160","fullName":"e2e-tests/bdd/features/email-verification-enforcement.feature.spec.js:6:7","name":"Unverified influencer is blocked from POST /applied-opportunity","status":"passed","testResultsByEnv":{"default":"d3ca69b4bae1bda45ef78ff9abde574b"}}

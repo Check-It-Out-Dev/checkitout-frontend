@@ -1,1 +1,1 @@
-{"id":"47bbc4a645817c9421be41b5fd028545","fullName":"e2e-tests/bdd/features/consent-lifecycle.feature.spec.js:53:7","name":"Blocked COMPANY user cannot create campaign","status":"passed","testResultsByEnv":{"default":"125a1b708cf8befc4bef33eeee069eeb"}}
+{"id":"47bbc4a645817c9421be41b5fd028545","fullName":"e2e-tests/bdd/features/consent-lifecycle.feature.spec.js:53:7","name":"Blocked COMPANY user cannot create campaign","status":"passed","testResultsByEnv":{"default":"edfe5595f07d57ec33e6269470cfd62f"}}

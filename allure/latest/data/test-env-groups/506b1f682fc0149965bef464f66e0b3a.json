@@ -1,1 +1,1 @@
-{"id":"506b1f682fc0149965bef464f66e0b3a","fullName":"e2e-tests/bdd/features/magic-link-happy-path.feature.spec.js:6:7","name":"Email verification succeeds with valid oobCode","status":"passed","testResultsByEnv":{"default":"07115d9c7c1918d5eb308948f7130cbc"}}
+{"id":"506b1f682fc0149965bef464f66e0b3a","fullName":"e2e-tests/bdd/features/magic-link-happy-path.feature.spec.js:6:7","name":"Email verification succeeds with valid oobCode","status":"passed","testResultsByEnv":{"default":"ced18614b772791040ec727d93377074"}}

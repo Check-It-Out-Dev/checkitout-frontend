@@ -1,1 +1,1 @@
-{"id":"928ceb161392e20ae7a0ce0d9a988222","fullName":"e2e-tests/bdd/features/rate-limiting.feature.spec.js:10:7","name":"Company user receives 429 when exceeding the STANDARD rate limit","status":"passed","testResultsByEnv":{"default":"93a2db54c63d4ca709c4eea580386ea6"}}
+{"id":"928ceb161392e20ae7a0ce0d9a988222","fullName":"e2e-tests/bdd/features/rate-limiting.feature.spec.js:10:7","name":"Company user receives 429 when exceeding the STANDARD rate limit","status":"passed","testResultsByEnv":{"default":"1bc1511544de367487e3c1bbd77c8069"}}
