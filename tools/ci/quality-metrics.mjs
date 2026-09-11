@@ -196,11 +196,14 @@ function parseJunit(xml) {
     const attrs = Object.fromEntries(
       [...m[1].matchAll(/(\w+)="([^"]*)"/g)].map((a) => [
         a[1],
+        // `&amp;` last, always. Decoding it in the middle re-decodes what the replacements
+        // after it produce: `&amp;lt;` becomes `&lt;` becomes `<`, so a test name containing the
+        // literal text `&lt;` comes back as a tag. Entity decoding is only correct outside-in.
         a[2]
           .replace(/&quot;/g, '"')
-          .replace(/&amp;/g, '&')
           .replace(/&lt;/g, '<')
-          .replace(/&gt;/g, '>'),
+          .replace(/&gt;/g, '>')
+          .replace(/&amp;/g, '&'),
       ]),
     );
     const body = m[3] || '';
@@ -631,7 +634,11 @@ for (const name of ['allure', 'playwright', 'k6', 'lighthouse'])
 // pre-namespace ones: they cannot be attributed to a workflow, so they go.
 prune(
   join(out, 'metrics', 'tests'),
-  (f) => new RegExp(`^${workflow}-\\d+\\.json$`).test(f),
+  // Not a RegExp built around `workflow`: the value is `github.workflow`, which is a display name
+  // and therefore contains spaces, brackets and dots -- "Browser tiers (fast)" compiles to a
+  // pattern that means something else entirely, and one with an unbalanced bracket does not
+  // compile at all. A prefix test asks the same question and cannot be read as syntax.
+  (f) => f.startsWith(`${workflow}-`) && /^\d+\.json$/.test(f.slice(workflow.length + 1)),
   (f) => Number(f.slice(workflow.length + 1).replace('.json', '')),
 );
 for (const f of existsSync(join(out, 'metrics', 'tests'))
