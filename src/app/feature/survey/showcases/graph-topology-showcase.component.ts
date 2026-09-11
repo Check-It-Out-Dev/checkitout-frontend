@@ -576,7 +576,7 @@ function cypherLiteral(value: string): string {
           @switch (shown().kind) {
             @case ('master') {
               <div class="mt-2 flex flex-wrap items-center gap-2">
-                <span class="gt-kind bg-coral-500">NavigationMaster</span>
+                <span class="gt-kind bg-coral-600">NavigationMaster</span>
                 <span class="text-sm font-semibold text-ink" data-testid="graphtopo-inspector-name">
                   {{ master.name }}
                 </span>

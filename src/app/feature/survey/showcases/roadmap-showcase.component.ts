@@ -57,7 +57,7 @@ import { GRAPH_REPO_URL, graphFileUrl } from '../ui/survey-links';
                   class="rounded-full px-2 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.14em]"
                   [class]="
                     it.status === 'done'
-                      ? 'bg-emerald-600 text-white'
+                      ? 'bg-emerald-700 text-white'
                       : it.status === 'progress'
                         ? 'bg-navy-900 text-white'
                         : 'border border-beige bg-white text-slate2'

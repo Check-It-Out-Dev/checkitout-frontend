@@ -170,7 +170,7 @@ import { GRAPH_REPO_URL } from '../ui/survey-links';
               </span>
               <span class="font-mono text-[11px] text-slate2">{{ b.id }} · {{ b.repo }}</span>
               <span
-                class="ml-auto inline-flex items-center gap-1 text-[11px] font-medium text-emerald-600"
+                class="ml-auto inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700"
               >
                 <mat-icon class="!h-3.5 !w-3.5 !text-sm">check_circle</mat-icon>
                 {{ 'landing.survey.graphdev.fixedChip' | transloco }}
