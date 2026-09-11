@@ -105,7 +105,14 @@ jobs:
     # One rollout at a time on the host, and never cancel one in flight. Scoped to this job so an
     # unanswered approval gate cannot hold the whole workflow -- see the note at the top.
     concurrency:
-      group: sandbox-rollout
+      # The name carries a `-2` because the first one appears to be stuck. Every run since 04:03
+      # reached this job and sat `pending` with no deployment registered for review, which is what a
+      # job waiting on a concurrency group looks like from the outside -- GitHub evaluates the group
+      # before the environment gate, so nothing is ever asked of a reviewer. Every earlier rollout
+      # job is `cancelled`, so nothing should be holding `sandbox-rollout`; a lock that outlives the
+      # job holding it is the one explanation left that fits. A fresh name costs nothing and either
+      # unsticks it or rules the theory out in one run.
+      group: sandbox-rollout-2
       cancel-in-progress: false
     environment:
       name: sandbox
