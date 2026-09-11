@@ -119,7 +119,7 @@
     "@stryker-mutator/jest-runner": "^10.0.0",
     "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
-    "@types/node": "^18.18.0",
+    "@types/node": "^26.5.0",
     "allure-playwright": "3.11.0",
     "autoprefixer": "^10.4.18",
     "dotenv": "^17.4.2",
