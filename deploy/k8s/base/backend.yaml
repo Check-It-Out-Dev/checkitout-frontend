@@ -23,16 +23,40 @@ spec:
       securityContext:
         seccompProfile:
           type: RuntimeDefault
+        # Without this the four emptyDirs below arrive root:root 0755 and the container, which runs
+        # as 1002, cannot write to any of them -- readOnlyRootFilesystem then fails at the first
+        # log line rather than at apply time. fsGroup makes the kubelet chgrp them to 1005 and set
+        # the setgid bit, which is the only reason a read-only root filesystem works here at all.
+        fsGroup: 1005
       initContainers:
         - name: wait-for-postgres
+          # `nc -z` needs no privilege of any kind, so it gets none: nobody, no capabilities, no
+          # writable filesystem.
           securityContext:
             allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 65534
+            runAsGroup: 65534
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
           image: busybox:1.36
           command: ["sh", "-c", "until nc -z postgres 5432; do sleep 2; done"]
       containers:
         - name: backend
+          # The one image here we build ourselves, so it is the one that can be held to the whole
+          # standard. The Dockerfile already ends `USER instagram-test-deploy` (1002:1005); naming
+          # the ids here turns that from a property of the image into a property of the pod, which
+          # is what survives someone rebuilding the image with a different USER line. A JVM serving
+          # HTTP on 8080 needs no capabilities at all, and every path it writes is mounted below.
           securityContext:
             allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1002
+            runAsGroup: 1005
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
           image: ghcr.io/check-it-out-dev/checkitout-backend:main
           ports:
             - { containerPort: 8080, name: http }
@@ -62,8 +86,27 @@ spec:
             httpGet: { path: /api/actuator/health/liveness, port: http }
             periodSeconds: 15
           resources:
+            # Memory is limited because a JVM that overruns its container is killed in a way nobody
+            # can read afterwards. CPU deliberately is not: a CPU limit throttles the JVM during
+            # Liquibase's first-boot seeding, which is the slowest thing this pod ever does and the
+            # one the startup probe is timing. Trivy reports the absence (KSV-0011); this is the
+            # answer.
             requests: { cpu: 800m, memory: 1Gi }
             limits: { memory: 2Gi }
+          # readOnlyRootFilesystem needs every writable path named. These four are all of them: the
+          # JVM's temp directory, the two the Dockerfile creates and chowns, and the dev-lite upload
+          # sink, which defaults to ./dev-lite-storage relative to the image's WORKDIR of /app.
+          # Missing one does not fail at apply time - it fails at the first upload, in a test.
+          volumeMounts:
+            - { name: tmp, mountPath: /tmp }
+            - { name: app-logs, mountPath: /app/logs }
+            - { name: app-tmp, mountPath: /app/tmp }
+            - { name: app-uploads, mountPath: /app/dev-lite-storage }
+      volumes:
+        - { name: tmp, emptyDir: {} }
+        - { name: app-logs, emptyDir: {} }
+        - { name: app-tmp, emptyDir: {} }
+        - { name: app-uploads, emptyDir: {} }
 ---
 apiVersion: v1
 kind: Service
