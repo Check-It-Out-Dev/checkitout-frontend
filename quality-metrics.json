@@ -6,22 +6,22 @@
     "id": 34593703780,
     "sha": "97f0602",
     "branch": "main",
-    "workflow": "k8s-test-execution",
+    "workflow": "browser-tiers",
     "startedAt": "2026-09-11T11:22:27Z",
-    "durationSec": 724,
+    "durationSec": 1179,
     "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34593703780",
     "status": "green"
   },
   "tests": {
-    "total": 1519,
-    "passed": 1485,
+    "total": 1818,
+    "passed": 1738,
     "failed": 0,
-    "flaky": 0,
-    "skipped": 34,
-    "passRate": 1,
-    "flakyRate": 0,
-    "durationMeanSec": 0.23,
-    "durationP95Sec": 1.05,
+    "flaky": 1,
+    "skipped": 79,
+    "passRate": 0.9994,
+    "flakyRate": 0.0006,
+    "durationMeanSec": 1.5,
+    "durationP95Sec": 1.81,
     "tiers": {
       "jest": {
         "total": 1234,
@@ -31,29 +31,53 @@
         "skipped": 0,
         "durationSec": 62
       },
-      "integration": {
-        "total": 215,
-        "passed": 183,
+      "visual": {
+        "total": 284,
+        "passed": 283,
         "failed": 0,
         "flaky": 0,
-        "skipped": 32,
-        "durationSec": 183
+        "skipped": 1,
+        "durationSec": 441
       },
-      "sandbox": {
-        "total": 64,
-        "passed": 62,
+      "visual-parity": {
+        "total": 82,
+        "passed": 28,
         "failed": 0,
         "flaky": 0,
-        "skipped": 2,
+        "skipped": 54,
         "durationSec": 83
       },
-      "scenarios": {
+      "published-reports": {
         "total": 6,
         "passed": 6,
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
-        "durationSec": 11
+        "durationSec": 8
+      },
+      "msw": {
+        "total": 2,
+        "passed": 0,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 2,
+        "durationSec": 0
+      },
+      "sandbox": {
+        "total": 128,
+        "passed": 106,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 22,
+        "durationSec": 125
+      },
+      "perf": {
+        "total": 82,
+        "passed": 81,
+        "failed": 0,
+        "flaky": 1,
+        "skipped": 0,
+        "durationSec": 1972
       }
     }
   },
@@ -63,40 +87,12 @@
     "branches": 69.52,
     "functions": 66.79
   },
-  "perf": {
-    "k6": {
-      "profile": "load",
-      "requests": 197,
-      "failedRate": 0,
-      "p95Ms": 181.42,
-      "thresholdsOk": true,
-      "journeys": {
-        "apply": {
-          "p95Ms": 391.73,
-          "p99Ms": 409.96,
-          "budgetMs": 1500,
-          "ok": true
-        },
-        "browse": {
-          "p95Ms": 92.04,
-          "p99Ms": 121.73,
-          "budgetMs": 800,
-          "ok": true
-        }
-      }
-    }
-  },
   "lighthouse": {
     "url": "/",
     "performance": 98,
     "accessibility": 100,
     "bestPractices": 100,
     "seo": 92
-  },
-  "kubernetes": {
-    "shards": 4,
-    "wallSec": 110,
-    "k6Runners": 2
   },
   "mutation": {
     "score": 72.84,
@@ -118,7 +114,6 @@
   },
   "flaky": [],
   "reports": {
-    "playwright": "playwright/k8s-test-execution-4/",
-    "k6": "k6/k8s-test-execution-4/"
+    "playwright": "playwright/browser-tiers-4/"
   }
 }
