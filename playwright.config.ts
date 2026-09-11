@@ -69,7 +69,9 @@ export default defineConfig({
   //
   // PW_EXTERNAL_SERVER is the same opt-out for a server this process does not
   // own: the Kubernetes shards (deploy/k8s/tests/playwright-indexed-job.yaml)
-  // point PW_BASE_URL at the frontend Service and must not boot ng serve.
+  // point PW_BASE_URL at the frontend Service and must not boot ng serve, and
+  // `tools/ci/run-reports.mjs` serves the quality dashboard for the reports
+  // tier the same way.
   webServer: process.env['PERF_TIER'] || process.env['PW_EXTERNAL_SERVER']
     ? undefined
     : {
@@ -119,6 +121,19 @@ export default defineConfig({
       // the demo dropped it.
       fullyParallel: false,
       use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } },
+    },
+    {
+      // Published-report tier: the quality dashboard on the three Pages sites. It is generated
+      // markup driven by run data rather than a hand-written page, so it can regress into a state
+      // nobody looked at; `tools/ci/run-reports.mjs` serves tools/ci/pages for it.
+      name: 'reports',
+      testDir: './e2e-tests/published-reports',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1440, height: 900 },
+        baseURL: process.env['REPORTS_BASE_URL'] ?? 'https://localhost:4302',
+        ignoreHTTPSErrors: true,
+      },
     },
     {
       name: 'mobile-safari',
