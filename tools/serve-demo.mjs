@@ -93,11 +93,32 @@ if (args.includes('--no-build')) {
   }
 }
 
+// Everything this server is ever asked for is a file the Angular build emitted --
+// `/main-A1B2C3D4.js`, `/assets/i18n/en.json` -- so a path segment is unreserved characters and
+// nothing else. Declared next to the function that enforces it, and the same alphabet
+// tools/lh-static-server.mjs uses.
+const SAFE_SEGMENT = /^[A-Za-z0-9._~-]+$/;
+
 /** Resolve a URL path to a file inside ROOT, or null if it escapes or is absent. */
 function fileFor(urlPath) {
-  const clean = decodeURIComponent(urlPath.split('?')[0].split('#')[0]);
+  // decodeURIComponent throws on a malformed escape -- a bare `%` is enough -- and this runs
+  // inside the request handler, so an uncaught throw here does not refuse one request, it takes
+  // the whole server down. That matters more than it sounds: this process serves the smoothness
+  // tier, and a tier whose server died mid-run reports nothing rather than a regression.
+  let clean;
+  try {
+    clean = decodeURIComponent(urlPath.split('?')[0].split('#')[0]);
+  } catch {
+    return null;
+  }
+  // First gate, an allow-list. A segment of that alphabet cannot be `..`, cannot hold a NUL or a
+  // backslash, and cannot name a Windows device or an alternate data stream.
+  const shapeIsSafe = clean
+    .split('/')
+    .every((seg) => seg === '' || (seg !== '..' && SAFE_SEGMENT.test(seg)));
+  if (!shapeIsSafe) return null;
+  // Second gate, containment. normalize() collapses `..`; refuse anything that still climbs out.
   const full = normalize(join(ROOT, clean));
-  // normalize() collapses `..`; refuse anything that still climbs out
   if (full !== ROOT && !full.startsWith(ROOT + sep)) return null;
   if (!existsSync(full)) return null;
   const stat = statSync(full);
