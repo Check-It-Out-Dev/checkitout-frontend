@@ -61,5 +61,29 @@ rm -rf "$out" && git clone --quiet --branch gh-pages "$BARE" "$out"
 check "PAGES_KEEP=0 prunes nothing" \
       "$(find "$out/allure" -mindepth 1 -maxdepth 1 -type d -regex '.*/[0-9][0-9]*$' | wc -l | tr -d ' ')" "30"
 
+# Report names carry the workflow that wrote them, because four of them share one run number under
+# workflow_call. Retention counts each SERIES separately: the busiest workflow must not evict the
+# reports of one that runs weekly.
+series="$ROOT/series"
+mkdir -p "$series/allure"
+for n in $(seq 1 35); do mkdir -p "$series/allure/browser-tiers-$n"; echo x > "$series/allure/browser-tiers-$n/i.html"; done
+for n in $(seq 1 3); do mkdir -p "$series/allure/k8s-test-execution-$n"; echo x > "$series/allure/k8s-test-execution-$n/i.html"; done
+mkdir -p "$series/allure/latest"; echo x > "$series/allure/latest/i.html"
+PAGES_REMOTE="$BARE" PAGES_KEEP=30 bash "$SCRIPT" "$series" "series" > /dev/null
+rm -rf "$out" && git clone --quiet --branch gh-pages "$BARE" "$out"
+
+check "thirty of the busy series are kept" \
+      "$(find "$out/allure" -mindepth 1 -maxdepth 1 -type d -name 'browser-tiers-*' | wc -l | tr -d ' ')" "30"
+check "the busy series keeps its newest" \
+      "$([ -d "$out/allure/browser-tiers-35" ] && echo kept || echo pruned)" "kept"
+check "the busy series drops its oldest" \
+      "$([ -d "$out/allure/browser-tiers-1" ] && echo kept || echo pruned)" "pruned"
+check "a quiet series keeps all three" \
+      "$(find "$out/allure" -mindepth 1 -maxdepth 1 -type d -name 'k8s-test-execution-*' | wc -l | tr -d ' ')" "3"
+check "the quiet series' oldest survives the busy one's churn" \
+      "$([ -d "$out/allure/k8s-test-execution-1" ] && echo kept || echo pruned)" "kept"
+check "latest is still not a report directory" \
+      "$([ -d "$out/allure/latest" ] && echo kept || echo pruned)" "kept"
+
 rm -rf "$ROOT"
 [ "$fail" = 0 ] && echo "ALL OK" || { echo "FAILURES"; exit 1; }

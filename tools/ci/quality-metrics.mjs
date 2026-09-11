@@ -439,6 +439,18 @@ if (!security && sarifFiles.length) {
 /* ---------- the site: reports, tests file, flaky list, metrics, history, badges, dashboard ---------- */
 mkdirSync(join(out, 'metrics', 'tests'), { recursive: true });
 mkdirSync(join(out, 'badges'), { recursive: true });
+// Run numbers are per workflow: browser-tiers 10 and k8s-test-execution 10 are different runs of different
+// suites. Without the prefix they share one file name, one history line and one flaky window — the second
+// one to publish deletes the first, and "the last ten runs" mixes two suites.
+//
+// The report directories needed the same key and did not have it, which was worse than a name clash:
+// the publish is an overlay, so four workflows writing `allure/<n>` did not overwrite each other, they
+// MERGED. Under workflow_call `github.run_number` is the CALLER's, so one night put browser-tiers,
+// nightly-full-stack and k8s-test-execution into one directory; `allure/18` on the backend reached
+// 23,823 files and 65 MB, and the report it served was three tiers' files in one index. That is what
+// eventually timed out the Pages deployment (run 34575591685, 621 MB, "syncing_files" until it aborted).
+const runKey = `${workflow}-${runNumber}`;
+
 const reports = {};
 for (const spec of multi.copy) {
   const [name, dir] = spec.split('=');
@@ -446,20 +458,15 @@ for (const spec of multi.copy) {
     console.warn(`quality-metrics: no ${name} report at ${dir}, skipped`);
     continue;
   }
-  const dest = join(out, name, String(runNumber));
+  const dest = join(out, name, runKey);
   rmSync(dest, { recursive: true, force: true });
   cpSync(dir, dest, { recursive: true });
-  reports[name] = `${name}/${runNumber}/`;
+  reports[name] = `${name}/${runKey}/`;
   if (name === 'allure') {
     rmSync(join(out, 'allure', 'latest'), { recursive: true, force: true });
     cpSync(dir, join(out, 'allure', 'latest'), { recursive: true });
   }
 }
-
-// Run numbers are per workflow: browser-tiers 10 and k8s-test-execution 10 are different runs of different
-// suites. Without the prefix they share one file name, one history line and one flaky window — the second
-// one to publish deletes the first, and "the last ten runs" mixes two suites.
-const runKey = `${workflow}-${runNumber}`;
 writeFileSync(
   join(out, 'metrics', 'tests', `${runKey}.json`),
   JSON.stringify({ run: runNumber, workflow, tests }),

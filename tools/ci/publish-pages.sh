@@ -101,17 +101,29 @@ for attempt in $(seq 1 "$ATTEMPTS"); do
   # tar rather than rsync: portable to any runner and to Git Bash, so the retry below is testable.
   (cd "$SRC" && tar -cf - --exclude=.git .) | (cd "$WORK" && tar -xf -)
 
-  # Retention, applied to the site as it will be published rather than as it was found: a
-  # numerically-named subdirectory is one run's report, and the newest PAGES_KEEP of them stay.
+  # Retention, applied to the site as it will be published rather than as it was found.
+  #
+  # A report directory is named for the run that wrote it: `browser-tiers-120`, `nightly-3`, or a
+  # bare number from before the workflow prefix existed. The newest PAGES_KEEP of each SERIES stay,
+  # where the series is the name with its trailing number removed -- otherwise the busiest workflow
+  # evicts every other one's reports, and a tier that runs weekly would never keep a single report.
+  # Anything without a trailing number, `latest` and the history files included, is not a report
+  # directory and is never a candidate.
+  #
+  # One pass: each name becomes "series <tab> number <tab> name", sorted by series and then by
+  # number descending, and awk prints the ones past the keep count. The series is often empty, which
+  # is exactly why this is not a loop over prefixes: an empty one disappears in word splitting.
   if [ "$KEEP" -gt 0 ]; then
     for parent in "$WORK"/*/; do
       [ -d "$parent" ] || continue
-      runs=$(find "$parent" -mindepth 1 -maxdepth 1 -type d -regex '.*/[0-9][0-9]*$' -printf '%f\n' 2>/dev/null | sort -rn)
-      [ -n "$runs" ] || continue
-      printf '%s\n' "$runs" | tail -n +$((KEEP + 1)) | while read -r old; do
-        [ -n "$old" ] || continue
-        rm -rf "${parent:?}${old}"
-      done
+      find "$parent" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' 2>/dev/null |
+        sed -n 's/^\(.*[^0-9]\)\{0,1\}\([0-9][0-9]*\)$/\1\t\2\t&/p' |
+        sort -t "$(printf '\t')" -k1,1 -k2,2nr |
+        awk -F'\t' -v keep="$KEEP" '{ n[$1]++; if (n[$1] > keep) print $3 }' |
+        while read -r old; do
+          [ -n "$old" ] || continue
+          rm -rf "${parent:?}${old}"
+        done
     done
   fi
 
