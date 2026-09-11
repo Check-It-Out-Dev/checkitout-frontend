@@ -2,14 +2,14 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 143,
-    "id": 34653312970,
-    "sha": "05c563d",
+    "number": 144,
+    "id": 34653759551,
+    "sha": "ad2ebb1",
     "branch": "main",
     "workflow": "browser-tiers",
-    "startedAt": "2026-09-11T22:17:07Z",
-    "durationSec": 190,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34653312970",
+    "startedAt": "2026-09-11T22:23:09Z",
+    "durationSec": 189,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34653759551",
     "status": "green"
   },
   "tests": {
@@ -20,8 +20,8 @@
     "skipped": 24,
     "passRate": 1,
     "flakyRate": 0,
-    "durationMeanSec": 0.16,
-    "durationP95Sec": 0.92,
+    "durationMeanSec": 0.14,
+    "durationP95Sec": 0.85,
     "tiers": {
       "jest": {
         "total": 1234,
@@ -29,7 +29,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
-        "durationSec": 81
+        "durationSec": 65
       },
       "published-reports": {
         "total": 6,
@@ -53,7 +53,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 22,
-        "durationSec": 127
+        "durationSec": 120
       }
     }
   },
@@ -78,18 +78,18 @@
     "floor": 70
   },
   "security": {
-    "total": 10,
+    "total": 9,
     "error": 0,
-    "warning": 10,
+    "warning": 9,
     "note": 0,
     "tools": {
       "Semgrep OSS": 9,
-      "Trivy": 1
+      "Trivy": 0
     },
     "scans": 2
   },
   "flaky": [],
   "reports": {
-    "playwright": "playwright/browser-tiers-143/"
+    "playwright": "playwright/browser-tiers-144/"
   }
 }
