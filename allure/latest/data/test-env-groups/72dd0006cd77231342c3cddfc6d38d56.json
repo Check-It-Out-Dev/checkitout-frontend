@@ -1,1 +1,1 @@
-{"id":"72dd0006cd77231342c3cddfc6d38d56","fullName":"integration/flows/registry-company-flow.spec.ts:518:7","name":"@get-data after confirm returns full company data","status":"passed","testResultsByEnv":{"default":"f80c881f8d17c58fb8021d9a89e25127"}}
+{"id":"72dd0006cd77231342c3cddfc6d38d56","fullName":"integration/flows/registry-company-flow.spec.ts:518:7","name":"@get-data after confirm returns full company data","status":"passed","testResultsByEnv":{"default":"6a3f43d6523c1d654f4a35a355123070"}}

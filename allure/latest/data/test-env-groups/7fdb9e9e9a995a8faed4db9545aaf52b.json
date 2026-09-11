@@ -1,1 +1,1 @@
-{"id":"7fdb9e9e9a995a8faed4db9545aaf52b","fullName":"integration/auth/logout.spec.ts:88:7","name":"@admin admin1 logs out and session is cleared","status":"passed","testResultsByEnv":{"default":"eecefe462733297eda1f725e9c16a464"}}
+{"id":"7fdb9e9e9a995a8faed4db9545aaf52b","fullName":"integration/auth/logout.spec.ts:88:7","name":"@admin admin1 logs out and session is cleared","status":"passed","testResultsByEnv":{"default":"863e4643fd10d31354e00018e7004197"}}

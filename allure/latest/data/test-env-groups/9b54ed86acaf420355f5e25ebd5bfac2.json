@@ -1,1 +1,1 @@
-{"id":"9b54ed86acaf420355f5e25ebd5bfac2","fullName":"integration/flows/security-cross-role.spec.ts:234:7","name":"@influencer-forbidden @company-restricted INFLUENCER → company-only endpoints return 403","status":"passed","testResultsByEnv":{"default":"e25937f1a94c6a7f7227220abc1bb5f2"}}
+{"id":"9b54ed86acaf420355f5e25ebd5bfac2","fullName":"integration/flows/security-cross-role.spec.ts:234:7","name":"@influencer-forbidden @company-restricted INFLUENCER → company-only endpoints return 403","status":"passed","testResultsByEnv":{"default":"8c6e14d8e75cc3c00848d7a93118354e"}}

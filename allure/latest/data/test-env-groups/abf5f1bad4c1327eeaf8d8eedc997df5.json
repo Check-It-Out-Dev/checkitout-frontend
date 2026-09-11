@@ -1,1 +1,1 @@
-{"id":"abf5f1bad4c1327eeaf8d8eedc997df5","fullName":"sandbox/business-sign-up.spec.ts:4:7","name":"empty fixture renders NIP + verify + form fields + clickwrap","status":"passed","testResultsByEnv":{"default":"ba325880c63209a46fe1c18ae8e69719"}}
+{"id":"abf5f1bad4c1327eeaf8d8eedc997df5","fullName":"sandbox/business-sign-up.spec.ts:4:7","name":"empty fixture renders NIP + verify + form fields + clickwrap","status":"passed","testResultsByEnv":{"default":"a261a1f9e73fdeabeb88a9e2c699afc7"}}
