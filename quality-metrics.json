@@ -2,26 +2,25 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 107,
-    "id": 34557896110,
+    "number": 6,
+    "id": 34557912872,
     "sha": "d95a3b5",
     "branch": "main",
-    "workflow": "browser-tiers",
-    "startedAt": "2026-09-11T03:17:47Z",
-    "durationSec": 183,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34557896110",
-    "status": "green"
+    "workflow": "k8s-test-execution",
+    "startedAt": "2026-09-11T03:18:03Z",
+    "durationSec": 936,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34557912872"
   },
   "tests": {
-    "total": 1346,
-    "passed": 1322,
+    "total": 1210,
+    "passed": 1210,
     "failed": 0,
     "flaky": 0,
-    "skipped": 24,
+    "skipped": 0,
     "passRate": 1,
     "flakyRate": 0,
-    "durationMeanSec": 0.16,
-    "durationP95Sec": 0.91,
+    "durationMeanSec": 0.07,
+    "durationP95Sec": 0.26,
     "tiers": {
       "jest": {
         "total": 1210,
@@ -30,30 +29,6 @@
         "flaky": 0,
         "skipped": 0,
         "durationSec": 81
-      },
-      "published-reports": {
-        "total": 6,
-        "passed": 6,
-        "failed": 0,
-        "flaky": 0,
-        "skipped": 0,
-        "durationSec": 9
-      },
-      "msw": {
-        "total": 2,
-        "passed": 0,
-        "failed": 0,
-        "flaky": 0,
-        "skipped": 2,
-        "durationSec": 0
-      },
-      "sandbox": {
-        "total": 128,
-        "passed": 106,
-        "failed": 0,
-        "flaky": 0,
-        "skipped": 22,
-        "durationSec": 123
       }
     }
   },
@@ -69,6 +44,11 @@
     "accessibility": 97,
     "bestPractices": 100,
     "seo": 92
+  },
+  "kubernetes": {
+    "shards": 4,
+    "wallSec": 0,
+    "k6Runners": 2
   },
   "mutation": {
     "score": 72.84,
@@ -90,7 +70,6 @@
   },
   "flaky": [],
   "reports": {
-    "playwright": "playwright/107/",
-    "allure": "allure/107/"
+    "k6": "k6/6/"
   }
 }
