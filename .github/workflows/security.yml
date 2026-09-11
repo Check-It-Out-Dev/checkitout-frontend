@@ -162,7 +162,12 @@ jobs:
       # opened a pull request for yet, and writes an SBOM of what is actually there.
       - name: Filesystem CVEs
         run: |
+          # --ignorefile is not optional here. Trivy auto-discovers a plain `.trivyignore`; the YAML
+          # form -- the only one that can carry a path scope and a reason per entry -- has to be
+          # named. Without the flag the file is simply not read: the scan reported the same 47
+          # misconfigurations with the exemptions sitting in the repository beside it.
           trivy fs . --scanners vuln,secret,misconfig \
+            --ignorefile .trivyignore.yaml \
             --skip-dirs node_modules,dist,coverage,.angular \
             --format sarif --output trivy.sarif --exit-code 0
           trivy fs . --format cyclonedx --output sbom.cdx.json --skip-dirs node_modules,dist,coverage
