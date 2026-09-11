@@ -83,6 +83,12 @@ jobs:
         with:
           context: .
           file: deploy/k8s/frontend/Dockerfile
+          # Always re-pull the base. `cache-from: type=gha` will happily reuse a base layer from
+          # weeks ago, so `eclipse-temurin:21-jre-alpine` stays whatever digest the tag pointed at
+          # when the cache was warmed -- which is why Trivy keeps reporting openssl and libexpat
+          # CVEs against an image whose base has since been rebuilt upstream. The application
+          # layers still come from the cache; only the FROM is re-resolved.
+          pull: true
           push: true
           tags: |
             ${{ env.IMAGE }}:${{ steps.meta.outputs.tag }}

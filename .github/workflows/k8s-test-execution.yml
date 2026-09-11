@@ -56,6 +56,9 @@ jobs:
         with:
           context: .
           file: deploy/k8s/frontend/Dockerfile
+          # Always re-pull the base, for the reason written out where this image is pushed:
+          # a cached base layer keeps an old digest behind a moving tag.
+          pull: true
           load: true
           tags: checkitout-frontend:ci
       - name: Playwright version
