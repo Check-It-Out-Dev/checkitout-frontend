@@ -62,12 +62,18 @@ jobs:
       # disabled within a fortnight.
       - name: Scan
         run: |
+          # --exclude-rule for the nginx one, the same decision the backend repository made and for
+          # the same reason: the finding is `proxy_set_header Host $host`, which is how an upstream
+          # learns which vhost was asked for, and the default server already refuses an unknown
+          # Host. A `# nosemgrep` comment cannot express it -- nosemgrep needs to know the file's
+          # comment syntax and an nginx config is matched in generic mode, where it does not.
           semgrep scan \
             --config p/owasp-top-ten \
             --config p/secrets \
             --config p/typescript \
             --sarif --output semgrep.sarif \
             --metrics off \
+            --exclude-rule generic.nginx.security.request-host-used.request-host-used \
             --exclude node_modules --exclude dist --exclude coverage \
             --exclude 'src/app/api/**' --exclude '*-snapshots' \
             . || true
