@@ -207,17 +207,13 @@ jobs:
         # must never stop the dashboard and the metrics from being published.
         continue-on-error: true
         if: always()
-        env:
-          HISTORY_RUNS: '20'
         run: |
           set -o pipefail
           cp "site/allure/history-k8s-test-execution.jsonl" history.jsonl 2>/dev/null || true
           npx playwright merge-reports --reporter allure-playwright ci-reports/blobs
           npx --yes allure generate --config allurerc.mjs ./allure-results --output allure-report
-          # Twenty runs, for the reason written out in browser-tiers.yml: the file grows by every
-          # test id in every run and GitHub refuses one over 100 MB.
-          tail -n $HISTORY_RUNS history.jsonl > history.trimmed.jsonl 2>/dev/null || true
-          mv history.trimmed.jsonl history.jsonl 2>/dev/null || true
+          # Bound by size, not by line count; see the note in browser-tiers.yml.
+          node tools/ci/trim-history.mjs history.jsonl
           mkdir -p site/allure && cp history.jsonl "site/allure/history-k8s-test-execution.jsonl"
       - name: Quality metrics into the site
         if: always()
