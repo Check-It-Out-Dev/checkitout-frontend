@@ -720,7 +720,10 @@
 }
 
 .material-icons {
-  font-family: 'Material Icons';
+  // Sonar css:S4649. A generic family so that a failed subset load falls back somewhere
+  // defined rather than to whatever the browser happens to default to. The glyphs are gone
+  // either way; what this decides is how the ligature text renders in their place.
+  font-family: 'Material Icons', sans-serif;
   font-weight: normal;
   font-style: normal;
   font-size: 24px;
