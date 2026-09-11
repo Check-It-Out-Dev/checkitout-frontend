@@ -2,26 +2,26 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 2,
-    "id": 34554133046,
-    "sha": "9ed0bb1",
+    "number": 106,
+    "id": 34557134540,
+    "sha": "3d1a308",
     "branch": "main",
     "workflow": "browser-tiers",
-    "startedAt": "2026-09-11T02:18:50Z",
-    "durationSec": 1189,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34554133046",
-    "status": "red"
+    "startedAt": "2026-09-11T03:05:45Z",
+    "durationSec": 193,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34557134540",
+    "status": "green"
   },
   "tests": {
-    "total": 1794,
-    "passed": 1714,
-    "failed": 1,
+    "total": 1346,
+    "passed": 1322,
+    "failed": 0,
     "flaky": 0,
-    "skipped": 79,
-    "passRate": 0.9994,
+    "skipped": 24,
+    "passRate": 1,
     "flakyRate": 0,
-    "durationMeanSec": 1.53,
-    "durationP95Sec": 1.91,
+    "durationMeanSec": 0.16,
+    "durationP95Sec": 0.91,
     "tiers": {
       "jest": {
         "total": 1210,
@@ -30,22 +30,6 @@
         "flaky": 0,
         "skipped": 0,
         "durationSec": 81
-      },
-      "visual": {
-        "total": 284,
-        "passed": 283,
-        "failed": 0,
-        "flaky": 0,
-        "skipped": 1,
-        "durationSec": 431
-      },
-      "visual-parity": {
-        "total": 82,
-        "passed": 28,
-        "failed": 0,
-        "flaky": 0,
-        "skipped": 54,
-        "durationSec": 83
       },
       "published-reports": {
         "total": 6,
@@ -69,15 +53,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 22,
-        "durationSec": 125
-      },
-      "perf": {
-        "total": 82,
-        "passed": 81,
-        "failed": 1,
-        "flaky": 0,
-        "skipped": 0,
-        "durationSec": 1973
+        "durationSec": 128
       }
     }
   },
@@ -114,7 +90,7 @@
   },
   "flaky": [],
   "reports": {
-    "playwright": "playwright/2/",
-    "allure": "allure/2/"
+    "playwright": "playwright/106/",
+    "allure": "allure/106/"
   }
 }
