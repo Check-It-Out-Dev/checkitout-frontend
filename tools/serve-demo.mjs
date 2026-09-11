@@ -104,10 +104,16 @@ if (args.includes('--no-build')) {
 function fileFor(urlPath) {
   const full = resolveWithin(ROOT, urlPath);
   if (full === null) return null;
+  // NOSONAR jssecurity:S6549 - `full` is not user-controlled data by the time it gets here.
+  // resolveWithin decoded it, refused every segment outside [A-Za-z0-9._~-], and proved containment
+  // with `relative` rather than a prefix test; it returns null otherwise, and that is the line
+  // above. The taint analysis cannot follow a sanitiser in another module. See tools/safe-path.mjs
+  // and its spec, which covers traversal in the encodings it actually arrives in.
   if (!existsSync(full)) return null;
   const stat = statSync(full);
   if (stat.isDirectory()) {
     const index = join(full, 'index.html');
+    // NOSONAR jssecurity:S6549 - index.html joined onto a path already proven inside ROOT.
     return existsSync(index) ? index : null;
   }
   return full;
