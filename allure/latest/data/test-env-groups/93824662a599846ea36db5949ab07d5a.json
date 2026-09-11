@@ -1,1 +1,1 @@
-{"id":"93824662a599846ea36db5949ab07d5a","fullName":"integration/flows/registry-company-flow.spec.ts:202:7","name":"@lookup KRS company lookup returns full company data","status":"passed","testResultsByEnv":{"default":"2f2c93500aa2c4176a2993fbc29b7d88"}}
+{"id":"93824662a599846ea36db5949ab07d5a","fullName":"integration/flows/registry-company-flow.spec.ts:202:7","name":"@lookup KRS company lookup returns full company data","status":"passed","testResultsByEnv":{"default":"a4df2299b516238c56807ed1a80f2916"}}

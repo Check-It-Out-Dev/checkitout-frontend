@@ -1,1 +1,1 @@
-{"id":"ace01f1b6439287885eaef65e766c72f","fullName":"integration/flows/multi-user-session-isolation.spec.ts:196:7","name":"@all-types COMPANY + INFLUENCER + ADMIN logged in simultaneously stay isolated","status":"passed","testResultsByEnv":{"default":"a8bcb5fcfc3d8e42c79e1d3a4e67ccff"}}
+{"id":"ace01f1b6439287885eaef65e766c72f","fullName":"integration/flows/multi-user-session-isolation.spec.ts:196:7","name":"@all-types COMPANY + INFLUENCER + ADMIN logged in simultaneously stay isolated","status":"passed","testResultsByEnv":{"default":"66d5ba92a1193e2cd53e05f0cf960d9f"}}

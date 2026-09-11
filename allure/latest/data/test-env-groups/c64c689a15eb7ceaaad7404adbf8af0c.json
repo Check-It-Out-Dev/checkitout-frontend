@@ -1,1 +1,1 @@
-{"id":"c64c689a15eb7ceaaad7404adbf8af0c","fullName":"sandbox/cookie-banner.spec.ts:6:7","name":"renders banner with both CTAs when consent is pending (clean state)","status":"passed","testResultsByEnv":{"default":"56708520e9a2cb8ea1ba5c26f1ab5796"}}
+{"id":"c64c689a15eb7ceaaad7404adbf8af0c","fullName":"sandbox/cookie-banner.spec.ts:6:7","name":"renders banner with both CTAs when consent is pending (clean state)","status":"passed","testResultsByEnv":{"default":"84c66462e992f21bebaee26a9e4d7982"}}
