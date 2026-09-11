@@ -69,6 +69,13 @@ jobs:
       - name: 🕐 Reset the G5 mtime tag (fresh checkout has no real mtimes)
         run: touch e2e-tests/visual/sandbox-snapshots.spec.ts-snapshots/.last-regen.txt
 
+      # The publisher is a shell script that deletes directories on a branch the whole estate
+      # reads. Two seconds against a local bare repository, every run: it asserts that `latest`
+      # is replaced rather than merged, that retention keeps exactly the newest reports, and
+      # that another tier's directories are still left alone.
+      - name: 🗂️ The Pages publisher still behaves
+        run: bash tools/ci/publish-pages.test.sh tools/ci/publish-pages.sh
+
       - name: 🛡️ Static gates (G1..G11)
         run: npm run check:static
 

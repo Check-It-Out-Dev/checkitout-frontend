@@ -20,6 +20,26 @@
 # already are between two jobs that read the site at the same moment; the retry does not make that
 # worse, it just stops the loser from dropping its report on the floor.
 #
+#
+# Two things it also has to do, learned the hard way on 2026-09-11.
+#
+# REPLACE THE `latest` REPORTS. The overlay never removes anything, so `allure/latest` was not the
+# latest report: it was every report ever published, merged. 19,757 files and 621 MB on the frontend
+# site, 143 MB on the backend's, growing by a report a run. Any `<dir>/latest` that THIS run
+# provides in full is dropped from the remote copy before the overlay, so `latest` means latest.
+# Only directories this run actually writes are touched; another tier's `latest` is none of our
+# business, which is the same rule the overlay already follows.
+#
+# PRUNE THE PER-RUN REPORTS. `allure/37`, `allure/61` and a hundred siblings were kept for ever.
+# Every numerically-named subdirectory is a run, so the newest PAGES_KEEP of them stay and the rest
+# go; anything not named as a number -- `latest`, `history-*.jsonl` -- is never a candidate.
+#
+# Together those two are why a publish took SEVEN MINUTES on one attempt and the backend's security
+# summary hit its ten-minute job timeout in the middle of the retry (run 34569994510). The clone is
+# blobless for the same reason: this script writes files and reads almost none, so fetching the
+# content of 57,000 files it will never open was pure latency. Git fetches a blob on demand if it
+# ever needs one, so correctness does not depend on the guess.
+#
 #   tools/ci/publish-pages.sh <dir> "<commit message>"
 set -euo pipefail
 
@@ -32,6 +52,8 @@ ATTEMPTS=${PAGES_ATTEMPTS:-6}
 # reaches the branch. Everything not listed is only ever added to, never removed, because it may
 # belong to a tier that published a second ago.
 REPLACE=${PAGES_REPLACE:-}
+# How many per-run report directories to keep under each top-level directory. 0 disables pruning.
+KEEP=${PAGES_KEEP:-30}
 WORK=$(mktemp -d)
 ERRFILE=$(mktemp)
 
@@ -54,7 +76,9 @@ for attempt in $(seq 1 "$ATTEMPTS"); do
   mkdir -p "$WORK"
 
   # Start from what is on the branch right now, not from what it looked like when this job began.
-  if ! git clone --quiet --branch "$BRANCH" --single-branch --depth 1 "$REMOTE" "$WORK" 2>/dev/null; then
+  # Blobless: the tree comes down, file contents do not. This script overwrites and deletes but
+  # hardly ever reads, and git fetches any blob it genuinely needs on demand.
+  if ! git clone --quiet --filter=blob:none --branch "$BRANCH" --single-branch --depth 1 "$REMOTE" "$WORK" 2>/dev/null; then
     echo "publish-pages: branch $BRANCH does not exist yet — creating it"
     git -C "$WORK" init --quiet -b "$BRANCH"
     git -C "$WORK" remote add origin "$REMOTE"
@@ -66,8 +90,30 @@ for attempt in $(seq 1 "$ATTEMPTS"); do
     rm -rf "${WORK:?}/${owned}"
   done
 
+  # A `latest` this run provides in full replaces the remote one instead of merging into it.
+  # Without this, `latest` is the union of every report ever published under that name.
+  for candidate in "$SRC"/*/latest; do
+    [ -d "$candidate" ] || continue
+    owned=${candidate#"$SRC"/}
+    rm -rf "${WORK:?}/${owned}"
+  done
+
   # tar rather than rsync: portable to any runner and to Git Bash, so the retry below is testable.
   (cd "$SRC" && tar -cf - --exclude=.git .) | (cd "$WORK" && tar -xf -)
+
+  # Retention, applied to the site as it will be published rather than as it was found: a
+  # numerically-named subdirectory is one run's report, and the newest PAGES_KEEP of them stay.
+  if [ "$KEEP" -gt 0 ]; then
+    for parent in "$WORK"/*/; do
+      [ -d "$parent" ] || continue
+      runs=$(find "$parent" -mindepth 1 -maxdepth 1 -type d -regex '.*/[0-9][0-9]*$' -printf '%f\n' 2>/dev/null | sort -rn)
+      [ -n "$runs" ] || continue
+      printf '%s\n' "$runs" | tail -n +$((KEEP + 1)) | while read -r old; do
+        [ -n "$old" ] || continue
+        rm -rf "${parent:?}${old}"
+      done
+    done
+  fi
 
   git -C "$WORK" add -A
   if git -C "$WORK" diff --cached --quiet; then
