@@ -182,6 +182,22 @@ function annulus(r0: number, r1: number, a0: number, a1: number): string {
   );
 }
 
+/**
+ * A value placed inside a single-quoted Cypher string literal.
+ *
+ * Backslash first, then the quote. The other order is the bug: escaping `'` as `\\'` on a value
+ * that already contains a backslash produces `\\\\'`, where the backslash escapes the backslash and
+ * the quote closes the literal — everything after it is query. CodeQL reports the one-step version
+ * as js/incomplete-sanitization.
+ *
+ * Nothing user-supplied reaches this today; the names come from a committed fixture. It is a
+ * snippet the reader is invited to copy, on a page about how the system is built, which is reason
+ * enough for it to be right.
+ */
+function cypherLiteral(value: string): string {
+  return value.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+}
+
 @Component({
   selector: 'app-graph-topology-showcase',
   imports: [
@@ -1255,11 +1271,11 @@ export class GraphTopologyShowcaseComponent {
   readonly cypher = computed<string>(() => {
     const s = this.shown();
     if (s.kind === 'domain') {
-      return `MATCH (e:EntityNavigator {key: '${s.key}'})-[:IMPLEMENTS]->(c)\nRETURN c.name, c.ai_description`;
+      return `MATCH (e:EntityNavigator {key: '${cypherLiteral(s.key)}'})-[:IMPLEMENTS]->(c)\nRETURN c.name, c.ai_description`;
     }
     if (s.kind === 'leaf') {
       const name = this.leafById.get(s.id)?.leaf.leaf.name ?? s.id;
-      return `MATCH (c:ConcreteImpl {name: '${name.replace(/'/g, "\\'")}'})-[r]-(x)\nRETURN type(r), x.name, r.ai_context`;
+      return `MATCH (c:ConcreteImpl {name: '${cypherLiteral(name)}'})-[r]-(x)\nRETURN type(r), x.name, r.ai_context`;
     }
     return `MATCH (nav:NavigationMaster {namespace: 'CheckItOutSystem'})-[:GUIDES]->(e)\nRETURN e.name, e.category, e.ai_description`;
   });
