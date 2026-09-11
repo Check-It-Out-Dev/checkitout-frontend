@@ -214,7 +214,7 @@ jobs:
           set -o pipefail
           cp "site/allure/history-k8s-test-execution.jsonl" history.jsonl 2>/dev/null || true
           npx playwright merge-reports --reporter allure-playwright ci-reports/blobs
-          npx --yes allure generate --config allurerc.mjs ./allure-results --output allure-report
+          npx --yes allure@3.17.0 generate --config allurerc.mjs ./allure-results --output allure-report
           # Bound by size, not by line count; see the note in browser-tiers.yml.
           node tools/ci/trim-history.mjs history.jsonl
           mkdir -p site/allure && cp history.jsonl "site/allure/history-k8s-test-execution.jsonl"
