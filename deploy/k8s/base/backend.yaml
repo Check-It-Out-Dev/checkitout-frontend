@@ -17,12 +17,22 @@ spec:
     metadata:
       labels: { app: backend }
     spec:
+      # Hardening every image here tolerates; what is deliberately absent, and why, is at the
+      # bottom of kustomization.yaml.
+      automountServiceAccountToken: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       initContainers:
         - name: wait-for-postgres
+          securityContext:
+            allowPrivilegeEscalation: false
           image: busybox:1.36
           command: ["sh", "-c", "until nc -z postgres 5432; do sleep 2; done"]
       containers:
         - name: backend
+          securityContext:
+            allowPrivilegeEscalation: false
           image: ghcr.io/check-it-out-dev/checkitout-backend:main
           ports:
             - { containerPort: 8080, name: http }

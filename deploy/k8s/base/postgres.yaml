@@ -15,8 +15,16 @@ spec:
     metadata:
       labels: { app: postgres }
     spec:
+      # Hardening every image here tolerates; what is deliberately absent, and why, is at the
+      # bottom of kustomization.yaml.
+      automountServiceAccountToken: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: postgres
+          securityContext:
+            allowPrivilegeEscalation: false
           image: postgres:17-alpine
           env:
             - { name: POSTGRES_DB, value: postgres }

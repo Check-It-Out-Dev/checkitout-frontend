@@ -11,8 +11,16 @@ spec:
     metadata:
       labels: { app: redis }
     spec:
+      # Hardening every image here tolerates; what is deliberately absent, and why, is at the
+      # bottom of kustomization.yaml.
+      automountServiceAccountToken: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: redis
+          securityContext:
+            allowPrivilegeEscalation: false
           image: redis:7-alpine
           args: ["redis-server", "--maxmemory", "128mb", "--maxmemory-policy", "allkeys-lru"]
           ports:
