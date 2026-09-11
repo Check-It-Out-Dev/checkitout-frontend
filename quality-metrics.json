@@ -2,26 +2,26 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 3,
-    "id": 34586144085,
-    "sha": "b0e9068",
+    "number": 131,
+    "id": 34590456939,
+    "sha": "5a6763d",
     "branch": "main",
     "workflow": "browser-tiers",
-    "startedAt": "2026-09-11T09:49:27Z",
-    "durationSec": 1159,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34586144085",
-    "status": "red"
+    "startedAt": "2026-09-11T10:41:42Z",
+    "durationSec": 176,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34590456939",
+    "status": "green"
   },
   "tests": {
-    "total": 1818,
-    "passed": 1456,
-    "failed": 338,
+    "total": 1370,
+    "passed": 1346,
+    "failed": 0,
     "flaky": 0,
     "skipped": 24,
-    "passRate": 0.8116,
+    "passRate": 1,
     "flakyRate": 0,
-    "durationMeanSec": 1.19,
-    "durationP95Sec": 1.65,
+    "durationMeanSec": 0.15,
+    "durationP95Sec": 0.94,
     "tiers": {
       "jest": {
         "total": 1234,
@@ -30,22 +30,6 @@
         "flaky": 0,
         "skipped": 0,
         "durationSec": 62
-      },
-      "visual": {
-        "total": 284,
-        "passed": 0,
-        "failed": 284,
-        "flaky": 0,
-        "skipped": 0,
-        "durationSec": 2
-      },
-      "visual-parity": {
-        "total": 82,
-        "passed": 28,
-        "failed": 54,
-        "flaky": 0,
-        "skipped": 0,
-        "durationSec": 0
       },
       "published-reports": {
         "total": 6,
@@ -69,15 +53,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 22,
-        "durationSec": 130
-      },
-      "perf": {
-        "total": 82,
-        "passed": 82,
-        "failed": 0,
-        "flaky": 0,
-        "skipped": 0,
-        "durationSec": 1932
+        "durationSec": 128
       }
     }
   },
@@ -114,6 +90,6 @@
   },
   "flaky": [],
   "reports": {
-    "playwright": "playwright/browser-tiers-3/"
+    "playwright": "playwright/browser-tiers-131/"
   }
 }
