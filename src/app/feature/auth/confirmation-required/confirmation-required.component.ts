@@ -11,10 +11,10 @@ import { TranslocoModule } from '@ngneat/transloco';
  * bounced into the app shell instead.
  */
 @Component({
-    selector: 'app-confirmation-required',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [RouterLink, TranslocoModule],
-    template: `
+  selector: 'app-confirmation-required',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [RouterLink, TranslocoModule],
+  template: `
     <section
       class="flex min-h-[60vh] w-full items-start justify-center px-4"
       data-testid="confirmation-required"
@@ -43,7 +43,7 @@ import { TranslocoModule } from '@ngneat/transloco';
         <p class="mt-6 text-sm text-slate2">
           <span>{{ 'auth.confirmation_required.return_to' | transloco }}</span>
           <a
-            class="ml-1 font-medium text-coral-600 hover:underline"
+            class="ml-1 font-medium text-coral-600 underline"
             routerLink="/auth/sign-in"
             data-testid="confirmation-required-sign-in"
           >
@@ -52,6 +52,6 @@ import { TranslocoModule } from '@ngneat/transloco';
         </p>
       </div>
     </section>
-  `
+  `,
 })
 export class ConfirmationRequiredComponent {}

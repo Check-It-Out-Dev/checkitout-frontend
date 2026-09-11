@@ -764,12 +764,11 @@ function annulus(r0: number, r1: number, a0: number, a1: number): string {
           <pre
             class="mt-1.5 overflow-x-auto whitespace-pre-wrap break-words rounded-lg bg-navy-900 px-3 py-2 font-mono text-[10.5px] leading-relaxed text-cream/90"
             data-testid="graphtopo-inspector-cypher"
-            >{{ cypher() }}</pre
-          >
+            >{{ cypher() }}</pre>
           @if (focus().kind !== 'master') {
             <button
               type="button"
-              class="mt-2 inline-flex items-center gap-1 text-[11px] font-semibold text-coral-600 hover:underline"
+              class="mt-2 inline-flex items-center gap-1 text-[11px] font-semibold text-coral-600 underline"
               (click)="pin({ kind: 'master' })"
               data-testid="graphtopo-inspector-back"
             >
@@ -951,7 +950,7 @@ function annulus(r0: number, r1: number, a0: number, a1: number): string {
           [href]="repoUrl"
           target="_blank"
           rel="noopener"
-          class="mt-3 inline-flex items-center gap-1.5 rounded text-sm font-semibold text-coral-600 underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-500 focus-visible:ring-offset-2"
+          class="mt-3 inline-flex items-center gap-1.5 rounded text-sm font-semibold text-coral-600 underline-offset-2 underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-500 focus-visible:ring-offset-2"
         >
           {{ 'landing.survey.graphtopo.throughline.cta' | transloco }}
           <mat-icon class="!h-4 !w-4 !text-base">open_in_new</mat-icon>
