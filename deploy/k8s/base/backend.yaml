@@ -93,20 +93,30 @@ spec:
             # answer.
             requests: { cpu: 800m, memory: 1Gi }
             limits: { memory: 2Gi }
-          # readOnlyRootFilesystem needs every writable path named. These four are all of them: the
-          # JVM's temp directory, the two the Dockerfile creates and chowns, and the dev-lite upload
-          # sink, which defaults to ./dev-lite-storage relative to the image's WORKDIR of /app.
-          # Missing one does not fail at apply time - it fails at the first upload, in a test.
+          # readOnlyRootFilesystem needs every writable path named, and "every" is the hard word.
+          # These five are all of them: the JVM's temp directory, the two the Dockerfile creates and
+          # chowns, the dev-lite upload sink (./dev-lite-storage relative to the image's WORKDIR of
+          # /app), and /app/target, where the dev profile's logback appender writes
+          # target/var/log/checkitout-backend-dev-unified.log -- a developer-machine convention that
+          # follows the profile into the container.
+          #
+          # That last one is not hypothetical. It was missed on the first attempt, and the pod did
+          # not degrade: Spring Boot treats a logback configuration error as fatal, so the
+          # application refused to start at all and the deployment sat in CrashLoopBackOff until the
+          # progress deadline. A path missed here fails at start-up or at the first write, never at
+          # apply time, which is why the list is written out rather than inferred.
           volumeMounts:
             - { name: tmp, mountPath: /tmp }
             - { name: app-logs, mountPath: /app/logs }
             - { name: app-tmp, mountPath: /app/tmp }
             - { name: app-uploads, mountPath: /app/dev-lite-storage }
+            - { name: app-target, mountPath: /app/target }
       volumes:
         - { name: tmp, emptyDir: {} }
         - { name: app-logs, emptyDir: {} }
         - { name: app-tmp, emptyDir: {} }
         - { name: app-uploads, emptyDir: {} }
+        - { name: app-target, emptyDir: {} }
 ---
 apiVersion: v1
 kind: Service
