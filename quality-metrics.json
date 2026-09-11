@@ -2,26 +2,26 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 131,
-    "id": 34590456939,
+    "number": 67,
+    "id": 34590484921,
     "sha": "5a6763d",
     "branch": "main",
     "workflow": "browser-tiers",
-    "startedAt": "2026-09-11T10:41:42Z",
-    "durationSec": 176,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34590456939",
+    "startedAt": "2026-09-11T10:42:03Z",
+    "durationSec": 1171,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34590484921",
     "status": "green"
   },
   "tests": {
-    "total": 1370,
-    "passed": 1346,
+    "total": 1818,
+    "passed": 1739,
     "failed": 0,
     "flaky": 0,
-    "skipped": 24,
+    "skipped": 79,
     "passRate": 1,
     "flakyRate": 0,
-    "durationMeanSec": 0.15,
-    "durationP95Sec": 0.94,
+    "durationMeanSec": 1.45,
+    "durationP95Sec": 1.68,
     "tiers": {
       "jest": {
         "total": 1234,
@@ -30,6 +30,22 @@
         "flaky": 0,
         "skipped": 0,
         "durationSec": 62
+      },
+      "visual": {
+        "total": 284,
+        "passed": 283,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "durationSec": 385
+      },
+      "visual-parity": {
+        "total": 82,
+        "passed": 28,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 54,
+        "durationSec": 78
       },
       "published-reports": {
         "total": 6,
@@ -53,7 +69,15 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 22,
-        "durationSec": 128
+        "durationSec": 114
+      },
+      "perf": {
+        "total": 82,
+        "passed": 82,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "durationSec": 1952
       }
     }
   },
@@ -90,6 +114,6 @@
   },
   "flaky": [],
   "reports": {
-    "playwright": "playwright/browser-tiers-131/"
+    "playwright": "playwright/browser-tiers-67/"
   }
 }
