@@ -186,7 +186,7 @@ function junitFiles(spec) {
   const i = spec.lastIndexOf(':');
   const pattern = i > 1 ? spec.slice(0, i) : spec;
   const name = i > 1 ? spec.slice(i + 1) : 'junit';
-  return { files: glob(pattern), name: name || 'junit' };
+  return { files: glob(pattern), name: name || 'junit', pattern };
 }
 function parseJunit(xml) {
   const cases = [];
@@ -222,6 +222,30 @@ function parseJunit(xml) {
 }
 for (const spec of multi.junit) {
   const { files, name } = junitFiles(spec);
+  // A named tier whose artifact IS here and whose glob still matched nothing is a missed glob, and
+  // it is silent in every other way: the run stays green, the dashboard just publishes a smaller
+  // number. The backend's integration tier was absent from the published count for the life of the
+  // dashboard -- 10,857 tests where 11,690 ran -- because its glob was one directory short of
+  // `failsafe-reports/integration/`, exactly like the total-zero case below.
+  //
+  // A root that does not exist is the other thing entirely: that tier did not run, or was not
+  // downloaded, and the run's own verdict tool is what judges whether that is allowed.
+  if (files.length === 0) {
+    // The literal prefix: every segment before the first one carrying a wildcard. That is the
+    // directory the pattern NAMES, and its existence is the question. The first segment alone
+    // would not do -- `results/` is there whenever anything at all was downloaded, and would
+    // answer yes for a tier that never ran.
+    const segments = junitFiles(spec).pattern.replace(/\\/g, '/').split('/');
+    const wildcard = segments.findIndex((s) => s.includes('*'));
+    const literal = segments.slice(0, wildcard < 0 ? segments.length - 1 : wildcard).join('/');
+    if (literal && existsSync(literal)) {
+      die(
+        `--junit ${spec} matched no files, and ${literal}/ is here. That is a glob that missed, ` +
+          `not a tier that did not run: the results are somewhere under ${literal}/ and this ` +
+          `pattern does not reach them.`
+      );
+    }
+  }
   for (const f of files) {
     for (const c of parseJunit(readFileSync(f, 'utf8'))) {
       record(name, c.status, c.time, `${c.classname} › ${c.name}`);
