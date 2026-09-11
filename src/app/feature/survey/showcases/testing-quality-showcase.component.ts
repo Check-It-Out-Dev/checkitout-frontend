@@ -20,7 +20,7 @@ import { CodePanelComponent } from '../ui/code-panel.component';
  *     pins that run at compile time (the tie-in to the #contract card).
  *   • Build wall: JaCoCo, SpotBugs+FindSecBugs (effort=Max, failOnError),
  *     PMD, OWASP dependency-check (CVSS ≥ 7 fails), Spotless, Enforcer.
- *   • FE rewrite gate: the REAL nineteen-step check:full chain, verbatim from
+ *   • FE rewrite gate: the REAL twenty-step check:full chain, verbatim from
  *     package.json (10 audit scripts + 2 typechecks + ng build strictTemplates
  *     + jest --bail).
  *   • AI-native test infra (owner framing): dedicated @Profile("e2e") state
@@ -231,6 +231,7 @@ export class TestingQualityShowcaseComponent {
     'check:i18n-cache-buster',
     'check:published-numbers',
     'check:workflow-env',
+    'check:playwright-image-pin',
     'check:gate-parity',
     'typecheck',
     'typecheck:e2e',

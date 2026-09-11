@@ -82,7 +82,7 @@ describe('EngineeringChapterComponent', () => {
     expect(el.querySelector('#velocity a[href="#contract"]')).toBeTruthy();
   });
 
-  it('testing card renders both pyramids narrow→wide and the real nineteen-step gate chain', () => {
+  it('testing card renders both pyramids narrow→wide and the real twenty-step gate chain', () => {
     const testing = fixture.debugElement.query(
       By.directive(TestingQualityShowcaseComponent),
     ).componentInstance;
@@ -101,10 +101,10 @@ describe('EngineeringChapterComponent', () => {
       'visual',
       'unit',
     ]);
-    // the gate chain is the REAL check:full from package.json — all nineteen steps. The count is
+    // the gate chain is the REAL check:full from package.json — all twenty steps. The count is
     // pinned here AND derived from package.json by check:gate-parity; this assertion is what makes
     // a drifting list fail the fast gate rather than only the static one.
-    expect(testing.feGates).toHaveLength(19);
+    expect(testing.feGates).toHaveLength(20);
     for (const step of [
       'check:bdd-corpus',
       'check:contract-coverage',
