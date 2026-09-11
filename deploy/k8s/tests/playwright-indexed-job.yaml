@@ -19,6 +19,10 @@ spec:
       labels: { app: playwright-shards }
     spec:
       restartPolicy: Never
+      # Chromium runs here, so the hardening this pod can take is narrower than the base manifests'
+      # (kustomization.yaml says which and why). These two cost nothing: Playwright makes no
+      # Kubernetes API call, and a shard that fills the node's disk takes the other three with it.
+      automountServiceAccountToken: false
       containers:
         - name: playwright
           image: checkitout-tests:ci
@@ -49,8 +53,8 @@ spec:
             # docs/ci/ARCHITECTURE.md §4 — a test excluded without a written reason is a test deleted.
             - { name: PW_EXTRA_ARGS, value: "--grep-invert=legacy|@needs-firebase" }
           resources:
-            requests: { cpu: 400m, memory: 1Gi }
-            limits: { memory: 1536Mi }
+            requests: { cpu: 400m, memory: 1Gi, ephemeral-storage: 1Gi }
+            limits: { memory: 1536Mi, ephemeral-storage: 4Gi }
           volumeMounts:
             - { name: reports, mountPath: /reports }
       volumes:
