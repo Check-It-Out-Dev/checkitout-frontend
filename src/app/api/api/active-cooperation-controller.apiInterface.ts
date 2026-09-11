@@ -12,6 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
+import { ApiErrorResponse } from '../model/models';
 import { CoopDtoRatings } from '../model/models';
 import { CoopDtoRegistration } from '../model/models';
 import { MappingJacksonValue } from '../model/models';

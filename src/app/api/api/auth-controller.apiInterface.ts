@@ -12,6 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
+import { ApiErrorResponse } from '../model/models';
 import { CompleteSocialRegistrationRequest } from '../model/models';
 import { RegisterUserRequest } from '../model/models';
 import { RegistrationResponse } from '../model/models';

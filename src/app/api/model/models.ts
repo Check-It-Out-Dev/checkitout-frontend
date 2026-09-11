@@ -9,6 +9,7 @@ export * from './address-source-type';
 export * from './admin-ticket-response-dto-in';
 export * from './anonymous-consent-dto-in';
 export * from './anonymous-consent-dto-out';
+export * from './api-error-response';
 export * from './applied-opportunity-content-dto-in';
 export * from './applied-opportunity-content-dto-out';
 export * from './applied-opportunity-content-simple-dto-out';

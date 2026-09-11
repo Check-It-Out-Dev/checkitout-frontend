@@ -13,6 +13,7 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { AdminTicketResponseDtoIn } from '../model/models';
+import { ApiErrorResponse } from '../model/models';
 import { PageSupportTicketDtoOut } from '../model/models';
 import { Pageable } from '../model/models';
 import { ResponseAttachmentDtoIn } from '../model/models';

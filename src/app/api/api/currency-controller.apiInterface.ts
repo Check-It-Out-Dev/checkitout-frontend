@@ -12,6 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
+import { ApiErrorResponse } from '../model/models';
 import { CurrencyDto } from '../model/models';
 import { CurrencyDtoOut } from '../model/models';
 import { PageCurrencyDtoOut } from '../model/models';

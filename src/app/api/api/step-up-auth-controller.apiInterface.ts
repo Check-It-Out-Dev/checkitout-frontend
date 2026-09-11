@@ -12,6 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
+import { ApiErrorResponse } from '../model/models';
 import { StepUpActionType } from '../model/models';
 import { StepUpCheckResponse } from '../model/models';
 import { StepUpRequestDto } from '../model/models';

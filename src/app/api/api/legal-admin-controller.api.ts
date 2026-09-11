@@ -18,6 +18,8 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
+import { ApiErrorResponse } from '../model/api-error-response';
+// @ts-ignore
 import { ConsentRecordAdminDtoOut } from '../model/consent-record-admin-dto-out';
 
 // @ts-ignore
@@ -101,10 +103,10 @@ export class LegalAdminControllerService implements LegalAdminControllerServiceI
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getConsentRecords(requestParameters: GetConsentRecordsRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<Array<ConsentRecordAdminDtoOut>>;
-    public getConsentRecords(requestParameters: GetConsentRecordsRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ConsentRecordAdminDtoOut>>>;
-    public getConsentRecords(requestParameters: GetConsentRecordsRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ConsentRecordAdminDtoOut>>>;
-    public getConsentRecords(requestParameters: GetConsentRecordsRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getConsentRecords(requestParameters: GetConsentRecordsRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ConsentRecordAdminDtoOut>>;
+    public getConsentRecords(requestParameters: GetConsentRecordsRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ConsentRecordAdminDtoOut>>>;
+    public getConsentRecords(requestParameters: GetConsentRecordsRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ConsentRecordAdminDtoOut>>>;
+    public getConsentRecords(requestParameters: GetConsentRecordsRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const userId = requestParameters?.userId;
         if (userId === null || userId === undefined) {
             throw new Error('Required parameter userId was null or undefined when calling getConsentRecords.');
@@ -116,7 +118,8 @@ export class LegalAdminControllerService implements LegalAdminControllerServiceI
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -165,10 +168,10 @@ export class LegalAdminControllerService implements LegalAdminControllerServiceI
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getOrphanedAnonymous(requestParameters?: GetOrphanedAnonymousRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<Array<ConsentRecordAdminDtoOut>>;
-    public getOrphanedAnonymous(requestParameters?: GetOrphanedAnonymousRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ConsentRecordAdminDtoOut>>>;
-    public getOrphanedAnonymous(requestParameters?: GetOrphanedAnonymousRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ConsentRecordAdminDtoOut>>>;
-    public getOrphanedAnonymous(requestParameters?: GetOrphanedAnonymousRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getOrphanedAnonymous(requestParameters?: GetOrphanedAnonymousRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ConsentRecordAdminDtoOut>>;
+    public getOrphanedAnonymous(requestParameters?: GetOrphanedAnonymousRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ConsentRecordAdminDtoOut>>>;
+    public getOrphanedAnonymous(requestParameters?: GetOrphanedAnonymousRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ConsentRecordAdminDtoOut>>>;
+    public getOrphanedAnonymous(requestParameters?: GetOrphanedAnonymousRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const hoursBack = requestParameters?.hoursBack;
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
@@ -183,7 +186,8 @@ export class LegalAdminControllerService implements LegalAdminControllerServiceI
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }

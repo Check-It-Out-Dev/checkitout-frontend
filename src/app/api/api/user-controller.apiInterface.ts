@@ -12,6 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
+import { ApiErrorResponse } from '../model/models';
 import { CompanyPublicProfileDto } from '../model/models';
 import { DeletionEligibilityDto } from '../model/models';
 import { InfluencerPublicProfileDto } from '../model/models';

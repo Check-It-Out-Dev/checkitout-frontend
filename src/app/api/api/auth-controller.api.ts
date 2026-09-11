@@ -18,6 +18,8 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
+import { ApiErrorResponse } from '../model/api-error-response';
+// @ts-ignore
 import { CompleteSocialRegistrationRequest } from '../model/complete-social-registration-request';
 // @ts-ignore
 import { RegisterUserRequest } from '../model/register-user-request';
@@ -111,10 +113,10 @@ export class AuthControllerService implements AuthControllerServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public completeSocialRegistration(requestParameters: CompleteSocialRegistrationRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<RegistrationResponse>;
-    public completeSocialRegistration(requestParameters: CompleteSocialRegistrationRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RegistrationResponse>>;
-    public completeSocialRegistration(requestParameters: CompleteSocialRegistrationRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RegistrationResponse>>;
-    public completeSocialRegistration(requestParameters: CompleteSocialRegistrationRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public completeSocialRegistration(requestParameters: CompleteSocialRegistrationRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<RegistrationResponse>;
+    public completeSocialRegistration(requestParameters: CompleteSocialRegistrationRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RegistrationResponse>>;
+    public completeSocialRegistration(requestParameters: CompleteSocialRegistrationRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RegistrationResponse>>;
+    public completeSocialRegistration(requestParameters: CompleteSocialRegistrationRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const completeSocialRegistrationRequest = requestParameters?.completeSocialRegistrationRequest;
         if (completeSocialRegistrationRequest === null || completeSocialRegistrationRequest === undefined) {
             throw new Error('Required parameter completeSocialRegistrationRequest was null or undefined when calling completeSocialRegistration.');
@@ -126,7 +128,8 @@ export class AuthControllerService implements AuthControllerServiceInterface {
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -185,10 +188,10 @@ export class AuthControllerService implements AuthControllerServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public exchangeToken(requestParameters: ExchangeTokenRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<TokenExchangeResponse>;
-    public exchangeToken(requestParameters: ExchangeTokenRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<TokenExchangeResponse>>;
-    public exchangeToken(requestParameters: ExchangeTokenRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<TokenExchangeResponse>>;
-    public exchangeToken(requestParameters: ExchangeTokenRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public exchangeToken(requestParameters: ExchangeTokenRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<TokenExchangeResponse>;
+    public exchangeToken(requestParameters: ExchangeTokenRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<TokenExchangeResponse>>;
+    public exchangeToken(requestParameters: ExchangeTokenRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<TokenExchangeResponse>>;
+    public exchangeToken(requestParameters: ExchangeTokenRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const tokenExchangeRequest = requestParameters?.tokenExchangeRequest;
         if (tokenExchangeRequest === null || tokenExchangeRequest === undefined) {
             throw new Error('Required parameter tokenExchangeRequest was null or undefined when calling exchangeToken.');
@@ -200,7 +203,8 @@ export class AuthControllerService implements AuthControllerServiceInterface {
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -377,10 +381,10 @@ export class AuthControllerService implements AuthControllerServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public instagramCallback(requestParameters?: InstagramCallbackRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<object>;
-    public instagramCallback(requestParameters?: InstagramCallbackRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<object>>;
-    public instagramCallback(requestParameters?: InstagramCallbackRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<object>>;
-    public instagramCallback(requestParameters?: InstagramCallbackRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public instagramCallback(requestParameters?: InstagramCallbackRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<object>;
+    public instagramCallback(requestParameters?: InstagramCallbackRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<object>>;
+    public instagramCallback(requestParameters?: InstagramCallbackRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<object>>;
+    public instagramCallback(requestParameters?: InstagramCallbackRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const code = requestParameters?.code;
         const state = requestParameters?.state;
         const error = requestParameters?.error;
@@ -414,7 +418,8 @@ export class AuthControllerService implements AuthControllerServiceInterface {
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -523,10 +528,10 @@ export class AuthControllerService implements AuthControllerServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public registerUser(requestParameters: RegisterUserRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<RegistrationResponse>;
-    public registerUser(requestParameters: RegisterUserRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RegistrationResponse>>;
-    public registerUser(requestParameters: RegisterUserRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RegistrationResponse>>;
-    public registerUser(requestParameters: RegisterUserRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public registerUser(requestParameters: RegisterUserRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<RegistrationResponse>;
+    public registerUser(requestParameters: RegisterUserRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RegistrationResponse>>;
+    public registerUser(requestParameters: RegisterUserRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RegistrationResponse>>;
+    public registerUser(requestParameters: RegisterUserRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const registerUserRequest = requestParameters?.registerUserRequest;
         if (registerUserRequest === null || registerUserRequest === undefined) {
             throw new Error('Required parameter registerUserRequest was null or undefined when calling registerUser.');
@@ -538,7 +543,8 @@ export class AuthControllerService implements AuthControllerServiceInterface {
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }

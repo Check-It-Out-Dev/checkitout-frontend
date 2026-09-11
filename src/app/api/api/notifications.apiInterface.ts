@@ -12,6 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
+import { ApiErrorResponse } from '../model/models';
 import { MarkAllReadResponse } from '../model/models';
 import { NotificationDtoOut } from '../model/models';
 import { PageNotificationDtoOut } from '../model/models';

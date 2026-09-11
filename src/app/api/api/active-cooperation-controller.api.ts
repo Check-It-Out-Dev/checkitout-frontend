@@ -18,6 +18,8 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
+import { ApiErrorResponse } from '../model/api-error-response';
+// @ts-ignore
 import { CoopDtoRatings } from '../model/coop-dto-ratings';
 // @ts-ignore
 import { CoopDtoRegistration } from '../model/coop-dto-registration';
@@ -112,10 +114,10 @@ export class ActiveCooperationControllerService implements ActiveCooperationCont
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getInfluencersToAccept(requestParameters?: GetInfluencersToAcceptRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<Array<CoopDtoRegistration>>;
-    public getInfluencersToAccept(requestParameters?: GetInfluencersToAcceptRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CoopDtoRegistration>>>;
-    public getInfluencersToAccept(requestParameters?: GetInfluencersToAcceptRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CoopDtoRegistration>>>;
-    public getInfluencersToAccept(requestParameters?: GetInfluencersToAcceptRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getInfluencersToAccept(requestParameters?: GetInfluencersToAcceptRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CoopDtoRegistration>>;
+    public getInfluencersToAccept(requestParameters?: GetInfluencersToAcceptRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CoopDtoRegistration>>>;
+    public getInfluencersToAccept(requestParameters?: GetInfluencersToAcceptRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CoopDtoRegistration>>>;
+    public getInfluencersToAccept(requestParameters?: GetInfluencersToAcceptRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const minFollowers = requestParameters?.minFollowers;
         const maxFollowers = requestParameters?.maxFollowers;
         const minPositiveRates = requestParameters?.minPositiveRates;
@@ -150,7 +152,8 @@ export class ActiveCooperationControllerService implements ActiveCooperationCont
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -200,10 +203,10 @@ export class ActiveCooperationControllerService implements ActiveCooperationCont
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getInfluencersToRate(requestParameters?: GetInfluencersToRateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<Array<CoopDtoRatings>>;
-    public getInfluencersToRate(requestParameters?: GetInfluencersToRateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CoopDtoRatings>>>;
-    public getInfluencersToRate(requestParameters?: GetInfluencersToRateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CoopDtoRatings>>>;
-    public getInfluencersToRate(requestParameters?: GetInfluencersToRateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getInfluencersToRate(requestParameters?: GetInfluencersToRateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CoopDtoRatings>>;
+    public getInfluencersToRate(requestParameters?: GetInfluencersToRateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CoopDtoRatings>>>;
+    public getInfluencersToRate(requestParameters?: GetInfluencersToRateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CoopDtoRatings>>>;
+    public getInfluencersToRate(requestParameters?: GetInfluencersToRateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const filterRateStatus = requestParameters?.filterRateStatus;
         const page = requestParameters?.page;
         const size = requestParameters?.size;
@@ -228,7 +231,8 @@ export class ActiveCooperationControllerService implements ActiveCooperationCont
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -278,10 +282,10 @@ export class ActiveCooperationControllerService implements ActiveCooperationCont
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getOpportunitiesInProgress(requestParameters?: GetOpportunitiesInProgressRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<MappingJacksonValue>;
-    public getOpportunitiesInProgress(requestParameters?: GetOpportunitiesInProgressRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<MappingJacksonValue>>;
-    public getOpportunitiesInProgress(requestParameters?: GetOpportunitiesInProgressRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<MappingJacksonValue>>;
-    public getOpportunitiesInProgress(requestParameters?: GetOpportunitiesInProgressRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getOpportunitiesInProgress(requestParameters?: GetOpportunitiesInProgressRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<MappingJacksonValue>;
+    public getOpportunitiesInProgress(requestParameters?: GetOpportunitiesInProgressRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<MappingJacksonValue>>;
+    public getOpportunitiesInProgress(requestParameters?: GetOpportunitiesInProgressRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<MappingJacksonValue>>;
+    public getOpportunitiesInProgress(requestParameters?: GetOpportunitiesInProgressRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const page = requestParameters?.page;
         const size = requestParameters?.size;
         const statuses = requestParameters?.statuses;
@@ -308,7 +312,8 @@ export class ActiveCooperationControllerService implements ActiveCooperationCont
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -358,10 +363,10 @@ export class ActiveCooperationControllerService implements ActiveCooperationCont
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateCompanyRating1(requestParameters: UpdateCompanyRating1RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<MappingJacksonValue>;
-    public updateCompanyRating1(requestParameters: UpdateCompanyRating1RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<MappingJacksonValue>>;
-    public updateCompanyRating1(requestParameters: UpdateCompanyRating1RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<MappingJacksonValue>>;
-    public updateCompanyRating1(requestParameters: UpdateCompanyRating1RequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public updateCompanyRating1(requestParameters: UpdateCompanyRating1RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<MappingJacksonValue>;
+    public updateCompanyRating1(requestParameters: UpdateCompanyRating1RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<MappingJacksonValue>>;
+    public updateCompanyRating1(requestParameters: UpdateCompanyRating1RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<MappingJacksonValue>>;
+    public updateCompanyRating1(requestParameters: UpdateCompanyRating1RequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const id = requestParameters?.id;
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling updateCompanyRating1.');
@@ -383,7 +388,8 @@ export class ActiveCooperationControllerService implements ActiveCooperationCont
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -433,10 +439,10 @@ export class ActiveCooperationControllerService implements ActiveCooperationCont
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateInfluencerRating1(requestParameters: UpdateInfluencerRating1RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<MappingJacksonValue>;
-    public updateInfluencerRating1(requestParameters: UpdateInfluencerRating1RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<MappingJacksonValue>>;
-    public updateInfluencerRating1(requestParameters: UpdateInfluencerRating1RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<MappingJacksonValue>>;
-    public updateInfluencerRating1(requestParameters: UpdateInfluencerRating1RequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public updateInfluencerRating1(requestParameters: UpdateInfluencerRating1RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<MappingJacksonValue>;
+    public updateInfluencerRating1(requestParameters: UpdateInfluencerRating1RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<MappingJacksonValue>>;
+    public updateInfluencerRating1(requestParameters: UpdateInfluencerRating1RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<MappingJacksonValue>>;
+    public updateInfluencerRating1(requestParameters: UpdateInfluencerRating1RequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const id = requestParameters?.id;
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling updateInfluencerRating1.');
@@ -458,7 +464,8 @@ export class ActiveCooperationControllerService implements ActiveCooperationCont
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }

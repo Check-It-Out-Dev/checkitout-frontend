@@ -12,6 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
+import { ApiErrorResponse } from '../model/models';
 import { ConsentDefinitionDtoIn } from '../model/models';
 import { ConsentDefinitionDtoOut } from '../model/models';
 import { ConsentVersionDtoIn } from '../model/models';

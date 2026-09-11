@@ -18,6 +18,8 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
+import { ApiErrorResponse } from '../model/api-error-response';
+// @ts-ignore
 import { AppliedOpportunityDtoIn } from '../model/applied-opportunity-dto-in';
 // @ts-ignore
 import { AppliedOpportunityDtoOut } from '../model/applied-opportunity-dto-out';
@@ -130,10 +132,10 @@ export class AppliedOpportunityControllerService implements AppliedOpportunityCo
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public create11(requestParameters: Create11RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<AppliedOpportunityDtoOut>;
-    public create11(requestParameters: Create11RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AppliedOpportunityDtoOut>>;
-    public create11(requestParameters: Create11RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AppliedOpportunityDtoOut>>;
-    public create11(requestParameters: Create11RequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public create11(requestParameters: Create11RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AppliedOpportunityDtoOut>;
+    public create11(requestParameters: Create11RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AppliedOpportunityDtoOut>>;
+    public create11(requestParameters: Create11RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AppliedOpportunityDtoOut>>;
+    public create11(requestParameters: Create11RequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const appliedOpportunityDtoIn = requestParameters?.appliedOpportunityDtoIn;
         if (appliedOpportunityDtoIn === null || appliedOpportunityDtoIn === undefined) {
             throw new Error('Required parameter appliedOpportunityDtoIn was null or undefined when calling create11.');
@@ -145,7 +147,8 @@ export class AppliedOpportunityControllerService implements AppliedOpportunityCo
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -206,10 +209,10 @@ export class AppliedOpportunityControllerService implements AppliedOpportunityCo
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public delete11(requestParameters: Delete11RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<void>;
-    public delete11(requestParameters: Delete11RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<void>>;
-    public delete11(requestParameters: Delete11RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<void>>;
-    public delete11(requestParameters: Delete11RequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<void> {
+    public delete11(requestParameters: Delete11RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public delete11(requestParameters: Delete11RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public delete11(requestParameters: Delete11RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public delete11(requestParameters: Delete11RequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const ids = requestParameters?.ids;
         if (ids === null || ids === undefined) {
             throw new Error('Required parameter ids was null or undefined when calling delete11.');
@@ -221,6 +224,7 @@ export class AppliedOpportunityControllerService implements AppliedOpportunityCo
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -271,10 +275,10 @@ export class AppliedOpportunityControllerService implements AppliedOpportunityCo
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public findPaginated11(requestParameters: FindPaginated11RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<PageAppliedOpportunityDtoOut>;
-    public findPaginated11(requestParameters: FindPaginated11RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PageAppliedOpportunityDtoOut>>;
-    public findPaginated11(requestParameters: FindPaginated11RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PageAppliedOpportunityDtoOut>>;
-    public findPaginated11(requestParameters: FindPaginated11RequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public findPaginated11(requestParameters: FindPaginated11RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PageAppliedOpportunityDtoOut>;
+    public findPaginated11(requestParameters: FindPaginated11RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PageAppliedOpportunityDtoOut>>;
+    public findPaginated11(requestParameters: FindPaginated11RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PageAppliedOpportunityDtoOut>>;
+    public findPaginated11(requestParameters: FindPaginated11RequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const pageable = requestParameters?.pageable;
         if (pageable === null || pageable === undefined) {
             throw new Error('Required parameter pageable was null or undefined when calling findPaginated11.');
@@ -300,7 +304,8 @@ export class AppliedOpportunityControllerService implements AppliedOpportunityCo
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -352,10 +357,10 @@ export class AppliedOpportunityControllerService implements AppliedOpportunityCo
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getById11(requestParameters: GetById11RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<AppliedOpportunityDtoOut>;
-    public getById11(requestParameters: GetById11RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AppliedOpportunityDtoOut>>;
-    public getById11(requestParameters: GetById11RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AppliedOpportunityDtoOut>>;
-    public getById11(requestParameters: GetById11RequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getById11(requestParameters: GetById11RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AppliedOpportunityDtoOut>;
+    public getById11(requestParameters: GetById11RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AppliedOpportunityDtoOut>>;
+    public getById11(requestParameters: GetById11RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AppliedOpportunityDtoOut>>;
+    public getById11(requestParameters: GetById11RequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const id = requestParameters?.id;
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling getById11.');
@@ -367,7 +372,8 @@ export class AppliedOpportunityControllerService implements AppliedOpportunityCo
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -417,10 +423,10 @@ export class AppliedOpportunityControllerService implements AppliedOpportunityCo
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getPaymentContact(requestParameters: GetPaymentContactRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<PaymentContactDto>;
-    public getPaymentContact(requestParameters: GetPaymentContactRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaymentContactDto>>;
-    public getPaymentContact(requestParameters: GetPaymentContactRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaymentContactDto>>;
-    public getPaymentContact(requestParameters: GetPaymentContactRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getPaymentContact(requestParameters: GetPaymentContactRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaymentContactDto>;
+    public getPaymentContact(requestParameters: GetPaymentContactRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaymentContactDto>>;
+    public getPaymentContact(requestParameters: GetPaymentContactRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaymentContactDto>>;
+    public getPaymentContact(requestParameters: GetPaymentContactRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const id = requestParameters?.id;
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling getPaymentContact.');
@@ -432,7 +438,8 @@ export class AppliedOpportunityControllerService implements AppliedOpportunityCo
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -480,10 +487,10 @@ export class AppliedOpportunityControllerService implements AppliedOpportunityCo
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getStatistics(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<AppliedOpportunityStatisticsDto>;
-    public getStatistics(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AppliedOpportunityStatisticsDto>>;
-    public getStatistics(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AppliedOpportunityStatisticsDto>>;
-    public getStatistics(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getStatistics(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AppliedOpportunityStatisticsDto>;
+    public getStatistics(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AppliedOpportunityStatisticsDto>>;
+    public getStatistics(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AppliedOpportunityStatisticsDto>>;
+    public getStatistics(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -491,7 +498,8 @@ export class AppliedOpportunityControllerService implements AppliedOpportunityCo
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -540,10 +548,10 @@ export class AppliedOpportunityControllerService implements AppliedOpportunityCo
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getStatusHistory(requestParameters: GetStatusHistoryRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<Array<AppliedOpportunityStatusHistoryDtoOut>>;
-    public getStatusHistory(requestParameters: GetStatusHistoryRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<AppliedOpportunityStatusHistoryDtoOut>>>;
-    public getStatusHistory(requestParameters: GetStatusHistoryRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<AppliedOpportunityStatusHistoryDtoOut>>>;
-    public getStatusHistory(requestParameters: GetStatusHistoryRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getStatusHistory(requestParameters: GetStatusHistoryRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<AppliedOpportunityStatusHistoryDtoOut>>;
+    public getStatusHistory(requestParameters: GetStatusHistoryRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<AppliedOpportunityStatusHistoryDtoOut>>>;
+    public getStatusHistory(requestParameters: GetStatusHistoryRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<AppliedOpportunityStatusHistoryDtoOut>>>;
+    public getStatusHistory(requestParameters: GetStatusHistoryRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const appliedOpportunityId = requestParameters?.appliedOpportunityId;
         if (appliedOpportunityId === null || appliedOpportunityId === undefined) {
             throw new Error('Required parameter appliedOpportunityId was null or undefined when calling getStatusHistory.');
@@ -555,7 +563,8 @@ export class AppliedOpportunityControllerService implements AppliedOpportunityCo
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -604,10 +613,10 @@ export class AppliedOpportunityControllerService implements AppliedOpportunityCo
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getStatusHistoryPaged(requestParameters: GetStatusHistoryPagedRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<PageAppliedOpportunityStatusHistoryDtoOut>;
-    public getStatusHistoryPaged(requestParameters: GetStatusHistoryPagedRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PageAppliedOpportunityStatusHistoryDtoOut>>;
-    public getStatusHistoryPaged(requestParameters: GetStatusHistoryPagedRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PageAppliedOpportunityStatusHistoryDtoOut>>;
-    public getStatusHistoryPaged(requestParameters: GetStatusHistoryPagedRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getStatusHistoryPaged(requestParameters: GetStatusHistoryPagedRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PageAppliedOpportunityStatusHistoryDtoOut>;
+    public getStatusHistoryPaged(requestParameters: GetStatusHistoryPagedRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PageAppliedOpportunityStatusHistoryDtoOut>>;
+    public getStatusHistoryPaged(requestParameters: GetStatusHistoryPagedRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PageAppliedOpportunityStatusHistoryDtoOut>>;
+    public getStatusHistoryPaged(requestParameters: GetStatusHistoryPagedRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const appliedOpportunityId = requestParameters?.appliedOpportunityId;
         if (appliedOpportunityId === null || appliedOpportunityId === undefined) {
             throw new Error('Required parameter appliedOpportunityId was null or undefined when calling getStatusHistoryPaged.');
@@ -641,7 +650,8 @@ export class AppliedOpportunityControllerService implements AppliedOpportunityCo
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -693,10 +703,10 @@ export class AppliedOpportunityControllerService implements AppliedOpportunityCo
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public patch11(requestParameters: Patch11RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<AppliedOpportunityDtoOut>;
-    public patch11(requestParameters: Patch11RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AppliedOpportunityDtoOut>>;
-    public patch11(requestParameters: Patch11RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AppliedOpportunityDtoOut>>;
-    public patch11(requestParameters: Patch11RequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public patch11(requestParameters: Patch11RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AppliedOpportunityDtoOut>;
+    public patch11(requestParameters: Patch11RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AppliedOpportunityDtoOut>>;
+    public patch11(requestParameters: Patch11RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AppliedOpportunityDtoOut>>;
+    public patch11(requestParameters: Patch11RequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const id = requestParameters?.id;
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling patch11.');
@@ -712,7 +722,8 @@ export class AppliedOpportunityControllerService implements AppliedOpportunityCo
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -773,10 +784,10 @@ export class AppliedOpportunityControllerService implements AppliedOpportunityCo
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public update11(requestParameters: Update11RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<AppliedOpportunityDtoOut>;
-    public update11(requestParameters: Update11RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AppliedOpportunityDtoOut>>;
-    public update11(requestParameters: Update11RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AppliedOpportunityDtoOut>>;
-    public update11(requestParameters: Update11RequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public update11(requestParameters: Update11RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AppliedOpportunityDtoOut>;
+    public update11(requestParameters: Update11RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AppliedOpportunityDtoOut>>;
+    public update11(requestParameters: Update11RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AppliedOpportunityDtoOut>>;
+    public update11(requestParameters: Update11RequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const id = requestParameters?.id;
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling update11.');
@@ -792,7 +803,8 @@ export class AppliedOpportunityControllerService implements AppliedOpportunityCo
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -851,10 +863,10 @@ export class AppliedOpportunityControllerService implements AppliedOpportunityCo
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateCompanyRating(requestParameters: UpdateCompanyRatingRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<AppliedOpportunityDtoOut>;
-    public updateCompanyRating(requestParameters: UpdateCompanyRatingRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AppliedOpportunityDtoOut>>;
-    public updateCompanyRating(requestParameters: UpdateCompanyRatingRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AppliedOpportunityDtoOut>>;
-    public updateCompanyRating(requestParameters: UpdateCompanyRatingRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public updateCompanyRating(requestParameters: UpdateCompanyRatingRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AppliedOpportunityDtoOut>;
+    public updateCompanyRating(requestParameters: UpdateCompanyRatingRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AppliedOpportunityDtoOut>>;
+    public updateCompanyRating(requestParameters: UpdateCompanyRatingRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AppliedOpportunityDtoOut>>;
+    public updateCompanyRating(requestParameters: UpdateCompanyRatingRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const id = requestParameters?.id;
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling updateCompanyRating.');
@@ -876,7 +888,8 @@ export class AppliedOpportunityControllerService implements AppliedOpportunityCo
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -926,10 +939,10 @@ export class AppliedOpportunityControllerService implements AppliedOpportunityCo
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateInfluencerRating(requestParameters: UpdateInfluencerRatingRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<AppliedOpportunityDtoOut>;
-    public updateInfluencerRating(requestParameters: UpdateInfluencerRatingRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AppliedOpportunityDtoOut>>;
-    public updateInfluencerRating(requestParameters: UpdateInfluencerRatingRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AppliedOpportunityDtoOut>>;
-    public updateInfluencerRating(requestParameters: UpdateInfluencerRatingRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public updateInfluencerRating(requestParameters: UpdateInfluencerRatingRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AppliedOpportunityDtoOut>;
+    public updateInfluencerRating(requestParameters: UpdateInfluencerRatingRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AppliedOpportunityDtoOut>>;
+    public updateInfluencerRating(requestParameters: UpdateInfluencerRatingRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AppliedOpportunityDtoOut>>;
+    public updateInfluencerRating(requestParameters: UpdateInfluencerRatingRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const id = requestParameters?.id;
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling updateInfluencerRating.');
@@ -951,7 +964,8 @@ export class AppliedOpportunityControllerService implements AppliedOpportunityCo
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -1001,10 +1015,10 @@ export class AppliedOpportunityControllerService implements AppliedOpportunityCo
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateOpportunityStatus(requestParameters: UpdateOpportunityStatusRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<AppliedOpportunityDtoOut>;
-    public updateOpportunityStatus(requestParameters: UpdateOpportunityStatusRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AppliedOpportunityDtoOut>>;
-    public updateOpportunityStatus(requestParameters: UpdateOpportunityStatusRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AppliedOpportunityDtoOut>>;
-    public updateOpportunityStatus(requestParameters: UpdateOpportunityStatusRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public updateOpportunityStatus(requestParameters: UpdateOpportunityStatusRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AppliedOpportunityDtoOut>;
+    public updateOpportunityStatus(requestParameters: UpdateOpportunityStatusRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AppliedOpportunityDtoOut>>;
+    public updateOpportunityStatus(requestParameters: UpdateOpportunityStatusRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AppliedOpportunityDtoOut>>;
+    public updateOpportunityStatus(requestParameters: UpdateOpportunityStatusRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const appliedOpportunityId = requestParameters?.appliedOpportunityId;
         if (appliedOpportunityId === null || appliedOpportunityId === undefined) {
             throw new Error('Required parameter appliedOpportunityId was null or undefined when calling updateOpportunityStatus.');
@@ -1026,7 +1040,8 @@ export class AppliedOpportunityControllerService implements AppliedOpportunityCo
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -1076,10 +1091,10 @@ export class AppliedOpportunityControllerService implements AppliedOpportunityCo
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateRateStatus(requestParameters: UpdateRateStatusRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<AppliedOpportunityDtoOut>;
-    public updateRateStatus(requestParameters: UpdateRateStatusRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AppliedOpportunityDtoOut>>;
-    public updateRateStatus(requestParameters: UpdateRateStatusRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AppliedOpportunityDtoOut>>;
-    public updateRateStatus(requestParameters: UpdateRateStatusRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public updateRateStatus(requestParameters: UpdateRateStatusRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AppliedOpportunityDtoOut>;
+    public updateRateStatus(requestParameters: UpdateRateStatusRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AppliedOpportunityDtoOut>>;
+    public updateRateStatus(requestParameters: UpdateRateStatusRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AppliedOpportunityDtoOut>>;
+    public updateRateStatus(requestParameters: UpdateRateStatusRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const appliedOpportunityId = requestParameters?.appliedOpportunityId;
         if (appliedOpportunityId === null || appliedOpportunityId === undefined) {
             throw new Error('Required parameter appliedOpportunityId was null or undefined when calling updateRateStatus.');
@@ -1095,7 +1110,8 @@ export class AppliedOpportunityControllerService implements AppliedOpportunityCo
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }

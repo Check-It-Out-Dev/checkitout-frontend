@@ -18,6 +18,8 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
+import { ApiErrorResponse } from '../model/api-error-response';
+// @ts-ignore
 import { DeleteFilesRequest } from '../model/delete-files-request';
 // @ts-ignore
 import { FileOperationResponse } from '../model/file-operation-response';
@@ -104,10 +106,10 @@ export class FileManagementControllerService implements FileManagementController
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public deleteFile(requestParameters: DeleteFileRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<FileOperationResponse>;
-    public deleteFile(requestParameters: DeleteFileRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<FileOperationResponse>>;
-    public deleteFile(requestParameters: DeleteFileRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<FileOperationResponse>>;
-    public deleteFile(requestParameters: DeleteFileRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public deleteFile(requestParameters: DeleteFileRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<FileOperationResponse>;
+    public deleteFile(requestParameters: DeleteFileRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<FileOperationResponse>>;
+    public deleteFile(requestParameters: DeleteFileRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<FileOperationResponse>>;
+    public deleteFile(requestParameters: DeleteFileRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const fileUrl = requestParameters?.fileUrl;
         if (fileUrl === null || fileUrl === undefined) {
             throw new Error('Required parameter fileUrl was null or undefined when calling deleteFile.');
@@ -125,7 +127,8 @@ export class FileManagementControllerService implements FileManagementController
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -175,10 +178,10 @@ export class FileManagementControllerService implements FileManagementController
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public deleteFiles(requestParameters: DeleteFilesRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<FileOperationResponse>;
-    public deleteFiles(requestParameters: DeleteFilesRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<FileOperationResponse>>;
-    public deleteFiles(requestParameters: DeleteFilesRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<FileOperationResponse>>;
-    public deleteFiles(requestParameters: DeleteFilesRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public deleteFiles(requestParameters: DeleteFilesRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<FileOperationResponse>;
+    public deleteFiles(requestParameters: DeleteFilesRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<FileOperationResponse>>;
+    public deleteFiles(requestParameters: DeleteFilesRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<FileOperationResponse>>;
+    public deleteFiles(requestParameters: DeleteFilesRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const deleteFilesRequest = requestParameters?.deleteFilesRequest;
         if (deleteFilesRequest === null || deleteFilesRequest === undefined) {
             throw new Error('Required parameter deleteFilesRequest was null or undefined when calling deleteFiles.');
@@ -190,7 +193,8 @@ export class FileManagementControllerService implements FileManagementController
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -249,10 +253,10 @@ export class FileManagementControllerService implements FileManagementController
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public deleteFolder(requestParameters: DeleteFolderRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<FileOperationResponse>;
-    public deleteFolder(requestParameters: DeleteFolderRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<FileOperationResponse>>;
-    public deleteFolder(requestParameters: DeleteFolderRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<FileOperationResponse>>;
-    public deleteFolder(requestParameters: DeleteFolderRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public deleteFolder(requestParameters: DeleteFolderRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<FileOperationResponse>;
+    public deleteFolder(requestParameters: DeleteFolderRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<FileOperationResponse>>;
+    public deleteFolder(requestParameters: DeleteFolderRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<FileOperationResponse>>;
+    public deleteFolder(requestParameters: DeleteFolderRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const path = requestParameters?.path;
         if (path === null || path === undefined) {
             throw new Error('Required parameter path was null or undefined when calling deleteFolder.');
@@ -270,7 +274,8 @@ export class FileManagementControllerService implements FileManagementController
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }

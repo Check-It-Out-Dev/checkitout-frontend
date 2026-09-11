@@ -12,8 +12,8 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
+import { ApiErrorResponse } from '../model/models';
 import { Page } from '../model/models';
-import { PagePartnershipOpportunityDtoOut } from '../model/models';
 import { Pageable } from '../model/models';
 import { PartnershipOpportunityDtoIn } from '../model/models';
 import { PartnershipOpportunityDtoOut } from '../model/models';

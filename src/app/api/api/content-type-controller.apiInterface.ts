@@ -12,6 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
+import { ApiErrorResponse } from '../model/models';
 import { ContentTypeDto } from '../model/models';
 import { ContentTypeDtoOut } from '../model/models';
 import { PageContentTypeDtoOut } from '../model/models';

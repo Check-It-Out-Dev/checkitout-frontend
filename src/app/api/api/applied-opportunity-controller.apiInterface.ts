@@ -12,6 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
+import { ApiErrorResponse } from '../model/models';
 import { AppliedOpportunityDtoIn } from '../model/models';
 import { AppliedOpportunityDtoOut } from '../model/models';
 import { AppliedOpportunityStatisticsDto } from '../model/models';

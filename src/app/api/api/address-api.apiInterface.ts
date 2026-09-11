@@ -14,6 +14,7 @@ import { Observable }                                        from 'rxjs';
 
 import { AddressDtoIn } from '../model/models';
 import { AddressDtoOut } from '../model/models';
+import { ApiErrorResponse } from '../model/models';
 import { PageAddressDtoOut } from '../model/models';
 import { Pageable } from '../model/models';
 

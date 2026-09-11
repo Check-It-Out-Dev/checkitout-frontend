@@ -12,6 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
+import { ApiErrorResponse } from '../model/models';
 import { PagePlatformDto } from '../model/models';
 import { Pageable } from '../model/models';
 import { PlatformDto } from '../model/models';
