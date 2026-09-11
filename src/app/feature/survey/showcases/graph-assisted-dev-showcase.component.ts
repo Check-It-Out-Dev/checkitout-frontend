@@ -145,7 +145,7 @@ import { GRAPH_REPO_URL } from '../ui/survey-links';
           [href]="repoUrl"
           target="_blank"
           rel="noopener"
-          class="mt-3 inline-flex items-center gap-1.5 rounded text-sm font-semibold text-coral-600 underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-500 focus-visible:ring-offset-2"
+          class="mt-3 inline-flex items-center gap-1.5 rounded text-sm font-semibold text-coral-600 underline-offset-2 underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-500 focus-visible:ring-offset-2"
         >
           {{ 'landing.survey.graphdev.repoCta' | transloco }}
           <mat-icon class="!h-4 !w-4 !text-base">open_in_new</mat-icon>
@@ -170,7 +170,7 @@ import { GRAPH_REPO_URL } from '../ui/survey-links';
               </span>
               <span class="font-mono text-[11px] text-slate2">{{ b.id }} · {{ b.repo }}</span>
               <span
-                class="ml-auto inline-flex items-center gap-1 text-[11px] font-medium text-emerald-600"
+                class="ml-auto inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700"
               >
                 <mat-icon class="!h-3.5 !w-3.5 !text-sm">check_circle</mat-icon>
                 {{ 'landing.survey.graphdev.fixedChip' | transloco }}

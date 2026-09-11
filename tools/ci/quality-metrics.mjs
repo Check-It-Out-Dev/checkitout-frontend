@@ -186,7 +186,7 @@ function junitFiles(spec) {
   const i = spec.lastIndexOf(':');
   const pattern = i > 1 ? spec.slice(0, i) : spec;
   const name = i > 1 ? spec.slice(i + 1) : 'junit';
-  return { files: glob(pattern), name: name || 'junit' };
+  return { files: glob(pattern), name: name || 'junit', pattern };
 }
 function parseJunit(xml) {
   const cases = [];
@@ -196,11 +196,14 @@ function parseJunit(xml) {
     const attrs = Object.fromEntries(
       [...m[1].matchAll(/(\w+)="([^"]*)"/g)].map((a) => [
         a[1],
+        // `&amp;` last, always. Decoding it in the middle re-decodes what the replacements
+        // after it produce: `&amp;lt;` becomes `&lt;` becomes `<`, so a test name containing the
+        // literal text `&lt;` comes back as a tag. Entity decoding is only correct outside-in.
         a[2]
           .replace(/&quot;/g, '"')
-          .replace(/&amp;/g, '&')
           .replace(/&lt;/g, '<')
-          .replace(/&gt;/g, '>'),
+          .replace(/&gt;/g, '>')
+          .replace(/&amp;/g, '&'),
       ]),
     );
     const body = m[3] || '';
@@ -219,6 +222,30 @@ function parseJunit(xml) {
 }
 for (const spec of multi.junit) {
   const { files, name } = junitFiles(spec);
+  // A named tier whose artifact IS here and whose glob still matched nothing is a missed glob, and
+  // it is silent in every other way: the run stays green, the dashboard just publishes a smaller
+  // number. The backend's integration tier was absent from the published count for the life of the
+  // dashboard -- 10,857 tests where 11,690 ran -- because its glob was one directory short of
+  // `failsafe-reports/integration/`, exactly like the total-zero case below.
+  //
+  // A root that does not exist is the other thing entirely: that tier did not run, or was not
+  // downloaded, and the run's own verdict tool is what judges whether that is allowed.
+  if (files.length === 0) {
+    // The literal prefix: every segment before the first one carrying a wildcard. That is the
+    // directory the pattern NAMES, and its existence is the question. The first segment alone
+    // would not do -- `results/` is there whenever anything at all was downloaded, and would
+    // answer yes for a tier that never ran.
+    const segments = junitFiles(spec).pattern.replace(/\\/g, '/').split('/');
+    const wildcard = segments.findIndex((s) => s.includes('*'));
+    const literal = segments.slice(0, wildcard < 0 ? segments.length - 1 : wildcard).join('/');
+    if (literal && existsSync(literal)) {
+      die(
+        `--junit ${spec} matched no files, and ${literal}/ is here. That is a glob that missed, ` +
+          `not a tier that did not run: the results are somewhere under ${literal}/ and this ` +
+          `pattern does not reach them.`
+      );
+    }
+  }
   for (const f of files) {
     for (const c of parseJunit(readFileSync(f, 'utf8'))) {
       record(name, c.status, c.time, `${c.classname} › ${c.name}`);
@@ -436,6 +463,18 @@ if (!security && sarifFiles.length) {
 /* ---------- the site: reports, tests file, flaky list, metrics, history, badges, dashboard ---------- */
 mkdirSync(join(out, 'metrics', 'tests'), { recursive: true });
 mkdirSync(join(out, 'badges'), { recursive: true });
+// Run numbers are per workflow: browser-tiers 10 and k8s-test-execution 10 are different runs of different
+// suites. Without the prefix they share one file name, one history line and one flaky window — the second
+// one to publish deletes the first, and "the last ten runs" mixes two suites.
+//
+// The report directories needed the same key and did not have it, which was worse than a name clash:
+// the publish is an overlay, so four workflows writing `allure/<n>` did not overwrite each other, they
+// MERGED. Under workflow_call `github.run_number` is the CALLER's, so one night put browser-tiers,
+// nightly-full-stack and k8s-test-execution into one directory; `allure/18` on the backend reached
+// 23,823 files and 65 MB, and the report it served was three tiers' files in one index. That is what
+// eventually timed out the Pages deployment (run 34575591685, 621 MB, "syncing_files" until it aborted).
+const runKey = `${workflow}-${runNumber}`;
+
 const reports = {};
 for (const spec of multi.copy) {
   const [name, dir] = spec.split('=');
@@ -443,20 +482,15 @@ for (const spec of multi.copy) {
     console.warn(`quality-metrics: no ${name} report at ${dir}, skipped`);
     continue;
   }
-  const dest = join(out, name, String(runNumber));
+  const dest = join(out, name, runKey);
   rmSync(dest, { recursive: true, force: true });
   cpSync(dir, dest, { recursive: true });
-  reports[name] = `${name}/${runNumber}/`;
+  reports[name] = `${name}/${runKey}/`;
   if (name === 'allure') {
     rmSync(join(out, 'allure', 'latest'), { recursive: true, force: true });
     cpSync(dir, join(out, 'allure', 'latest'), { recursive: true });
   }
 }
-
-// Run numbers are per workflow: browser-tiers 10 and k8s-test-execution 10 are different runs of different
-// suites. Without the prefix they share one file name, one history line and one flaky window — the second
-// one to publish deletes the first, and "the last ten runs" mixes two suites.
-const runKey = `${workflow}-${runNumber}`;
 writeFileSync(
   join(out, 'metrics', 'tests', `${runKey}.json`),
   JSON.stringify({ run: runNumber, workflow, tests }),
@@ -631,7 +665,11 @@ for (const name of ['allure', 'playwright', 'k6', 'lighthouse'])
 // pre-namespace ones: they cannot be attributed to a workflow, so they go.
 prune(
   join(out, 'metrics', 'tests'),
-  (f) => new RegExp(`^${workflow}-\\d+\\.json$`).test(f),
+  // Not a RegExp built around `workflow`: the value is `github.workflow`, which is a display name
+  // and therefore contains spaces, brackets and dots -- "Browser tiers (fast)" compiles to a
+  // pattern that means something else entirely, and one with an unbalanced bracket does not
+  // compile at all. A prefix test asks the same question and cannot be read as syntax.
+  (f) => f.startsWith(`${workflow}-`) && /^\d+\.json$/.test(f.slice(workflow.length + 1)),
   (f) => Number(f.slice(workflow.length + 1).replace('.json', '')),
 );
 for (const f of existsSync(join(out, 'metrics', 'tests'))

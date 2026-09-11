@@ -12,6 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
+import { ApiErrorResponse } from '../model/models';
 import { ApplyActionCodeRequest } from '../model/models';
 import { AuthOperationResponse } from '../model/models';
 import { CompleteVerificationRequest } from '../model/models';

@@ -12,6 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
+import { ApiErrorResponse } from '../model/models';
 import { CompanyDataConfirmRequest } from '../model/models';
 import { CompanyDataConfirmResponse } from '../model/models';
 import { CompanyDataDtoOut } from '../model/models';

@@ -1,5 +1,4 @@
 import type { APIRequestContext, BrowserContext, Page } from '@playwright/test';
-import { GREENFIELD_URL } from './auth';
 
 /**
  * Helper for FE-integration tests that drive email-gated flows.
@@ -15,10 +14,33 @@ import { GREENFIELD_URL } from './auth';
  * in `beforeEach` so a stray email from a prior scenario can't surface as
  * a false-positive code match in this one.
  *
- * Endpoints (proxied via greenfield's dev-server → BE /api/test/email):
- *   - GET    /api/test/email[?to=foo]        → CapturedEmail[]
- *   - GET    /api/test/email/latest[?to=foo] → CapturedEmail | 404
- *   - DELETE /api/test/email                 → { purgedCount }
+ * Endpoints (on the BACKEND -- see the origin note below):
+ *   - GET    /api/test/email[?to=foo]        -> CapturedEmail[]
+ *   - GET    /api/test/email/latest[?to=foo] -> CapturedEmail | 404
+ *   - DELETE /api/test/email                 -> { purgedCount }
+ *
+ * ORIGIN IS REQUIRED, and it must be the origin the caller's session was
+ * minted on. It used to default to the frontend, and that default cost two
+ * nightly scenarios and several sessions of guesswork, so the type system now
+ * asks instead of guessing.
+ *
+ * The backend binds every session to a fingerprint of client IP + User-Agent
+ * (`SessionSecurityService.generateSessionFingerprint`). The greenfield
+ * dev-server proxies `/api` to the same backend, so both origins reach the
+ * same endpoint -- but through the proxy the backend sees the PROXY's address,
+ * not the caller's. Mixing them inside one session is therefore read as a
+ * hijack: `fingerprint_mismatch`, and the backend answers with the session
+ * cookies CLEARED. Cookies are host-scoped and ignore the port, so the session
+ * cookie is sent to the frontend origin too -- nothing warns you.
+ *
+ * The symptom is a scenario that authenticates, clears its inbox, and is
+ * anonymous on the very next call ("User not authenticated"). All eleven
+ * fingerprint mismatches in nightly run 34534847000 were `DELETE
+ * /api/test/email` taking that hop from a `TestSession` minted on `BE_URL`.
+ *
+ * So: sessions from `TestSession` / `_actor.BE_URL` pass `BE_URL`; sessions
+ * seeded through the page at the frontend (`seedSession`, `realLogin`) pass
+ * `GREENFIELD_URL`.
  */
 
 export interface CapturedEmail {
@@ -53,7 +75,7 @@ function asRequest(source: RequestLike | Page | BrowserContext): APIRequestConte
  */
 export async function flushPendingEmails(
   source: RequestLike | Page | BrowserContext,
-  origin: string = GREENFIELD_URL,
+  origin: string,
 ): Promise<void> {
   const req = asRequest(source);
   const res = await req.post(`${origin}/api/test/email/flush`, { ignoreHTTPSErrors: true });
@@ -68,7 +90,7 @@ export async function flushPendingEmails(
  */
 export async function clearInbox(
   source: RequestLike | Page | BrowserContext,
-  origin: string = GREENFIELD_URL,
+  origin: string,
 ): Promise<number> {
   const req = asRequest(source);
   const res = await req.delete(`${origin}/api/test/email`, { ignoreHTTPSErrors: true });
@@ -81,7 +103,8 @@ export async function clearInbox(
 
 export interface ListInboxOptions {
   readonly to?: string;
-  readonly origin?: string;
+  /** REQUIRED - see the ORIGIN note at the top of this file. */
+  readonly origin: string;
 }
 
 /**
@@ -90,9 +113,9 @@ export interface ListInboxOptions {
  */
 export async function listInbox(
   source: RequestLike | Page | BrowserContext,
-  options: ListInboxOptions = {},
+  options: ListInboxOptions,
 ): Promise<CapturedEmail[]> {
-  const origin = options.origin ?? GREENFIELD_URL;
+  const origin = options.origin;
   const req = asRequest(source);
   const url = options.to
     ? `${origin}/api/test/email?to=${encodeURIComponent(options.to)}`
@@ -108,7 +131,8 @@ export interface WaitForEmailOptions {
   readonly to?: string;
   readonly subject?: string | RegExp;
   readonly bodyMatches?: RegExp;
-  readonly origin?: string;
+  /** REQUIRED - see the ORIGIN note at the top of this file. */
+  readonly origin: string;
   readonly timeoutMs?: number;
   readonly pollMs?: number;
 }
@@ -127,9 +151,9 @@ export interface WaitForEmailOptions {
  */
 export async function waitForEmail(
   source: RequestLike | Page | BrowserContext,
-  predicate: WaitForEmailOptions = {},
+  predicate: WaitForEmailOptions,
 ): Promise<CapturedEmail> {
-  const origin = predicate.origin ?? GREENFIELD_URL;
+  const origin = predicate.origin;
   const timeoutMs = predicate.timeoutMs ?? 10_000;
   const pollMs = predicate.pollMs ?? 250;
 

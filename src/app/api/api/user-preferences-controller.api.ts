@@ -18,6 +18,8 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
+import { ApiErrorResponse } from '../model/api-error-response';
+// @ts-ignore
 import { PageUserPreferencesDtoOut } from '../model/page-user-preferences-dto-out';
 // @ts-ignore
 import { Pageable } from '../model/pageable';
@@ -117,10 +119,10 @@ export class UserPreferencesControllerService implements UserPreferencesControll
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public create2(requestParameters: Create2RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<UserPreferencesDtoOut>;
-    public create2(requestParameters: Create2RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<UserPreferencesDtoOut>>;
-    public create2(requestParameters: Create2RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<UserPreferencesDtoOut>>;
-    public create2(requestParameters: Create2RequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public create2(requestParameters: Create2RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<UserPreferencesDtoOut>;
+    public create2(requestParameters: Create2RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<UserPreferencesDtoOut>>;
+    public create2(requestParameters: Create2RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<UserPreferencesDtoOut>>;
+    public create2(requestParameters: Create2RequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const userPreferencesDtoIn = requestParameters?.userPreferencesDtoIn;
         if (userPreferencesDtoIn === null || userPreferencesDtoIn === undefined) {
             throw new Error('Required parameter userPreferencesDtoIn was null or undefined when calling create2.');
@@ -132,7 +134,8 @@ export class UserPreferencesControllerService implements UserPreferencesControll
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -193,10 +196,10 @@ export class UserPreferencesControllerService implements UserPreferencesControll
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public delete2(requestParameters: Delete2RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<void>;
-    public delete2(requestParameters: Delete2RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<void>>;
-    public delete2(requestParameters: Delete2RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<void>>;
-    public delete2(requestParameters: Delete2RequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<void> {
+    public delete2(requestParameters: Delete2RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public delete2(requestParameters: Delete2RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public delete2(requestParameters: Delete2RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public delete2(requestParameters: Delete2RequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const ids = requestParameters?.ids;
         if (ids === null || ids === undefined) {
             throw new Error('Required parameter ids was null or undefined when calling delete2.');
@@ -208,6 +211,7 @@ export class UserPreferencesControllerService implements UserPreferencesControll
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -258,10 +262,10 @@ export class UserPreferencesControllerService implements UserPreferencesControll
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public findPaginated2(requestParameters: FindPaginated2RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<PageUserPreferencesDtoOut>;
-    public findPaginated2(requestParameters: FindPaginated2RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PageUserPreferencesDtoOut>>;
-    public findPaginated2(requestParameters: FindPaginated2RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PageUserPreferencesDtoOut>>;
-    public findPaginated2(requestParameters: FindPaginated2RequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public findPaginated2(requestParameters: FindPaginated2RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PageUserPreferencesDtoOut>;
+    public findPaginated2(requestParameters: FindPaginated2RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PageUserPreferencesDtoOut>>;
+    public findPaginated2(requestParameters: FindPaginated2RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PageUserPreferencesDtoOut>>;
+    public findPaginated2(requestParameters: FindPaginated2RequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const pageable = requestParameters?.pageable;
         if (pageable === null || pageable === undefined) {
             throw new Error('Required parameter pageable was null or undefined when calling findPaginated2.');
@@ -287,7 +291,8 @@ export class UserPreferencesControllerService implements UserPreferencesControll
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -339,10 +344,10 @@ export class UserPreferencesControllerService implements UserPreferencesControll
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getById2(requestParameters: GetById2RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<UserPreferencesDtoOut>;
-    public getById2(requestParameters: GetById2RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<UserPreferencesDtoOut>>;
-    public getById2(requestParameters: GetById2RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<UserPreferencesDtoOut>>;
-    public getById2(requestParameters: GetById2RequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getById2(requestParameters: GetById2RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<UserPreferencesDtoOut>;
+    public getById2(requestParameters: GetById2RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<UserPreferencesDtoOut>>;
+    public getById2(requestParameters: GetById2RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<UserPreferencesDtoOut>>;
+    public getById2(requestParameters: GetById2RequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const id = requestParameters?.id;
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling getById2.');
@@ -354,7 +359,8 @@ export class UserPreferencesControllerService implements UserPreferencesControll
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -402,10 +408,10 @@ export class UserPreferencesControllerService implements UserPreferencesControll
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getCurrentUserPreferences(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<UserPreferencesDtoOut>;
-    public getCurrentUserPreferences(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<UserPreferencesDtoOut>>;
-    public getCurrentUserPreferences(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<UserPreferencesDtoOut>>;
-    public getCurrentUserPreferences(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getCurrentUserPreferences(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<UserPreferencesDtoOut>;
+    public getCurrentUserPreferences(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<UserPreferencesDtoOut>>;
+    public getCurrentUserPreferences(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<UserPreferencesDtoOut>>;
+    public getCurrentUserPreferences(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -413,7 +419,8 @@ export class UserPreferencesControllerService implements UserPreferencesControll
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -462,10 +469,10 @@ export class UserPreferencesControllerService implements UserPreferencesControll
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getUserPreferences(requestParameters: GetUserPreferencesRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<UserPreferencesDtoOut>;
-    public getUserPreferences(requestParameters: GetUserPreferencesRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<UserPreferencesDtoOut>>;
-    public getUserPreferences(requestParameters: GetUserPreferencesRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<UserPreferencesDtoOut>>;
-    public getUserPreferences(requestParameters: GetUserPreferencesRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getUserPreferences(requestParameters: GetUserPreferencesRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<UserPreferencesDtoOut>;
+    public getUserPreferences(requestParameters: GetUserPreferencesRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<UserPreferencesDtoOut>>;
+    public getUserPreferences(requestParameters: GetUserPreferencesRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<UserPreferencesDtoOut>>;
+    public getUserPreferences(requestParameters: GetUserPreferencesRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const userId = requestParameters?.userId;
         if (userId === null || userId === undefined) {
             throw new Error('Required parameter userId was null or undefined when calling getUserPreferences.');
@@ -477,7 +484,8 @@ export class UserPreferencesControllerService implements UserPreferencesControll
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -528,10 +536,10 @@ export class UserPreferencesControllerService implements UserPreferencesControll
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public patch2(requestParameters: Patch2RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<UserPreferencesDtoOut>;
-    public patch2(requestParameters: Patch2RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<UserPreferencesDtoOut>>;
-    public patch2(requestParameters: Patch2RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<UserPreferencesDtoOut>>;
-    public patch2(requestParameters: Patch2RequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public patch2(requestParameters: Patch2RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<UserPreferencesDtoOut>;
+    public patch2(requestParameters: Patch2RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<UserPreferencesDtoOut>>;
+    public patch2(requestParameters: Patch2RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<UserPreferencesDtoOut>>;
+    public patch2(requestParameters: Patch2RequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const id = requestParameters?.id;
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling patch2.');
@@ -547,7 +555,8 @@ export class UserPreferencesControllerService implements UserPreferencesControll
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -606,10 +615,10 @@ export class UserPreferencesControllerService implements UserPreferencesControll
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public patchCurrentUserPreferences(requestParameters: PatchCurrentUserPreferencesRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<UserPreferencesDtoOut>;
-    public patchCurrentUserPreferences(requestParameters: PatchCurrentUserPreferencesRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<UserPreferencesDtoOut>>;
-    public patchCurrentUserPreferences(requestParameters: PatchCurrentUserPreferencesRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<UserPreferencesDtoOut>>;
-    public patchCurrentUserPreferences(requestParameters: PatchCurrentUserPreferencesRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public patchCurrentUserPreferences(requestParameters: PatchCurrentUserPreferencesRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<UserPreferencesDtoOut>;
+    public patchCurrentUserPreferences(requestParameters: PatchCurrentUserPreferencesRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<UserPreferencesDtoOut>>;
+    public patchCurrentUserPreferences(requestParameters: PatchCurrentUserPreferencesRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<UserPreferencesDtoOut>>;
+    public patchCurrentUserPreferences(requestParameters: PatchCurrentUserPreferencesRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const requestBody = requestParameters?.requestBody;
         if (requestBody === null || requestBody === undefined) {
             throw new Error('Required parameter requestBody was null or undefined when calling patchCurrentUserPreferences.');
@@ -621,7 +630,8 @@ export class UserPreferencesControllerService implements UserPreferencesControll
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -680,10 +690,10 @@ export class UserPreferencesControllerService implements UserPreferencesControll
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public patchUserPreferences(requestParameters: PatchUserPreferencesRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<UserPreferencesDtoOut>;
-    public patchUserPreferences(requestParameters: PatchUserPreferencesRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<UserPreferencesDtoOut>>;
-    public patchUserPreferences(requestParameters: PatchUserPreferencesRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<UserPreferencesDtoOut>>;
-    public patchUserPreferences(requestParameters: PatchUserPreferencesRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public patchUserPreferences(requestParameters: PatchUserPreferencesRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<UserPreferencesDtoOut>;
+    public patchUserPreferences(requestParameters: PatchUserPreferencesRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<UserPreferencesDtoOut>>;
+    public patchUserPreferences(requestParameters: PatchUserPreferencesRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<UserPreferencesDtoOut>>;
+    public patchUserPreferences(requestParameters: PatchUserPreferencesRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const userId = requestParameters?.userId;
         if (userId === null || userId === undefined) {
             throw new Error('Required parameter userId was null or undefined when calling patchUserPreferences.');
@@ -699,7 +709,8 @@ export class UserPreferencesControllerService implements UserPreferencesControll
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -760,10 +771,10 @@ export class UserPreferencesControllerService implements UserPreferencesControll
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public update2(requestParameters: Update2RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<UserPreferencesDtoOut>;
-    public update2(requestParameters: Update2RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<UserPreferencesDtoOut>>;
-    public update2(requestParameters: Update2RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<UserPreferencesDtoOut>>;
-    public update2(requestParameters: Update2RequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public update2(requestParameters: Update2RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<UserPreferencesDtoOut>;
+    public update2(requestParameters: Update2RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<UserPreferencesDtoOut>>;
+    public update2(requestParameters: Update2RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<UserPreferencesDtoOut>>;
+    public update2(requestParameters: Update2RequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const id = requestParameters?.id;
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling update2.');
@@ -779,7 +790,8 @@ export class UserPreferencesControllerService implements UserPreferencesControll
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -838,10 +850,10 @@ export class UserPreferencesControllerService implements UserPreferencesControll
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateCurrentUserPreferences(requestParameters: UpdateCurrentUserPreferencesRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<UserPreferencesDtoOut>;
-    public updateCurrentUserPreferences(requestParameters: UpdateCurrentUserPreferencesRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<UserPreferencesDtoOut>>;
-    public updateCurrentUserPreferences(requestParameters: UpdateCurrentUserPreferencesRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<UserPreferencesDtoOut>>;
-    public updateCurrentUserPreferences(requestParameters: UpdateCurrentUserPreferencesRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public updateCurrentUserPreferences(requestParameters: UpdateCurrentUserPreferencesRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<UserPreferencesDtoOut>;
+    public updateCurrentUserPreferences(requestParameters: UpdateCurrentUserPreferencesRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<UserPreferencesDtoOut>>;
+    public updateCurrentUserPreferences(requestParameters: UpdateCurrentUserPreferencesRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<UserPreferencesDtoOut>>;
+    public updateCurrentUserPreferences(requestParameters: UpdateCurrentUserPreferencesRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const userPreferencesDtoIn = requestParameters?.userPreferencesDtoIn;
         if (userPreferencesDtoIn === null || userPreferencesDtoIn === undefined) {
             throw new Error('Required parameter userPreferencesDtoIn was null or undefined when calling updateCurrentUserPreferences.');
@@ -853,7 +865,8 @@ export class UserPreferencesControllerService implements UserPreferencesControll
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }

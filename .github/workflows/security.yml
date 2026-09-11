@@ -78,9 +78,16 @@ jobs:
           n = sum(len(x.get("results", [])) for x in runs)
           print(f"### Semgrep\n\n{n} finding(s) across the OWASP, secrets and TypeScript rule sets.")
           PY
-      - uses: github/codeql-action/upload-sarif@v4
+      - uses: github/codeql-action/upload-sarif@b96794f015dfd88f77b49b1c93e0fa7110f94c63  # v4.38.0
         with:
           sarif_file: semgrep.sarif
+          # The category IS the identity of an analysis stream, and every upload below names one.
+          # Without a category GitHub derives the key from the workflow file and job id, so the same
+          # scanner uploading from security.yml and from nightly.yml becomes two streams that can
+          # never close each other's alerts - and renaming a workflow orphans a stream for good.
+          # That is where 170 of this repository's open alerts came from: findings fixed weeks ago,
+          # held open by a stream with nothing left to re-scan them.
+          category: semgrep
       # Kept as an artifact as well as uploaded to code scanning, so the summary job below can
       # count what every tool found in ONE run. Code scanning answers "what is open"; this answers
       # "what did tonight's scan see", which is the number worth trending.
@@ -119,10 +126,11 @@ jobs:
           n = sum(len(x.get("results", [])) for x in r.get("runs", []))
           print(f"### Checkov\n\n{n} misconfiguration(s) in manifests, images and workflows.")
           PY
-      - uses: github/codeql-action/upload-sarif@v4
+      - uses: github/codeql-action/upload-sarif@b96794f015dfd88f77b49b1c93e0fa7110f94c63  # v4.38.0
         if: hashFiles('checkov.sarif') != ''
         with:
           sarif_file: checkov.sarif
+          category: checkov
       # Kept as an artifact as well as uploaded to code scanning, so the summary job below can
       # count what every tool found in ONE run. Code scanning answers "what is open"; this answers
       # "what did tonight's scan see", which is the number worth trending.
@@ -164,9 +172,10 @@ jobs:
             trivy fs . --scanners vuln --skip-dirs node_modules,dist,coverage,.angular \
               --format table --severity HIGH,CRITICAL --exit-code 0 2>/dev/null | tail -25
           } | tee -a "$GITHUB_STEP_SUMMARY"
-      - uses: github/codeql-action/upload-sarif@v4
+      - uses: github/codeql-action/upload-sarif@b96794f015dfd88f77b49b1c93e0fa7110f94c63  # v4.38.0
         with:
           sarif_file: trivy.sarif
+          category: trivy
       # Kept as an artifact as well as uploaded to code scanning, so the summary job below can
       # count what every tool found in ONE run. Code scanning answers "what is open"; this answers
       # "what did tonight's scan see", which is the number worth trending.

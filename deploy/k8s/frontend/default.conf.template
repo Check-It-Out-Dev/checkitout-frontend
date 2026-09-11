@@ -34,7 +34,10 @@ server {
     location ~ ^/api/actuator/health(/|$) {
         proxy_pass http://${BACKEND_UPSTREAM};
         proxy_http_version 1.1;
-        proxy_set_header Host $host;
+        # The upstream is the backend, and it builds no URL from the Host header: every link it
+        # emails is built from the configured frontend.url / app.base-url. Passing the client's
+        # Host is what lets one image serve the cluster, the sandbox and two domains.
+        proxy_set_header Host $host;  # nosemgrep: generic.nginx.security.request-host-used.request-host-used
     }
     location /api/actuator/ {
         return 404;
@@ -43,12 +46,16 @@ server {
     location /api/ {
         proxy_pass http://${BACKEND_UPSTREAM};
         proxy_http_version 1.1;
-        proxy_set_header Host $host;
+        # Same reason as the health location above.
+        proxy_set_header Host $host;  # nosemgrep: generic.nginx.security.request-host-used.request-host-used
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_read_timeout 120s;
-        proxy_cookie_domain ~.* $host;
+        # Rewriting the cookie domain to the request Host is what makes the backend's cookies land
+        # under whichever name the browser used. A forged Host cannot help an attacker here: the
+        # browser rejects a Set-Cookie whose Domain does not match the host it asked for.
+        proxy_cookie_domain ~.* $host;  # nosemgrep: generic.nginx.security.request-host-used.request-host-used
         proxy_cookie_flags ~ ${COOKIE_FLAGS};
     }
 

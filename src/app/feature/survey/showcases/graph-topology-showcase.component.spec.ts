@@ -155,6 +155,22 @@ describe('GraphTopologyShowcaseComponent', () => {
       ).toBe(6);
     });
 
+    it('escapes a quote in the snippet, and the backslash before it', () => {
+      // An id that is not a known leaf falls back to itself as the name, which is the only way to
+      // put an awkward value through this from a test. The snippet is offered to the reader to
+      // copy, so a value that closes the string literal early hands them a different query than the
+      // one on the screen. CodeQL had this as js/incomplete-sanitization: the quote was escaped,
+      // the backslash before it was not. A backslash immediately before the quote is the case where
+      // that matters -- escaping only the quote turns \' into \\', where the first backslash
+      // escapes the second and the quote is left free to close the literal.
+      c.pin({ kind: 'leaf', id: String.raw`Odd\' RETURN 1 //` });
+      fixture.detectChanges();
+
+      const cypher = q('[data-testid="graphtopo-inspector-cypher"]')?.textContent ?? '';
+      expect(cypher).toContain(String.raw`name: 'Odd\\\' RETURN 1 //'`);
+      expect(cypher).not.toContain(String.raw`name: 'Odd\\' RETURN`);
+    });
+
     it('shows a component with its role, its parent and its relationships, and Escape returns to the master', () => {
       const handler = GRAPH_DATA.leaves.find((l) => l.name === 'StripeWebhookHandler')!;
       c.pin({ kind: 'leaf', id: handler.id });

@@ -182,6 +182,22 @@ function annulus(r0: number, r1: number, a0: number, a1: number): string {
   );
 }
 
+/**
+ * A value placed inside a single-quoted Cypher string literal.
+ *
+ * Backslash first, then the quote. The other order is the bug: escaping `'` as `\\'` on a value
+ * that already contains a backslash produces `\\\\'`, where the backslash escapes the backslash and
+ * the quote closes the literal — everything after it is query. CodeQL reports the one-step version
+ * as js/incomplete-sanitization.
+ *
+ * Nothing user-supplied reaches this today; the names come from a committed fixture. It is a
+ * snippet the reader is invited to copy, on a page about how the system is built, which is reason
+ * enough for it to be right.
+ */
+function cypherLiteral(value: string): string {
+  return value.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+}
+
 @Component({
   selector: 'app-graph-topology-showcase',
   imports: [
@@ -560,7 +576,7 @@ function annulus(r0: number, r1: number, a0: number, a1: number): string {
           @switch (shown().kind) {
             @case ('master') {
               <div class="mt-2 flex flex-wrap items-center gap-2">
-                <span class="gt-kind bg-coral-500">NavigationMaster</span>
+                <span class="gt-kind bg-coral-600">NavigationMaster</span>
                 <span class="text-sm font-semibold text-ink" data-testid="graphtopo-inspector-name">
                   {{ master.name }}
                 </span>
@@ -764,12 +780,11 @@ function annulus(r0: number, r1: number, a0: number, a1: number): string {
           <pre
             class="mt-1.5 overflow-x-auto whitespace-pre-wrap break-words rounded-lg bg-navy-900 px-3 py-2 font-mono text-[10.5px] leading-relaxed text-cream/90"
             data-testid="graphtopo-inspector-cypher"
-            >{{ cypher() }}</pre
-          >
+            >{{ cypher() }}</pre>
           @if (focus().kind !== 'master') {
             <button
               type="button"
-              class="mt-2 inline-flex items-center gap-1 text-[11px] font-semibold text-coral-600 hover:underline"
+              class="mt-2 inline-flex items-center gap-1 text-[11px] font-semibold text-coral-600 underline"
               (click)="pin({ kind: 'master' })"
               data-testid="graphtopo-inspector-back"
             >
@@ -951,7 +966,7 @@ function annulus(r0: number, r1: number, a0: number, a1: number): string {
           [href]="repoUrl"
           target="_blank"
           rel="noopener"
-          class="mt-3 inline-flex items-center gap-1.5 rounded text-sm font-semibold text-coral-600 underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-500 focus-visible:ring-offset-2"
+          class="mt-3 inline-flex items-center gap-1.5 rounded text-sm font-semibold text-coral-600 underline-offset-2 underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-500 focus-visible:ring-offset-2"
         >
           {{ 'landing.survey.graphtopo.throughline.cta' | transloco }}
           <mat-icon class="!h-4 !w-4 !text-base">open_in_new</mat-icon>
@@ -1256,11 +1271,11 @@ export class GraphTopologyShowcaseComponent {
   readonly cypher = computed<string>(() => {
     const s = this.shown();
     if (s.kind === 'domain') {
-      return `MATCH (e:EntityNavigator {key: '${s.key}'})-[:IMPLEMENTS]->(c)\nRETURN c.name, c.ai_description`;
+      return `MATCH (e:EntityNavigator {key: '${cypherLiteral(s.key)}'})-[:IMPLEMENTS]->(c)\nRETURN c.name, c.ai_description`;
     }
     if (s.kind === 'leaf') {
       const name = this.leafById.get(s.id)?.leaf.leaf.name ?? s.id;
-      return `MATCH (c:ConcreteImpl {name: '${name.replace(/'/g, "\\'")}'})-[r]-(x)\nRETURN type(r), x.name, r.ai_context`;
+      return `MATCH (c:ConcreteImpl {name: '${cypherLiteral(name)}'})-[r]-(x)\nRETURN type(r), x.name, r.ai_context`;
     }
     return `MATCH (nav:NavigationMaster {namespace: 'CheckItOutSystem'})-[:GUIDES]->(e)\nRETURN e.name, e.category, e.ai_description`;
   });

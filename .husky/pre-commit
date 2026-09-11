@@ -97,6 +97,13 @@ npm run check:published-numbers || exit 1
 #      for six hours with nothing to read.
 npm run check:workflow-env || exit 1
 
+# 11c. The image that rasterises the visual baselines and the @playwright/test
+#      the repository installs are ONE pin written twice. A Dependabot bump
+#      moved the dependency 1.59.1 -> 1.63.0 and left the workflow on the old
+#      image; the pull request was green, because the fast tier skips the
+#      visual job, and the night reported 338 unexpected snapshots out of 584.
+npm run check:playwright-image-pin || exit 1
+
 # 12. The hook and check:static are two hand-written lists of the same set.
 #     This fails the commit when they stop agreeing.
 npm run check:gate-parity || exit 1

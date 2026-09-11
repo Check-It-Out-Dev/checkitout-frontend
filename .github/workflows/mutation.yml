@@ -70,10 +70,14 @@ jobs:
       # is under the floor. Stryker's own `break` would fail the job before either happened.
       - name: What survived
         if: always()
+        # Through env, not interpolated. A dispatch input is typed by a person, and a person
+        # can type `$(...)`, which the shell expands before the tool sees an argument.
+        env:
+          FLOOR: ${{ inputs.floor || 70 }}
         run: |
           set -o pipefail
           node tools/ci/mutation-summary.mjs \
-            --break "${{ inputs.floor || 70 }}" \
+            --break "$FLOOR" \
             --json mutation-summary.json | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: Pages site (previous state)

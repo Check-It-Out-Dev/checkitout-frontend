@@ -72,7 +72,7 @@ import { TranslocoModule } from '@ngneat/transloco';
           {{ 'auth.sign_up.already_have_account' | transloco }}
           <a
             routerLink="/auth/sign-in"
-            class="font-medium text-coral-600 hover:underline"
+            class="font-medium text-coral-600 underline"
             data-testid="sign-up-chooser-sign-in"
           >
             {{ 'auth.sign_in.submit' | transloco }}

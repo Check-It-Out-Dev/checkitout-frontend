@@ -18,6 +18,8 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
+import { ApiErrorResponse } from '../model/api-error-response';
+// @ts-ignore
 import { ConsentDefinitionDtoIn } from '../model/consent-definition-dto-in';
 // @ts-ignore
 import { ConsentDefinitionDtoOut } from '../model/consent-definition-dto-out';
@@ -113,10 +115,10 @@ export class ConsentAdminControllerService implements ConsentAdminControllerServ
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public createConsentDefinition(requestParameters: CreateConsentDefinitionRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<ConsentDefinitionDtoOut>;
-    public createConsentDefinition(requestParameters: CreateConsentDefinitionRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ConsentDefinitionDtoOut>>;
-    public createConsentDefinition(requestParameters: CreateConsentDefinitionRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ConsentDefinitionDtoOut>>;
-    public createConsentDefinition(requestParameters: CreateConsentDefinitionRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public createConsentDefinition(requestParameters: CreateConsentDefinitionRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ConsentDefinitionDtoOut>;
+    public createConsentDefinition(requestParameters: CreateConsentDefinitionRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ConsentDefinitionDtoOut>>;
+    public createConsentDefinition(requestParameters: CreateConsentDefinitionRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ConsentDefinitionDtoOut>>;
+    public createConsentDefinition(requestParameters: CreateConsentDefinitionRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const consentDefinitionDtoIn = requestParameters?.consentDefinitionDtoIn;
         if (consentDefinitionDtoIn === null || consentDefinitionDtoIn === undefined) {
             throw new Error('Required parameter consentDefinitionDtoIn was null or undefined when calling createConsentDefinition.');
@@ -128,7 +130,8 @@ export class ConsentAdminControllerService implements ConsentAdminControllerServ
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -187,10 +190,10 @@ export class ConsentAdminControllerService implements ConsentAdminControllerServ
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public createConsentVersion(requestParameters: CreateConsentVersionRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<ConsentVersionDtoOut>;
-    public createConsentVersion(requestParameters: CreateConsentVersionRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ConsentVersionDtoOut>>;
-    public createConsentVersion(requestParameters: CreateConsentVersionRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ConsentVersionDtoOut>>;
-    public createConsentVersion(requestParameters: CreateConsentVersionRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public createConsentVersion(requestParameters: CreateConsentVersionRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ConsentVersionDtoOut>;
+    public createConsentVersion(requestParameters: CreateConsentVersionRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ConsentVersionDtoOut>>;
+    public createConsentVersion(requestParameters: CreateConsentVersionRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ConsentVersionDtoOut>>;
+    public createConsentVersion(requestParameters: CreateConsentVersionRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const consentVersionDtoIn = requestParameters?.consentVersionDtoIn;
         if (consentVersionDtoIn === null || consentVersionDtoIn === undefined) {
             throw new Error('Required parameter consentVersionDtoIn was null or undefined when calling createConsentVersion.');
@@ -202,7 +205,8 @@ export class ConsentAdminControllerService implements ConsentAdminControllerServ
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -260,10 +264,10 @@ export class ConsentAdminControllerService implements ConsentAdminControllerServ
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getAllConsentDefinitions(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<Array<ConsentDefinitionDtoOut>>;
-    public getAllConsentDefinitions(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ConsentDefinitionDtoOut>>>;
-    public getAllConsentDefinitions(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ConsentDefinitionDtoOut>>>;
-    public getAllConsentDefinitions(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getAllConsentDefinitions(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ConsentDefinitionDtoOut>>;
+    public getAllConsentDefinitions(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ConsentDefinitionDtoOut>>>;
+    public getAllConsentDefinitions(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ConsentDefinitionDtoOut>>>;
+    public getAllConsentDefinitions(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -271,7 +275,8 @@ export class ConsentAdminControllerService implements ConsentAdminControllerServ
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -320,10 +325,10 @@ export class ConsentAdminControllerService implements ConsentAdminControllerServ
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getUserConsentHistory(requestParameters: GetUserConsentHistoryRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<Array<UserConsentDtoOut>>;
-    public getUserConsentHistory(requestParameters: GetUserConsentHistoryRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<UserConsentDtoOut>>>;
-    public getUserConsentHistory(requestParameters: GetUserConsentHistoryRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<UserConsentDtoOut>>>;
-    public getUserConsentHistory(requestParameters: GetUserConsentHistoryRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getUserConsentHistory(requestParameters: GetUserConsentHistoryRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<UserConsentDtoOut>>;
+    public getUserConsentHistory(requestParameters: GetUserConsentHistoryRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<UserConsentDtoOut>>>;
+    public getUserConsentHistory(requestParameters: GetUserConsentHistoryRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<UserConsentDtoOut>>>;
+    public getUserConsentHistory(requestParameters: GetUserConsentHistoryRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const userId = requestParameters?.userId;
         if (userId === null || userId === undefined) {
             throw new Error('Required parameter userId was null or undefined when calling getUserConsentHistory.');
@@ -339,7 +344,8 @@ export class ConsentAdminControllerService implements ConsentAdminControllerServ
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -388,10 +394,10 @@ export class ConsentAdminControllerService implements ConsentAdminControllerServ
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getUserConsents(requestParameters: GetUserConsentsRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<Array<UserCurrentConsentDtoOut>>;
-    public getUserConsents(requestParameters: GetUserConsentsRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<UserCurrentConsentDtoOut>>>;
-    public getUserConsents(requestParameters: GetUserConsentsRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<UserCurrentConsentDtoOut>>>;
-    public getUserConsents(requestParameters: GetUserConsentsRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getUserConsents(requestParameters: GetUserConsentsRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<UserCurrentConsentDtoOut>>;
+    public getUserConsents(requestParameters: GetUserConsentsRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<UserCurrentConsentDtoOut>>>;
+    public getUserConsents(requestParameters: GetUserConsentsRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<UserCurrentConsentDtoOut>>>;
+    public getUserConsents(requestParameters: GetUserConsentsRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const userId = requestParameters?.userId;
         if (userId === null || userId === undefined) {
             throw new Error('Required parameter userId was null or undefined when calling getUserConsents.');
@@ -403,7 +409,8 @@ export class ConsentAdminControllerService implements ConsentAdminControllerServ
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }

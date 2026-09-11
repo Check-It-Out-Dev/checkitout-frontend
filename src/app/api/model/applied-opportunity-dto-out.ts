@@ -18,10 +18,19 @@ import { PartnershipOpportunitySimpleDtoOut } from './partnership-opportunity-si
 export interface AppliedOpportunityDtoOut { 
     companyRateStatus?: RateStatusDtoOut;
     contentSubmissions?: Array<AppliedOpportunityContentDtoOut>;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     createdTime?: string;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     executionDate?: string;
     id?: number;
     influencer?: AppliedOpportunityDtoOutInfluencer;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     lastUpdateTime?: string;
     note?: string;
     opportunityStatus?: OpportunityStatusDtoOut;

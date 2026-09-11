@@ -44,7 +44,12 @@ jobs:
     # jobs that only read stay read-only.
     permissions:
       contents: write
-    secrets: inherit
+    # No `secrets: inherit`. It hands a called workflow EVERY secret the repository and its
+    # environments hold, whether the callee has a use for them or not. The GITHUB_TOKEN a called
+    # workflow needs is passed automatically, bounded by the `permissions` above, and the one tier
+    # that does need repository secrets -- the Kubernetes run's k6 remote write -- reaches them
+    # through its own `environment: grafana-cloud`, not through here. Reported by Semgrep's
+    # yaml.github-actions.security.secrets-inherit.
 
   browser:
     name: Browser tiers (fast)
@@ -56,12 +61,14 @@ jobs:
     # jobs that only read stay read-only.
     permissions:
       contents: write
-    secrets: inherit
+    # No `secrets: inherit`, and nothing to pass: see the note on the first tier above.
 
   sonar:
     name: Quality gate
     uses: ./.github/workflows/sonar.yml
-    secrets: inherit
+    # Named, not inherited: this tier needs exactly one secret and gets exactly one.
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   # Dependency review compares the manifests either side of a pull request and fails when the
   # difference introduces a known advisory. It needs a base and a head, so it cannot run on a push.
@@ -88,7 +95,7 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
-      - uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294  # v4
+      - uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294  # v5.0.0
         with:
           fail-on-severity: high
           comment-summary-in-pr: on-failure

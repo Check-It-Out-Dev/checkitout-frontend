@@ -17,7 +17,7 @@ export interface ConsentPrepareRequest {
      * LegalDocumentType enum name
      */
     documentType?: ConsentPrepareRequestDocumentTypeEnum;
-    proof?: ConsentProofDtoIn;
+    proof: ConsentProofDtoIn;
     version: number;
 }
 export enum ConsentPrepareRequestDocumentTypeEnum {

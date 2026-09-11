@@ -18,6 +18,8 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
+import { ApiErrorResponse } from '../model/api-error-response';
+// @ts-ignore
 import { ApplyActionCodeRequest } from '../model/apply-action-code-request';
 // @ts-ignore
 import { AuthOperationResponse } from '../model/auth-operation-response';
@@ -135,10 +137,10 @@ export class FirebaseAuthProxyControllerService implements FirebaseAuthProxyCont
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public applyActionCode(requestParameters: ApplyActionCodeRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<AuthOperationResponse>;
-    public applyActionCode(requestParameters: ApplyActionCodeRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AuthOperationResponse>>;
-    public applyActionCode(requestParameters: ApplyActionCodeRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AuthOperationResponse>>;
-    public applyActionCode(requestParameters: ApplyActionCodeRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public applyActionCode(requestParameters: ApplyActionCodeRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AuthOperationResponse>;
+    public applyActionCode(requestParameters: ApplyActionCodeRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AuthOperationResponse>>;
+    public applyActionCode(requestParameters: ApplyActionCodeRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AuthOperationResponse>>;
+    public applyActionCode(requestParameters: ApplyActionCodeRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const applyActionCodeRequest = requestParameters?.applyActionCodeRequest;
         if (applyActionCodeRequest === null || applyActionCodeRequest === undefined) {
             throw new Error('Required parameter applyActionCodeRequest was null or undefined when calling applyActionCode.');
@@ -150,7 +152,8 @@ export class FirebaseAuthProxyControllerService implements FirebaseAuthProxyCont
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -209,10 +212,10 @@ export class FirebaseAuthProxyControllerService implements FirebaseAuthProxyCont
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public changePassword(requestParameters: ChangePasswordRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<AuthOperationResponse>;
-    public changePassword(requestParameters: ChangePasswordRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AuthOperationResponse>>;
-    public changePassword(requestParameters: ChangePasswordRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AuthOperationResponse>>;
-    public changePassword(requestParameters: ChangePasswordRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public changePassword(requestParameters: ChangePasswordRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AuthOperationResponse>;
+    public changePassword(requestParameters: ChangePasswordRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AuthOperationResponse>>;
+    public changePassword(requestParameters: ChangePasswordRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AuthOperationResponse>>;
+    public changePassword(requestParameters: ChangePasswordRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const passwordChangeRequest = requestParameters?.passwordChangeRequest;
         if (passwordChangeRequest === null || passwordChangeRequest === undefined) {
             throw new Error('Required parameter passwordChangeRequest was null or undefined when calling changePassword.');
@@ -224,7 +227,8 @@ export class FirebaseAuthProxyControllerService implements FirebaseAuthProxyCont
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -283,10 +287,10 @@ export class FirebaseAuthProxyControllerService implements FirebaseAuthProxyCont
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public completeVerification(requestParameters: CompleteVerificationRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<AuthOperationResponse>;
-    public completeVerification(requestParameters: CompleteVerificationRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AuthOperationResponse>>;
-    public completeVerification(requestParameters: CompleteVerificationRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AuthOperationResponse>>;
-    public completeVerification(requestParameters: CompleteVerificationRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public completeVerification(requestParameters: CompleteVerificationRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AuthOperationResponse>;
+    public completeVerification(requestParameters: CompleteVerificationRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AuthOperationResponse>>;
+    public completeVerification(requestParameters: CompleteVerificationRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AuthOperationResponse>>;
+    public completeVerification(requestParameters: CompleteVerificationRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const completeVerificationRequest = requestParameters?.completeVerificationRequest;
         if (completeVerificationRequest === null || completeVerificationRequest === undefined) {
             throw new Error('Required parameter completeVerificationRequest was null or undefined when calling completeVerification.');
@@ -298,7 +302,8 @@ export class FirebaseAuthProxyControllerService implements FirebaseAuthProxyCont
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -357,10 +362,10 @@ export class FirebaseAuthProxyControllerService implements FirebaseAuthProxyCont
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public confirmPasswordReset(requestParameters: ConfirmPasswordResetRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<AuthOperationResponse>;
-    public confirmPasswordReset(requestParameters: ConfirmPasswordResetRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AuthOperationResponse>>;
-    public confirmPasswordReset(requestParameters: ConfirmPasswordResetRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AuthOperationResponse>>;
-    public confirmPasswordReset(requestParameters: ConfirmPasswordResetRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public confirmPasswordReset(requestParameters: ConfirmPasswordResetRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AuthOperationResponse>;
+    public confirmPasswordReset(requestParameters: ConfirmPasswordResetRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AuthOperationResponse>>;
+    public confirmPasswordReset(requestParameters: ConfirmPasswordResetRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AuthOperationResponse>>;
+    public confirmPasswordReset(requestParameters: ConfirmPasswordResetRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const confirmPasswordResetRequest = requestParameters?.confirmPasswordResetRequest;
         if (confirmPasswordResetRequest === null || confirmPasswordResetRequest === undefined) {
             throw new Error('Required parameter confirmPasswordResetRequest was null or undefined when calling confirmPasswordReset.');
@@ -372,7 +377,8 @@ export class FirebaseAuthProxyControllerService implements FirebaseAuthProxyCont
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -431,10 +437,10 @@ export class FirebaseAuthProxyControllerService implements FirebaseAuthProxyCont
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public deleteAccount(requestParameters: DeleteAccountRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<AuthOperationResponse>;
-    public deleteAccount(requestParameters: DeleteAccountRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AuthOperationResponse>>;
-    public deleteAccount(requestParameters: DeleteAccountRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AuthOperationResponse>>;
-    public deleteAccount(requestParameters: DeleteAccountRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public deleteAccount(requestParameters: DeleteAccountRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AuthOperationResponse>;
+    public deleteAccount(requestParameters: DeleteAccountRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AuthOperationResponse>>;
+    public deleteAccount(requestParameters: DeleteAccountRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AuthOperationResponse>>;
+    public deleteAccount(requestParameters: DeleteAccountRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const deleteAccountRequest = requestParameters?.deleteAccountRequest;
         if (deleteAccountRequest === null || deleteAccountRequest === undefined) {
             throw new Error('Required parameter deleteAccountRequest was null or undefined when calling deleteAccount.');
@@ -446,7 +452,8 @@ export class FirebaseAuthProxyControllerService implements FirebaseAuthProxyCont
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -505,10 +512,10 @@ export class FirebaseAuthProxyControllerService implements FirebaseAuthProxyCont
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public forgotPassword(requestParameters: ForgotPasswordRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<ForgotPasswordResponse>;
-    public forgotPassword(requestParameters: ForgotPasswordRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ForgotPasswordResponse>>;
-    public forgotPassword(requestParameters: ForgotPasswordRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ForgotPasswordResponse>>;
-    public forgotPassword(requestParameters: ForgotPasswordRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public forgotPassword(requestParameters: ForgotPasswordRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ForgotPasswordResponse>;
+    public forgotPassword(requestParameters: ForgotPasswordRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ForgotPasswordResponse>>;
+    public forgotPassword(requestParameters: ForgotPasswordRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ForgotPasswordResponse>>;
+    public forgotPassword(requestParameters: ForgotPasswordRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const forgotPasswordRequest = requestParameters?.forgotPasswordRequest;
         if (forgotPasswordRequest === null || forgotPasswordRequest === undefined) {
             throw new Error('Required parameter forgotPasswordRequest was null or undefined when calling forgotPassword.');
@@ -524,7 +531,8 @@ export class FirebaseAuthProxyControllerService implements FirebaseAuthProxyCont
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -583,10 +591,10 @@ export class FirebaseAuthProxyControllerService implements FirebaseAuthProxyCont
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public login(requestParameters: LoginRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<FirebaseAuthResponse>;
-    public login(requestParameters: LoginRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<FirebaseAuthResponse>>;
-    public login(requestParameters: LoginRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<FirebaseAuthResponse>>;
-    public login(requestParameters: LoginRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public login(requestParameters: LoginRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<FirebaseAuthResponse>;
+    public login(requestParameters: LoginRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<FirebaseAuthResponse>>;
+    public login(requestParameters: LoginRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<FirebaseAuthResponse>>;
+    public login(requestParameters: LoginRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const firebaseAuthRequest = requestParameters?.firebaseAuthRequest;
         if (firebaseAuthRequest === null || firebaseAuthRequest === undefined) {
             throw new Error('Required parameter firebaseAuthRequest was null or undefined when calling login.');
@@ -598,7 +606,8 @@ export class FirebaseAuthProxyControllerService implements FirebaseAuthProxyCont
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -657,10 +666,10 @@ export class FirebaseAuthProxyControllerService implements FirebaseAuthProxyCont
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public reauthenticate(requestParameters: ReauthenticateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<FirebaseAuthResponse>;
-    public reauthenticate(requestParameters: ReauthenticateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<FirebaseAuthResponse>>;
-    public reauthenticate(requestParameters: ReauthenticateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<FirebaseAuthResponse>>;
-    public reauthenticate(requestParameters: ReauthenticateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public reauthenticate(requestParameters: ReauthenticateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<FirebaseAuthResponse>;
+    public reauthenticate(requestParameters: ReauthenticateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<FirebaseAuthResponse>>;
+    public reauthenticate(requestParameters: ReauthenticateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<FirebaseAuthResponse>>;
+    public reauthenticate(requestParameters: ReauthenticateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const reauthRequest = requestParameters?.reauthRequest;
         if (reauthRequest === null || reauthRequest === undefined) {
             throw new Error('Required parameter reauthRequest was null or undefined when calling reauthenticate.');
@@ -672,7 +681,8 @@ export class FirebaseAuthProxyControllerService implements FirebaseAuthProxyCont
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -731,10 +741,10 @@ export class FirebaseAuthProxyControllerService implements FirebaseAuthProxyCont
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public refresh(requestParameters: RefreshRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<FirebaseAuthResponse>;
-    public refresh(requestParameters: RefreshRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<FirebaseAuthResponse>>;
-    public refresh(requestParameters: RefreshRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<FirebaseAuthResponse>>;
-    public refresh(requestParameters: RefreshRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public refresh(requestParameters: RefreshRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<FirebaseAuthResponse>;
+    public refresh(requestParameters: RefreshRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<FirebaseAuthResponse>>;
+    public refresh(requestParameters: RefreshRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<FirebaseAuthResponse>>;
+    public refresh(requestParameters: RefreshRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const firebaseAuthRequest = requestParameters?.firebaseAuthRequest;
         if (firebaseAuthRequest === null || firebaseAuthRequest === undefined) {
             throw new Error('Required parameter firebaseAuthRequest was null or undefined when calling refresh.');
@@ -746,7 +756,8 @@ export class FirebaseAuthProxyControllerService implements FirebaseAuthProxyCont
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -805,10 +816,10 @@ export class FirebaseAuthProxyControllerService implements FirebaseAuthProxyCont
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public register(requestParameters: RegisterRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<FirebaseAuthResponse>;
-    public register(requestParameters: RegisterRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<FirebaseAuthResponse>>;
-    public register(requestParameters: RegisterRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<FirebaseAuthResponse>>;
-    public register(requestParameters: RegisterRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public register(requestParameters: RegisterRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<FirebaseAuthResponse>;
+    public register(requestParameters: RegisterRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<FirebaseAuthResponse>>;
+    public register(requestParameters: RegisterRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<FirebaseAuthResponse>>;
+    public register(requestParameters: RegisterRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const firebaseAuthRequest = requestParameters?.firebaseAuthRequest;
         if (firebaseAuthRequest === null || firebaseAuthRequest === undefined) {
             throw new Error('Required parameter firebaseAuthRequest was null or undefined when calling register.');
@@ -820,7 +831,8 @@ export class FirebaseAuthProxyControllerService implements FirebaseAuthProxyCont
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -879,10 +891,10 @@ export class FirebaseAuthProxyControllerService implements FirebaseAuthProxyCont
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateEmail(requestParameters: UpdateEmailRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<AuthOperationResponse>;
-    public updateEmail(requestParameters: UpdateEmailRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AuthOperationResponse>>;
-    public updateEmail(requestParameters: UpdateEmailRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AuthOperationResponse>>;
-    public updateEmail(requestParameters: UpdateEmailRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public updateEmail(requestParameters: UpdateEmailRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AuthOperationResponse>;
+    public updateEmail(requestParameters: UpdateEmailRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AuthOperationResponse>>;
+    public updateEmail(requestParameters: UpdateEmailRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AuthOperationResponse>>;
+    public updateEmail(requestParameters: UpdateEmailRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const emailUpdateRequest = requestParameters?.emailUpdateRequest;
         if (emailUpdateRequest === null || emailUpdateRequest === undefined) {
             throw new Error('Required parameter emailUpdateRequest was null or undefined when calling updateEmail.');
@@ -894,7 +906,8 @@ export class FirebaseAuthProxyControllerService implements FirebaseAuthProxyCont
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -953,10 +966,10 @@ export class FirebaseAuthProxyControllerService implements FirebaseAuthProxyCont
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public verifyResetCode(requestParameters: VerifyResetCodeRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<AuthOperationResponse>;
-    public verifyResetCode(requestParameters: VerifyResetCodeRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AuthOperationResponse>>;
-    public verifyResetCode(requestParameters: VerifyResetCodeRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AuthOperationResponse>>;
-    public verifyResetCode(requestParameters: VerifyResetCodeRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public verifyResetCode(requestParameters: VerifyResetCodeRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AuthOperationResponse>;
+    public verifyResetCode(requestParameters: VerifyResetCodeRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AuthOperationResponse>>;
+    public verifyResetCode(requestParameters: VerifyResetCodeRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AuthOperationResponse>>;
+    public verifyResetCode(requestParameters: VerifyResetCodeRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const verifyResetCodeRequest = requestParameters?.verifyResetCodeRequest;
         if (verifyResetCodeRequest === null || verifyResetCodeRequest === undefined) {
             throw new Error('Required parameter verifyResetCodeRequest was null or undefined when calling verifyResetCode.');
@@ -968,7 +981,8 @@ export class FirebaseAuthProxyControllerService implements FirebaseAuthProxyCont
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }

@@ -2,183 +2,183 @@
   @if (sandbox) {
     <app-sandbox-persona-picker />
   } @else {
-  <form
-    [formGroup]="form"
-    (ngSubmit)="submit()"
-    class="flex w-full max-w-sm flex-col gap-3"
-    novalidate
-  >
-    <!-- Brand mark + title -->
-    <a routerLink="/" class="mb-2 inline-block" aria-label="Check It Out home">
-      <img src="assets/brand/c-mark.svg" class="h-10 w-10" alt="" />
-    </a>
-    <h1 class="mb-6 text-left font-display text-5xl font-normal text-ink">
-      {{ 'auth.sign_in.title' | transloco }}
-    </h1>
-
-    <mat-form-field appearance="outline">
-      <mat-label>{{ 'auth.sign_in.email' | transloco }}</mat-label>
-      <input
-        matInput
-        type="email"
-        autocomplete="email"
-        formControlName="email"
-        data-testid="sign-in-email"
-      />
-      @if (form.controls.email.touched && form.controls.email.hasError('required')) {
-        <mat-error>{{ 'auth.sign_in.email_required' | transloco }}</mat-error>
-      } @else if (form.controls.email.touched && form.controls.email.hasError('email')) {
-        <mat-error>{{ 'auth.sign_in.email_invalid' | transloco }}</mat-error>
-      }
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>{{ 'auth.sign_in.password' | transloco }}</mat-label>
-      <input
-        matInput
-        [type]="passwordVisible() ? 'text' : 'password'"
-        autocomplete="current-password"
-        formControlName="password"
-        data-testid="sign-in-password"
-      />
-      <button
-        mat-icon-button
-        matSuffix
-        type="button"
-        (click)="togglePasswordVisibility()"
-        [attr.aria-label]="
-          passwordVisible()
-            ? ('auth.sign_in.hide_password' | transloco)
-            : ('auth.sign_in.show_password' | transloco)
-        "
-        data-testid="sign-in-password-toggle"
-      >
-        <mat-icon>{{ passwordVisible() ? 'visibility_off' : 'visibility' }}</mat-icon>
-      </button>
-      @if (form.controls.password.touched && form.controls.password.hasError('required')) {
-        <mat-error>{{ 'auth.sign_in.password_required' | transloco }}</mat-error>
-      }
-    </mat-form-field>
-
-    <!-- Remember me + Forgot password inline row -->
-    <div class="flex items-center justify-between text-sm">
-      <mat-checkbox formControlName="rememberMe" data-testid="sign-in-remember-me">
-        {{ 'auth.sign_in.remember_me' | transloco }}
-      </mat-checkbox>
-      <a
-        routerLink="/auth/forgot-password"
-        class="text-coral-600 transition hover:text-coral-700 hover:underline"
-        data-testid="sign-in-forgot"
-      >
-        {{ 'auth.sign_in.forgot_password' | transloco }}
+    <form
+      [formGroup]="form"
+      (ngSubmit)="submit()"
+      class="flex w-full max-w-sm flex-col gap-3"
+      novalidate
+    >
+      <!-- Brand mark + title -->
+      <a routerLink="/" class="mb-2 inline-block" aria-label="Check It Out home">
+        <img src="assets/brand/c-mark.svg" class="h-10 w-10" alt="" />
       </a>
-    </div>
+      <h1 class="mb-6 text-left font-display text-5xl font-normal text-ink">
+        {{ 'auth.sign_in.title' | transloco }}
+      </h1>
 
-    @if (errorKey(); as key) {
-      <div
-        role="alert"
-        data-testid="sign-in-error"
-        class="rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
-      >
-        {{ key | transloco }}
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'auth.sign_in.email' | transloco }}</mat-label>
+        <input
+          matInput
+          type="email"
+          autocomplete="email"
+          formControlName="email"
+          data-testid="sign-in-email"
+        />
+        @if (form.controls.email.touched && form.controls.email.hasError('required')) {
+          <mat-error>{{ 'auth.sign_in.email_required' | transloco }}</mat-error>
+        } @else if (form.controls.email.touched && form.controls.email.hasError('email')) {
+          <mat-error>{{ 'auth.sign_in.email_invalid' | transloco }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'auth.sign_in.password' | transloco }}</mat-label>
+        <input
+          matInput
+          [type]="passwordVisible() ? 'text' : 'password'"
+          autocomplete="current-password"
+          formControlName="password"
+          data-testid="sign-in-password"
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="togglePasswordVisibility()"
+          [attr.aria-label]="
+            passwordVisible()
+              ? ('auth.sign_in.hide_password' | transloco)
+              : ('auth.sign_in.show_password' | transloco)
+          "
+          data-testid="sign-in-password-toggle"
+        >
+          <mat-icon>{{ passwordVisible() ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        @if (form.controls.password.touched && form.controls.password.hasError('required')) {
+          <mat-error>{{ 'auth.sign_in.password_required' | transloco }}</mat-error>
+        }
+      </mat-form-field>
+
+      <!-- Remember me + Forgot password inline row -->
+      <div class="flex items-center justify-between text-sm">
+        <mat-checkbox formControlName="rememberMe" data-testid="sign-in-remember-me">
+          {{ 'auth.sign_in.remember_me' | transloco }}
+        </mat-checkbox>
+        <a
+          routerLink="/auth/forgot-password"
+          class="text-coral-600 transition hover:text-coral-700 underline"
+          data-testid="sign-in-forgot"
+        >
+          {{ 'auth.sign_in.forgot_password' | transloco }}
+        </a>
       </div>
-    }
 
-    <button
-      mat-flat-button
-      color="primary"
-      type="submit"
-      [disabled]="loading() || form.invalid"
-      data-testid="sign-in-submit"
-      class="!mt-2"
-    >
-      <!-- The icon sits in its own block: a control-flow block reaches the
+      @if (errorKey(); as key) {
+        <div
+          role="alert"
+          data-testid="sign-in-error"
+          class="rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+        >
+          {{ key | transloco }}
+        </div>
+      }
+
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        [disabled]="loading() || form.invalid"
+        data-testid="sign-in-submit"
+        class="!mt-2"
+      >
+        <!-- The icon sits in its own block: a control-flow block reaches the
            button's icon slot only when it has a single root node (NG8011). -->
-      @if (!loading()) {
-        <mat-icon>login</mat-icon>
-      }
-      @if (loading()) {
-        <mat-spinner diameter="20" class="mx-auto"></mat-spinner>
-      } @else {
-        {{ 'auth.sign_in.submit' | transloco }}
-      }
-    </button>
+        @if (!loading()) {
+          <mat-icon>login</mat-icon>
+        }
+        @if (loading()) {
+          <mat-spinner diameter="20" class="mx-auto"></mat-spinner>
+        } @else {
+          {{ 'auth.sign_in.submit' | transloco }}
+        }
+      </button>
 
-    <div class="my-2 flex items-center gap-3 text-xs uppercase tracking-wide text-slate2">
-      <span class="h-px flex-1 bg-beige"></span>
-      <span>{{ 'auth.sign_in.or_continue_with' | transloco }}</span>
-      <span class="h-px flex-1 bg-beige"></span>
-    </div>
+      <div class="my-2 flex items-center gap-3 text-xs uppercase tracking-wide text-slate2">
+        <span class="h-px flex-1 bg-beige"></span>
+        <span>{{ 'auth.sign_in.or_continue_with' | transloco }}</span>
+        <span class="h-px flex-1 bg-beige"></span>
+      </div>
 
-    <button
-      mat-stroked-button
-      type="button"
-      [disabled]="loading() || socialStarting()"
-      (click)="signInWithInstagram()"
-      data-testid="sign-in-instagram"
-      class="!flex !items-center !justify-center !gap-2"
-    >
-      <mat-icon>photo_camera</mat-icon>
-      {{ 'auth.sign_in.instagram' | transloco }}
-    </button>
-
-    <!-- Legal disclaimer -->
-    <p class="mt-2 text-center text-xs text-slate2" data-testid="sign-in-legal">
-      {{ 'auth.legal.by_continuing' | transloco }}
-      <a
-        [href]="'legal.files.terms' | transloco"
-        target="_blank"
-        rel="noopener"
-        class="text-coral-600 transition hover:text-coral-700 hover:underline"
+      <button
+        mat-stroked-button
+        type="button"
+        [disabled]="loading() || socialStarting()"
+        (click)="signInWithInstagram()"
+        data-testid="sign-in-instagram"
+        class="!flex !items-center !justify-center !gap-2"
       >
-        {{ 'auth.legal.terms' | transloco }}
-      </a>
-      {{ 'auth.legal.and' | transloco }}
-      <a
-        [href]="'legal.files.privacy' | transloco"
-        target="_blank"
-        rel="noopener"
-        class="text-coral-600 transition hover:text-coral-700 hover:underline"
-      >
-        {{ 'auth.legal.privacy' | transloco }}
-      </a>
-    </p>
+        <mat-icon>photo_camera</mat-icon>
+        {{ 'auth.sign_in.instagram' | transloco }}
+      </button>
 
-    <!-- Don't have an account? -->
-    <div class="mt-6 border-t border-beige pt-5">
-      <h2 class="mb-3 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
-        {{ 'auth.sign_in.no_account' | transloco }}
-      </h2>
-      <!-- White cards on the cream canvas (landing feature-card pattern):
+      <!-- Legal disclaimer -->
+      <p class="mt-2 text-center text-xs text-slate2" data-testid="sign-in-legal">
+        {{ 'auth.legal.by_continuing' | transloco }}
+        <a
+          [href]="'legal.files.terms' | transloco"
+          target="_blank"
+          rel="noopener"
+          class="text-coral-600 transition hover:text-coral-700 underline"
+        >
+          {{ 'auth.legal.terms' | transloco }}
+        </a>
+        {{ 'auth.legal.and' | transloco }}
+        <a
+          [href]="'legal.files.privacy' | transloco"
+          target="_blank"
+          rel="noopener"
+          class="text-coral-600 transition hover:text-coral-700 underline"
+        >
+          {{ 'auth.legal.privacy' | transloco }}
+        </a>
+      </p>
+
+      <!-- Don't have an account? -->
+      <div class="mt-6 border-t border-beige pt-5">
+        <h2 class="mb-3 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
+          {{ 'auth.sign_in.no_account' | transloco }}
+        </h2>
+        <!-- White cards on the cream canvas (landing feature-card pattern):
            border-beige alone is invisible on bg-cream — the two sign-up
            targets read as bare icons (iter-110 Chrome sweep). Legacy also
            shows a per-card description; the keys were already ported. -->
-      <div class="grid grid-cols-2 gap-3">
-        <a
-          routerLink="/auth/sign-up/influencer"
-          class="flex flex-col items-center gap-1 rounded-2xl border border-beige bg-white p-4 text-center text-sm font-medium text-ink shadow-sm transition hover:-translate-y-px hover:border-coral-400 hover:text-coral-600 hover:shadow-md"
-          data-testid="sign-in-signup-influencer"
-        >
-          <mat-icon class="!text-3xl !h-9 !w-9">photo_camera</mat-icon>
-          {{ 'auth.sign_up.sign_up_influencer' | transloco }}
-          <span class="text-xs font-normal leading-snug text-slate2">
-            {{ 'auth.sign_up.sign_up_using' | transloco }}
-            <span class="text-coral-600">Instagram</span>
-          </span>
-        </a>
-        <a
-          routerLink="/auth/sign-up/business"
-          class="flex flex-col items-center gap-1 rounded-2xl border border-beige bg-white p-4 text-center text-sm font-medium text-ink shadow-sm transition hover:-translate-y-px hover:border-coral-400 hover:text-coral-600 hover:shadow-md"
-          data-testid="sign-in-signup-business"
-        >
-          <mat-icon class="!text-3xl !h-9 !w-9">business_center</mat-icon>
-          {{ 'auth.sign_up.sign_up_business' | transloco }}
-          <span class="text-xs font-normal leading-snug text-slate2">
-            {{ 'auth.sign_up.sign_up_using_form' | transloco }}
-          </span>
-        </a>
+        <div class="grid grid-cols-2 gap-3">
+          <a
+            routerLink="/auth/sign-up/influencer"
+            class="flex flex-col items-center gap-1 rounded-2xl border border-beige bg-white p-4 text-center text-sm font-medium text-ink shadow-sm transition hover:-translate-y-px hover:border-coral-400 hover:text-coral-600 hover:shadow-md"
+            data-testid="sign-in-signup-influencer"
+          >
+            <mat-icon class="!text-3xl !h-9 !w-9">photo_camera</mat-icon>
+            {{ 'auth.sign_up.sign_up_influencer' | transloco }}
+            <span class="text-xs font-normal leading-snug text-slate2">
+              {{ 'auth.sign_up.sign_up_using' | transloco }}
+              <span class="text-coral-600">Instagram</span>
+            </span>
+          </a>
+          <a
+            routerLink="/auth/sign-up/business"
+            class="flex flex-col items-center gap-1 rounded-2xl border border-beige bg-white p-4 text-center text-sm font-medium text-ink shadow-sm transition hover:-translate-y-px hover:border-coral-400 hover:text-coral-600 hover:shadow-md"
+            data-testid="sign-in-signup-business"
+          >
+            <mat-icon class="!text-3xl !h-9 !w-9">business_center</mat-icon>
+            {{ 'auth.sign_up.sign_up_business' | transloco }}
+            <span class="text-xs font-normal leading-snug text-slate2">
+              {{ 'auth.sign_up.sign_up_using_form' | transloco }}
+            </span>
+          </a>
+        </div>
       </div>
-    </div>
-  </form>
+    </form>
   }
 </section>

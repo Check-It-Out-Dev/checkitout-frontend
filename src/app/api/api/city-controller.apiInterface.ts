@@ -12,6 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
+import { ApiErrorResponse } from '../model/models';
 import { CityDto } from '../model/models';
 import { PageCityDto } from '../model/models';
 import { Pageable } from '../model/models';

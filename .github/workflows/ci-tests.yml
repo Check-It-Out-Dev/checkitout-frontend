@@ -69,6 +69,13 @@ jobs:
       - name: 🕐 Reset the G5 mtime tag (fresh checkout has no real mtimes)
         run: touch e2e-tests/visual/sandbox-snapshots.spec.ts-snapshots/.last-regen.txt
 
+      # The publisher is a shell script that deletes directories on a branch the whole estate
+      # reads. Two seconds against a local bare repository, every run: it asserts that `latest`
+      # is replaced rather than merged, that retention keeps exactly the newest reports, and
+      # that another tier's directories are still left alone.
+      - name: 🗂️ The Pages publisher still behaves
+        run: bash tools/ci/publish-pages.test.sh tools/ci/publish-pages.sh
+
       - name: 🛡️ Static gates (G1..G11)
         run: npm run check:static
 
@@ -121,14 +128,22 @@ jobs:
 
       - name: 📋 Summary
         if: always()
+        # Through env, not interpolated. `github.ref_name` is a branch name, and a branch name
+        # is whatever the person who opened the pull request typed - including `$(...)`, which
+        # a shell expands before echo ever sees it. The others are GitHub's own values and are
+        # here for consistency: a rule with exceptions is a rule nobody applies.
+        env:
+          REF_NAME: ${{ github.ref_name }}
+          COMMIT_SHA: ${{ github.sha }}
+          JOB_STATUS: ${{ job.status }}
         run: |
           echo "========================================="
           echo "QUALITY GATES SUMMARY"
           echo "========================================="
-          echo "Ref: ${{ github.ref_name }}"
-          echo "Commit: ${{ github.sha }}"
-          echo "Status: ${{ job.status }}"
-          if [ "${{ job.status }}" = "success" ]; then
+          echo "Ref: $REF_NAME"
+          echo "Commit: $COMMIT_SHA"
+          echo "Status: $JOB_STATUS"
+          if [ "$JOB_STATUS" = "success" ]; then
               echo "✅ Gate wall green — same bar as the local pre-commit hook."
           else
               echo "❌ Gate wall failed — run 'npm run check:full' locally;"

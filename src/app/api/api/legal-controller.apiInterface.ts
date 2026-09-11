@@ -14,6 +14,7 @@ import { Observable }                                        from 'rxjs';
 
 import { AnonymousConsentDtoIn } from '../model/models';
 import { AnonymousConsentDtoOut } from '../model/models';
+import { ApiErrorResponse } from '../model/models';
 import { CategoryToggleDtoIn } from '../model/models';
 import { ConsentPrepareRequest } from '../model/models';
 import { ConsentRecordBatchDtoIn } from '../model/models';

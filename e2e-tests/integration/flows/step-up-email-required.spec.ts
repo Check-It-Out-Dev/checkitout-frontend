@@ -188,7 +188,7 @@ test.describe('@step-up-email-required — port of step-up-auth.feature (setup-c
     await seedSession(page, email, 'COMPANY', email, { setupCompleted: true });
     const userId = await getMyId(page);
 
-    await clearInbox(page);
+    await clearInbox(page, GREENFIELD_URL);
 
     // Step 1: check → required=true with EMAIL_CODE challenge.
     const check = await api(page, 'GET', '/step-up/check?actionType=EMAIL_CHANGE');
@@ -212,6 +212,7 @@ test.describe('@step-up-email-required — port of step-up-auth.feature (setup-c
       // Match the actual subject loosely so PL-locale variants still pass.
       subject: /verification code|kod weryfikacyjny/i,
       timeoutMs: 8_000,
+      origin: GREENFIELD_URL,
     });
     const code = extractSixDigitCode(captured.body);
 
@@ -267,10 +268,14 @@ test.describe('@step-up-email-required — port of step-up-auth.feature (setup-c
     await seedSession(page, email, 'COMPANY', email, { setupCompleted: true });
     const userId = await getMyId(page);
 
-    await clearInbox(page);
+    await clearInbox(page, GREENFIELD_URL);
     const req = await api(page, 'POST', '/step-up/request', { actionType: 'EMAIL_CHANGE' });
     expect(req.status()).toBe(200);
-    const captured = await waitForEmail(page, { to: email, timeoutMs: 8_000 });
+    const captured = await waitForEmail(page, {
+      to: email,
+      timeoutMs: 8_000,
+      origin: GREENFIELD_URL,
+    });
     const code = extractSixDigitCode(captured.body);
     const verify = await api(page, 'POST', '/step-up/verify', {
       actionType: 'EMAIL_CHANGE',
@@ -327,7 +332,7 @@ test.describe('@step-up-email-required — port of step-up-auth.feature (setup-c
     const email = UNIQUE_COMPANY();
     await seedSession(page, email, 'COMPANY', email, { setupCompleted: true });
 
-    await clearInbox(page);
+    await clearInbox(page, GREENFIELD_URL);
     const req = await api(page, 'POST', '/step-up/request', { actionType: 'EMAIL_CHANGE' });
     expect(req.status()).toBe(200);
 

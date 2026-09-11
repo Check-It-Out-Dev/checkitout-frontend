@@ -141,8 +141,8 @@ unchanged; the profile is chosen by `SPRING_PROFILES_ACTIVE=dev-lite,sandbox`.
 
 Two audiences. The owner reads `rollout.sh logs 200 backend` on the host and the deploy job's log on
 GitHub. Everyone else reads Grafana Cloud: Alloy (`deploy/sandbox/alloy/config.alloy`) tails every
-container's stdout through the Docker socket, parses the backend's ECS JSON (`log.level`, `log.logger`,
-`correlationId`) and the frontend's JSON access log (`status`, `path`, `ms`, `correlationId`), labels them
+container's stdout through the Docker socket, parses the backend's ECS JSON (`log.level`, `log.logger`
+-- nested since Spring Boot 3.5, and pinned by a backend test that names this file --, `correlationId`) and the frontend's JSON access log (`status`, `path`, `ms`, `correlationId`), labels them
 `service`, `container`, `env=sandbox`, `level`, and pushes to Loki; it scrapes `/api/actuator/prometheus`
 every 30 s and remote-writes to Grafana Cloud Metrics, where the k6 series from `ARCHITECTURE.md` already
 land. One public dashboard, "checkitout sandbox"

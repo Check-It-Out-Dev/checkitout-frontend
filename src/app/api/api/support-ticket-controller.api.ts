@@ -20,6 +20,8 @@ import { Observable }                                        from 'rxjs';
 // @ts-ignore
 import { AdminTicketResponseDtoIn } from '../model/admin-ticket-response-dto-in';
 // @ts-ignore
+import { ApiErrorResponse } from '../model/api-error-response';
+// @ts-ignore
 import { PageSupportTicketDtoOut } from '../model/page-support-ticket-dto-out';
 // @ts-ignore
 import { Pageable } from '../model/pageable';
@@ -134,10 +136,10 @@ export class SupportTicketControllerService implements SupportTicketControllerSe
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public addAdminResponse(requestParameters: AddAdminResponseRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<TicketResponseDtoOut>;
-    public addAdminResponse(requestParameters: AddAdminResponseRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<TicketResponseDtoOut>>;
-    public addAdminResponse(requestParameters: AddAdminResponseRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<TicketResponseDtoOut>>;
-    public addAdminResponse(requestParameters: AddAdminResponseRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public addAdminResponse(requestParameters: AddAdminResponseRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<TicketResponseDtoOut>;
+    public addAdminResponse(requestParameters: AddAdminResponseRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<TicketResponseDtoOut>>;
+    public addAdminResponse(requestParameters: AddAdminResponseRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<TicketResponseDtoOut>>;
+    public addAdminResponse(requestParameters: AddAdminResponseRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const ticketId = requestParameters?.ticketId;
         if (ticketId === null || ticketId === undefined) {
             throw new Error('Required parameter ticketId was null or undefined when calling addAdminResponse.');
@@ -153,7 +155,8 @@ export class SupportTicketControllerService implements SupportTicketControllerSe
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -212,10 +215,10 @@ export class SupportTicketControllerService implements SupportTicketControllerSe
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public addCustomerResponse(requestParameters: AddCustomerResponseRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<TicketResponseDtoOut>;
-    public addCustomerResponse(requestParameters: AddCustomerResponseRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<TicketResponseDtoOut>>;
-    public addCustomerResponse(requestParameters: AddCustomerResponseRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<TicketResponseDtoOut>>;
-    public addCustomerResponse(requestParameters: AddCustomerResponseRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public addCustomerResponse(requestParameters: AddCustomerResponseRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<TicketResponseDtoOut>;
+    public addCustomerResponse(requestParameters: AddCustomerResponseRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<TicketResponseDtoOut>>;
+    public addCustomerResponse(requestParameters: AddCustomerResponseRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<TicketResponseDtoOut>>;
+    public addCustomerResponse(requestParameters: AddCustomerResponseRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const reference = requestParameters?.reference;
         if (reference === null || reference === undefined) {
             throw new Error('Required parameter reference was null or undefined when calling addCustomerResponse.');
@@ -245,7 +248,8 @@ export class SupportTicketControllerService implements SupportTicketControllerSe
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -305,10 +309,10 @@ export class SupportTicketControllerService implements SupportTicketControllerSe
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public addResponseAttachments(requestParameters: AddResponseAttachmentsRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<Array<ResponseAttachmentDtoOut>>;
-    public addResponseAttachments(requestParameters: AddResponseAttachmentsRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ResponseAttachmentDtoOut>>>;
-    public addResponseAttachments(requestParameters: AddResponseAttachmentsRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ResponseAttachmentDtoOut>>>;
-    public addResponseAttachments(requestParameters: AddResponseAttachmentsRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public addResponseAttachments(requestParameters: AddResponseAttachmentsRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ResponseAttachmentDtoOut>>;
+    public addResponseAttachments(requestParameters: AddResponseAttachmentsRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ResponseAttachmentDtoOut>>>;
+    public addResponseAttachments(requestParameters: AddResponseAttachmentsRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ResponseAttachmentDtoOut>>>;
+    public addResponseAttachments(requestParameters: AddResponseAttachmentsRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const responseId = requestParameters?.responseId;
         if (responseId === null || responseId === undefined) {
             throw new Error('Required parameter responseId was null or undefined when calling addResponseAttachments.');
@@ -324,7 +328,8 @@ export class SupportTicketControllerService implements SupportTicketControllerSe
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -383,10 +388,10 @@ export class SupportTicketControllerService implements SupportTicketControllerSe
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public addTicketAttachments(requestParameters: AddTicketAttachmentsRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<Array<TicketAttachmentDtoOut>>;
-    public addTicketAttachments(requestParameters: AddTicketAttachmentsRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<TicketAttachmentDtoOut>>>;
-    public addTicketAttachments(requestParameters: AddTicketAttachmentsRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<TicketAttachmentDtoOut>>>;
-    public addTicketAttachments(requestParameters: AddTicketAttachmentsRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public addTicketAttachments(requestParameters: AddTicketAttachmentsRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<TicketAttachmentDtoOut>>;
+    public addTicketAttachments(requestParameters: AddTicketAttachmentsRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<TicketAttachmentDtoOut>>>;
+    public addTicketAttachments(requestParameters: AddTicketAttachmentsRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<TicketAttachmentDtoOut>>>;
+    public addTicketAttachments(requestParameters: AddTicketAttachmentsRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const ticketId = requestParameters?.ticketId;
         if (ticketId === null || ticketId === undefined) {
             throw new Error('Required parameter ticketId was null or undefined when calling addTicketAttachments.');
@@ -402,7 +407,8 @@ export class SupportTicketControllerService implements SupportTicketControllerSe
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -461,10 +467,10 @@ export class SupportTicketControllerService implements SupportTicketControllerSe
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public createTicket(requestParameters: CreateTicketRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<SupportTicketDtoOut>;
-    public createTicket(requestParameters: CreateTicketRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<SupportTicketDtoOut>>;
-    public createTicket(requestParameters: CreateTicketRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<SupportTicketDtoOut>>;
-    public createTicket(requestParameters: CreateTicketRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public createTicket(requestParameters: CreateTicketRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<SupportTicketDtoOut>;
+    public createTicket(requestParameters: CreateTicketRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<SupportTicketDtoOut>>;
+    public createTicket(requestParameters: CreateTicketRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<SupportTicketDtoOut>>;
+    public createTicket(requestParameters: CreateTicketRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const supportTicketDtoIn = requestParameters?.supportTicketDtoIn;
         if (supportTicketDtoIn === null || supportTicketDtoIn === undefined) {
             throw new Error('Required parameter supportTicketDtoIn was null or undefined when calling createTicket.');
@@ -476,7 +482,8 @@ export class SupportTicketControllerService implements SupportTicketControllerSe
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -535,10 +542,10 @@ export class SupportTicketControllerService implements SupportTicketControllerSe
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getMyTickets(requestParameters: GetMyTicketsRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<PageSupportTicketDtoOut>;
-    public getMyTickets(requestParameters: GetMyTicketsRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PageSupportTicketDtoOut>>;
-    public getMyTickets(requestParameters: GetMyTicketsRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PageSupportTicketDtoOut>>;
-    public getMyTickets(requestParameters: GetMyTicketsRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getMyTickets(requestParameters: GetMyTicketsRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PageSupportTicketDtoOut>;
+    public getMyTickets(requestParameters: GetMyTicketsRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PageSupportTicketDtoOut>>;
+    public getMyTickets(requestParameters: GetMyTicketsRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PageSupportTicketDtoOut>>;
+    public getMyTickets(requestParameters: GetMyTicketsRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const pageable = requestParameters?.pageable;
         if (pageable === null || pageable === undefined) {
             throw new Error('Required parameter pageable was null or undefined when calling getMyTickets.');
@@ -556,7 +563,8 @@ export class SupportTicketControllerService implements SupportTicketControllerSe
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -606,10 +614,10 @@ export class SupportTicketControllerService implements SupportTicketControllerSe
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getTicketByAccessToken(requestParameters: GetTicketByAccessTokenRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<SupportTicketDtoOut>;
-    public getTicketByAccessToken(requestParameters: GetTicketByAccessTokenRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<SupportTicketDtoOut>>;
-    public getTicketByAccessToken(requestParameters: GetTicketByAccessTokenRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<SupportTicketDtoOut>>;
-    public getTicketByAccessToken(requestParameters: GetTicketByAccessTokenRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getTicketByAccessToken(requestParameters: GetTicketByAccessTokenRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<SupportTicketDtoOut>;
+    public getTicketByAccessToken(requestParameters: GetTicketByAccessTokenRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<SupportTicketDtoOut>>;
+    public getTicketByAccessToken(requestParameters: GetTicketByAccessTokenRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<SupportTicketDtoOut>>;
+    public getTicketByAccessToken(requestParameters: GetTicketByAccessTokenRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const token = requestParameters?.token;
         if (token === null || token === undefined) {
             throw new Error('Required parameter token was null or undefined when calling getTicketByAccessToken.');
@@ -627,7 +635,8 @@ export class SupportTicketControllerService implements SupportTicketControllerSe
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -677,10 +686,10 @@ export class SupportTicketControllerService implements SupportTicketControllerSe
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getTicketById(requestParameters: GetTicketByIdRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<SupportTicketDtoOut>;
-    public getTicketById(requestParameters: GetTicketByIdRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<SupportTicketDtoOut>>;
-    public getTicketById(requestParameters: GetTicketByIdRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<SupportTicketDtoOut>>;
-    public getTicketById(requestParameters: GetTicketByIdRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getTicketById(requestParameters: GetTicketByIdRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<SupportTicketDtoOut>;
+    public getTicketById(requestParameters: GetTicketByIdRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<SupportTicketDtoOut>>;
+    public getTicketById(requestParameters: GetTicketByIdRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<SupportTicketDtoOut>>;
+    public getTicketById(requestParameters: GetTicketByIdRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const id = requestParameters?.id;
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling getTicketById.');
@@ -692,7 +701,8 @@ export class SupportTicketControllerService implements SupportTicketControllerSe
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -741,10 +751,10 @@ export class SupportTicketControllerService implements SupportTicketControllerSe
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getTicketByReference(requestParameters: GetTicketByReferenceRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<SupportTicketDtoOut>;
-    public getTicketByReference(requestParameters: GetTicketByReferenceRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<SupportTicketDtoOut>>;
-    public getTicketByReference(requestParameters: GetTicketByReferenceRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<SupportTicketDtoOut>>;
-    public getTicketByReference(requestParameters: GetTicketByReferenceRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getTicketByReference(requestParameters: GetTicketByReferenceRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<SupportTicketDtoOut>;
+    public getTicketByReference(requestParameters: GetTicketByReferenceRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<SupportTicketDtoOut>>;
+    public getTicketByReference(requestParameters: GetTicketByReferenceRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<SupportTicketDtoOut>>;
+    public getTicketByReference(requestParameters: GetTicketByReferenceRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const reference = requestParameters?.reference;
         if (reference === null || reference === undefined) {
             throw new Error('Required parameter reference was null or undefined when calling getTicketByReference.');
@@ -770,7 +780,8 @@ export class SupportTicketControllerService implements SupportTicketControllerSe
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -820,10 +831,10 @@ export class SupportTicketControllerService implements SupportTicketControllerSe
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getTickets(requestParameters: GetTicketsRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<PageSupportTicketDtoOut>;
-    public getTickets(requestParameters: GetTicketsRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PageSupportTicketDtoOut>>;
-    public getTickets(requestParameters: GetTicketsRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PageSupportTicketDtoOut>>;
-    public getTickets(requestParameters: GetTicketsRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getTickets(requestParameters: GetTicketsRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PageSupportTicketDtoOut>;
+    public getTickets(requestParameters: GetTicketsRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PageSupportTicketDtoOut>>;
+    public getTickets(requestParameters: GetTicketsRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PageSupportTicketDtoOut>>;
+    public getTickets(requestParameters: GetTicketsRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const pageable = requestParameters?.pageable;
         if (pageable === null || pageable === undefined) {
             throw new Error('Required parameter pageable was null or undefined when calling getTickets.');
@@ -856,7 +867,8 @@ export class SupportTicketControllerService implements SupportTicketControllerSe
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -906,10 +918,10 @@ export class SupportTicketControllerService implements SupportTicketControllerSe
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateTicketStatus(requestParameters: UpdateTicketStatusRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<SupportTicketDtoOut>;
-    public updateTicketStatus(requestParameters: UpdateTicketStatusRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<SupportTicketDtoOut>>;
-    public updateTicketStatus(requestParameters: UpdateTicketStatusRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<SupportTicketDtoOut>>;
-    public updateTicketStatus(requestParameters: UpdateTicketStatusRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public updateTicketStatus(requestParameters: UpdateTicketStatusRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<SupportTicketDtoOut>;
+    public updateTicketStatus(requestParameters: UpdateTicketStatusRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<SupportTicketDtoOut>>;
+    public updateTicketStatus(requestParameters: UpdateTicketStatusRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<SupportTicketDtoOut>>;
+    public updateTicketStatus(requestParameters: UpdateTicketStatusRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const ticketId = requestParameters?.ticketId;
         if (ticketId === null || ticketId === undefined) {
             throw new Error('Required parameter ticketId was null or undefined when calling updateTicketStatus.');
@@ -931,7 +943,8 @@ export class SupportTicketControllerService implements SupportTicketControllerSe
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }

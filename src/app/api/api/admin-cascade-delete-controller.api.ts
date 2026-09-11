@@ -18,6 +18,8 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
+import { ApiErrorResponse } from '../model/api-error-response';
+// @ts-ignore
 import { BatchCascadeDeletePreview } from '../model/batch-cascade-delete-preview';
 // @ts-ignore
 import { BatchCascadeDeleteRequest } from '../model/batch-cascade-delete-request';
@@ -124,10 +126,10 @@ export class AdminCascadeDeleteControllerService implements AdminCascadeDeleteCo
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public deleteOrphanedFirebaseUser(requestParameters: DeleteOrphanedFirebaseUserRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<CascadeDeleteResult>;
-    public deleteOrphanedFirebaseUser(requestParameters: DeleteOrphanedFirebaseUserRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CascadeDeleteResult>>;
-    public deleteOrphanedFirebaseUser(requestParameters: DeleteOrphanedFirebaseUserRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CascadeDeleteResult>>;
-    public deleteOrphanedFirebaseUser(requestParameters: DeleteOrphanedFirebaseUserRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public deleteOrphanedFirebaseUser(requestParameters: DeleteOrphanedFirebaseUserRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CascadeDeleteResult>;
+    public deleteOrphanedFirebaseUser(requestParameters: DeleteOrphanedFirebaseUserRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CascadeDeleteResult>>;
+    public deleteOrphanedFirebaseUser(requestParameters: DeleteOrphanedFirebaseUserRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CascadeDeleteResult>>;
+    public deleteOrphanedFirebaseUser(requestParameters: DeleteOrphanedFirebaseUserRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const firebaseUid = requestParameters?.firebaseUid;
         if (firebaseUid === null || firebaseUid === undefined) {
             throw new Error('Required parameter firebaseUid was null or undefined when calling deleteOrphanedFirebaseUser.');
@@ -149,7 +151,8 @@ export class AdminCascadeDeleteControllerService implements AdminCascadeDeleteCo
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -199,10 +202,10 @@ export class AdminCascadeDeleteControllerService implements AdminCascadeDeleteCo
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public findOrphanedFirebaseUsers(requestParameters?: FindOrphanedFirebaseUsersRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<Array<string>>;
-    public findOrphanedFirebaseUsers(requestParameters?: FindOrphanedFirebaseUsersRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<string>>>;
-    public findOrphanedFirebaseUsers(requestParameters?: FindOrphanedFirebaseUsersRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<string>>>;
-    public findOrphanedFirebaseUsers(requestParameters?: FindOrphanedFirebaseUsersRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public findOrphanedFirebaseUsers(requestParameters?: FindOrphanedFirebaseUsersRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<string>>;
+    public findOrphanedFirebaseUsers(requestParameters?: FindOrphanedFirebaseUsersRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<string>>>;
+    public findOrphanedFirebaseUsers(requestParameters?: FindOrphanedFirebaseUsersRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<string>>>;
+    public findOrphanedFirebaseUsers(requestParameters?: FindOrphanedFirebaseUsersRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const limit = requestParameters?.limit;
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
@@ -217,7 +220,8 @@ export class AdminCascadeDeleteControllerService implements AdminCascadeDeleteCo
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -267,10 +271,10 @@ export class AdminCascadeDeleteControllerService implements AdminCascadeDeleteCo
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public forceDeleteAppliedOpportunity(requestParameters: ForceDeleteAppliedOpportunityRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<CascadeDeleteResult>;
-    public forceDeleteAppliedOpportunity(requestParameters: ForceDeleteAppliedOpportunityRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CascadeDeleteResult>>;
-    public forceDeleteAppliedOpportunity(requestParameters: ForceDeleteAppliedOpportunityRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CascadeDeleteResult>>;
-    public forceDeleteAppliedOpportunity(requestParameters: ForceDeleteAppliedOpportunityRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public forceDeleteAppliedOpportunity(requestParameters: ForceDeleteAppliedOpportunityRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CascadeDeleteResult>;
+    public forceDeleteAppliedOpportunity(requestParameters: ForceDeleteAppliedOpportunityRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CascadeDeleteResult>>;
+    public forceDeleteAppliedOpportunity(requestParameters: ForceDeleteAppliedOpportunityRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CascadeDeleteResult>>;
+    public forceDeleteAppliedOpportunity(requestParameters: ForceDeleteAppliedOpportunityRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const aoId = requestParameters?.aoId;
         if (aoId === null || aoId === undefined) {
             throw new Error('Required parameter aoId was null or undefined when calling forceDeleteAppliedOpportunity.');
@@ -286,7 +290,8 @@ export class AdminCascadeDeleteControllerService implements AdminCascadeDeleteCo
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -345,10 +350,10 @@ export class AdminCascadeDeleteControllerService implements AdminCascadeDeleteCo
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public forceDeletePartnershipOpportunity(requestParameters: ForceDeletePartnershipOpportunityRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<CascadeDeleteResult>;
-    public forceDeletePartnershipOpportunity(requestParameters: ForceDeletePartnershipOpportunityRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CascadeDeleteResult>>;
-    public forceDeletePartnershipOpportunity(requestParameters: ForceDeletePartnershipOpportunityRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CascadeDeleteResult>>;
-    public forceDeletePartnershipOpportunity(requestParameters: ForceDeletePartnershipOpportunityRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public forceDeletePartnershipOpportunity(requestParameters: ForceDeletePartnershipOpportunityRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CascadeDeleteResult>;
+    public forceDeletePartnershipOpportunity(requestParameters: ForceDeletePartnershipOpportunityRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CascadeDeleteResult>>;
+    public forceDeletePartnershipOpportunity(requestParameters: ForceDeletePartnershipOpportunityRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CascadeDeleteResult>>;
+    public forceDeletePartnershipOpportunity(requestParameters: ForceDeletePartnershipOpportunityRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const poId = requestParameters?.poId;
         if (poId === null || poId === undefined) {
             throw new Error('Required parameter poId was null or undefined when calling forceDeletePartnershipOpportunity.');
@@ -364,7 +369,8 @@ export class AdminCascadeDeleteControllerService implements AdminCascadeDeleteCo
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -423,10 +429,10 @@ export class AdminCascadeDeleteControllerService implements AdminCascadeDeleteCo
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public forceDeleteUser(requestParameters: ForceDeleteUserRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<CascadeDeleteResult>;
-    public forceDeleteUser(requestParameters: ForceDeleteUserRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CascadeDeleteResult>>;
-    public forceDeleteUser(requestParameters: ForceDeleteUserRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CascadeDeleteResult>>;
-    public forceDeleteUser(requestParameters: ForceDeleteUserRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public forceDeleteUser(requestParameters: ForceDeleteUserRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CascadeDeleteResult>;
+    public forceDeleteUser(requestParameters: ForceDeleteUserRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CascadeDeleteResult>>;
+    public forceDeleteUser(requestParameters: ForceDeleteUserRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CascadeDeleteResult>>;
+    public forceDeleteUser(requestParameters: ForceDeleteUserRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const userId = requestParameters?.userId;
         if (userId === null || userId === undefined) {
             throw new Error('Required parameter userId was null or undefined when calling forceDeleteUser.');
@@ -442,7 +448,8 @@ export class AdminCascadeDeleteControllerService implements AdminCascadeDeleteCo
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -501,10 +508,10 @@ export class AdminCascadeDeleteControllerService implements AdminCascadeDeleteCo
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public forceDeleteUsers(requestParameters: ForceDeleteUsersRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<Array<CascadeDeleteResult>>;
-    public forceDeleteUsers(requestParameters: ForceDeleteUsersRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CascadeDeleteResult>>>;
-    public forceDeleteUsers(requestParameters: ForceDeleteUsersRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CascadeDeleteResult>>>;
-    public forceDeleteUsers(requestParameters: ForceDeleteUsersRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public forceDeleteUsers(requestParameters: ForceDeleteUsersRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CascadeDeleteResult>>;
+    public forceDeleteUsers(requestParameters: ForceDeleteUsersRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CascadeDeleteResult>>>;
+    public forceDeleteUsers(requestParameters: ForceDeleteUsersRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CascadeDeleteResult>>>;
+    public forceDeleteUsers(requestParameters: ForceDeleteUsersRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const batchCascadeDeleteRequest = requestParameters?.batchCascadeDeleteRequest;
         if (batchCascadeDeleteRequest === null || batchCascadeDeleteRequest === undefined) {
             throw new Error('Required parameter batchCascadeDeleteRequest was null or undefined when calling forceDeleteUsers.');
@@ -516,7 +523,8 @@ export class AdminCascadeDeleteControllerService implements AdminCascadeDeleteCo
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -575,10 +583,10 @@ export class AdminCascadeDeleteControllerService implements AdminCascadeDeleteCo
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getPendingTasks(requestParameters?: GetPendingTasksRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<PageCascadeDeleteTaskDto>;
-    public getPendingTasks(requestParameters?: GetPendingTasksRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PageCascadeDeleteTaskDto>>;
-    public getPendingTasks(requestParameters?: GetPendingTasksRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PageCascadeDeleteTaskDto>>;
-    public getPendingTasks(requestParameters?: GetPendingTasksRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getPendingTasks(requestParameters?: GetPendingTasksRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PageCascadeDeleteTaskDto>;
+    public getPendingTasks(requestParameters?: GetPendingTasksRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PageCascadeDeleteTaskDto>>;
+    public getPendingTasks(requestParameters?: GetPendingTasksRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PageCascadeDeleteTaskDto>>;
+    public getPendingTasks(requestParameters?: GetPendingTasksRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const page = requestParameters?.page;
         const size = requestParameters?.size;
 
@@ -598,7 +606,8 @@ export class AdminCascadeDeleteControllerService implements AdminCascadeDeleteCo
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -648,10 +657,10 @@ export class AdminCascadeDeleteControllerService implements AdminCascadeDeleteCo
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getTask(requestParameters: GetTaskRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<CascadeDeleteTaskDto>;
-    public getTask(requestParameters: GetTaskRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CascadeDeleteTaskDto>>;
-    public getTask(requestParameters: GetTaskRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CascadeDeleteTaskDto>>;
-    public getTask(requestParameters: GetTaskRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getTask(requestParameters: GetTaskRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CascadeDeleteTaskDto>;
+    public getTask(requestParameters: GetTaskRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CascadeDeleteTaskDto>>;
+    public getTask(requestParameters: GetTaskRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CascadeDeleteTaskDto>>;
+    public getTask(requestParameters: GetTaskRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const taskId = requestParameters?.taskId;
         if (taskId === null || taskId === undefined) {
             throw new Error('Required parameter taskId was null or undefined when calling getTask.');
@@ -663,7 +672,8 @@ export class AdminCascadeDeleteControllerService implements AdminCascadeDeleteCo
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -712,10 +722,10 @@ export class AdminCascadeDeleteControllerService implements AdminCascadeDeleteCo
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public previewAppliedOpportunityDeletion(requestParameters: PreviewAppliedOpportunityDeletionRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<CascadeDeletePreview>;
-    public previewAppliedOpportunityDeletion(requestParameters: PreviewAppliedOpportunityDeletionRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CascadeDeletePreview>>;
-    public previewAppliedOpportunityDeletion(requestParameters: PreviewAppliedOpportunityDeletionRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CascadeDeletePreview>>;
-    public previewAppliedOpportunityDeletion(requestParameters: PreviewAppliedOpportunityDeletionRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public previewAppliedOpportunityDeletion(requestParameters: PreviewAppliedOpportunityDeletionRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CascadeDeletePreview>;
+    public previewAppliedOpportunityDeletion(requestParameters: PreviewAppliedOpportunityDeletionRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CascadeDeletePreview>>;
+    public previewAppliedOpportunityDeletion(requestParameters: PreviewAppliedOpportunityDeletionRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CascadeDeletePreview>>;
+    public previewAppliedOpportunityDeletion(requestParameters: PreviewAppliedOpportunityDeletionRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const aoId = requestParameters?.aoId;
         if (aoId === null || aoId === undefined) {
             throw new Error('Required parameter aoId was null or undefined when calling previewAppliedOpportunityDeletion.');
@@ -727,7 +737,8 @@ export class AdminCascadeDeleteControllerService implements AdminCascadeDeleteCo
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -776,10 +787,10 @@ export class AdminCascadeDeleteControllerService implements AdminCascadeDeleteCo
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public previewBatchUserDeletion(requestParameters: PreviewBatchUserDeletionRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<BatchCascadeDeletePreview>;
-    public previewBatchUserDeletion(requestParameters: PreviewBatchUserDeletionRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<BatchCascadeDeletePreview>>;
-    public previewBatchUserDeletion(requestParameters: PreviewBatchUserDeletionRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<BatchCascadeDeletePreview>>;
-    public previewBatchUserDeletion(requestParameters: PreviewBatchUserDeletionRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public previewBatchUserDeletion(requestParameters: PreviewBatchUserDeletionRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<BatchCascadeDeletePreview>;
+    public previewBatchUserDeletion(requestParameters: PreviewBatchUserDeletionRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<BatchCascadeDeletePreview>>;
+    public previewBatchUserDeletion(requestParameters: PreviewBatchUserDeletionRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<BatchCascadeDeletePreview>>;
+    public previewBatchUserDeletion(requestParameters: PreviewBatchUserDeletionRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const batchCascadeDeleteRequest = requestParameters?.batchCascadeDeleteRequest;
         if (batchCascadeDeleteRequest === null || batchCascadeDeleteRequest === undefined) {
             throw new Error('Required parameter batchCascadeDeleteRequest was null or undefined when calling previewBatchUserDeletion.');
@@ -791,7 +802,8 @@ export class AdminCascadeDeleteControllerService implements AdminCascadeDeleteCo
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -850,10 +862,10 @@ export class AdminCascadeDeleteControllerService implements AdminCascadeDeleteCo
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public previewPartnershipOpportunityDeletion(requestParameters: PreviewPartnershipOpportunityDeletionRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<CascadeDeletePreview>;
-    public previewPartnershipOpportunityDeletion(requestParameters: PreviewPartnershipOpportunityDeletionRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CascadeDeletePreview>>;
-    public previewPartnershipOpportunityDeletion(requestParameters: PreviewPartnershipOpportunityDeletionRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CascadeDeletePreview>>;
-    public previewPartnershipOpportunityDeletion(requestParameters: PreviewPartnershipOpportunityDeletionRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public previewPartnershipOpportunityDeletion(requestParameters: PreviewPartnershipOpportunityDeletionRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CascadeDeletePreview>;
+    public previewPartnershipOpportunityDeletion(requestParameters: PreviewPartnershipOpportunityDeletionRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CascadeDeletePreview>>;
+    public previewPartnershipOpportunityDeletion(requestParameters: PreviewPartnershipOpportunityDeletionRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CascadeDeletePreview>>;
+    public previewPartnershipOpportunityDeletion(requestParameters: PreviewPartnershipOpportunityDeletionRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const poId = requestParameters?.poId;
         if (poId === null || poId === undefined) {
             throw new Error('Required parameter poId was null or undefined when calling previewPartnershipOpportunityDeletion.');
@@ -865,7 +877,8 @@ export class AdminCascadeDeleteControllerService implements AdminCascadeDeleteCo
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -914,10 +927,10 @@ export class AdminCascadeDeleteControllerService implements AdminCascadeDeleteCo
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public previewUserDeletion(requestParameters: PreviewUserDeletionRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<CascadeDeletePreview>;
-    public previewUserDeletion(requestParameters: PreviewUserDeletionRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CascadeDeletePreview>>;
-    public previewUserDeletion(requestParameters: PreviewUserDeletionRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CascadeDeletePreview>>;
-    public previewUserDeletion(requestParameters: PreviewUserDeletionRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public previewUserDeletion(requestParameters: PreviewUserDeletionRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CascadeDeletePreview>;
+    public previewUserDeletion(requestParameters: PreviewUserDeletionRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CascadeDeletePreview>>;
+    public previewUserDeletion(requestParameters: PreviewUserDeletionRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CascadeDeletePreview>>;
+    public previewUserDeletion(requestParameters: PreviewUserDeletionRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const userId = requestParameters?.userId;
         if (userId === null || userId === undefined) {
             throw new Error('Required parameter userId was null or undefined when calling previewUserDeletion.');
@@ -929,7 +942,8 @@ export class AdminCascadeDeleteControllerService implements AdminCascadeDeleteCo
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -978,10 +992,10 @@ export class AdminCascadeDeleteControllerService implements AdminCascadeDeleteCo
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public retryTask(requestParameters: RetryTaskRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<CascadeDeleteResult>;
-    public retryTask(requestParameters: RetryTaskRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CascadeDeleteResult>>;
-    public retryTask(requestParameters: RetryTaskRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CascadeDeleteResult>>;
-    public retryTask(requestParameters: RetryTaskRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public retryTask(requestParameters: RetryTaskRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CascadeDeleteResult>;
+    public retryTask(requestParameters: RetryTaskRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CascadeDeleteResult>>;
+    public retryTask(requestParameters: RetryTaskRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CascadeDeleteResult>>;
+    public retryTask(requestParameters: RetryTaskRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const taskId = requestParameters?.taskId;
         if (taskId === null || taskId === undefined) {
             throw new Error('Required parameter taskId was null or undefined when calling retryTask.');
@@ -993,7 +1007,8 @@ export class AdminCascadeDeleteControllerService implements AdminCascadeDeleteCo
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                '*/*',
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }

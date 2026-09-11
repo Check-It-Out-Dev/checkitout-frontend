@@ -13,7 +13,13 @@
 export interface ConsentVersionDtoIn { 
     consentDefinitionId: number;
     consentText?: string;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     effectiveFrom: string;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     effectiveUntil?: string;
     policyUrl?: string;
     version?: string;

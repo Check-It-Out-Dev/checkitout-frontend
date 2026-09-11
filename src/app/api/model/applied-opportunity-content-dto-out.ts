@@ -17,16 +17,28 @@ export interface AppliedOpportunityContentDtoOut {
     approvalStatus?: ContentApprovalStatus;
     commentsCount?: number;
     contentCount?: number;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     contentCreationDate?: string;
     contentTypeId?: number;
     contentTypeName?: string;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     createdTime?: string;
     description?: string;
     id?: number;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     lastUpdateTime?: string;
     likesCount?: number;
     sharesCount?: number;
     socialMediaLink?: string;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     submissionDate?: string;
     tags?: string;
     updaterId?: string;

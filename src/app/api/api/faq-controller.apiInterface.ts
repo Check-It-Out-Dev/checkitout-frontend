@@ -12,6 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
+import { ApiErrorResponse } from '../model/models';
 import { FaqDtoIn } from '../model/models';
 import { FaqDtoOut } from '../model/models';
 import { PageFaqDtoOut } from '../model/models';

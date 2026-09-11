@@ -12,6 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
+import { ApiErrorResponse } from '../model/models';
 import { BatchCascadeDeletePreview } from '../model/models';
 import { BatchCascadeDeleteRequest } from '../model/models';
 import { CascadeDeleteConfirmationRequest } from '../model/models';

@@ -9,16 +9,18 @@
 import {
   clearInbox,
   extractSixDigitCode,
+  flushPendingEmails,
   listInbox,
   waitForEmail,
   type CapturedEmail,
 } from './test-email';
 
-function fakeReq(impl: { get?: jest.Mock; delete?: jest.Mock }): never {
+function fakeReq(impl: { get?: jest.Mock; delete?: jest.Mock; post?: jest.Mock }): never {
   return {
     request: {
       get: impl.get ?? jest.fn(),
       delete: impl.delete ?? jest.fn(),
+      post: impl.post ?? jest.fn(),
     },
   } as never;
 }
@@ -35,6 +37,8 @@ function email(overrides: Partial<CapturedEmail> = {}): CapturedEmail {
     ...overrides,
   };
 }
+
+const ORIGIN = 'https://localhost:8080';
 
 describe('test-email helpers', () => {
   describe('extractSixDigitCode', () => {
@@ -74,6 +78,47 @@ describe('test-email helpers', () => {
     });
   });
 
+  // The origin is a REQUIRED argument, not a default, and it must be the origin
+  // the caller's session was minted on. /api/test/email lives on the backend,
+  // but the greenfield dev-server proxies /api to that same backend -- so both
+  // origins reach the endpoint, and through the proxy the backend sees the
+  // proxy's address instead of the caller's. Sessions are fingerprinted on
+  // client IP + User-Agent, so mixing the two inside one session reads as a
+  // hijack: the backend answers with the session cookies CLEARED and the caller
+  // is anonymous from the next request on. Cookies ignore the port, so the
+  // session cookie is sent to the frontend origin too -- nothing warns you.
+  // Every fingerprint mismatch in nightly run 34534847000 was a DELETE
+  // /api/test/email that took that hop. These tests pin the origin through;
+  // the compiler is what stops a caller omitting it.
+  describe('origin is used verbatim', () => {
+    const ok = (json: unknown) => ({ ok: () => true, status: () => 200, json: async () => json });
+    const BE = 'https://localhost:8080';
+
+    it('clearInbox', async () => {
+      const del = jest.fn().mockResolvedValue(ok({ purgedCount: 0 }));
+      await clearInbox(fakeReq({ delete: del }), BE);
+      expect(del).toHaveBeenCalledWith(`${BE}/api/test/email`, expect.anything());
+    });
+
+    it('listInbox', async () => {
+      const get = jest.fn().mockResolvedValue(ok([]));
+      await listInbox(fakeReq({ get }), { origin: BE });
+      expect(get).toHaveBeenCalledWith(`${BE}/api/test/email`, expect.anything());
+    });
+
+    it('flushPendingEmails', async () => {
+      const post = jest.fn().mockResolvedValue(ok({}));
+      await flushPendingEmails(fakeReq({ post }), BE);
+      expect(post).toHaveBeenCalledWith(`${BE}/api/test/email/flush`, expect.anything());
+    });
+
+    it('waitForEmail polls it', async () => {
+      const get = jest.fn().mockResolvedValue(ok([email()]));
+      await waitForEmail(fakeReq({ get }), { timeoutMs: 200, pollMs: 10, origin: BE });
+      expect(get).toHaveBeenCalledWith(`${BE}/api/test/email`, expect.anything());
+    });
+  });
+
   describe('clearInbox', () => {
     it('returns purgedCount on success', async () => {
       const del = jest.fn().mockResolvedValue({
@@ -94,7 +139,9 @@ describe('test-email helpers', () => {
         status: () => 500,
         text: async () => 'oops',
       });
-      await expect(clearInbox(fakeReq({ delete: del }))).rejects.toThrow(/clearInbox failed: 500/);
+      await expect(clearInbox(fakeReq({ delete: del }), ORIGIN)).rejects.toThrow(
+        /clearInbox failed: 500/,
+      );
     });
 
     it('returns 0 when body omits purgedCount', async () => {
@@ -102,7 +149,7 @@ describe('test-email helpers', () => {
         ok: () => true,
         json: async () => ({}),
       });
-      expect(await clearInbox(fakeReq({ delete: del }))).toBe(0);
+      expect(await clearInbox(fakeReq({ delete: del }), ORIGIN)).toBe(0);
     });
   });
 
@@ -134,7 +181,9 @@ describe('test-email helpers', () => {
         status: () => 503,
         text: async () => 'down',
       });
-      await expect(listInbox(fakeReq({ get }))).rejects.toThrow(/listInbox failed: 503/);
+      await expect(listInbox(fakeReq({ get }), { origin: ORIGIN })).rejects.toThrow(
+        /listInbox failed: 503/,
+      );
     });
   });
 
@@ -146,6 +195,7 @@ describe('test-email helpers', () => {
       ];
       const get = jest.fn().mockResolvedValue({ ok: () => true, json: async () => inbox });
       const hit = await waitForEmail(fakeReq({ get }), {
+        origin: ORIGIN,
         subject: /reset/i,
         timeoutMs: 500,
         pollMs: 10,
@@ -161,6 +211,7 @@ describe('test-email helpers', () => {
       ];
       const get = jest.fn().mockResolvedValue({ ok: () => true, json: async () => inbox });
       const hit = await waitForEmail(fakeReq({ get }), {
+        origin: ORIGIN,
         to: 'user@e2e.test',
         subject: /reset/i,
         bodyMatches: /246810/,
@@ -173,7 +224,12 @@ describe('test-email helpers', () => {
     it('throws on timeout with a useful predicate description', async () => {
       const get = jest.fn().mockResolvedValue({ ok: () => true, json: async () => [] });
       await expect(
-        waitForEmail(fakeReq({ get }), { to: 'nobody@e2e.test', timeoutMs: 50, pollMs: 10 }),
+        waitForEmail(fakeReq({ get }), {
+          to: 'nobody@e2e.test',
+          timeoutMs: 50,
+          pollMs: 10,
+          origin: ORIGIN,
+        }),
       ).rejects.toThrow(/timed out.*nobody@e2e\.test/);
     });
 
@@ -181,9 +237,9 @@ describe('test-email helpers', () => {
       const get = jest
         .fn()
         .mockResolvedValue({ ok: () => false, status: () => 500, text: async () => 'boom' });
-      await expect(waitForEmail(fakeReq({ get }), { timeoutMs: 50, pollMs: 10 })).rejects.toThrow(
-        /last error/,
-      );
+      await expect(
+        waitForEmail(fakeReq({ get }), { timeoutMs: 50, pollMs: 10, origin: ORIGIN }),
+      ).rejects.toThrow(/last error/);
     });
   });
 });

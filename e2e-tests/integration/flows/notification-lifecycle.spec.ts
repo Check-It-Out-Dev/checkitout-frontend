@@ -352,7 +352,7 @@ test.describe('@notification-lifecycle — port of notification-e2e.feature', ()
     await seedSession(page, companyEmail, 'COMPANY');
     // Second seed flips emailVerified=true so the campaign POST passes the filter.
     await seedSession(page, companyEmail, 'COMPANY');
-    await clearInbox(page);
+    await clearInbox(page, GREENFIELD_URL);
 
     // Self-disable partnership notifications (in-app + email).
     const prefsRes = await api(page, 'PATCH', '/user-preferences/me', {
@@ -391,7 +391,7 @@ test.describe('@notification-lifecycle — port of notification-e2e.feature', ()
     // Flush queued emails synchronously — prevents a stuck cron from masking
     // a false negative ("no email yet" because the queue hasn't drained vs
     // "no email ever" because the preference suppressed it).
-    await flushPendingEmails(page);
+    await flushPendingEmails(page, GREENFIELD_URL);
 
     // Suppression assertion #1: unread count must NOT have increased.
     //
@@ -420,7 +420,7 @@ test.describe('@notification-lifecycle — port of notification-e2e.feature', ()
     ).toBeUndefined();
 
     // Suppression assertion #3: no [CheckItOut] email to the company
-    const inbox = await listInbox(page, { to: companyEmail });
+    const inbox = await listInbox(page, { to: companyEmail, origin: GREENFIELD_URL });
     expect(
       inbox.filter((m) => /\[CheckItOut\]/.test(m.subject)).length,
       'no [CheckItOut] email should be delivered when partnership email pref is off',
@@ -441,7 +441,7 @@ test.describe('@notification-lifecycle — port of notification-e2e.feature', ()
     await seedSession(page, companyEmail, 'COMPANY');
     // Second seed flips emailVerified=true so the campaign POST passes the filter.
     await seedSession(page, companyEmail, 'COMPANY');
-    await clearInbox(page);
+    await clearInbox(page, GREENFIELD_URL);
 
     // COMPANY creates campaign.
     const { id: campaignId } = await createCampaign(page, 'EmailDeliveryCampaign');
@@ -470,11 +470,11 @@ test.describe('@notification-lifecycle — port of notification-e2e.feature', ()
     // code emits the same dispatch via EmailCronJob.processEmailQueue every
     // 15 minutes; tests can't wait, so /test/email/flush invokes the same
     // method inline.
-    await flushPendingEmails(page);
+    await flushPendingEmails(page, GREENFIELD_URL);
 
     // Email landed in GreenMail; assert envelope + [CheckItOut] subject
     // prefix the BE prepends in NotificationEmailService.buildSubject.
-    const inbox = await listInbox(page, { to: companyEmail });
+    const inbox = await listInbox(page, { to: companyEmail, origin: GREENFIELD_URL });
     expect(
       inbox.length,
       `GreenMail should have ≥1 email for ${companyEmail} after flush; got ${inbox.length}`,

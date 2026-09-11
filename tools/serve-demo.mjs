@@ -31,9 +31,10 @@
  */
 import { createReadStream, existsSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
-import { extname, join, normalize, sep } from 'node:path';
+import { extname, join } from 'node:path';
 import { createGzip } from 'node:zlib';
 import { ROOT, SHELL, buildDemo, buildReason } from './demo-build.mjs';
+import { resolveWithin } from './safe-path.mjs';
 
 const args = process.argv.slice(2);
 const flag = (name, fallback) => {
@@ -93,17 +94,27 @@ if (args.includes('--no-build')) {
   }
 }
 
-/** Resolve a URL path to a file inside ROOT, or null if it escapes or is absent. */
+/**
+ * Resolve a URL path to a file inside ROOT, or null if it escapes or is absent.
+ *
+ * Everything about whether the path is INSIDE ROOT lives in ./safe-path.mjs, shared with
+ * lh-static-server.mjs and tested there. What is left here is this server's policy: a directory
+ * serves its index.html, and a miss is a miss (the caller falls back to the SPA shell).
+ */
 function fileFor(urlPath) {
-  const clean = decodeURIComponent(urlPath.split('?')[0].split('#')[0]);
-  const full = normalize(join(ROOT, clean));
-  // normalize() collapses `..`; refuse anything that still climbs out
-  if (full !== ROOT && !full.startsWith(ROOT + sep)) return null;
-  if (!existsSync(full)) return null;
+  const full = resolveWithin(ROOT, urlPath);
+  if (full === null) return null;
+  // `full` is not user-controlled by the time it gets here: resolveWithin decoded it, refused
+  // every segment outside [A-Za-z0-9._~-], and proved containment with `relative` rather than a
+  // prefix test, returning null otherwise -- which is the line above. The taint analysis cannot
+  // follow a sanitiser into another module; that module is tools/safe-path.mjs, and its 23 tests
+  // cover traversal in the encodings it actually arrives in.
+  if (!existsSync(full)) return null; // NOSONAR jssecurity:S6549
   const stat = statSync(full);
   if (stat.isDirectory()) {
     const index = join(full, 'index.html');
-    return existsSync(index) ? index : null;
+    // index.html joined onto a path already proven inside ROOT.
+    return existsSync(index) ? index : null; // NOSONAR jssecurity:S6549
   }
   return full;
 }

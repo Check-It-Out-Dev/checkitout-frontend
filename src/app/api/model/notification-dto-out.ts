@@ -21,6 +21,9 @@ export interface NotificationDtoOut {
      */
     category?: NotificationDtoOutCategoryEnum;
     colorTheme?: string;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     createdAt?: string;
     groupKey?: string;
     icon?: string;
@@ -31,6 +34,9 @@ export interface NotificationDtoOut {
      * NotificationPriority enum name
      */
     priority?: NotificationDtoOutPriorityEnum;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     readAt?: string;
     snapshot?: NotificationSnapshot;
     title?: string;

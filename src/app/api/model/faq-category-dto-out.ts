@@ -13,11 +13,17 @@ import { FaqDtoOut } from './faq-dto-out';
 
 export interface FaqCategoryDtoOut { 
     active?: boolean;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     createdTime?: string;
     description?: string;
     displayOrder?: number;
     faqs?: Array<FaqDtoOut>;
     id?: number;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     lastUpdateTime?: string;
     name?: string;
     updaterId?: string;

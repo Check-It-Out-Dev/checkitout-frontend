@@ -15,8 +15,16 @@ spec:
     metadata:
       labels: { app: frontend }
     spec:
+      # Hardening every image here tolerates; what is deliberately absent, and why, is at the
+      # bottom of kustomization.yaml.
+      automountServiceAccountToken: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: nginx
+          securityContext:
+            allowPrivilegeEscalation: false
           image: checkitout-frontend:ci   # built in the job, then `kind load docker-image`
           imagePullPolicy: IfNotPresent
           ports:

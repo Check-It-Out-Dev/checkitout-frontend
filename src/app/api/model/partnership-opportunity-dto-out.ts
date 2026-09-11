@@ -30,19 +30,31 @@ export interface PartnershipOpportunityDtoOut {
     compensationDescription?: string;
     compensationType?: CompensationTypeDtoOut;
     contentTypes?: Set<ContentTypeDtoOut>;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     createdTime?: string;
     currency?: CurrencyDtoOut;
     details?: string;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     endDate?: string;
     followersMax?: number;
     followersMin?: number;
     id?: number;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     lastUpdateTime?: string;
     name?: string;
     photos?: Array<PartnershipOpportunityPhotoDtoOut>;
     platforms?: Set<PlatformDto>;
     requirements?: string;
     serviceType?: ServiceTypeDtoOut;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     startDate?: string;
     title?: string;
     updater?: string;

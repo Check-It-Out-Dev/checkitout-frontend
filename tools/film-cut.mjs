@@ -517,7 +517,12 @@ function cutOne(dir) {
     rmSync(tmp, { recursive: true, force: true });
     mkdirSync(tmp, { recursive: true });
     mine.forEach((f, i) => {
-      const label = `${f.file.slice(0, 6)}  ${rel(f.t)}ms`.replace(/:/g, '\\:');
+      // ffmpeg's drawtext reads `:` as its own option separator and `\` as an escape, so the
+      // backslash has to go first: escaping only the colon turns a trailing `\` into `\\:`, where
+      // the first backslash escapes the second and the colon separates an option again.
+      const label = `${f.file.slice(0, 6)}  ${rel(f.t)}ms`
+        .replace(/\\/g, '\\\\')
+        .replace(/:/g, '\\:');
       ffmpeg([
         '-i',
         join(dir, 'frames', f.file),

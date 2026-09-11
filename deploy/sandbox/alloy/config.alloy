@@ -37,10 +37,14 @@ loki.source.docker "sandbox" {
 loki.process "sandbox" {
   // The backend logs ECS JSON under the sandbox profile (Spring Boot structured logging); nginx logs JSON
   // through the access_log format in the frontend image. Plain lines pass through untouched.
+  // Spring Boot 3.5 writes ECS nested - {"log":{"level":"INFO","logger":"..."}} - where 3.4 wrote
+  // the flat dotted keys these expressions used to quote. Nothing fails when this stops matching:
+  // the label simply arrives empty and the Grafana level filter goes quiet. The backend pins the
+  // shape in LogForgeryUnitTest.ecsShapeMatchesTheAlloyPipeline so the next move fails there first.
   stage.json {
     expressions = {
-      level       = "\"log.level\"",
-      logger      = "\"log.logger\"",
+      level       = "log.level",
+      logger      = "log.logger",
       correlation = "correlationId",
       status      = "status",
       path        = "path",

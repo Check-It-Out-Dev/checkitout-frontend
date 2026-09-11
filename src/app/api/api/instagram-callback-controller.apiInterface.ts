@@ -12,6 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
+import { ApiErrorResponse } from '../model/models';
 import { DataDeletionResponse } from '../model/models';
 import { DeletionStatusResponse } from '../model/models';
 

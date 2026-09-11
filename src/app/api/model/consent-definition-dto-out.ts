@@ -13,12 +13,18 @@ import { ConsentVersionDtoOut } from './consent-version-dto-out';
 
 export interface ConsentDefinitionDtoOut { 
     consentType?: string;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     createdAt?: string;
     description?: string;
     id?: number;
     isActive?: boolean;
     name?: string;
     regulationReference?: string;
+    /**
+     * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
+     */
     updatedAt?: string;
     versions?: Array<ConsentVersionDtoOut>;
 }

@@ -12,6 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
+import { ApiErrorResponse } from '../model/models';
 import { DeleteFilesRequest } from '../model/models';
 import { FileOperationResponse } from '../model/models';
 

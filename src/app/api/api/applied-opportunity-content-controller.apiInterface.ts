@@ -12,6 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
+import { ApiErrorResponse } from '../model/models';
 import { AppliedOpportunityContentDtoIn } from '../model/models';
 import { AppliedOpportunityContentDtoOut } from '../model/models';
 import { ContentApprovalStatus } from '../model/models';

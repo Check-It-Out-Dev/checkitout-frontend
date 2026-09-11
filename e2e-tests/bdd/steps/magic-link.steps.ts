@@ -68,7 +68,10 @@ function flows(world: MagicLinkWorld): AuthFlowsApi {
  * So the staging calls get their own transport, created once per scenario and disposed with it,
  * and the session's context is used only for the call under test.
  */
-async function hooks(playwright: PlaywrightRequestFactory, world: MagicLinkWorld): Promise<AuthFlowsApi> {
+async function hooks(
+  playwright: PlaywrightRequestFactory,
+  world: MagicLinkWorld,
+): Promise<AuthFlowsApi> {
   if (!world.hookCtx) {
     world.hookCtx = await playwright.request.newContext({
       baseURL: BE_URL,
@@ -155,7 +158,7 @@ Given('the password reset cooldown is cleared', async ({ playwright, world }) =>
 });
 
 Given('the GreenMail inbox is cleared', async ({ world }) => {
-  await clearInbox(emailSession(world).raw);
+  await clearInbox(emailSession(world).raw, BE_URL);
 });
 
 // ── Email triggering ─────────────────────────────────────────────────────────
@@ -177,6 +180,7 @@ Then('a magic-link email arrives within 10 seconds', async ({ world }) => {
   const email = await waitForEmail(emailSession(world).raw, {
     ...(world.magicEmail ? { to: world.magicEmail } : {}),
     timeoutMs: 10_000,
+    origin: BE_URL,
   });
   world.lastEmailBody = email.body ?? '';
   expect(world.lastEmailBody.length, 'captured email must have a body').toBeGreaterThan(0);

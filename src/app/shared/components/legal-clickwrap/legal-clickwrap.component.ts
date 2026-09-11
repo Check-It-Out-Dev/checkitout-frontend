@@ -109,7 +109,7 @@ const CHECKBOX_IDS: Record<LegalDocumentType, string> = {
                 [href]="doc.downloadUrl"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="font-medium text-coral-600 hover:underline"
+                class="font-medium text-coral-600 underline"
                 (click)="$event.stopPropagation()"
               >
                 {{ linkKey(doc.type) | transloco }}

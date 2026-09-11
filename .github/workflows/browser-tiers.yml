@@ -131,7 +131,7 @@ jobs:
           docker run --rm --ipc=host \
             -v "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE" -w "$GITHUB_WORKSPACE" \
             -e CI=1 -e HOME=/root -e PLAYWRIGHT_BLOB_OUTPUT_DIR=blob-report \
-            mcr.microsoft.com/playwright:v1.59.1-noble bash -lc '
+            mcr.microsoft.com/playwright:v1.63.0-noble bash -lc '
               set -e
               want=$(tr -d "\r\n" < .nvmrc)
               if [ "$(node -p "process.versions.node")" != "$want" ]; then
@@ -152,9 +152,38 @@ jobs:
           path: blob-report
           retention-days: 7
 
+  reports:
+    # The quality dashboard is a published report, so it is held to the same standard as the pages
+    # the application serves: WCAG 2.2 AA, both themes, both widths, keyboard-reachable, with a
+    # visible focus ring. It is generated markup driven by run data, so a branch only a red run
+    # renders can regress where nobody is looking; the tier drives the fixtures, which put every
+    # branch on screen at once. Two seconds of tests, and it found a contrast failure on its first
+    # run -- the skipped column in the tier table at 3.2:1.
+    name: published reports (a11y)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020  # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --prefer-offline --no-audit --loglevel=error
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:reports -- --reporter=blob
+        env:
+          PLAYWRIGHT_BLOB_OUTPUT_DIR: blob-report
+        continue-on-error: true
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        if: always()
+        with:
+          name: browser-blob-reports
+          path: blob-report
+          retention-days: 7
+
   merge:
     name: One report, one verdict
-    needs: [sandbox-msw, perf, visual]
+    needs: [sandbox-msw, perf, visual, reports]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -216,7 +245,14 @@ jobs:
           set -o pipefail
           cp "site/allure/history-browser-tiers.jsonl" history.jsonl 2>/dev/null || true
           npx playwright merge-reports --reporter allure-playwright ci-reports/blobs
-          npx --yes allure generate --config allurerc.mjs ./allure-results --output allure-report
+          npx --yes allure@3.17.0 generate --config allurerc.mjs ./allure-results --output allure-report
+          # Bound the history by SIZE, not by line count. Each line is one run and carries every
+          # test id in it, so a line is about 1 MB here and about 7 MB in the backend: `tail -n 20`
+          # on a file of fifteen enormous lines does nothing, which is what the first attempt at
+          # this discovered the hard way. The backend's file reached 98.6 MiB, the next append
+          # crossed GitHub's 100 MB limit, and the refused push took the report, the dashboard
+          # history and the metrics with it.
+          node tools/ci/trim-history.mjs history.jsonl
           mkdir -p site/allure && cp history.jsonl "site/allure/history-browser-tiers.jsonl"
       - name: Quality metrics into the site
         if: github.event_name != 'pull_request'

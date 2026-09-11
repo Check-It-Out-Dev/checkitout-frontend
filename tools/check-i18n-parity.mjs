@@ -95,7 +95,17 @@ function* walk(dir) {
 }
 
 function stripHtmlComments(text) {
-  return text.replace(/<!--[\s\S]*?-->/g, '');
+  // Until it stops changing. One pass over a delimiter that can be reconstructed by its own
+  // removal is not a strip: `<!--<!-- -->-->` leaves `-->` behind on the first pass, and
+  // `<!--x<!--y-->` leaves `<!--x`. This checker decides which i18n keys count as present, so a
+  // key hidden in a half-removed comment is a key it silently stops asking about.
+  let out = text;
+  for (let pass = 0; pass < 10; pass++) {
+    const next = out.replace(/<!--[\s\S]*?-->/g, '');
+    if (next === out) return out;
+    out = next;
+  }
+  return out;
 }
 
 function scanHtmlForLiterals(path) {
