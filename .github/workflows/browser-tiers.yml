@@ -241,11 +241,22 @@ jobs:
         # must never stop the dashboard and the metrics from being published.
         continue-on-error: true
         if: github.event_name != 'pull_request'
+        env:
+          HISTORY_RUNS: '20'
         run: |
           set -o pipefail
           cp "site/allure/history-browser-tiers.jsonl" history.jsonl 2>/dev/null || true
           npx playwright merge-reports --reporter allure-playwright ci-reports/blobs
           npx --yes allure generate --config allurerc.mjs ./allure-results --output allure-report
+          # Cap the history. Each line is ONE run and carries `knownTestCaseIds`, every test id in
+          # it, so the file grows by a few hundred kilobytes every run and never shrinks. The
+          # backend's reached 103 MB over about 270 runs, GitHub refuses a file over 100 MB, and
+          # the Pages publish failed outright: the report and the dashboard's history both stopped
+          # updating, with a red report job at the end of a green pipeline as the only symptom.
+          # This one was at 14.8 MB on the same path. Twenty runs is more than the trend chart
+          # draws or the ten-run flaky window reads.
+          tail -n $HISTORY_RUNS history.jsonl > history.trimmed.jsonl 2>/dev/null || true
+          mv history.trimmed.jsonl history.jsonl 2>/dev/null || true
           mkdir -p site/allure && cp history.jsonl "site/allure/history-browser-tiers.jsonl"
       - name: Quality metrics into the site
         if: github.event_name != 'pull_request'
