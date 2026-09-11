@@ -20,6 +20,8 @@ it is ever a bug. Every tier above that re-proves the same truth at a higher lev
 [![pull-request pipeline](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/pr.yml/badge.svg)](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/pr.yml)
 [![nightly pipeline](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/nightly.yml/badge.svg)](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/nightly.yml)
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=Check-It-Out-Dev_checkitout-frontend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Check-It-Out-Dev_checkitout-frontend)
+[![Reliability](https://sonarcloud.io/api/project_badges/measure?project=Check-It-Out-Dev_checkitout-frontend&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Check-It-Out-Dev_checkitout-frontend)
+[![Security](https://sonarcloud.io/api/project_badges/measure?project=Check-It-Out-Dev_checkitout-frontend&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Check-It-Out-Dev_checkitout-frontend)
 [![deploy sandbox](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/deploy-sandbox.yml/badge.svg)](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/deploy-sandbox.yml)
 
 <sub>Two workflow badges, because there are two pipelines: everything else runs inside one of them.
