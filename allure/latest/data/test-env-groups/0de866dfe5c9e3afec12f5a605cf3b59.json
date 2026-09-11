@@ -1,1 +1,0 @@
-{"id":"0de866dfe5c9e3afec12f5a605cf3b59","fullName":"integration/flows/profile-validation.spec.ts:94:7","name":"@lastName too short (< 2 chars) returns 400","status":"passed","testResultsByEnv":{"default":"d33a5b202d01bd95f9e5041c53e438df"}}

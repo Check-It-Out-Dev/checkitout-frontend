@@ -1,1 +1,0 @@
-  support-ticket: describe: 2569 ms · send: 2132 ms · reference-issued: 4717 ms · read-response: nothing on screen to hold (no done)

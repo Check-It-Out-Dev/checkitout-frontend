@@ -1,1 +1,0 @@
-{"id":"c62561a5e5674fe25d1600990a57c72d","fullName":"integration/flows/profile-validation.spec.ts:135:7","name":"@phone too long (> 25 chars) returns 400","status":"passed","testResultsByEnv":{"default":"f7c653a496ca2d1cf5f44dde09874a82"}}

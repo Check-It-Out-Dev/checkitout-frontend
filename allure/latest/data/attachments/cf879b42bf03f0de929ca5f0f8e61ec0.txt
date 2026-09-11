@@ -1,1 +1,0 @@
-  admin-ops hand: 1063 frames over 66.8s → qa-film/2026-09-11/admin-ops-hand

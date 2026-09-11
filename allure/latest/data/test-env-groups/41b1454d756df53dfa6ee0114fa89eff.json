@@ -1,1 +1,0 @@
-{"id":"41b1454d756df53dfa6ee0114fa89eff","fullName":"integration/flows/security-cross-role.spec.ts:258:7","name":"@influencer-forbidden @admin-post INFLUENCER → admin POST endpoints return 400|403","status":"passed","testResultsByEnv":{"default":"94e37c83ea1610495dae2db9b6caf60e"}}

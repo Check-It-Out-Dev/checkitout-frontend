@@ -1,1 +1,0 @@
-{"id":"f451242533c6cdc51e927a8d53a1ea54","fullName":"integration/flows/registry-company-flow.spec.ts:167:7","name":"@permissions INFLUENCER cannot access registry — returns 409","status":"passed","testResultsByEnv":{"default":"69b457ca391bf7a0f81a07ddb3b1b924"}}

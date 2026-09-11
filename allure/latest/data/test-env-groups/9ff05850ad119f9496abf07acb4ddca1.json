@@ -1,1 +1,0 @@
-{"id":"9ff05850ad119f9496abf07acb4ddca1","fullName":"e2e-tests/bdd/features/security-401-unauthorized.feature.spec.js:6:7","name":"Visitor without login cannot access protected profile endpoint","status":"passed","testResultsByEnv":{"default":"c6bb13609896de773eed779300dc49ee"}}

@@ -1,1 +1,0 @@
-{"id":"2585f56f726d5ab1a1291527f0e2bbe3","fullName":"integration/flows/profile-validation.spec.ts:121:7","name":"@phone invalid format returns 400","status":"passed","testResultsByEnv":{"default":"cc65e13b6fa31acf6a4f3e89b19555fa"}}

@@ -1,1 +1,0 @@
-{"id":"50c652565b9e83bae7ec187d3eeb2df2","fullName":"integration/flows/security-cross-role.spec.ts:97:7","name":"@403 COMPANY blocked from admin consent + geoip endpoints","status":"passed","testResultsByEnv":{"default":"d6bea0d3b03dbd7daee69968fe973e8a"}}

@@ -1,1 +1,0 @@
-{"id":"217d0a8d3358175cc10d21ebc1cfe751","fullName":"e2e-tests/bdd/features/magic-link-errors.feature.spec.js:72:9","name":"confirm-password-reset rejects invalid input: password no letters","status":"passed","testResultsByEnv":{"default":"8e9597ac2f2d9cdf28e0eaa088dcf02a"}}

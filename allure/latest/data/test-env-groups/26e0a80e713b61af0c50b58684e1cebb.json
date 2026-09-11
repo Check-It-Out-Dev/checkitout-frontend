@@ -1,1 +1,0 @@
-{"id":"26e0a80e713b61af0c50b58684e1cebb","fullName":"e2e-tests/bdd/features/magic-link-errors.feature.spec.js:14:9","name":"apply-action-code rejects blank or missing oobCode (missing field)","status":"passed","testResultsByEnv":{"default":"198872e9cb794c4b95c75d490c448829"}}
