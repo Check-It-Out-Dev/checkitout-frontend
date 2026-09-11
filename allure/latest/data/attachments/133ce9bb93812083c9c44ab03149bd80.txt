@@ -1,0 +1,18 @@
+
+  checkout timeline (ms from the confirm press)
+         0  d2  press
+        13  d2  storage.tourStep  demoCheckout
+        93  d2  dom.dialogClosed
+        95  d2  storage.tourStep  step=7
+        97  d2  dom.checkoutOpen
+       982  d2  pay
+       983  d2  press
+       984  d2  storage.plan  demoPlan=ENTERPRISE
+       984  d2  storage.tourStep  step=8
+       989  d2  dom.tierEnterprise
+      1004  d2  layout.shift  0.0075
+
+  confirmToClose (press → the checkout dialog closes): 93
+  simRevealMs (press → the Stripe card on screen): 97
+  payToTierMs (Pay → the card says ENTERPRISE): 7
+
