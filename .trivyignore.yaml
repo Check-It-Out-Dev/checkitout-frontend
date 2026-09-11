@@ -82,6 +82,9 @@ misconfigurations:
   # merges their blobs have to see the same directory on the kind node. What this pod CAN take it
   # now has: no service-account token, and an ephemeral-storage limit so one shard cannot fill the
   # node out from under the other three.
+  - id: KSV-0001
+    paths: ["deploy/k8s/tests/playwright-indexed-job.yaml"]
+    statement: allowPrivilegeEscalation=false disables Chromium's setuid sandbox, which is the thing being protected.
   - id: KSV-0003
     paths: ["deploy/k8s/tests/playwright-indexed-job.yaml"]
     statement: Chromium's setuid sandbox needs the capabilities this rule drops.
