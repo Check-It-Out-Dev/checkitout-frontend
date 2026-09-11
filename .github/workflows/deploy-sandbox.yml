@@ -109,7 +109,12 @@ jobs:
       cancel-in-progress: false
     environment:
       name: sandbox
-      url: ${{ env.SANDBOX_URL }}
+      # Literal, not ${{ env.SANDBOX_URL }}. The `env` context is documented for most job keys and
+      # is evaluated for `environment` before the job's own env exists; with the expression here the
+      # job sat `pending` with no deployment ever registered for review -- the approval could not be
+      # given because it was never asked for. The value is the same string the workflow-level env
+      # holds, and the steps below still read $SANDBOX_URL from there.
+      url: https://checkitout.app/sandbox
     env:
       FE_TAG: ${{ inputs.frontend_tag || needs.image.outputs.tag }}
       BE_TAG: ${{ inputs.backend_tag || 'main' }}
