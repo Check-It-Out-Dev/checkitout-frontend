@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * Four things a YAML parser and `bash -n` both wave through. The first took a release chain down
+ * Five things a YAML parser and `bash -n` both wave through. The first took a release chain down
  * for six hours without producing a single line of log; the third quietly switched half of a
  * dashboard off for a day and kept every job green while it did; the fourth is the one that would
- * not announce itself at all.
+ * not announce itself at all; the fifth was a comment.
  *
  * 1. A DUPLICATE KEY in any mapping. YAML libraries keep the last one silently -- js-yaml and
  *    PyYAML both do -- so the file parses, the shell script parses, and every local check is green.
@@ -42,6 +42,13 @@
  *    Keep the version in a trailing comment -- `@<sha>  # v4.38.0` -- because the SHA is the
  *    contract and the comment is how a human reads it. Local `./.github/workflows/...` references
  *    and `docker://` images are not tags and are left alone.
+ *
+ * 5. AN EMPTY EXPRESSION, the two braces with nothing between them. GitHub parses expressions in
+ *    every VALUE, which includes the body of a `run:` block, and an empty one is a syntax error
+ *    that rejects the whole file -- zero jobs, no log, a run named after the path. YAML comments
+ *    are safe because they are not values, which is the trap: two workflows carried the same
+ *    sentence, one as a step-level comment and one inside the script it was explaining, and only
+ *    the second was refused. The sentence was about how expressions get pasted into the shell.
  *
  * Scans every workflow in the repositories given on the command line (default: this one).
  *
@@ -169,6 +176,18 @@ function mutableActionRefs(text) {
   return found;
 }
 
+/** `${{ }}` with nothing between the braces. Anywhere at all: a YAML comment is safe today, but
+ *  the same sentence moves into a `run:` body the moment someone tidies it, and there is no reason
+ *  to write one. */
+function emptyExpressions(text) {
+  const lines = text.replace(/\r\n/g, '\n').split('\n');
+  const found = [];
+  lines.forEach((line, idx) => {
+    if (/\$\{\{\s*\}\}/.test(line)) found.push({ line: idx + 1, text: line.trim() });
+  });
+  return found;
+}
+
 let problems = 0;
 let scanned = 0;
 for (const root of roots) {
@@ -206,6 +225,13 @@ for (const root of roots) {
           `pointer its owner can move, so pin the SHA and keep the version in a trailing comment`,
       );
     }
+    for (const d of emptyExpressions(text)) {
+      problems++;
+      console.error(
+        `${path}:${d.line}: empty \`\${{ }}\` expression — GitHub parses expressions in every ` +
+          `value, including a run: body, and rejects the whole file — ${d.text}`,
+      );
+    }
   }
 }
 
@@ -215,5 +241,5 @@ if (problems) {
 }
 console.log(
   `check:workflow-env OK — ${scanned} workflow(s): no duplicate keys, no dead expansions,` +
-    ` no literal backslash-n, every action pinned to a commit.`,
+    ` no literal backslash-n, every action pinned to a commit, no empty expressions.`,
 );
