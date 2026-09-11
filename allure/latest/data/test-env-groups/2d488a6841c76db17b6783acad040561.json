@@ -1,1 +1,1 @@
-{"id":"2d488a6841c76db17b6783acad040561","fullName":"integration/flows/step-up-email-required.spec.ts:113:7","name":"@step-up email PATCH without X-Step-Up-Token returns 401 (setup-complete COMPANY)","status":"passed","testResultsByEnv":{"default":"2233db9d585348bff54579b71d26d37a"}}
+{"id":"2d488a6841c76db17b6783acad040561","fullName":"integration/flows/step-up-email-required.spec.ts:113:7","name":"@step-up email PATCH without X-Step-Up-Token returns 401 (setup-complete COMPANY)","status":"passed","testResultsByEnv":{"default":"b44f4f2cee7d6adf9e716af2a6d05d3a"}}

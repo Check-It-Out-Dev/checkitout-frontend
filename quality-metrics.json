@@ -2,66 +2,89 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 108,
-    "id": 34559043827,
-    "sha": "d8b02d6",
+    "number": 7,
+    "id": 34559217459,
+    "sha": "22d19f7",
     "branch": "main",
-    "workflow": "browser-tiers",
-    "startedAt": "2026-09-11T03:35:51Z",
-    "durationSec": 207,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34559043827",
+    "workflow": "k8s-test-execution",
+    "startedAt": "2026-09-11T03:38:41Z",
+    "durationSec": 635,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34559217459",
     "status": "green"
   },
   "tests": {
-    "total": 1346,
-    "passed": 1322,
+    "total": 1496,
+    "passed": 1462,
     "failed": 0,
     "flaky": 0,
-    "skipped": 24,
+    "skipped": 34,
     "passRate": 1,
     "flakyRate": 0,
-    "durationMeanSec": 0.16,
-    "durationP95Sec": 0.83,
+    "durationMeanSec": 0.24,
+    "durationP95Sec": 1.03,
     "tiers": {
       "jest": {
-        "total": 1210,
-        "passed": 1210,
+        "total": 1211,
+        "passed": 1211,
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
+        "durationSec": 80
+      },
+      "integration": {
+        "total": 215,
+        "passed": 183,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 32,
+        "durationSec": 179
+      },
+      "sandbox": {
+        "total": 64,
+        "passed": 62,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 2,
         "durationSec": 81
       },
-      "published-reports": {
+      "scenarios": {
         "total": 6,
         "passed": 6,
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
-        "durationSec": 9
-      },
-      "msw": {
-        "total": 2,
-        "passed": 0,
-        "failed": 0,
-        "flaky": 0,
-        "skipped": 2,
-        "durationSec": 0
-      },
-      "sandbox": {
-        "total": 128,
-        "passed": 106,
-        "failed": 0,
-        "flaky": 0,
-        "skipped": 22,
-        "durationSec": 122
+        "durationSec": 11
       }
     }
   },
   "coverage": {
     "lines": 78.7,
     "statements": 77.25,
-    "branches": 69.4,
-    "functions": 66.77
+    "branches": 69.52,
+    "functions": 66.79
+  },
+  "perf": {
+    "k6": {
+      "profile": "load",
+      "requests": 197,
+      "failedRate": 0,
+      "p95Ms": 196.68,
+      "thresholdsOk": true,
+      "journeys": {
+        "apply": {
+          "p95Ms": 365.92,
+          "p99Ms": 407.27,
+          "budgetMs": 1500,
+          "ok": true
+        },
+        "browse": {
+          "p95Ms": 94.77,
+          "p99Ms": 102.27,
+          "budgetMs": 800,
+          "ok": true
+        }
+      }
+    }
   },
   "lighthouse": {
     "url": "/",
@@ -69,6 +92,11 @@
     "accessibility": 97,
     "bestPractices": 100,
     "seo": 92
+  },
+  "kubernetes": {
+    "shards": 4,
+    "wallSec": 108,
+    "k6Runners": 2
   },
   "mutation": {
     "score": 72.84,
@@ -90,7 +118,8 @@
   },
   "flaky": [],
   "reports": {
-    "playwright": "playwright/108/",
-    "allure": "allure/108/"
+    "playwright": "playwright/7/",
+    "k6": "k6/7/",
+    "allure": "allure/7/"
   }
 }

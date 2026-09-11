@@ -1,1 +1,1 @@
-{"id":"b59e335cf383f26c6dc8714f5e595d5d","fullName":"integration/flows/partnership-create.spec.ts:59:7","name":"company1 fills the create-campaign form and lands on the new campaign","status":"passed","testResultsByEnv":{"default":"96f5d4c89b3847b8b68376a7c59f151f"}}
+{"id":"b59e335cf383f26c6dc8714f5e595d5d","fullName":"integration/flows/partnership-create.spec.ts:59:7","name":"company1 fills the create-campaign form and lands on the new campaign","status":"passed","testResultsByEnv":{"default":"c08d7d2809f9d787e88c59e84fbaa3f4"}}

@@ -1,1 +1,1 @@
-{"id":"74ca344fa84238590cadfbad5658bdb0","fullName":"integration/auth/logout.spec.ts:80:7","name":"@company company1 logs out and session is cleared","status":"passed","testResultsByEnv":{"default":"76c4db8552bb0343fa31e77311d3eba6"}}
+{"id":"74ca344fa84238590cadfbad5658bdb0","fullName":"integration/auth/logout.spec.ts:80:7","name":"@company company1 logs out and session is cleared","status":"passed","testResultsByEnv":{"default":"8e5c66ad08bc676b86b06e482ad3ce38"}}

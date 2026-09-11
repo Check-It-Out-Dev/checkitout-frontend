@@ -1,1 +1,1 @@
-{"id":"1d0d79eaf1728838096cfeaa7ba55bea","fullName":"integration/flows/profile-non-critical.spec.ts:223:7","name":"@influencer profilePicture + address + preferences non-critical updates","status":"passed","testResultsByEnv":{"default":"a87ad131baff5facf62d372e35c7c01b"}}
+{"id":"1d0d79eaf1728838096cfeaa7ba55bea","fullName":"integration/flows/profile-non-critical.spec.ts:223:7","name":"@influencer profilePicture + address + preferences non-critical updates","status":"passed","testResultsByEnv":{"default":"1aa475676d55aec4061856a05e5c4bc0"}}
