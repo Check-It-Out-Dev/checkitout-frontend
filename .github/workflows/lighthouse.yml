@@ -57,17 +57,31 @@ jobs:
           for i in $(seq 1 30); do curl -fsS -o /dev/null http://localhost:4300/ && break; sleep 1; done
           curl -fsS -o /dev/null http://localhost:4300/ && echo "demo served"
       - uses: treosh/lighthouse-ci-action@3e7e23fb74242897f95c0ba9cabad3d0227b9b18  # v12
+        id: lhci
         with:
           configPath: ./lighthouserc.json
           uploadArtifacts: false
           temporaryPublicStorage: false
+        # The failure is announced by the Verdict step at the end, so that the three steps below
+        # still run and the run leaves behind the report that says WHICH element failed. A
+        # `color-contrast` assertion on the night of 09-11 printed one line -- "Expected >= 1, but
+        # found 0" -- and nothing else: the upload never ran, so the artifact held a server log and
+        # no audit. Naming forty-two elements is the difference between a fix and a guess.
+        continue-on-error: true
       # The action only collects and asserts (its runs land in .lighthouseci); the config's filesystem
       # upload target, which writes lhci-report/ with the manifest the summary reads, is a separate step.
       # Same CLI version the action bundles.
       - name: Reports and manifest into lhci-report
+        if: always()
         run: npx --yes @lhci/cli@0.15.1 upload --config=./lighthouserc.json
       - name: Scores
+        if: always()
         run: set -o pipefail; node tools/ci/lighthouse-summary.mjs lhci-report --json lhci-report/lighthouse.json | tee -a "$GITHUB_STEP_SUMMARY"
+      # Every audit that failed an assertion, with the element that failed it, in the summary --
+      # rather than in an artifact somebody has to download and unpack.
+      - name: What failed, and on which element
+        if: always()
+        run: set -o pipefail; node tools/ci/lighthouse-failures.mjs lhci-report | tee -a "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         if: always()
         with:
@@ -76,6 +90,16 @@ jobs:
             lhci-report
             serve-demo.log
           retention-days: 30
+      # The assertion result is the job's result; it is just announced after the report exists.
+      - name: Verdict
+        if: always()
+        run: |
+          if [ "${{ steps.lhci.outcome }}" != "success" ]; then
+            echo "Lighthouse assertions failed — see the table above and the lighthouse artifact." >&2
+            exit 1
+          fi
+          echo "every assertion held on all three pages"
+
       - name: Pages site (previous state)
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
