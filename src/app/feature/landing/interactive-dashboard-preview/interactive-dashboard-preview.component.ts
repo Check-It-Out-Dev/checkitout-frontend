@@ -34,6 +34,15 @@ const TONES: Record<string, { brand: Tone; influencer: Tone }> = {
 const FLIGHT_MS = 700;
 /** Having landed, the cargo dissolves into the receiver's tile over this long. */
 const ABSORB_MS = 260;
+/** The cargo's whole life: appear (105 ms), cross, land, dissolve — one animation. */
+const CARGO_MS = FLIGHT_MS + ABSORB_MS;
+/* The two inner moments as keyframe selectors, percentages of CARGO_MS.
+   Written out, not computed: a component's styles must evaluate statically,
+   and a call in the template literal leaves the compiler with the last good
+   build. The sandbox tier pins them — at 105 ms the cargo is whole and
+   unmoved, at 700 ms flush with the receiver. */
+const APPEAR_PCT = '10.9375%'; // 105 / 960
+const LAND_PCT = '72.9167%'; // 700 / 960
 
 /** The narration badge per beat: the icon, and whose move it is. */
 const BADGES: Record<string, { icon: string; actor: 'brand' | 'influencer' }> = {
@@ -132,38 +141,39 @@ const BADGES: Record<string, { icon: string; actor: 'brand' | 'influencer' }> = 
        the panes stack, the lane stands on end, and it goes down (brand →
        influencer) or up. Having landed it dissolves as the receiver's tile
        enters: the message is consumed, not left lying on the pane. Transform
-       and opacity only. */
+       and opacity only.
+
+       One animation per rule, on purpose. The dissolve used to be a second
+       name in the \`animation-name\` list, and the production build scoped
+       only the first name inside the @media block — the dev server scoped
+       both, so every test passed while the live site kept the cargo. Appear,
+       cross, land and dissolve are one set of keyframes; the fade's segment
+       carries its own timing function. */
     .flight-lane {
       container-type: size;
-    }
-    .flight {
-      animation-duration: ${FLIGHT_MS}ms, ${ABSORB_MS}ms;
-      animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1), ease-in;
-      animation-delay: 0ms, ${FLIGHT_MS}ms;
-      animation-fill-mode: both, both;
     }
     .flight[data-direction='ltr'] {
       top: 0;
       left: 50%;
-      animation-name: flight-down, flight-absorb;
+      animation: flight-down ${CARGO_MS}ms cubic-bezier(0.4, 0, 0.2, 1) both;
     }
     .flight[data-direction='rtl'] {
       bottom: 0;
       left: 50%;
-      animation-name: flight-up, flight-absorb;
+      animation: flight-up ${CARGO_MS}ms cubic-bezier(0.4, 0, 0.2, 1) both;
     }
     @media (min-width: 1280px) {
       .flight[data-direction='ltr'] {
         top: 0;
         left: 0;
-        animation-name: flight-ltr, flight-absorb;
+        animation: flight-ltr ${CARGO_MS}ms cubic-bezier(0.4, 0, 0.2, 1) both;
       }
       .flight[data-direction='rtl'] {
         top: 0;
         bottom: auto;
         left: auto;
         right: 0;
-        animation-name: flight-rtl, flight-absorb;
+        animation: flight-rtl ${CARGO_MS}ms cubic-bezier(0.4, 0, 0.2, 1) both;
       }
     }
     @keyframes flight-ltr {
@@ -171,12 +181,17 @@ const BADGES: Record<string, { icon: string; actor: 'brand' | 'influencer' }> = 
         opacity: 0;
         transform: translateX(0) scale(0.92);
       }
-      15% {
+      ${APPEAR_PCT} {
         opacity: 1;
         transform: translateX(0) scale(1);
       }
-      to {
+      ${LAND_PCT} {
         opacity: 1;
+        transform: translateX(calc(100cqw - 100%)) scale(1);
+        animation-timing-function: ease-in;
+      }
+      to {
+        opacity: 0;
         transform: translateX(calc(100cqw - 100%)) scale(1);
       }
     }
@@ -185,12 +200,17 @@ const BADGES: Record<string, { icon: string; actor: 'brand' | 'influencer' }> = 
         opacity: 0;
         transform: translateX(0) scale(0.92);
       }
-      15% {
+      ${APPEAR_PCT} {
         opacity: 1;
         transform: translateX(0) scale(1);
       }
-      to {
+      ${LAND_PCT} {
         opacity: 1;
+        transform: translateX(calc(100% - 100cqw)) scale(1);
+        animation-timing-function: ease-in;
+      }
+      to {
+        opacity: 0;
         transform: translateX(calc(100% - 100cqw)) scale(1);
       }
     }
@@ -199,12 +219,17 @@ const BADGES: Record<string, { icon: string; actor: 'brand' | 'influencer' }> = 
         opacity: 0;
         transform: translate(-50%, 0) scale(0.92);
       }
-      15% {
+      ${APPEAR_PCT} {
         opacity: 1;
         transform: translate(-50%, 0) scale(1);
       }
-      to {
+      ${LAND_PCT} {
         opacity: 1;
+        transform: translate(-50%, calc(100cqh - 100%)) scale(1);
+        animation-timing-function: ease-in;
+      }
+      to {
+        opacity: 0;
         transform: translate(-50%, calc(100cqh - 100%)) scale(1);
       }
     }
@@ -213,20 +238,18 @@ const BADGES: Record<string, { icon: string; actor: 'brand' | 'influencer' }> = 
         opacity: 0;
         transform: translate(-50%, 0) scale(0.92);
       }
-      15% {
+      ${APPEAR_PCT} {
         opacity: 1;
         transform: translate(-50%, 0) scale(1);
       }
-      to {
+      ${LAND_PCT} {
         opacity: 1;
         transform: translate(-50%, calc(100% - 100cqh)) scale(1);
+        animation-timing-function: ease-in;
       }
-    }
-    /* No \`from\`: it starts from whatever the flight left, so the fade-in
-       above is untouched during this one's delay. */
-    @keyframes flight-absorb {
       to {
         opacity: 0;
+        transform: translate(-50%, calc(100% - 100cqh)) scale(1);
       }
     }
 

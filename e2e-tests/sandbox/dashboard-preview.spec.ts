@@ -104,9 +104,9 @@ test.describe('Sandbox · InteractiveDashboardPreviewComponent', () => {
 
   /**
    * The flight: each beat's message crosses the channel from the sender's pane
-   * to the receiver's and dissolves into the receiver's tile. Asserted by
-   * scrubbing — every animation on the cargo is paused and seeked through the
-   * Web Animations API — never by watching. Instants in ms from the mount:
+   * to the receiver's and dissolves into the receiver's tile — one animation
+   * of 960 ms. Asserted by scrubbing, paused and seeked through the Web
+   * Animations API, never by watching. Instants in ms from the mount:
    * 0, not there yet; 105, faded in at the sender's edge; 350, its centre
    * inside the channel; 700, flush with the receiver's edge; 960, absorbed.
    * Beat 1 is her application going to the brand.
@@ -156,7 +156,7 @@ test.describe('Sandbox · InteractiveDashboardPreviewComponent', () => {
 
     const before = await at(page, 0);
     expect(before, 'the cargo is not animated').not.toBeNull();
-    expect(before!.duration).toBe(700);
+    expect(before!.duration).toBe(960);
     // Not there yet: it fades in rather than popping.
     expect(before!.opacity).toBeLessThanOrEqual(0.05);
 

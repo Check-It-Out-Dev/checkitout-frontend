@@ -10,7 +10,7 @@ it is ever a bug. Every tier above that re-proves the same truth at a higher lev
 [![License: MIT](https://img.shields.io/badge/License-MIT-1f6feb.svg)](LICENSE)
 [![Angular](https://img.shields.io/badge/Angular-22-dd0031.svg)](https://angular.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178c6.svg)](https://www.typescriptlang.org/)
-[![Tests](https://img.shields.io/badge/tests-1834-15c213.svg)](#-the-test-pyramid)
+[![Tests](https://img.shields.io/badge/tests-1835-15c213.svg)](#-the-test-pyramid)
 [![Coverage](https://img.shields.io/badge/lines_covered-77.8%25-yellow.svg)](#coverage-size-and-vitals)
 [![CI](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/ci-tests.yml/badge.svg)](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/ci-tests.yml)
 
@@ -42,7 +42,7 @@ Three claims, and the rest of this page is where you check them:
 | Claim                                                                                                                                                                                                                              | Where to check it                            |
 | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------- |
 | **The backend contract cannot silently drift.** 181 model types and 41 API services are generated from the backend's spec; three separate mechanisms refuse to let hand-written code diverge from them.                            | [Contract pipeline](#-the-contract-pipeline) |
-| **1,834 tests across nine tiers, and each proves something the others structurally cannot.** 1147 Jest · 148 BDD scenarios · 222 live-backend integration · 138 visual · 78 experience · counted by the runners, skipped included. | [Test pyramid](#-the-test-pyramid)           |
+| **1,835 tests across nine tiers, and each proves something the others structurally cannot.** 1147 Jest · 148 BDD scenarios · 222 live-backend integration · 138 visual · 79 experience · counted by the runners, skipped included. | [Test pyramid](#-the-test-pyramid)           |
 | **Fifteen gates run before any commit lands, and each was born from a specific defect that got through.**                                                                                                                          | [Quality gates](#-quality-gates)             |
 
 > [!NOTE]
@@ -73,7 +73,7 @@ npm run build:demo
 npx http-server dist/check-it-out-fe-greenfield/browser
 ```
 
-That is also enough to run **1,417 of the 1,834 tests**: every Jest test, the fifteen-gate wall, and
+That is also enough to run **1,418 of the 1,835 tests**: every Jest test, the fifteen-gate wall, and
 the sandbox, visual and experience tiers.
 
 ### 3 · Run the whole platform — a weekend, and some of it costs money
@@ -137,14 +137,14 @@ npm run openapi:cycle     # regenerate the client from the backend spec
 > teaches people to ignore red.
 >
 > **What runs with no setup at all:** the demo build (every `/api` answered in the browser), all
-> 1147 Jest tests, the fifteen-gate wall, and the sandbox and visual tiers. That is 1,417 of
-> the 1,834 tests, on a clean clone, with no account and no key.
+> 1147 Jest tests, the fifteen-gate wall, and the sandbox and visual tiers. That is 1,418 of
+> the 1,835 tests, on a clean clone, with no account and no key.
 
 ---
 
 ## 🔺 The test pyramid
 
-**1,834 tests.** Five layers in the pyramid, four tiers beside it. The point is not the count — it
+**1,835 tests.** Five layers in the pyramid, four tiers beside it. The point is not the count — it
 is that the layers are **connected**: each is built from the artifacts of the one below, so a
 regression cannot pass a lower layer and hide in a higher one. The tiers beside the pyramid are
 there because they answer questions the chain structurally cannot.
@@ -175,7 +175,7 @@ there because they answer questions the chain structurally cannot.
    ▸ SCENARIOS   · multi-actor flows     6 tests ·  3 files · two people, one campaign
    ▸ EXPERIENCE  · perf                 78 tests · 15 files · smooth, readable, honest in motion
 
-   1147 Jest + 687 Playwright = 1,834 tests. Counted by the runners themselves,
+   1147 Jest + 688 Playwright = 1,835 tests. Counted by the runners themselves,
    skipped and fixme included — `npx playwright test <dir> --list` says so.
 ```
 
@@ -211,8 +211,8 @@ counting them would move the number without moving the truth.
 
 |                          |                                                                                                Measured | Gate                            |
 | :----------------------- | ------------------------------------------------------------------------------------------------------: | :------------------------------ |
-| **Lines**                |                                                                               **77.82 %** (5402 / 6941) | fails under 75                  |
-| **Statements**           |                                                                               **76.46 %** (6024 / 7878) | fails under 74                  |
+| **Lines**                |                                                                               **77.83 %** (5405 / 6944) | fails under 75                  |
+| **Statements**           |                                                                               **76.47 %** (6027 / 7881) | fails under 74                  |
 | **Branches**             |                                                                               **68.41 %** (2047 / 2992) | fails under 66                  |
 | **Functions**            |                                                                               **64.90 %** (1280 / 1972) | fails under 62                  |
 | **Files in scope**       | **242** — every hand-written file under `src/app`; **80 of them have no test at all** and count as zero | —                               |

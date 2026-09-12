@@ -10,7 +10,7 @@
       "bdd": 148,
       "chromium-desktop": 461,
       "mobile-chrome": 461,
-      "perf": 78,
+      "perf": 79,
       "mobile-safari": 41,
       "tablet-safari": 41
     },
@@ -22,10 +22,10 @@
       "msw": 1,
       "visual": 138
     },
-    "distinct": 687
+    "distinct": 688
   },
-  "total": 1834,
-  "offline": 1417,
+  "total": 1835,
+  "offline": 1418,
   "generatedClient": {
     "models": 181,
     "services": 41
@@ -48,14 +48,14 @@
   },
   "coverage": {
     "lines": {
-      "pct": 77.82,
-      "covered": 5402,
-      "total": 6941
+      "pct": 77.83,
+      "covered": 5405,
+      "total": 6944
     },
     "statements": {
-      "pct": 76.46,
-      "covered": 6024,
-      "total": 7878
+      "pct": 76.47,
+      "covered": 6027,
+      "total": 7881
     },
     "branches": {
       "pct": 68.41,
