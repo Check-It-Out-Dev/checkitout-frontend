@@ -413,6 +413,43 @@ shipped · 🟡 under way · ⬜ designed, not started.
 
 ---
 
+## 🔬 Seven days of machine-written change
+
+I ran coding agents in a loop for about seven days across this repository and the backend, and
+switched the security scanners on while they worked. What came back was not a quality collapse — it
+was three scanners meeting a codebase for the first time, at a volume no one reads line by line.
+
+Counted through the GitHub API on 2026-09-12. Unlike every other figure on this page, these are a
+dated observation of a service rather than a fact about this tree, so no gate can re-derive them —
+which is why the query that reproduces each one is printed underneath.
+
+|                                                                              | Code scanning | Fixed | Dismissed | Open | Dependabot      |
+| :--------------------------------------------------------------------------- | :------------ | :---- | :-------- | :--- | :-------------- |
+| [checkitout-backend](https://github.com/Check-It-Out-Dev/checkitout-backend) | 1151          | 582   | 550       | 19   | 138 (137 fixed) |
+| this repository                                                              | 335           | 265   | 63        | 7    | 82 (all fixed)  |
+
+> [!NOTE]
+> Reproduce any row:
+> `gh api "repos/Check-It-Out-Dev/checkitout-frontend/code-scanning/alerts?per_page=100" --paginate -q '.[].state' | sort | uniq -c`
+> — 509 of the backend's dismissals are a single rule, closed by one control at the sink with a
+> [written disposition](https://github.com/Check-It-Out-Dev/checkitout-backend/blob/main/docs/security/log-injection-disposition.md)
+> and a test that fails if the control is ever reverted.
+
+The loop that got this repository built assumed something that stopped being true during those seven
+days: that whoever wrote the passing test did not also write the bug. It also turned up a drift
+nobody had noticed — this repository's committed copy of the contract is seven contract commits
+behind the backend's, so the typed client every tier compiles against currently proves conformance
+to yesterday's document. The number that was gated against a generated file stayed correct; three numbers that were
+published by hand did not.
+
+**So: after seven days of machine-written change, does the system still do the same thing for the
+user?** Answering that mechanically — invariants extracted from the code, enforced on the diff,
+rendered as diagrams a person can review, with a human ratifying every loosening — is work in
+progress, and the method, its precedents and its honest status are in
+**[docs/ci/GOVERNING-MACHINE-WRITTEN-CHANGE.md](docs/ci/GOVERNING-MACHINE-WRITTEN-CHANGE.md)**.
+
+---
+
 ## 🧭 The rest of the estate
 
 Three repositories and a running site, and each answers the question the previous one raises.

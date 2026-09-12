@@ -1,0 +1,126 @@
+# Trivy misconfiguration exemptions for the Kubernetes test substrate.
+#
+# These are not "we will get to it". Every one is a decision already argued in prose at the bottom
+# of deploy/k8s/base/kustomization.yaml, written when the manifests were; this file is the same
+# decision in the form the scanner reads, so the code-scanning backlog says what a person reviewing
+# these manifests would say.
+#
+# The shape of it: the backend is the one image built here, so it is held to the whole standard --
+# runAsNonRoot on the ids its own Dockerfile ends with, drop ALL capabilities, readOnlyRootFilesystem
+# with an emptyDir for each path it writes. The other three are stock images and each starts as root
+# on purpose. Hardening them past the point where they start would buy nothing and cost the tier.
+#
+# Everything below is scoped to a path. Nothing here exempts a rule repository-wide, and nothing
+# here touches deployment/ -- production is Docker Compose and systemd (docs/ci/ARCHITECTURE.md),
+# and deploy/k8s exists only inside a GitHub runner.
+#
+# Re-read this list the day any of these leaves the twelve-minute cluster.
+
+misconfigurations:
+  # ---------------------------------------------------------------------------------------------
+  # postgres, redis, nginx -- stock images that must start as root
+  #
+  # postgres and redis run initdb and chown before dropping to their own user through su-exec,
+  # which needs CHOWN, SETUID and SETGID; nginx binds port 80, which needs NET_BIND_SERVICE.
+  # Dropping all capabilities stops all three before they start, and runAsNonRoot stops the two
+  # that have to chown a fresh data directory first. readOnlyRootFilesystem fails the same way:
+  # each writes its own runtime directory during startup, before any of our code runs.
+  - id: KSV-0003
+    paths: ["deploy/k8s/base/postgres.yaml", "deploy/k8s/base/redis.yaml", "deploy/k8s/base/frontend.yaml"]
+    statement: Stock images need CHOWN/SETUID/SETGID (su-exec) or NET_BIND_SERVICE (port 80) to start.
+  - id: KSV-0106
+    paths: ["deploy/k8s/base/postgres.yaml", "deploy/k8s/base/redis.yaml", "deploy/k8s/base/frontend.yaml"]
+    statement: Same as KSV-0003 -- dropping ALL capabilities stops these three images before they start.
+  - id: KSV-0012
+    paths: ["deploy/k8s/base/postgres.yaml", "deploy/k8s/base/redis.yaml", "deploy/k8s/base/frontend.yaml"]
+    statement: postgres and redis chown a fresh data directory as root, then drop to their own user.
+  - id: KSV-0014
+    paths: ["deploy/k8s/base/postgres.yaml", "deploy/k8s/base/redis.yaml", "deploy/k8s/base/frontend.yaml"]
+    statement: Each writes its own runtime directory during startup; the backend, which we build, has this set.
+  - id: KSV-0117
+    paths: ["deploy/k8s/base/frontend.yaml"]
+    statement: nginx binds port 80, which is the privileged port this rule is about.
+
+  # ---------------------------------------------------------------------------------------------
+  # uid/gid above 10000, on every pod including the backend
+  #
+  # The backend runs as 1002:1005 because that is what its own Dockerfile ends on, and naming the
+  # ids in the pod is what makes that a property of the deployment rather than of the image. The
+  # stock images own their files as their own users. Renumbering any of them breaks file ownership
+  # on first boot to buy a property that matters when a host uid collides -- which is a shared
+  # cluster's problem, and this one is created and destroyed by a single CI job.
+  - id: KSV-0020
+    paths: ["deploy/k8s/base/*.yaml", "deploy/k8s/tests/*.yaml"]
+    statement: Images own their files as their own uid; renumbering breaks first boot, and the cluster is single-tenant.
+  - id: KSV-0021
+    paths: ["deploy/k8s/base/*.yaml", "deploy/k8s/tests/*.yaml"]
+    statement: As KSV-0020, for the group.
+
+  # ---------------------------------------------------------------------------------------------
+  # CPU limits
+  #
+  # Deliberately absent. A CPU limit throttles the JVM through Liquibase's first-boot seeding,
+  # which is the slowest thing the backend pod does and the thing its startup probe is timing --
+  # and throttles four Playwright shards that are already sharing one node. Memory limits, which
+  # are the ones that protect a neighbour from a runaway, are set on every container here.
+  - id: KSV-0011
+    paths: ["deploy/k8s/base/*.yaml", "deploy/k8s/tests/*.yaml"]
+    statement: CPU limits throttle Liquibase seeding and the Playwright shards; memory limits are set everywhere.
+  - id: KSV-0004
+    paths: ["deploy/k8s/base/*.yaml", "deploy/k8s/tests/*.yaml"]
+    statement: Memory requests and limits are set on every container; the CPU limit is the deliberate omission above.
+  - id: KSV-0125
+    paths: ["deploy/k8s/base/backend.yaml"]
+    statement: Image pulled by tag from our own registry, resolved to a digest by the workflow that loads it into kind.
+
+  # ---------------------------------------------------------------------------------------------
+  # The Playwright shards
+  #
+  # Chromium's sandbox is a setuid binary, and `allowPrivilegeEscalation: false` disables it; the
+  # seccomp rules are the same story, since the runtime default profile blocks the namespace calls
+  # the sandbox makes. The reports volume is a hostPath because four pods and the workflow that
+  # merges their blobs have to see the same directory on the kind node. What this pod CAN take it
+  # now has: no service-account token, and an ephemeral-storage limit so one shard cannot fill the
+  # node out from under the other three.
+  - id: KSV-0001
+    paths: ["deploy/k8s/tests/playwright-indexed-job.yaml"]
+    statement: allowPrivilegeEscalation=false disables Chromium's setuid sandbox, which is the thing being protected.
+  - id: KSV-0003
+    paths: ["deploy/k8s/tests/playwright-indexed-job.yaml"]
+    statement: Chromium's setuid sandbox needs the capabilities this rule drops.
+  - id: KSV-0106
+    paths: ["deploy/k8s/tests/playwright-indexed-job.yaml"]
+    statement: As KSV-0003 -- Chromium's sandbox.
+  - id: KSV-0012
+    paths: ["deploy/k8s/tests/playwright-indexed-job.yaml"]
+    statement: The Playwright image's own user is what the browsers were installed for.
+  - id: KSV-0014
+    paths: ["deploy/k8s/tests/playwright-indexed-job.yaml"]
+    statement: Chromium writes its profile and crash dumps across the filesystem during a run.
+  - id: KSV-0023
+    paths: ["deploy/k8s/tests/playwright-indexed-job.yaml"]
+    statement: hostPath is how four shards and the merge step share one reports directory on the kind node.
+  - id: KSV-0030
+    paths: ["deploy/k8s/tests/playwright-indexed-job.yaml"]
+    statement: The runtime default seccomp profile blocks the namespace calls Chromium's sandbox makes.
+  - id: KSV-0104
+    paths: ["deploy/k8s/tests/playwright-indexed-job.yaml"]
+    statement: As KSV-0030 -- Chromium's sandbox against the default seccomp profile.
+  - id: KSV-0118
+    paths: ["deploy/k8s/tests/playwright-indexed-job.yaml"]
+    statement: The pod-level defaults this rule wants are the ones Chromium cannot run under.
+
+  # ---------------------------------------------------------------------------------------------
+  # Dockerfiles
+  #
+  # The nginx image needs root at startup for the entrypoint template substitution that renders
+  # default.conf from BACKEND_UPSTREAM; its workers drop privilege themselves. The Playwright image
+  # is a test runner with no network exposure. Neither has a HEALTHCHECK because Kubernetes is
+  # asking the question instead -- both Deployments carry a readinessProbe, which is the same check
+  # somewhere a scheduler can act on it.
+  - id: DS-0002
+    paths: ["deploy/k8s/frontend/Dockerfile", "deploy/k8s/tests/Dockerfile.playwright"]
+    statement: nginx templates its config as root at startup and drops privilege in its workers; the test image is not exposed.
+  - id: DS-0026
+    paths: ["deploy/k8s/frontend/Dockerfile", "deploy/k8s/tests/Dockerfile.playwright"]
+    statement: Kubernetes readinessProbes ask this question where a scheduler can act on the answer.
