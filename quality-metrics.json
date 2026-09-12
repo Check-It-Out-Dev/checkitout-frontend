@@ -6,22 +6,22 @@
     "id": 34667297502,
     "sha": "7f067cd",
     "branch": "main",
-    "workflow": "nightly-full-stack",
+    "workflow": "k8s-test-execution",
     "startedAt": "2026-09-12T02:18:33Z",
-    "durationSec": 389,
+    "durationSec": 635,
     "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34667297502",
     "status": "red"
   },
   "tests": {
-    "total": 1667,
-    "passed": 1602,
-    "failed": 20,
+    "total": 1519,
+    "passed": 1476,
+    "failed": 1,
     "flaky": 0,
-    "skipped": 45,
-    "passRate": 0.9877,
+    "skipped": 42,
+    "passRate": 0.9993,
     "flakyRate": 0,
-    "durationMeanSec": 0.19,
-    "durationP95Sec": 0.7,
+    "durationMeanSec": 0.22,
+    "durationP95Sec": 1,
     "tiers": {
       "jest": {
         "total": 1234,
@@ -31,13 +31,13 @@
         "skipped": 0,
         "durationSec": 76
       },
-      "bdd": {
-        "total": 148,
-        "passed": 121,
-        "failed": 19,
+      "integration": {
+        "total": 215,
+        "passed": 174,
+        "failed": 1,
         "flaky": 0,
-        "skipped": 8,
-        "durationSec": 63
+        "skipped": 40,
+        "durationSec": 173
       },
       "sandbox": {
         "total": 64,
@@ -45,7 +45,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 2,
-        "durationSec": 55
+        "durationSec": 77
       },
       "scenarios": {
         "total": 6,
@@ -53,15 +53,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
-        "durationSec": 12
-      },
-      "integration": {
-        "total": 215,
-        "passed": 179,
-        "failed": 1,
-        "flaky": 0,
-        "skipped": 35,
-        "durationSec": 102
+        "durationSec": 11
       }
     }
   },
@@ -71,12 +63,40 @@
     "branches": 69.52,
     "functions": 66.79
   },
+  "perf": {
+    "k6": {
+      "profile": "load",
+      "requests": 197,
+      "failedRate": 0,
+      "p95Ms": 179.51,
+      "thresholdsOk": true,
+      "journeys": {
+        "apply": {
+          "p95Ms": 353.83,
+          "p99Ms": 369.68,
+          "budgetMs": 1500,
+          "ok": true
+        },
+        "browse": {
+          "p95Ms": 91.16,
+          "p99Ms": 124.43,
+          "budgetMs": 800,
+          "ok": true
+        }
+      }
+    }
+  },
   "lighthouse": {
     "url": "/",
     "performance": 98,
     "accessibility": 100,
     "bestPractices": 100,
     "seo": 92
+  },
+  "kubernetes": {
+    "shards": 4,
+    "wallSec": 107,
+    "k6Runners": 2
   },
   "mutation": {
     "score": 72.84,
@@ -98,287 +118,25 @@
   },
   "flaky": [
     {
-      "title": "Magic Link Happy Path › Email verification succeeds with valid oobCode [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/magic-link-happy-path.feature.spec.js",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 7,
-      "lastSeen": 18,
-      "history": [
-        "skipped",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "absent",
-        "fail",
-        "fail",
-        "fail",
-        "pass"
-      ]
-    },
-    {
-      "title": "Notification System E2E with Real Email Delivery › Full notification lifecycle with email delivery, archive, and cross-user isolation [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/notification-e2e.feature.spec.js",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 7,
-      "lastSeen": 18,
-      "history": [
-        "skipped",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "absent",
-        "fail",
-        "fail",
-        "fail",
-        "pass"
-      ]
-    },
-    {
-      "title": "@login-real — real-Firebase happy-path login (T4) › @admin @full-auth @2fa — admin completes partial-then-full session with real TOTP [chromium-desktop]",
-      "file": "integration/auth/login-real.spec.ts",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 4,
-      "lastSeen": 17,
-      "history": [
-        "skipped",
-        "skipped",
-        "skipped",
-        "fail",
-        "fail",
-        "absent",
-        "fail",
-        "fail",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "@notification-lifecycle — port of notification-e2e.feature › @notification-preferences disabled prefs suppress APPLICATION_RECEIVED [chromium-desktop]",
-      "file": "integration/flows/notification-lifecycle.spec.ts",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 5,
-      "lastSeen": 16,
-      "history": [
-        "skipped",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "absent",
-        "fail",
-        "pass",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "@login-real — real-Firebase happy-path login (T4) › @company @full-auth — company logs in with real Firebase + receives session cookie [chromium-desktop]",
-      "file": "integration/auth/login-real.spec.ts",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 3,
-      "lastSeen": 12,
-      "history": [
-        "fail",
-        "fail",
-        "fail",
-        "pass",
-        "pass",
-        "absent",
-        "pass",
-        "pass",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "@login-ui-real — real-Firebase UI sign-in (T4-UI) › @company @full-auth — company signs in via the form and lands on a protected route [chromium-desktop]",
-      "file": "integration/auth/login-ui-real.spec.ts",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 3,
-      "lastSeen": 12,
-      "history": [
-        "fail",
-        "fail",
-        "fail",
-        "pass",
-        "pass",
-        "absent",
-        "pass",
-        "pass",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "@security-advanced-session — port of security-advanced-session.feature › @scenario-7-prod @session-lifecycle production refresh-session against real Firebase user [chromium-desktop]",
-      "file": "integration/flows/security-advanced-session.spec.ts",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 2,
-      "lastSeen": 12,
-      "history": [
-        "skipped",
-        "fail",
-        "fail",
-        "pass",
-        "pass",
-        "absent",
-        "pass",
-        "pass",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "@multi-user @session-isolation — port of multi-user-session-isolation.feature › @smoke @company Company user logs in via multi-user infrastructure [chromium-desktop]",
-      "file": "integration/flows/multi-user-session-isolation.spec.ts",
-      "window": 10,
+      "title": "@registry — port of registry-company-flow.feature error-path subset › @get-data get company data without prior confirm returns 200 + empty body [chromium-desktop]",
+      "file": "integration/flows/registry-company-flow.spec.ts",
+      "window": 7,
       "runsFlaky": 0,
       "runsFailed": 1,
-      "lastSeen": 11,
+      "lastSeen": 5,
       "history": [
-        "skipped",
+        "pass",
+        "pass",
+        "pass",
+        "pass",
         "fail",
-        "pass",
-        "pass",
-        "pass",
         "absent",
-        "pass",
-        "pass",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "@authentication @login · Login session reaches authenticated UI › @company company user with a session sees the authenticated shell [chromium-desktop]",
-      "file": "scenarios/auth/login.scenario.spec.ts",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 10,
-      "history": [
-        "fail",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "@authentication @login · Login session reaches authenticated UI › @influencer influencer with a session sees their applications page [chromium-desktop]",
-      "file": "scenarios/auth/login.scenario.spec.ts",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 10,
-      "history": [
-        "fail",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "@multi-user @partnership-flow · Two actors don't share session › company and influencer have isolated browser contexts [chromium-desktop]",
-      "file": "scenarios/multi-user/company-and-influencer.scenario.spec.ts",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 10,
-      "history": [
-        "fail",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "@partnership-flow @company · Create a campaign › company can open the new-campaign form [chromium-desktop]",
-      "file": "scenarios/partnership/create-campaign.scenario.spec.ts",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 10,
-      "history": [
-        "fail",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "@partnership-flow @company · Create a campaign › submit is disabled until required fields are filled [chromium-desktop]",
-      "file": "scenarios/partnership/create-campaign.scenario.spec.ts",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 10,
-      "history": [
-        "fail",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "@smoke route-smoke — every non-param route renders without errors › anonymous visit — every smokeable route [chromium-desktop]",
-      "file": "integration/route-smoke.spec.ts",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 10,
-      "history": [
-        "fail",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "absent",
-        "pass",
-        "pass",
-        "pass",
         "pass"
       ]
     }
   ],
   "reports": {
-    "playwright": "playwright/nightly-full-stack-5/"
+    "playwright": "playwright/k8s-test-execution-5/",
+    "k6": "k6/k8s-test-execution-5/"
   }
 }
