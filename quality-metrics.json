@@ -2,14 +2,14 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 145,
-    "id": 34655413026,
-    "sha": "a197dab",
+    "number": 147,
+    "id": 34664553031,
+    "sha": "ac808cf",
     "branch": "main",
     "workflow": "browser-tiers",
-    "startedAt": "2026-09-11T22:46:06Z",
-    "durationSec": 176,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34655413026",
+    "startedAt": "2026-09-12T01:20:52Z",
+    "durationSec": 168,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/34664553031",
     "status": "green"
   },
   "tests": {
@@ -21,7 +21,7 @@
     "passRate": 1,
     "flakyRate": 0,
     "durationMeanSec": 0.14,
-    "durationP95Sec": 0.88,
+    "durationP95Sec": 0.89,
     "tiers": {
       "jest": {
         "total": 1234,
@@ -53,7 +53,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 22,
-        "durationSec": 123
+        "durationSec": 118
       }
     }
   },
@@ -90,6 +90,6 @@
   },
   "flaky": [],
   "reports": {
-    "playwright": "playwright/browser-tiers-145/"
+    "playwright": "playwright/browser-tiers-147/"
   }
 }
