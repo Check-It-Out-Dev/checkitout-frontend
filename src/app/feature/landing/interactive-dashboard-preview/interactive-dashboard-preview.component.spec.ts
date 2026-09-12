@@ -132,28 +132,138 @@ describe('InteractiveDashboardPreviewComponent', () => {
       expect(
         fixture.nativeElement.querySelector(`[data-testid="dashboard-brand-${key}"]`),
       ).toBeTruthy();
-      // The influencer joins the story at the application beat.
+      // Her pane is there from the first beat: before she applies it shows
+      // her browsing the campaign, not an empty box.
       const her = fixture.nativeElement.querySelector(
         `[data-testid="dashboard-influencer-${key}"]`,
       );
-      expect(her === null).toBe(i === 0);
+      expect(her).toBeTruthy();
+      expect(her.querySelector('[data-testid="dashboard-influencer-discovering"]') !== null).toBe(
+        i === 0,
+      );
     }
   });
 
-  it('keeps every step description in the DOM so the card never grows mid-story', () => {
+  it('the channel narrates the current beat, and only that beat', () => {
     component.setMode('simulation');
     component.togglePlay();
+    component.previewBeat = 2;
     fixture.detectChanges();
 
-    const descriptions = fixture.nativeElement.querySelectorAll(
-      '[data-testid="dashboard-progress-steps"] li p:nth-of-type(2)',
+    const narration = fixture.nativeElement.querySelector('[data-testid="dashboard-narration"]');
+    expect(narration).toBeTruthy();
+    // Step counter reads "<step> 3 <of> 7" — the numbers are the contract.
+    expect(narration.textContent.replace(/\s+/g, ' ')).toContain('3');
+    // The stepper still lists all seven, as pills, with the current one marked.
+    const current = fixture.nativeElement.querySelectorAll(
+      '[data-testid="dashboard-progress-steps"] [aria-current="step"]',
     );
-    expect(descriptions).toHaveLength(component.stepKeys.length);
-    // the ones still to come are faded, not absent — the height is reserved
-    expect(descriptions[6].className).toContain('opacity-0');
-    expect(descriptions[6].getAttribute('aria-hidden')).toBe('true');
-    expect(descriptions[0].className).not.toContain('opacity-0');
-    expect(descriptions[0].getAttribute('aria-hidden')).toBeNull();
+    expect(current).toHaveLength(1);
+    expect(current[0].closest('li').getAttribute('data-testid')).toBe(
+      'dashboard-step-review_selection',
+    );
+  });
+
+  it('the finale keeps both panes on stage and puts the banner in the bar', () => {
+    component.setMode('simulation');
+    component.togglePlay();
+    for (let i = 0; i < component.stepKeys.length; i++) component.advance();
+    fixture.detectChanges();
+
+    expect(component.done()).toBe(true);
+    const el = fixture.nativeElement;
+    expect(el.querySelector('[data-testid="dashboard-success"]')).toBeTruthy();
+    expect(el.querySelector('[data-testid="dashboard-transport"]')).toBeNull();
+    // Nothing disappeared: the panes are still there, on the last beat.
+    expect(el.querySelector('[data-testid="dashboard-pane-brand"]')).toBeTruthy();
+    expect(el.querySelector('[data-testid="dashboard-pane-influencer"]')).toBeTruthy();
+    expect(el.querySelector('[data-testid="dashboard-brand-publication_results"]')).toBeTruthy();
+    expect(el.querySelector('[data-testid="dashboard-restart"]')).toBeTruthy();
+  });
+
+  it('content beats show the reel as a filled post, not a placeholder', () => {
+    const el = fixture.nativeElement;
+    component.previewBeat = 4; // content_creation: she is recording
+    fixture.detectChanges();
+    expect(el.querySelector('[data-testid="dashboard-post-recording"]')).toBeTruthy();
+    expect(el.querySelector('[data-testid="dashboard-post-stamp"]')).toBeNull();
+
+    component.previewBeat = 5; // content_approval: both panes hold the approved reel
+    fixture.detectChanges();
+    expect(el.querySelectorAll('[data-testid="dashboard-post-approved"]')).toHaveLength(2);
+    expect(el.querySelectorAll('[data-testid="dashboard-post-stamp"]')).toHaveLength(2);
+    // The beige rectangles that stood in for content are gone for good.
+    expect(el.querySelector('.bg-beige\\/70')).toBeNull();
+  });
+
+  it('each beat sends its message one way, and only while the story plays', () => {
+    const el = fixture.nativeElement;
+    // brand → her on the brand's moves; her → brand on hers
+    const expected: Record<number, 'ltr' | 'rtl'> = {
+      0: 'ltr',
+      1: 'rtl',
+      2: 'ltr',
+      3: 'ltr',
+      4: 'rtl',
+      5: 'ltr',
+      6: 'rtl',
+    };
+    for (let i = 0; i < component.stepKeys.length; i++) {
+      component.previewBeat = i;
+      fixture.detectChanges();
+      expect(component.direction()).toBe(expected[i]);
+      const cargo = el.querySelector('[data-testid="dashboard-flight"]');
+      expect(cargo).toBeTruthy();
+      expect(cargo.getAttribute('data-direction')).toBe(expected[i]);
+    }
+    // The receiving pane waits for the flight; the sending one does not.
+    component.previewBeat = 1; // rtl: the brand receives
+    fixture.detectChanges();
+    expect(
+      el.querySelector('[data-testid="dashboard-pane-brand"]').style.getPropertyValue('--land'),
+    ).toBe('700ms');
+    expect(
+      el
+        .querySelector('[data-testid="dashboard-pane-influencer"]')
+        .style.getPropertyValue('--land'),
+    ).toBe('0ms');
+
+    // No flight in the tableau, none at the finale.
+    component.setMode('overview');
+    fixture.detectChanges();
+    expect(el.querySelector('[data-testid="dashboard-flight"]')).toBeNull();
+    component.setMode('simulation');
+    component.togglePlay();
+    for (let i = 0; i < component.stepKeys.length; i++) component.advance();
+    fixture.detectChanges();
+    expect(el.querySelector('[data-testid="dashboard-flight"]')).toBeNull();
+  });
+
+  it('a step pill jumps the story, and keeps its playing state', () => {
+    jest.useFakeTimers();
+    try {
+      component.setMode('simulation'); // playing
+      component.goTo(4);
+      expect(component.step()).toBe(4);
+      expect(component.playing()).toBe(true);
+      jest.advanceTimersByTime(2800); // content_creation's own hold
+      expect(component.step()).toBe(5);
+
+      component.togglePlay(); // pause
+      component.goTo(1);
+      expect(component.step()).toBe(1);
+      expect(component.playing()).toBe(false);
+      jest.advanceTimersByTime(10000);
+      expect(component.step()).toBe(1);
+
+      component.goTo(99);
+      expect(component.step()).toBe(component.stepKeys.length - 1);
+      component.setMode('overview');
+      component.goTo(3); // pills are inert in the overview
+      expect(component.step()).toBe(0);
+    } finally {
+      jest.useRealTimers();
+    }
   });
 
   it('does not rebuild the beat block between beats (it used to blink to nothing)', () => {
@@ -174,13 +284,23 @@ describe('InteractiveDashboardPreviewComponent', () => {
   });
 
   it('numbers settle instantly while the story is paused', () => {
+    // Her followers count up on the application beat; the results count up on
+    // the last one. Paused, both read the settled value at once.
+    component.previewBeat = 1;
+    fixture.detectChanges();
+    expect(component.followers()).toBe(12000);
+    expect(
+      fixture.nativeElement.querySelector('[data-testid="dashboard-followers"]').textContent,
+    ).toContain('12');
+
     component.previewBeat = 6;
     fixture.detectChanges();
     expect(component.reach()).toBe(12000);
     expect(
-      fixture.nativeElement.querySelector('[data-testid="dashboard-followers"]').textContent,
+      fixture.nativeElement.querySelector('[data-testid="dashboard-influencer-metrics"]')
+        .textContent,
     ).toContain('12');
-    expect(component.fmt(12000)).toBe('12\u00a0000');
+    expect(component.fmt(12000)).toBe('12 000');
   });
 
   it('the finale’s restart plays the story again', () => {

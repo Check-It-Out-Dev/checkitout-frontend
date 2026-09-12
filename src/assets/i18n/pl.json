@@ -1163,11 +1163,6 @@
       "notifications": {
         "new_applications": "3 nowe zgłoszenia"
       },
-      "buttons": {
-        "launch": "Uruchom",
-        "review": "Przejrzyj zgłoszenia",
-        "download_report": "Pobierz raport"
-      },
       "analytics": {
         "post_published": "Post na Instagramie opublikowany",
         "live_status": "Aktywny od 2 godzin",
@@ -1199,10 +1194,6 @@
       }
     ],
     "dashboard_preview": {
-      "scroll_hint": {
-        "mobile": "Przewiń, aby zobaczyć więcej",
-        "desktop": "Sprawdź postęp"
-      },
       "steps": {
         "campaign_created": {
           "title": "Kampania utworzona",
@@ -1390,6 +1381,43 @@
         "progress": {
           "title": "Proces współpracy"
         }
+      },
+      "empty": {
+        "discovering": {
+          "title": "Ola przegląda kampanie",
+          "note": "Twoja oferta jest już na jej liście."
+        }
+      },
+      "stepper": {
+        "go_to": "Przejdź do kroku"
+      },
+      "post": {
+        "handle": "ola.kowalska",
+        "kind": "Reel",
+        "duration": "0:24",
+        "caption": "Kawiarnia na Starówce ☕ #współpraca",
+        "recording": "Nagrywanie",
+        "published_at": "Opublikowano · dziś 18:30"
+      },
+      "application": {
+        "title": "Twoje zgłoszenie",
+        "items": [
+          "Profil",
+          "Statystyki",
+          "Portfolio"
+        ]
+      },
+      "acceptance": {
+        "title": "Firma wybrała Cię do kampanii"
+      },
+      "flight": {
+        "campaign_created": "Brief kampanii",
+        "influencer_application": "Zgłoszenie Oli",
+        "review_selection": "Akceptacja",
+        "agreement_planning": "Warunki",
+        "content_creation": "Reel do akceptacji",
+        "content_approval": "Zatwierdzone",
+        "publication_results": "Wyniki"
       }
     },
     "testimonials": {
@@ -1965,7 +1993,7 @@
               "d": "weryfikowalna zgoda · prawdziwe usuwanie"
             },
             "tests": {
-              "t": "10 728 testów",
+              "t": "10 742 testów",
               "d": "jednostkowe · integracyjne · E2E"
             },
             "graph": {
@@ -2051,7 +2079,7 @@
             "detail": "131 fixture'ów sandboksa na 2 silnikach chromium — baseliny commitowane i przeglądane jako obrazy w diffie"
           },
           "unit": {
-            "count": "1 142",
+            "count": "1 147",
             "name": "Specyfikacje jednostkowe",
             "detail": "Jest, jedna suita na komponent i serwis — działa na końcu bramki, z --bail"
           }

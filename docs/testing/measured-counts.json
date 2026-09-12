@@ -1,15 +1,15 @@
 {
   "$comment": "Written by tools/measure-test-counts.mjs. Do not hand-edit — run `npm run measure:counts`. check-published-numbers.mjs asserts every published figure against this file.",
-  "measuredAt": "2026-09-06",
+  "measuredAt": "2026-09-12",
   "jest": {
-    "tests": 1142,
+    "tests": 1147,
     "suites": 131
   },
   "playwright": {
     "projects": {
       "bdd": 148,
-      "chromium-desktop": 452,
-      "mobile-chrome": 452,
+      "chromium-desktop": 461,
+      "mobile-chrome": 461,
       "perf": 78,
       "mobile-safari": 41,
       "tablet-safari": 41
@@ -17,22 +17,22 @@
     "tiers": {
       "integration": 222,
       "visualParity": 41,
-      "sandbox": 44,
+      "sandbox": 53,
       "scenarios": 6,
       "msw": 1,
       "visual": 138
     },
-    "distinct": 678
+    "distinct": 687
   },
-  "total": 1820,
-  "offline": 1403,
+  "total": 1834,
+  "offline": 1417,
   "generatedClient": {
     "models": 181,
     "services": 41
   },
   "gates": {
-    "i18nKeys": 4478,
-    "i18nTemplates": 51,
+    "i18nKeys": 4492,
+    "i18nTemplates": 52,
     "visualFixtures": 140,
     "integrationSpecsCiting": 67,
     "bdd": {
@@ -48,24 +48,24 @@
   },
   "coverage": {
     "lines": {
-      "pct": 77.72,
-      "covered": 5369,
-      "total": 6908
+      "pct": 77.82,
+      "covered": 5402,
+      "total": 6941
     },
     "statements": {
-      "pct": 76.34,
-      "covered": 5983,
-      "total": 7837
+      "pct": 76.46,
+      "covered": 6024,
+      "total": 7878
     },
     "branches": {
-      "pct": 68.21,
-      "covered": 2028,
-      "total": 2973
+      "pct": 68.41,
+      "covered": 2047,
+      "total": 2992
     },
     "functions": {
-      "pct": 64.71,
-      "covered": 1269,
-      "total": 1961
+      "pct": 64.9,
+      "covered": 1280,
+      "total": 1972
     }
   },
   "siblings": {

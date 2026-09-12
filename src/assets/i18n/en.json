@@ -1163,11 +1163,6 @@
       "notifications": {
         "new_applications": "3 new applications"
       },
-      "buttons": {
-        "launch": "Launch",
-        "review": "Review Applications",
-        "download_report": "Download Report"
-      },
       "analytics": {
         "post_published": "Instagram Post Published",
         "live_status": "Live since 2 hours ago",
@@ -1199,10 +1194,6 @@
       }
     ],
     "dashboard_preview": {
-      "scroll_hint": {
-        "mobile": "Scroll to see more",
-        "desktop": "Check the progress"
-      },
       "steps": {
         "campaign_created": {
           "title": "Campaign Created",
@@ -1390,6 +1381,43 @@
         "progress": {
           "title": "Collaboration process"
         }
+      },
+      "empty": {
+        "discovering": {
+          "title": "Ola is browsing campaigns",
+          "note": "Your offer is already on her list."
+        }
+      },
+      "stepper": {
+        "go_to": "Go to step"
+      },
+      "post": {
+        "handle": "ola.kowalska",
+        "kind": "Reel",
+        "duration": "0:24",
+        "caption": "Café in the Old Town ☕ #collab",
+        "recording": "Recording",
+        "published_at": "Published · today 18:30"
+      },
+      "application": {
+        "title": "Your application",
+        "items": [
+          "Profile",
+          "Stats",
+          "Portfolio"
+        ]
+      },
+      "acceptance": {
+        "title": "The brand picked you for the campaign"
+      },
+      "flight": {
+        "campaign_created": "Campaign brief",
+        "influencer_application": "Ola's application",
+        "review_selection": "Accepted",
+        "agreement_planning": "Terms",
+        "content_creation": "Reel for review",
+        "content_approval": "Approved",
+        "publication_results": "Results"
       }
     },
     "testimonials": {
@@ -1965,7 +1993,7 @@
               "d": "provable consent · real erasure"
             },
             "tests": {
-              "t": "10,728 tests",
+              "t": "10,742 tests",
               "d": "unit · integration · E2E"
             },
             "graph": {
@@ -2051,7 +2079,7 @@
             "detail": "131 sandbox fixtures on 2 chromium engines — committed baselines, reviewed as images in the diff"
           },
           "unit": {
-            "count": "1,142",
+            "count": "1,147",
             "name": "Unit specs",
             "detail": "Jest, one suite per component and service — runs last in the gate, --bail"
           }

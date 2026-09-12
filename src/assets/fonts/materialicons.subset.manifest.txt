@@ -13,6 +13,7 @@ business_center
 call
 campaign
 celebration
+chat_bubble
 check
 check_box
 check_circle
@@ -45,6 +46,7 @@ explore
 extension
 face
 fact_check
+favorite
 filter_alt
 fingerprint
 flag
@@ -62,6 +64,7 @@ inbox
 info
 info_outline
 insert_drive_file
+insights
 instagram
 layers
 light_mode
@@ -110,18 +113,21 @@ smartphone
 sports_tennis
 stars
 storage
+storefront
 support_agent
 swap_horiz
 task_alt
 terminal
 thumb_down
 thumb_up
+travel_explore
 trending_down
 trending_up
 tune
 upload
 verified
 verified_user
+videocam
 visibility
 visibility_off
 vpn_key
