@@ -242,10 +242,21 @@ did not is not.
 | A size cap on critical paths                                             | Zero — the change was already small | Forces the 30-file change into reviewable pieces    |
 
 > [!NOTE]
-> As of 2026-09-12 neither repository has branch protection, a ruleset, or CODEOWNERS: nothing
-> mechanically requires a review at all. Stating that here is the point. A page about human sign-off
-> published from an unprotected repository would otherwise be the first thing a reader disproves.
-> The configuration is written and applied in the slice that follows this document.
+> Until 2026-09-12 neither repository had branch protection, a ruleset, or CODEOWNERS: nothing
+> mechanically required a review at all, and this page was written from inside that position. It
+> ships with the configuration that ends it — a ruleset on `main` in both repositories requiring a
+> pull request and a green `Merge verdict`, with **no bypass for anyone, admins included**, and a
+> CODEOWNERS file naming the invariant surfaces.
+>
+> What the ruleset deliberately does **not** require is an approval. GitHub does not let an author
+> approve their own pull request, so on a repository with one maintainer a required approval makes
+> every pull request permanently unmergeable — the control would have to be bypassed on its first
+> use, which is worse than not having it. So the gate buys two real things, a rendered diff and CI
+> that cannot be skipped, and does not pretend to buy a second reader. Raising the count to 1 the
+> day someone else has write access is a one-line change, and CODEOWNERS is already written for it.
+>
+> This is the honest shape of the problem for a solo maintainer: every mechanism in §5 can be
+> built alone, and the one in this section cannot.
 
 ---
 
@@ -457,22 +468,22 @@ the contract). What is missing is the method, not the data.
 
 _The whole page in one table. ⬜ means designed and not built; nothing here is aspirational prose._
 
-| #   | Mechanism                                           | Status | The machine check today                                                      |
-| --- | --------------------------------------------------- | ------ | ---------------------------------------------------------------------------- |
-| 5   | Ratchets with human-only loosening                  | ✅     | `fuzz-verdict.mjs --write-baseline`, refuses to run in CI                    |
-| 5   | Tests generated from the declared domain            | ✅     | `api-fuzz.yml` (Schemathesis)                                                |
-| 5   | Mutation tiers with floors                          | ✅     | `mutation.yml` both repositories, floors 70 and 40                           |
-| 5   | Published numbers gated against a generated file    | ✅     | `check-published-numbers.mjs` (G15)                                          |
-| 7   | Byte-identical contract artefact                    | 🟡     | Generated deterministically; **nothing compares the two repositories** — §10 |
-| 5   | Checks on the diff rather than at night             | 🟡     | The expensive tiers are nightly                                              |
-| 11  | Dismissal register                                  | 🟡     | Convention holds by hand; no check                                           |
-| 12  | Subscription transition table and generated diagram | ⬜     | none yet                                                                     |
-| 12  | Reference-model differential testing                | ⬜     | none yet                                                                     |
-| 5   | Model checking the webhook races                    | ⬜     | none yet                                                                     |
-| 9   | Attestations and seeded canaries                    | ⬜     | none yet                                                                     |
-| 9   | Branch protection, rulesets, CODEOWNERS             | ⬜     | **none — anyone with write access can push to `main` today**                 |
-| 13  | Seeded-violation detection rate                     | ⬜     | none yet                                                                     |
-| 13  | Test-population method                              | ⬜     | open problem — §13                                                           |
+| #   | Mechanism                                           | Status | The machine check today                                                                                                            |
+| --- | --------------------------------------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| 5   | Ratchets with human-only loosening                  | ✅     | `fuzz-verdict.mjs --write-baseline`, refuses to run in CI                                                                          |
+| 5   | Tests generated from the declared domain            | ✅     | `api-fuzz.yml` (Schemathesis)                                                                                                      |
+| 5   | Mutation tiers with floors                          | ✅     | `mutation.yml` both repositories, floors 70 and 40                                                                                 |
+| 5   | Published numbers gated against a generated file    | ✅     | `check-published-numbers.mjs` (G15)                                                                                                |
+| 7   | Byte-identical contract artefact                    | 🟡     | Generated deterministically; **nothing compares the two repositories** — §10                                                       |
+| 5   | Checks on the diff rather than at night             | 🟡     | The expensive tiers are nightly                                                                                                    |
+| 11  | Dismissal register                                  | 🟡     | Convention holds by hand; no check                                                                                                 |
+| 12  | Subscription transition table and generated diagram | ⬜     | none yet                                                                                                                           |
+| 12  | Reference-model differential testing                | ⬜     | none yet                                                                                                                           |
+| 5   | Model checking the webhook races                    | ⬜     | none yet                                                                                                                           |
+| 9   | Attestations and seeded canaries                    | ⬜     | none yet                                                                                                                           |
+| 9   | Branch protection, rulesets, CODEOWNERS             | 🟡     | Ruleset on `main`, both repositories: pull request required, `Merge verdict` required, no bypass. Zero approvals required — see §9 |
+| 13  | Seeded-violation detection rate                     | ⬜     | none yet                                                                                                                           |
+| 13  | Test-population method                              | ⬜     | open problem — §13                                                                                                                 |
 
 ---
 

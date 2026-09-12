@@ -60,9 +60,17 @@ than a verdict on one person.
   after the fact — including to the person who gave it.
 - Size caps will occasionally be inconvenient and must be overridable with a reason, or they will be
   routed around silently, which is worse than not having them.
-- None of this works until something mechanically requires review at all: as of 2026-09-12 neither
-  repository has branch protection, a ruleset, or CODEOWNERS. That configuration is the prerequisite
-  slice, and this ADR is void without it.
+- The prerequisite landed with this ADR rather than before it: both repositories now carry a
+  ruleset on `main` that requires a pull request and a green `Merge verdict`, with no bypass for
+  anyone, and a CODEOWNERS file naming the invariant surfaces. What it does **not** require is an
+  approval, and that is deliberate — GitHub does not let an author approve their own pull request,
+  so on a repository with one maintainer a required approval makes every pull request unmergeable.
+  The gate therefore buys a rendered diff and enforced CI, not a second pair of eyes. Raising the
+  count to 1 the day a second person has write access is a one-line change.
+- Which means the controls in this ADR are not decoration on top of a working review process; on a
+  single-maintainer repository they are the only thing that could make review mean anything at all.
+  That is an argument for building them, and also an admission that their value here cannot be
+  demonstrated until someone else reviews something.
 
 ## Rejected
 

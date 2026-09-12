@@ -1,0 +1,37 @@
+# Who owns what, for the paths where a change means a change to the rules.
+#
+# The organisation has no teams, so owners are individuals. Four accounts hold admin on this
+# repository: @RamzesX, @filip-plata, @jakubs21, @pZmudzki.
+#
+# Today this file documents ownership rather than enforcing it: the ruleset on main requires a
+# pull request and a green `Merge verdict`, but zero approvals, because GitHub does not let an
+# author approve their own pull request and this repository has one maintainer. Requiring an
+# approval with no bypass would make every pull request unmergeable. The moment a second person
+# has write access, raising that count to 1 turns every line below into a hard gate with no other
+# change needed. See docs/ci/GOVERNING-MACHINE-WRITTEN-CHANGE.md §9.
+
+*                                   @RamzesX
+
+# ── The invariant surfaces ────────────────────────────────────────────────────
+# An agent may propose any of these and ratify none of them.
+
+# Ratchets and budgets: lowering is free, raising is a governance event.
+/tools/ci/fuzz-baseline.json        @RamzesX
+/docs/testing/measured-counts.json  @RamzesX
+
+# The gates themselves, and the parity check that stops one half being wired without the other.
+/.github/workflows/                 @RamzesX
+/tools/check-published-numbers.mjs  @RamzesX
+/tools/check-gate-parity.mjs        @RamzesX
+/.husky/pre-commit                  @RamzesX
+/package.json                       @RamzesX
+
+# The contract. This copy is the consumer side of the drift gate.
+/docs/openapi/                      @RamzesX
+
+# Scanner configuration: an exclusion here is a dismissal that never appears in the alert list.
+/sonar-project.properties           @RamzesX
+/stryker.conf.json                  @RamzesX
+
+# The design of record and its ADRs.
+/docs/ci/                           @RamzesX
