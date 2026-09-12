@@ -126,7 +126,7 @@ test.describe('Sandbox · InteractiveDashboardPreviewComponent', () => {
     page.evaluate(async (t) => {
       const el = document.querySelector('[data-testid="dashboard-flight"]')!;
       const anims = el.getAnimations() as CSSAnimation[];
-      const flight = anims.find((a) => /flight-(ltr|rtl|up|down)/.test(a.animationName));
+      const flight = anims.find((a) => /cargo-flight/.test(a.animationName));
       if (!flight) return null;
       for (const a of anims) {
         a.pause();

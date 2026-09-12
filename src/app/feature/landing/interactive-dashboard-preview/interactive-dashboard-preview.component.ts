@@ -143,113 +143,62 @@ const BADGES: Record<string, { icon: string; actor: 'brand' | 'influencer' }> = 
        enters: the message is consumed, not left lying on the pane. Transform
        and opacity only.
 
-       One animation per rule, on purpose. The dissolve used to be a second
-       name in the \`animation-name\` list, and the production build scoped
-       only the first name inside the @media block — the dev server scoped
-       both, so every test passed while the live site kept the cargo. Appear,
-       cross, land and dissolve are one set of keyframes; the fade's segment
+       One set of keyframes and one animation name, on purpose: the geometry
+       per direction lives in two custom properties. The dissolve used to be a
+       second name in the \`animation-name\` list, and the production build
+       scoped only the first name inside the @media block — the dev server
+       scoped both, so every test passed while the live site kept the cargo.
+       Appear, cross, land and dissolve are one animation; the fade's segment
        carries its own timing function. */
     .flight-lane {
       container-type: size;
     }
+    .flight {
+      left: 50%;
+      --at-home: translate(-50%, 0);
+      animation: cargo-flight ${CARGO_MS}ms cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
     .flight[data-direction='ltr'] {
       top: 0;
-      left: 50%;
-      animation: flight-down ${CARGO_MS}ms cubic-bezier(0.4, 0, 0.2, 1) both;
+      --at-receiver: translate(-50%, calc(100cqh - 100%));
     }
     .flight[data-direction='rtl'] {
       bottom: 0;
-      left: 50%;
-      animation: flight-up ${CARGO_MS}ms cubic-bezier(0.4, 0, 0.2, 1) both;
+      --at-receiver: translate(-50%, calc(100% - 100cqh));
     }
     @media (min-width: 1280px) {
-      .flight[data-direction='ltr'] {
+      .flight {
         top: 0;
+        --at-home: translateX(0);
+      }
+      .flight[data-direction='ltr'] {
         left: 0;
-        animation: flight-ltr ${CARGO_MS}ms cubic-bezier(0.4, 0, 0.2, 1) both;
+        --at-receiver: translateX(calc(100cqw - 100%));
       }
       .flight[data-direction='rtl'] {
-        top: 0;
         bottom: auto;
         left: auto;
         right: 0;
-        animation: flight-rtl ${CARGO_MS}ms cubic-bezier(0.4, 0, 0.2, 1) both;
+        --at-receiver: translateX(calc(100% - 100cqw));
       }
     }
-    @keyframes flight-ltr {
+    @keyframes cargo-flight {
       from {
         opacity: 0;
-        transform: translateX(0) scale(0.92);
+        transform: var(--at-home) scale(0.92);
       }
       ${APPEAR_PCT} {
         opacity: 1;
-        transform: translateX(0) scale(1);
+        transform: var(--at-home) scale(1);
       }
       ${LAND_PCT} {
         opacity: 1;
-        transform: translateX(calc(100cqw - 100%)) scale(1);
+        transform: var(--at-receiver) scale(1);
         animation-timing-function: ease-in;
       }
       to {
         opacity: 0;
-        transform: translateX(calc(100cqw - 100%)) scale(1);
-      }
-    }
-    @keyframes flight-rtl {
-      from {
-        opacity: 0;
-        transform: translateX(0) scale(0.92);
-      }
-      ${APPEAR_PCT} {
-        opacity: 1;
-        transform: translateX(0) scale(1);
-      }
-      ${LAND_PCT} {
-        opacity: 1;
-        transform: translateX(calc(100% - 100cqw)) scale(1);
-        animation-timing-function: ease-in;
-      }
-      to {
-        opacity: 0;
-        transform: translateX(calc(100% - 100cqw)) scale(1);
-      }
-    }
-    @keyframes flight-down {
-      from {
-        opacity: 0;
-        transform: translate(-50%, 0) scale(0.92);
-      }
-      ${APPEAR_PCT} {
-        opacity: 1;
-        transform: translate(-50%, 0) scale(1);
-      }
-      ${LAND_PCT} {
-        opacity: 1;
-        transform: translate(-50%, calc(100cqh - 100%)) scale(1);
-        animation-timing-function: ease-in;
-      }
-      to {
-        opacity: 0;
-        transform: translate(-50%, calc(100cqh - 100%)) scale(1);
-      }
-    }
-    @keyframes flight-up {
-      from {
-        opacity: 0;
-        transform: translate(-50%, 0) scale(0.92);
-      }
-      ${APPEAR_PCT} {
-        opacity: 1;
-        transform: translate(-50%, 0) scale(1);
-      }
-      ${LAND_PCT} {
-        opacity: 1;
-        transform: translate(-50%, calc(100% - 100cqh)) scale(1);
-        animation-timing-function: ease-in;
-      }
-      to {
-        opacity: 0;
-        transform: translate(-50%, calc(100% - 100cqh)) scale(1);
+        transform: var(--at-receiver) scale(1);
       }
     }
 
