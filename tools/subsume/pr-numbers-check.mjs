@@ -15,7 +15,7 @@
  * diagram.md, pack.md), each also in its grouped form and rounded to one and two decimals, because
  * a step summary prints 5,190 for 5190 and 39.9 for 39.93.
  */
-import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, sep } from 'node:path';
 
 const NOT_A_MEASUREMENT = [
@@ -61,9 +61,16 @@ export function vouchedBy(dir) {
     else if (v && typeof v === 'object') Object.values(v).forEach(addValue);
   };
   const walk = (d) => {
-    for (const name of readdirSync(d)) {
+    let entries;
+    try {
+      entries = readdirSync(d, { withFileTypes: true });
+    } catch {
+      return; // no such directory: nothing to read, and no check-then-read window either
+    }
+    for (const entry of entries) {
+      const name = entry.name;
       const p = join(d, name);
-      if (statSync(p).isDirectory()) walk(p);
+      if (entry.isDirectory()) walk(p);
       else if (/\.json$/i.test(name)) {
         try {
           addValue(JSON.parse(readFileSync(p, 'utf8')));
@@ -76,7 +83,7 @@ export function vouchedBy(dir) {
       }
     }
   };
-  if (existsSync(dir)) walk(dir);
+  walk(dir);
   return set;
 }
 

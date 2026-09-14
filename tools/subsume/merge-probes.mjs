@@ -10,9 +10,16 @@
  *   node tools/subsume/merge-probes.mjs [reports/subsume]
  */
 import { existsSync, readdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve, sep } from 'node:path';
 
-const dir = process.argv[2] ?? join(process.cwd(), 'reports', 'subsume');
+// The directory is an argument, so it is resolved and kept inside the working tree: every caller
+// passes reports/subsume, and a path that escapes the tree is a mistake, not a use case.
+const root = process.cwd();
+const dir = resolve(root, process.argv[2] ?? join('reports', 'subsume'));
+if (dir !== root && !dir.startsWith(root + sep)) {
+  console.error('merge-probes: the directory must be inside the working tree');
+  process.exit(2);
+}
 if (!existsSync(dir)) {
   console.error(`merge-probes: no ${dir} — run jest with --coverage first`);
   process.exit(2);

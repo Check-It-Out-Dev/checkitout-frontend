@@ -50,10 +50,10 @@ describe('exact cover', () => {
   it('finds the minimum where greedy does not, and certifies it', async () => {
     const m = trap();
     const g = greedyCover(m);
-    expect([...g.kept].sort()).toEqual(['B', 'C']); // 7 s
+    expect([...g.kept].sort((a, b) => a.localeCompare(b))).toEqual(['B', 'C']); // 7 s
     const r = await exactCover(m);
-    expect([...r.kept].sort()).toEqual(['A', 'B']); // 6 s
-    expect(r.residual.sort()).toEqual(['C', 'D']);
+    expect([...r.kept].sort((a, b) => a.localeCompare(b))).toEqual(['A', 'B']); // 6 s
+    expect(r.residual.sort((a, b) => a.localeCompare(b))).toEqual(['C', 'D']);
     expect(r.solver).toMatchObject({
       method: 'mip',
       greedyCost: 7,
@@ -88,8 +88,8 @@ describe('exact cover', () => {
       for (const p of t.probes) probes.add(p);
       for (const k of t.kills) kills.add(k);
     }
-    expect([...probes].sort()).toEqual(['u|1', 'u|2', 'u|3']);
-    expect([...kills].sort()).toEqual(['m1', 'm2']);
+    expect([...probes].sort((a, b) => a.localeCompare(b))).toEqual(['u|1', 'u|2', 'u|3']);
+    expect([...kills].sort((a, b) => a.localeCompare(b))).toEqual(['m1', 'm2']);
     expect(r.uncovered).toEqual(['kill:m3', 'u|4']); // only the flaky test reaches these
     expect(r.solver.flakyOnly).toBe(2);
   });
@@ -102,8 +102,8 @@ describe('exact cover', () => {
       { id: 'same', probes: ['z', 'w'], seconds: 2 }, // same rows as big at the same cost: big wins the tie
     ]);
     const r = reduce(m);
-    expect([...r.forced].sort()).toEqual(['big', 'only']); // big becomes essential once its rivals go
-    expect([...r.dropped].sort()).toEqual(['same', 'small']);
+    expect([...r.forced].sort((a, b) => a.localeCompare(b))).toEqual(['big', 'only']); // big becomes essential once its rivals go
+    expect([...r.dropped].sort((a, b) => a.localeCompare(b))).toEqual(['same', 'small']);
     expect(r.columns).toEqual([]);
     expect(r.rows).toEqual([]);
   });
@@ -117,11 +117,9 @@ describe('exact cover', () => {
     const r = reduce(m);
     expect(r.forced.size).toBe(0);
     expect(r.dropped.size).toBe(0);
-    expect(r.rows.map((row) => row.elements.sort().join(',')).sort()).toEqual([
-      'u|w',
-      'u|x,u|y',
-      'u|z',
-    ]);
+    expect(
+      r.rows.map((row) => row.elements.sort().join(',')).sort((a, b) => a.localeCompare(b)),
+    ).toEqual(['u|w', 'u|x,u|y', 'u|z']);
   });
 
   it('is decided by the reductions alone when nothing is left to choose', async () => {
@@ -130,7 +128,7 @@ describe('exact cover', () => {
       { id: 'q', probes: ['2'], seconds: 1 },
     ]);
     const r = await exactCover(m);
-    expect([...r.kept].sort()).toEqual(['p', 'q']);
+    expect([...r.kept].sort((a, b) => a.localeCompare(b))).toEqual(['p', 'q']);
     expect(r.solver.method).toBe('reduction');
     expect(r.residual).toEqual([]);
   });

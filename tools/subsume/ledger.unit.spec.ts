@@ -117,7 +117,7 @@ describe('governance ledger', () => {
       }),
     );
     const before2 = killsOf(p)!;
-    expect([...before2.killed].sort()).toEqual(['m1', 'm2', 'm3']); // a time-out is a detection
+    expect([...before2.killed].sort((a, b) => a.localeCompare(b))).toEqual(['m1', 'm2', 'm3']); // a time-out is a detection
     const afterEnv = killsFile(d, 'after-env.json', ['m1', 'm3'], ['m2']);
     const l = ledger({
       round,

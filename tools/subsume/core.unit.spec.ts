@@ -119,7 +119,8 @@ describe('subsume core', () => {
         const b = build({ tests: shuffled.reverse() });
         const ra = greedyCover(a);
         const rb = greedyCover(b);
-        expect([...ra.kept].sort()).toEqual([...rb.kept].sort());
+        const byText = (a: string, b: string) => a.localeCompare(b);
+        expect([...ra.kept].sort(byText)).toEqual([...rb.kept].sort(byText));
       }),
     );
   });

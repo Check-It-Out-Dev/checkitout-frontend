@@ -318,7 +318,7 @@ if (isMain) {
   mkdirSync(out, { recursive: true });
   writeFileSync(join(out, 'invariant-report.json'), JSON.stringify(report, null, 1));
   const line = summaryLine(report);
-  console.log(line);
+  process.stdout.write(line + '\n'); // the one-line result of the tool, on stdout for the caller to read
   if (process.env.GITHUB_STEP_SUMMARY)
     writeFileSync(process.env.GITHUB_STEP_SUMMARY, line + '\n', { flag: 'a' });
   process.exit(report.verdict === 'PASS' ? 0 : report.verdict === 'FAIL' ? 1 : 2);

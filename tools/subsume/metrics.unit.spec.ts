@@ -107,7 +107,7 @@ describe('redundancy metrics', () => {
   it('finds the dominator mutants: those no other killed mutant subsumes', () => {
     // killers: m1 {full, half}, m2 {full}, m3 {full, edge}, m4 {edge}, m9 {shaky: flaky → no reliable killer}
     // m2 ⊂ m1 and m2 ⊂ m3 (every test killing m2 kills them) → m1, m3 dominated; m4 stands
-    expect([...dominators(m)].sort()).toEqual(['m2', 'm4']);
+    expect([...dominators(m)].sort((a, b) => a.localeCompare(b))).toEqual(['m2', 'm4']);
   });
 
   it('measures the suite before and after a reduction, with zero loss by construction', () => {
@@ -128,6 +128,6 @@ describe('redundancy metrics', () => {
       flaky: 1,
     });
     // redundant seconds: half 1 + quiet 0.5 + blind 0.5 = 2 of 5 reliable seconds
-    expect(s.redundancyShare).toBe(0.4);
+    expect(s.redundancyShare).toBeCloseTo(0.4, 12);
   });
 });

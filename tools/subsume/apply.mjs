@@ -18,7 +18,7 @@
  *   node tools/subsume/apply.mjs --repo backend|frontend --pack <pack.json> --root <repo>
  *        --round N --run-id <id> --base-commit <sha> [--dry-run]
  */
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, sep } from 'node:path';
 
 import ts from 'typescript';
@@ -87,7 +87,7 @@ export function tagJavaMethod(source, chain, method, marker) {
       break;
     }
     depth += braceCount(line);
-    while (stack.length && depth <= stack[stack.length - 1].depth && !decl) stack.pop();
+    if (!decl) while (stack.length && depth <= stack[stack.length - 1].depth) stack.pop();
   }
   if (target < 0) return { source, applied: false, reason: 'not-found' };
   // the annotation block: contiguous non-blank lines above that do not end a statement or a body
@@ -261,11 +261,13 @@ export function applyPack(pack, { repo, root, round, runId, baseCommit, dryRun =
   const files = [];
   for (const [file, items] of [...byFile].sort()) {
     const path = join(root, ...file.split('/'));
-    if (!existsSync(path)) {
+    let source;
+    try {
+      source = readFileSync(path, 'utf8'); // read, not checked-then-read: a missing file is one outcome
+    } catch {
       for (const { x } of items) notApplied.push({ test: x.test, reason: 'file-missing' });
       continue;
     }
-    let source = readFileSync(path, 'utf8');
     let changed = false;
     for (const item of items) {
       const r =
