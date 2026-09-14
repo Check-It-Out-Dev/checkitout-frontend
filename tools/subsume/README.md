@@ -27,9 +27,14 @@ Every producer and consumer names a test the same way, or nothing joins:
 - Jest: `<spec path relative to the repository root, forward slashes> :: <full test name as Jest reports it>`
   — e.g. `src/app/core/auth/auth.service.spec.ts :: AuthService login stores the session`.
   Module-level counters go to `<spec> :: (module load)`.
-- JUnit: `<fully qualified class>#<method>` plus, for a parameterised invocation, `[<index>]` —
-  e.g. `com.sm.instagram.platform.unit.service.TokenExchangeServiceUnitTest#exchange[3]`. The
-  listener and the PIT parser derive it from the same JUnit `MethodSource`, in one function.
+- JUnit: the platform's **unique id, verbatim** —
+  `[engine:junit-jupiter]/[class:com.sm…TokenExchangeServiceUnitTest]/[nested-class:ClearSessionCookiesTests]/[method:shouldClearAllSessionCookies()]`
+  with `/[test-template-invocation:#3]` for a parameterised invocation. That is the string PIT
+  writes into `<killingTests>` (prefixed with the top-level class and a dot, which the parser
+  strips), so the listener records it rather than assembling a prettier one; a display form is
+  derived, never used as a key. `spec` is the binary class name, nested classes included, so a
+  demotion tag has an address. Probes that flip before the first test or after the last go to
+  `(plan setup)` and `(plan teardown)`.
 
 ## Artefacts
 
@@ -67,11 +72,14 @@ and count different things.
 }
 ```
 
-`classes.json`: `{"<fqcn>":{"file":"src/main/java/...","probes":[{"line":41,"method":"bar(Ljava/lang/String;)V","branch":null}, ...]}}`
-— index = probe id; `branch` is the branch index when the probe belongs to a branch, else `null`.
-Collected in-process from `RT.getAgent().getExecutionData(true)` after every test, hit classes only,
-under `com.sm.instagram.platform.*`. Never dumped to the exec file: one dump writes every loaded
-class, about 710 KB, and there are 11,415 tests.
+`classes.json`: `{"<fqcn>":{"file":"src/main/java/...","id":"<jacoco class id, hex>","probes":[{"method":"bar(Ljava/lang/String;)V","lines":[41,42],"branchLines":[42]}, ...]}}`
+— index = probe id; a probe stands for a basic block, so it may cover several lines, and
+`branchLines` are the lines whose branch counter that probe alone moves. Collected in-process from
+`RT.getAgent().getExecutionData(false)` after every test — never with reset, which would leave the
+exec file written at JVM exit holding only the last test — and diffed against the previous
+snapshot; the agent instruments only `com.sm.instagram.platform.*` (`<includes>` in the pom), which
+keeps a snapshot around 100 KB. A `{"final":true,"totals":{"<fqcn>":n}}` record and
+`self-check.json` (`{"tests","classes","mismatches":[]}`) close the file, as for Jest.
 
 ### `kills.json` — designed (both)
 
