@@ -103,6 +103,14 @@ Reasons, in the order they mattered:
   loses none (Shi, Gyori, Gligoric, Zaytsev & Marinov, FSE 2014). The per-test judgement remains
   the invariant check on every test outside the core: minimal (no single test removable) is not
   minimum (least cost), and the gate must hold either way.
+- A test the kill matrix never ran against a mutant is at most a suspect. Kill-subsumption is
+  vacuous for it, exactly as coverage-subsumption is vacuous for a test with no probes; the
+  machine demotes only where both instruments have spoken, and a person may retire the rest in a
+  governance pull request with the coverage invariant still in force. What the reports quote is
+  stated in the literature's forms — per-test coverage and kill redundancy, a score that weights
+  kills over probes and is zero for any sole killer, size and time reduction, kill and probe loss,
+  the dominator score — with the caveat the literature itself gives: none of them measure
+  real-world loss, which the governance ledger tracks over rounds instead.
 - The pull-request tier gains an invariants job in both repositories, fed by the nightly's cache on
   Pages; the nightly gains the matrices. That is §5's "report on the diff, not at night" applied to
   the one metric an agent can most easily game.

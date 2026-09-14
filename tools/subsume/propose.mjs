@@ -17,6 +17,7 @@ import { clusters } from './cluster.mjs';
 import { diagram } from './diagram.mjs';
 import { short } from './ident.mjs';
 import { loadJava, loadJest, realTests } from './load.mjs';
+import { suiteMetrics, testMetrics } from './metrics.mjs';
 import { exactCover } from './solve.mjs';
 import { carriedUnion, carriers, judge } from './subsume.mjs';
 
@@ -48,11 +49,13 @@ export async function propose(
     [...t.probes].filter((p) => reach.get(p) === 1).length +
     [...t.kills].filter((k) => reach.get(`kill:${k}`) === 1).length;
 
+  const perTest = testMetrics(matrix);
   const candidates = [];
   for (const id of cover.residual) {
     const j = judge(matrix, id, cover.kept);
     const t = matrix.tests.get(id);
     const c = j.tier === 'KEEP' ? { carriers: [] } : carriers(matrix, id, cover.kept);
+    const r = perTest.get(id);
     candidates.push({
       test: id,
       tier: j.tier,
@@ -62,10 +65,18 @@ export async function propose(
       subsumedBy: c.carriers,
       why: {
         probes: { own: t.probes.size, unique: j.missingProbes.length },
-        kills: { own: t.kills.size, unique: j.missingKills.length },
+        kills: { own: t.kills.size, unique: j.missingKills.length, covers: t.covers?.size ?? 0 },
         soleKiller: !j.killsOk,
         inMutationScope: j.inScope,
+        mutationObserved: j.mutationObserved,
         unitsOutOfScope: j.outOfScope.length,
+      },
+      redundancy: {
+        covRed: r.covRed,
+        killRed: r.killRed,
+        score: r.score,
+        redundantSeconds: r.redundantSeconds,
+        killsNothing: r.killsNothing,
       },
     });
   }
@@ -77,6 +88,13 @@ export async function propose(
 
   const confirmed = new Set(candidates.filter((c) => c.tier === 'CONFIRMED').map((c) => c.test));
   const kept = tests.filter((t) => !confirmed.has(t.id)).map((t) => t.id);
+  const metrics = suiteMetrics(matrix, new Set(kept), perTest);
+  // individual redundancy (each test against the rest) is not what can go together — that is
+  // the confirmed set, stated beside it so the two are never confused
+  metrics.removableTogether = {
+    tests: confirmed.size,
+    seconds: r1(candidates.filter((c) => confirmed.has(c.test)).reduce((a, c) => a + c.seconds, 0)),
+  };
   const all = carriedUnion(
     matrix,
     tests.map((t) => t.id),
@@ -112,7 +130,9 @@ export async function propose(
       tests: tests.length,
       units: new Set(tests.map((t) => t.spec)).size,
       confirmed: confirmed.size,
+      confirmedKillsNothing: candidates.filter((c) => c.reason === 'kills-nothing').length,
       suspected: candidates.filter((c) => c.tier === 'SUSPECTED').length,
+      notMutationObserved: candidates.filter((c) => c.reason === 'not-mutation-observed').length,
       kept: kept.length,
       unobserved: tests.filter((t) => t.probes.size === 0).length,
       inMutationScope: tests.filter((t) => judge(matrix, t.id, cover.kept).inScope).length,
@@ -122,6 +142,7 @@ export async function propose(
       duplicateClusters: cl.length,
       uncoveredByReliableTests: cover.uncovered.length,
     },
+    metrics,
     solver: cover.solver,
     candidates,
     clusters: cl,
@@ -155,9 +176,24 @@ export function toMarkdown(report) {
         .join(', ')}${carriers.size > 3 ? ` +${carriers.size - 3}` : ''} |`,
     );
   }
+  const m = report.metrics;
+  const v = report.solver;
+  const pct = (x) => `${Math.round(x * 1000) / 10} %`;
   lines.push(
     '',
-    `Not applied: ${s.suspected} suspected candidates.`,
+    `Not applied: ${s.suspected} suspected candidates (${s.notMutationObserved} the kill matrix never ran against a mutant, the rest outside its scope or sole killers). Look twice: ${s.confirmedKillsNothing} confirmed tests kill nothing the matrix models.`,
+    '',
+    '## Metrics',
+    '',
+    '| | Before | After |',
+    '| --- | --- | --- |',
+    `| Tests in the tier | ${m.tests.before} | ${m.tests.after} (−${pct(m.sizeReduction)}) |`,
+    `| Tier seconds | ${m.seconds.before} | ${m.seconds.after} (−${pct(m.timeReduction)}) |`,
+    `| Probes carried | ${s.probes.total} | ${s.probes.carriedAfter} (${m.probeLoss} lost) |`,
+    `| Mutants killed | ${s.kills.total} | ${s.kills.carriedAfter} (${m.killLoss} lost) |`,
+    `| Dominator score | ${m.dominatorScore.before ?? '—'} | ${m.dominatorScore.after ?? '—'} (${m.dominators} dominators) |`,
+    '',
+    `Individually redundant against the rest of the suite — each test on its own, not a count of what can go together: ${pct(m.redundancyShare)} of tier time, ${m.fullyRedundant} tests fully; ${m.soleKillers} sole killers, ${m.flaky} flaky. Removable together, which is what the cover decides: ${m.removableTogether.tests} tests, ${m.removableTogether.seconds} s. Core chosen by ${v.method} (${v.status}; ${v.columns} columns × ${v.distinctRows} rows after ${v.forced} forced and ${v.dominatedDropped} dominated; gap ${v.gapPct ?? '—'} %).`,
     '',
     '## Slowest tests per unique unit',
     '',

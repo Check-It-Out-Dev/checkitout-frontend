@@ -28,6 +28,7 @@ function build(spec: {
       flaky: !!t.flaky,
       probes: new Set(t.probes.map((p) => `u${p % 3}|${p}`)),
       kills: new Set(t.kills.map((k) => `m${k}`)),
+      covers: new Set(t.kills.map((k) => `m${k}`)), // what it kills it ran against
       units: new Set(t.probes.map((p) => `u${p % 3}`)),
     });
     for (const p of t.probes) {
@@ -95,7 +96,9 @@ describe('subsume core', () => {
         for (const id of cover.residual) {
           const j = judge(m, id, cover.kept);
           expect(j.probesOk && j.killsOk).toBe(true);
-          expect(j.tier).toBe('CONFIRMED');
+          // carried either way; CONFIRMED only where the kill matrix ran the test at all
+          expect(j.tier).toBe(j.mutationObserved ? 'CONFIRMED' : 'SUSPECTED');
+          if (!j.mutationObserved) expect(j.reason).toBe('not-mutation-observed');
           const c = carriers(m, id, cover.kept);
           expect(c.uncarried).toEqual([]);
         }
@@ -182,12 +185,12 @@ describe('subsume core', () => {
   it('a test touching a unit outside the kill matrix is at most SUSPECTED', () => {
     const m = build({
       tests: [
-        { id: 'a', probes: [1, 4], kills: [], seconds: 0.1 },
-        { id: 'b', probes: [1, 4], kills: [], seconds: 0.2 },
+        { id: 'a', probes: [1, 4], kills: [1], seconds: 0.1 },
+        { id: 'b', probes: [1, 4], kills: [1], seconds: 0.2 },
       ],
       scopeAll: false,
     });
-    m.scope.add('u1'); // probe 1 → u1, probe 4 → u1 as well; u1 in scope
+    m.scope.add('u1'); // probe 1 → u1, probe 4 → u1 as well; u1 in scope; both kill m1
     expect(judge(m, 'b', new Set(['a'])).tier).toBe('CONFIRMED');
     m.scope.clear();
     expect(judge(m, 'b', new Set(['a'])).tier).toBe('SUSPECTED');

@@ -9,16 +9,16 @@ until its producer ships; a shipped one changes only with its consumer.
 
 ## Parts
 
-| Part                   | Where                                                                                 | Status   | Verified by                                                                                   |
-| ---------------------- | ------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------------------------------------------- |
-| Per-test probes, Jest  | `jest-probes.ts` (hook), `probe-diff.ts`, `merge-probes.mjs`, `check-probes.mjs`      | shipped  | `check-probes.mjs`: the union of a spec's per-test hits equals its final counters, every spec |
-| Per-test probes, JUnit | backend `src/test/java/com/sm/instagram/platform/subsume/ProbeListener.java`          | designed | projection of all tests equals JaCoCo's own line and branch totals on sampled classes         |
-| Kill matrix, frontend  | `stryker.conf.json` → `reports/mutation/mutation.json` with `disableBail: true`       | shipped  | every `KILLED` mutant lists ≥ 1 test in `killedBy`                                            |
-| Kill matrix, backend   | backend PIT profile `mutation-matrix` → `tools/subsume/pit-matrix.mjs` → `kills.json` | designed | same                                                                                          |
-| Core                   | `load.mjs` `project.mjs` `kills.mjs` `cluster.mjs` `subsume.mjs` `cover.mjs`          | designed | property tests (`fast-check`): no probe or kill lost, permutation-invariant, idempotent       |
-| Proposer               | `propose.mjs`, `diagram.mjs`                                                          | designed | seeded violation 6                                                                            |
-| Gate                   | `invariant.mjs` → `check:invariants`                                                  | designed | seeded violations 1–4                                                                         |
-| Agents                 | `agent/role.md` (proposer), `agent/reviewer.md` (reviewer), `pr-numbers-check.mjs`    | written  | seeded violation 5; the first two pull requests                                               |
+| Part                   | Where                                                                                                  | Status                             | Verified by                                                                                                            |
+| ---------------------- | ------------------------------------------------------------------------------------------------------ | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Per-test probes, Jest  | `jest-probes.ts` (hook), `probe-diff.ts`, `merge-probes.mjs`, `check-probes.mjs`                       | shipped                            | `check-probes.mjs`: the union of a spec's per-test hits equals its final counters, every spec                          |
+| Per-test probes, JUnit | backend `src/test/java/com/sm/instagram/platform/subsume/ProbeListener.java`                           | shipped                            | the JaCoCo report of an armed run matches an unarmed run's, package for package and class for class; `exec-check.json` |
+| Kill matrix, frontend  | `stryker.conf.json` → `reports/mutation/mutation.json` with `disableBail: true`                        | shipped                            | every `KILLED` mutant lists ≥ 1 test in `killedBy`; a bailed report is refused                                         |
+| Kill matrix, backend   | backend PIT profile `mutation-matrix` → `tools/subsume/pit-matrix.mjs` → `kills.json`                  | shipped                            | same; `fullMatrix: true` or refused                                                                                    |
+| Core                   | `load.mjs` `project.mjs` `kills.mjs` `cluster.mjs` `subsume.mjs` `cover.mjs` `solve.mjs` `metrics.mjs` | shipped                            | property tests (`fast-check`): no probe or kill lost, permutation-invariant, idempotent; exact cover certified         |
+| Proposer               | `propose.mjs`, `diagram.mjs`                                                                           | shipped                            | seeded violation 6; diagram verified rendered on GitHub                                                                |
+| Gate                   | `invariant.mjs` → `check:invariants`                                                                   | shipped (tool) / designed (CI job) | seeded violations 1, 2, 4; proven on real artefacts                                                                    |
+| Agents                 | `agent/role.md` (proposer), `agent/reviewer.md` (reviewer), `pr-numbers-check.mjs`                     | written                            | seeded violation 5; the first two pull requests                                                                        |
 
 ## One identity for a test
 
@@ -83,9 +83,12 @@ file the agent writes at JVM exit holding only the last test, so the listener ke
 everything it collected and appends it to `target/jacoco-unit.exec` before exit; the report merges
 the blocks and comes out whole, and `exec-check.json` (`{"tests","classes","exec","missingFromExec":[]}`)
 records that the file read back contains every probe of the union. The agent instruments only
-`com.sm.instagram.platform.*` (`<includes>` in the pom), which keeps a snapshot around 100 KB. A
-`{"final":true,"totals":{"<fqcn>":n}}` record closes the file, as for Jest. Measured
-2026-09-14: 10,576 tests, 666 classes with hits, 39,653 probes mapped, self-check clean. About a
+`com.sm.instagram.*` (`<includes>` on the `prepare-agent` execution — at plugin level the report
+goal reads the same parameter as class-file paths and silently empties the report), which keeps
+a snapshot around 100 KB. A `{"final":true,"totals":{"<fqcn>":n}}` record closes the file, as for
+Jest. Measured 2026-09-14: 10,576 tests, 674 classes with hits, self-check clean; the armed run's
+JaCoCo report equals an unarmed run's in packages and classes and differs in five time-dependent
+classes by a net 15 of 29,124 lines. About a
 quarter of the hit classes map to no lines at all: JaCoCo filters Lombok-generated bodies out of
 its reports, so their probes stay in the subsumption universe (a test that exercises them does
 exercise something) but carry no weight in I1, which is measured in the lines JaCoCo reports.
@@ -196,9 +199,41 @@ are the candidates, each then re-checked individually by `subsume.mjs`.
 }
 ```
 
-Tiers: **CONFIRMED** = coverage-subsumed ∧ kill-subsumed ∧ not a sole killer; **SUSPECTED** =
-coverage-subsumed but outside mutation scope or a sole killer inside the flaky window. Only
-CONFIRMED is ever applied. `representative` = the fastest member of a cluster, then the best-named.
+Tiers: **CONFIRMED** = coverage-subsumed ∧ kill-subsumed ∧ inside mutation scope ∧ the kill
+matrix ran the test against at least one mutant; **SUSPECTED** = coverage-subsumed but outside
+mutation scope (`out-of-scope`), never run against a mutant (`not-mutation-observed` — it covers
+only lines no mutant lives on, so kill-subsumption is vacuous), or a sole killer inside the flaky
+window. A CONFIRMED test that kills nothing the matrix models carries `reason: "kills-nothing"`
+and goes on the reviewer's _look twice_ list. Only CONFIRMED is ever applied. `representative` =
+the fastest member of a cluster, then the best-named. The machine acts only where both
+instruments have spoken — measured 2026-09-14 on the backend: of 4,066 coverage-and-kill-carried
+tests, 1,205 had never been run against a mutant and became suspects.
+
+### Redundancy metrics — what a reviewer may quote
+
+Every candidate carries `redundancy` and the summary carries `metrics`, in the forms the
+literature settled on (formulas and sources in `metrics.mjs`), flaky tests removed from every
+union first:
+
+| Per test                                                    | Meaning                                                                                        |
+| ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `covRed` = \|P(t) ∩ P(T∖t)\| / \|P(t)\|                     | share of its coverage the other reliable tests also give (Koochakzadeh, Garousi & Maurer 2009) |
+| `killRed` = \|K(t) ∩ K(T∖t)\| / \|K(t)\|                    | share of its kills the others also make; `killsNothing` when K(t) = ∅                          |
+| `score` = 0 if a sole killer, else 0.3·covRed + 0.7·killRed | kills weighted over probes (Inozemtseva & Holmes 2014); null for flaky                         |
+| `redundantSeconds` = score · seconds                        | the demotion priority                                                                          |
+
+| Suite (`metrics`)                                              | Meaning                                                                                                                                                                                                        |
+| -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sizeReduction`, `timeReduction`                               | 1 − after/before (Rothermel et al. 1998)                                                                                                                                                                       |
+| `probeLoss`, `killLoss`                                        | zero by invariant, measured anyway (Shi et al., FSE 2014)                                                                                                                                                      |
+| `dominatorScore` before/after, `dominators`, `unkilledMutants` | killed dominator mutants over dominators plus every mutant nobody killed — the de-inflated mutation score (Ammann, Delamaro & Offutt 2014; Kurtz et al. 2016); the backend's 40 % raw PIT score is 18.8 % here |
+| `redundancyShare` = Σ score·seconds / Σ seconds                | the share of tier time that is _individually_ redundant — each test against the rest, which is not what can go together (that is the cover's decision, stated as `removableTogether`)                          |
+| `removableTogether`                                            | the confirmed set: tests and seconds that leave the tier in one round                                                                                                                                          |
+| `fullyRedundant`, `soleKillers`, `flaky`                       | counts                                                                                                                                                                                                         |
+
+What none of these measure is real-world loss (Shi et al., ISSTA 2018: up to 52 % of failed
+builds missed by reductions such metrics called safe); that is the governance ledger's
+failed-build proxy, tracked over rounds.
 
 ### The core: an exact cover, with a certificate
 

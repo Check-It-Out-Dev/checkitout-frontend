@@ -28,6 +28,7 @@ function build(
       flaky: !!t.flaky,
       probes: new Set(t.probes),
       kills: new Set(t.kills ?? []),
+      covers: new Set(t.kills ?? []),
       units: new Set(t.probes.map((p) => p.split('|')[0])),
     });
     for (const p of t.probes)
@@ -103,6 +104,14 @@ describe('propose', () => {
     expect(report.solver.method).toMatch(/^(mip|reduction)$/);
     expect(report.solver.incumbentCost).toBeLessThanOrEqual(report.solver.greedyCost);
     expect(report.solver.gapPct).toBe(0);
+  });
+
+  it('carries the redundancy score per candidate and the suite metrics, both stated', () => {
+    const c = report.candidates.find((x) => x.test === 'A.spec :: restates part of it')!;
+    expect(c.redundancy).toMatchObject({ covRed: 1, killRed: 1, score: 1, killsNothing: false });
+    expect(report.metrics).toMatchObject({ probeLoss: 0, killLoss: 0 });
+    expect(report.metrics.tests.after).toBe(report.summary.kept);
+    expect(toMarkdown(report)).toContain('| Probes carried |');
   });
 
   it('confirms only what the kept tests carry inside the kill matrix scope', () => {

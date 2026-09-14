@@ -49,16 +49,26 @@ export function judge(
   const probesOk = missingProbes.length === 0;
   const killsOk = missingKills.length === 0;
   // A test the instrument cannot see — no probe at all, because it loads nothing instrumented —
-  // would satisfy "every probe is carried" vacuously. It is unobserved, not redundant.
+  // would satisfy "every probe is carried" vacuously. It is unobserved, not redundant. The same
+  // holds on the kill side: a test the kill matrix never ran against any mutant (it covers only
+  // lines no mutant lives on) satisfies "every kill is carried" vacuously, so it is at most a
+  // suspect — the machine acts only where both instruments have spoken.
   const unobserved = t.probes.size === 0;
+  const mutationObserved = t.kills.size > 0 || (t.covers?.size ?? 0) > 0;
   let tier = 'KEEP';
   let reason = null;
   if (t.flaky) reason = 'flaky';
   else if (unobserved) reason = 'unobserved';
-  else if (probesOk && killsOk && inScope) tier = 'CONFIRMED';
-  else if (probesOk) {
+  else if (probesOk && killsOk && inScope && mutationObserved) {
+    tier = 'CONFIRMED';
+    if (t.kills.size === 0) reason = 'kills-nothing'; // exercised by the matrix, detects nothing it models
+  } else if (probesOk) {
     tier = 'SUSPECTED';
-    reason = inScope ? 'sole-killer' : 'out-of-scope';
+    reason = !inScope
+      ? 'out-of-scope'
+      : !mutationObserved
+        ? 'not-mutation-observed'
+        : 'sole-killer';
   } else reason = 'unique-probes';
   const outOfScope = [...t.units].filter((u) => !matrix.scope.has(u));
   return {
@@ -69,6 +79,7 @@ export function judge(
     killsOk,
     inScope,
     unobserved,
+    mutationObserved,
     flaky: t.flaky,
     missingProbes,
     missingKills,

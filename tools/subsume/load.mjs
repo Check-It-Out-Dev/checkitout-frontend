@@ -34,6 +34,7 @@ function test(matrix, id, spec, seconds) {
       flaky: false,
       probes: new Set(),
       kills: new Set(),
+      covers: new Set(), // mutants the kill matrix ran this test against, killed or not
       units: new Set(),
     };
     matrix.tests.set(id, t);
@@ -125,19 +126,24 @@ export function loadJest({ probes, maps, mutation, flaky }) {
       const unit = file.replace(/\\/g, '/');
       m.scope.add(unit);
       for (const mu of fv.mutants) {
-        const killers = new Set(
-          (mu.killedBy ?? []).map((id) => byId.get(String(id)) ?? `stryker-test:${id}`),
-        );
+        const name = (x) => byId.get(String(x)) ?? `stryker-test:${x}`;
+        const killers = new Set((mu.killedBy ?? []).map(name));
+        const coverers = new Set((mu.coveredBy ?? []).map(name));
         const id = `${unit}#${mu.id}`;
         m.mutants.set(id, {
           unit,
           line: mu.location?.start?.line ?? null,
           status: mu.status,
           killers,
+          coverers,
         });
         for (const k of killers) {
           const t = m.tests.get(k);
           if (t) t.kills.add(id);
+        }
+        for (const c of coverers) {
+          const t = m.tests.get(c);
+          if (t) t.covers.add(id);
         }
       }
     }
@@ -185,10 +191,15 @@ export function loadJava({ probes, classes, kills, flaky }) {
     for (const [id, mu] of Object.entries(r.mutants)) {
       m.scope.add(mu.class);
       const killers = new Set(mu.killedBy);
-      m.mutants.set(id, { unit: mu.class, line: mu.line, status: mu.status, killers });
+      const coverers = new Set(mu.coveredBy ?? []);
+      m.mutants.set(id, { unit: mu.class, line: mu.line, status: mu.status, killers, coverers });
       for (const k of killers) {
         const t = m.tests.get(k);
         if (t) t.kills.add(id);
+      }
+      for (const c of coverers) {
+        const t = m.tests.get(c);
+        if (t) t.covers.add(id);
       }
     }
   }
