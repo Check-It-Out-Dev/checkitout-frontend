@@ -96,12 +96,47 @@ jobs:
             ◇ Reviewer — Claude Code Action · quotes gate numbers only · never approves
             and its last line is exactly:
             I do not approve or merge; a person does.
-            Then post it with exactly this command and nothing else:
-            gh pr comment ${{ env.PR }} --body-file reports/review/comment.md
-          claude_args: '--allowedTools Read,Glob,Grep,Write,Bash(ls:*),Bash(cat:*),Bash(gh pr comment:*) --max-turns 25'
+            Do not post it and do not run any other command: the workflow posts it after checking every number in it.
+          claude_args: '--allowedTools Read,Glob,Grep,Write,Bash(ls:*),Bash(cat:*) --max-turns 25'
 
       - name: Every number in the review is in a report (I5)
+        id: i5
+        continue-on-error: true
         run: node tools/subsume/pr-numbers-check.mjs --comment reports/review/comment.md --reports reports/review
+
+      # The workflow posts, not the model, and only after I5: a review with a number from
+      # nowhere never reaches the pull request, and the person is told that it was withheld.
+      # One sticky comment per pull request, replaced on every run.
+      - name: Post the comment
+        if: always()
+        env:
+          I5: ${{ steps.i5.outcome }}
+        run: |
+          {
+            echo '<!-- ai-review -->'
+            if [ "$I5" = "success" ] && [ -s reports/review/comment.md ]; then
+              cat reports/review/comment.md
+            else
+              echo '◇ Reviewer — Claude Code Action · quotes gate numbers only · never approves'
+              echo
+              echo "The review was withheld: a number in it is in no report (I5: $I5), or no comment was written. The run's log and the ai-review artefact have it."
+              echo
+              echo 'I do not approve or merge; a person does.'
+            fi
+          } > comment-post.md
+          ID=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" --paginate --jq '.[] | select(.body | startswith("<!-- ai-review -->")) | .id' | head -n 1)
+          if [ -n "$ID" ]; then gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$ID" -F body=@comment-post.md >/dev/null
+          else gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" -F body=@comment-post.md >/dev/null; fi
+
+      - name: Verdict
+        if: always()
+        env:
+          I5: ${{ steps.i5.outcome }}
+        run: |
+          case "$I5" in
+            success) echo "I5 PASS — the review is posted";;
+            *) echo "::error::the review was withheld (I5 $I5)"; exit 1;;
+          esac
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()
