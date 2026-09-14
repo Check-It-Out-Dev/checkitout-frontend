@@ -18,7 +18,11 @@ export function gains(l) {
       'Tests in the tier',
       n(l.before.tests),
       n(l.after.tests),
-      l.gains.tests != null ? `−${n(l.gains.tests)}` : '—',
+      l.gains.tests != null
+        ? l.gains.tests >= 0
+          ? `−${n(l.gains.tests)}`
+          : `+${n(-l.gains.tests)}`
+        : '—',
       'down',
     ],
     [

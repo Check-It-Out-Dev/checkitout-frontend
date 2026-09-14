@@ -123,7 +123,7 @@ jobs:
         run: |
           node tools/subsume/ledger.mjs --round docs/testing/governance/round.json \
             --proposal base/subsume-report.json --invariants reports/subsume/invariant-report.json \
-            --suite jest-results.json --seconds-after "$SECONDS_AFTER" \
+            --suite jest-results.json --head-probes reports/subsume/probes.jsonl --seconds-after "$SECONDS_AFTER" \
             --kills-before base/mutation.json --kills-after reports/mutation/mutation.json \
             --changed changed.txt --random-order "$RANDOM_ORDER" --out reports/subsume
 

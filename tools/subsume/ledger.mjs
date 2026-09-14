@@ -7,10 +7,14 @@
  *   node tools/subsume/ledger.mjs --round docs/testing/governance/round.json
  *        --proposal <subsume-report.json of the proposal run>
  *        --invariants <invariant-report.json of this run>
- *        --suite <surefire-reports dir | jest-results.json> --seconds-after <tier wall seconds>
- *        [--seconds-before <tier wall seconds of the proposal run>]
+ *        --suite <surefire-reports dir | jest-results.json> --head-probes <probes.jsonl of this run>
+ *        [--seconds-after <tier wall seconds, reported beside the per-test sum>]
  *        [--kills-before <kills.json|mutation.json> --kills-after <kills.json|mutation.json>]
  *        [--random-order pass|fail] --out reports/subsume
+ *
+ * Tests and seconds are counted by the probes on both sides — the proposal's before and this
+ * run's after — never one side by surefire and the other by the probes: surefire counts
+ * parameterised invocations, the probes count methods, and wall seconds include compilation.
  *
  * Merge rule, machine-checked: at least one of {tests, seconds, lines} lower AND none of
  * {coverage on unchanged code (I1), kills on unchanged code (I2), mutation score} lower, the suite
@@ -55,18 +59,40 @@ export function killsOf(path) {
   };
 }
 
+/** Tests and the sum of their own seconds in an armed run's probes.jsonl — the same instrument
+ *  the proposal's "before" used, so before and after are counted alike (surefire counts
+ *  parameterised invocations, the probes count methods; wall seconds include compilation). */
+export function probesTally(path) {
+  if (!path || !existsSync(path)) return null;
+  let tests = 0;
+  let seconds = 0;
+  for (const line of readFileSync(path, 'utf8').split('\n')) {
+    if (!line.trim()) continue;
+    const r = JSON.parse(line);
+    if (
+      r.final ||
+      /^\((plan setup|plan teardown)\)$/.test(r.test) ||
+      / :: \(module load\)$/.test(r.test)
+    )
+      continue;
+    tests += 1;
+    seconds += r.seconds ?? 0;
+  }
+  return { tests, seconds: r1(seconds) };
+}
+
 /**
  * @param {{ round: any, proposal?: any, invariants?: any, suiteAfter?: { tests: number, failed: number } | null,
- *   secondsBefore?: number | null, secondsAfter?: number | null, killsBefore?: any, killsAfter?: any,
- *   changed?: Set<string>, randomOrder?: string | null }} input
+ *   probesAfter?: { tests: number, seconds: number } | null, wallSecondsAfter?: number | null,
+ *   killsBefore?: any, killsAfter?: any, changed?: Set<string>, randomOrder?: string | null }} input
  */
 export function ledger({
   round,
   proposal = null,
   invariants = null,
   suiteAfter = null,
-  secondsBefore = null,
-  secondsAfter = null,
+  probesAfter = null,
+  wallSecondsAfter = null,
   killsBefore = null,
   killsAfter = null,
   changed = new Set(),
@@ -75,16 +101,21 @@ export function ledger({
   const incomplete = [];
   if (!invariants) incomplete.push('invariant-report');
   if (!suiteAfter) incomplete.push('suite after');
-  if (secondsAfter == null) incomplete.push('seconds after');
+  if (!probesAfter) incomplete.push('probes after');
   if (randomOrder !== 'pass' && randomOrder !== 'fail') incomplete.push('random-order run');
   if (!killsAfter) incomplete.push('kill matrix after');
-  const testsBefore = proposal?.summary?.tests ?? null;
-  const testsAfter = suiteAfter?.tests ?? null;
   const before = {
-    tests: testsBefore,
-    seconds: secondsBefore ?? proposal?.summary?.prTierSeconds?.before ?? null,
+    tests: proposal?.summary?.tests ?? null,
+    seconds: proposal?.summary?.prTierSeconds?.before ?? null,
   };
-  const after = { tests: testsAfter, seconds: secondsAfter ?? null };
+  const after = {
+    tests: probesAfter?.tests ?? null,
+    seconds: probesAfter?.seconds ?? null,
+    wallSeconds: wallSecondsAfter,
+    suiteTests: suiteAfter?.tests ?? null,
+  };
+  const testsBefore = before.tests;
+  const testsAfter = after.tests;
 
   // mutation: every mutant killed before, in a file the change did not touch, still killed after
   let mutation = null;
@@ -188,8 +219,8 @@ if (isMain) {
     proposal: json(arg('proposal')),
     invariants: json(arg('invariants')),
     suiteAfter: readSuite(arg('suite')),
-    secondsBefore: arg('seconds-before') != null ? Number(arg('seconds-before')) : null,
-    secondsAfter: arg('seconds-after') != null ? Number(arg('seconds-after')) : null,
+    probesAfter: probesTally(arg('head-probes')),
+    wallSecondsAfter: arg('seconds-after') != null ? Number(arg('seconds-after')) : null,
     killsBefore: killsOf(arg('kills-before')),
     killsAfter: killsOf(arg('kills-after')),
     changed,
