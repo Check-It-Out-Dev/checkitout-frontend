@@ -132,7 +132,14 @@ export function checkInvariants({
   const headTests = realTests(head.matrix).map((t) => t.id);
   const headSet = new Set(headTests);
 
-  // I1 — per unchanged unit and member, every base probe is still covered
+  // I1 — per unchanged unit and member, every base probe is still covered.
+  // A class in which any probe flipped between the two base runs is judged by nothing: drift
+  // clusters in time-dependent classes (a scheduled cleanup, a cron, a database-file check), and
+  // two runs see only the flips that happened to occur — the first backend round on a runner
+  // lost one probe of InMemoryStorageRateLimitService.scheduledCleanup that neither base run
+  // had flipped. The classes are named in the report so nobody mistakes silence for a pass.
+  const unstableUnits = new Set();
+  for (const p of unstable) unstableUnits.add(base.matrix.probes.get(p)?.unit ?? p.split('|')[0]);
   const pb = project(base.matrix, baseTests);
   const ph = project(head.matrix, headTests);
   const files = new Set();
@@ -142,6 +149,7 @@ export function checkInvariants({
   for (const [unit, b] of pb) {
     const file = base.unitFile(unit);
     if (changed.has(file)) continue;
+    if (unstableUnits.has(unit)) continue;
     files.add(file);
     classes += 1;
     const h = ph.get(unit);
@@ -161,8 +169,6 @@ export function checkInvariants({
     }
   }
   regressions.sort((a, b) => a.unit.localeCompare(b.unit) || a.method.localeCompare(b.method));
-  const unstableUnits = new Set();
-  for (const p of unstable) unstableUnits.add(base.matrix.probes.get(p)?.unit ?? p.split('|')[0]);
   report.i1 = {
     status: regressions.length ? 'FAIL' : 'PASS',
     unchangedFiles: files.size,
