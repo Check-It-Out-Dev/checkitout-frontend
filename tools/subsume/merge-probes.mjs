@@ -3,11 +3,13 @@
  * Joins the per-worker files written by tools/subsume/jest-probes.ts into two artifacts:
  *   reports/subsume/probes.jsonl  — one line per test: { test, spec, hits }
  *   reports/subsume/maps.json     — per instrumented file: statementMap / fnMap / branchMap
- * and prints what it found. Idempotent: running it twice yields the same two files.
+ * and prints what it found. The worker files are consumed: a run's records are merged once and
+ * the next run starts clean — left in place, three armed runs on the box merged into 5,082
+ * "tests" of a 1,302-test suite (2026-09-14), and a tally of the merged file counted them all.
  *
  *   node tools/subsume/merge-probes.mjs [reports/subsume]
  */
-import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const dir = process.argv[2] ?? join(process.cwd(), 'reports', 'subsume');
@@ -33,8 +35,15 @@ for (const name of mapFiles) {
     maps[m.file] ??= { statementMap: m.statementMap, fnMap: m.fnMap, branchMap: m.branchMap };
   }
 }
+if (!probeFiles.length) {
+  console.error(
+    `merge-probes: no probes.<pid>.jsonl in ${dir} — was the run armed (SUBSUME_PROBES=1)?`,
+  );
+  process.exit(2);
+}
 writeFileSync(join(dir, 'probes.jsonl'), lines.join('\n') + (lines.length ? '\n' : ''));
 writeFileSync(join(dir, 'maps.json'), JSON.stringify(maps));
+for (const name of [...probeFiles, ...mapFiles]) unlinkSync(join(dir, name));
 
 const kinds = { tests: 0, load: 0, final: 0 };
 for (const l of lines) {

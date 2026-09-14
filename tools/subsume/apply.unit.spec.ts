@@ -126,6 +126,11 @@ describe('apply: Jest', () => {
       applied: false,
       reason: 'not-found',
     });
+    // a name only a generator could have made: `it(\`does ${…}\`)` in Y
+    expect(wrapJestTest(SPEC, 'X Y does q', 'x')).toMatchObject({
+      applied: false,
+      reason: 'generated',
+    });
   });
 });
 

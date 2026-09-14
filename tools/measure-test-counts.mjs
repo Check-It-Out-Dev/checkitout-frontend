@@ -26,7 +26,7 @@
  * the one-engine set: `bdd` + `chromium-desktop` + `perf`.
  */
 import { execSync, spawnSync } from 'node:child_process';
-import { writeFileSync, readdirSync, readFileSync } from 'node:fs';
+import { existsSync, writeFileSync, readdirSync, readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -93,12 +93,38 @@ console.log('Measuring. This asks the runners, so it takes a minute.\n');
 // which is why `run` returns both streams. A red suite still reports its
 // totals, and a count is still a count.
 const jestText = run(BIN.jest, ['--silent', '--coverage', '--coverageReporters=json-summary']);
-const jestTests = Number((jestText.match(/Tests:\s+(\d+) passed, (\d+) total/) ?? [])[2] ?? 0);
+// "Tests: 71 skipped, 1231 passed, 1302 total" once a governance round has demoted tests: the
+// total is the population, skipped or not — demoted, never deleted.
+const jestTests = Number(
+  (jestText.match(/Tests:\s+(?:\d+ (?:skipped|todo|failed), )*(\d+) passed, (\d+) total/) ??
+    [])[2] ?? 0,
+);
 const jestSuites = Number(
-  (jestText.match(/Test Suites:\s+(\d+) passed, (\d+) total/) ?? [])[2] ?? 0,
+  (jestText.match(/Test Suites:\s+(?:\d+ (?:skipped|failed), )*(\d+) passed, (\d+) total/) ??
+    [])[2] ?? 0,
 );
 if (!jestTests) throw new Error('could not read the Jest total');
-console.log(`  jest                 ${jestTests} tests in ${jestSuites} suites`);
+// Tests a governance round demoted from the pull-request tier — `subsumed(it)(` in the tree,
+// so the figure is derivable from the checkout like every other one here.
+const subsumedJest = countSubsumed(['src', 'tools']);
+console.log(
+  `  jest                 ${jestTests} tests in ${jestSuites} suites (${subsumedJest} demoted from the pull-request tier)`,
+);
+
+function countSubsumed(dirs) {
+  let n = 0;
+  const walk = (d) => {
+    for (const e of readdirSync(d, { withFileTypes: true })) {
+      if (e.name === 'node_modules' || e.name === '.stryker-tmp') continue;
+      const p = join(d, e.name);
+      if (e.isDirectory()) walk(p);
+      else if (/\.spec\.ts$/.test(e.name))
+        n += (readFileSync(p, 'utf8').match(/\bsubsumed\((?:it|test)\)\(/g) ?? []).length;
+    }
+  };
+  for (const d of dirs) if (existsSync(join(REPO_ROOT, d))) walk(join(REPO_ROOT, d));
+  return n;
+}
 
 /**
  * Coverage, from the same run. It is published four ways — a badge, a table of
@@ -232,7 +258,9 @@ function measureCi() {
   const repo = 'Check-It-Out-Dev/checkitout-frontend';
   const command = `gh run list -R ${repo} --workflow ${workflow} --status success --limit 6 --json createdAt,updatedAt`;
   try {
-    const runs = JSON.parse(execSync(command, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }));
+    const runs = JSON.parse(
+      execSync(command, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }),
+    );
     const secs = runs
       .map((r) => Math.round((Date.parse(r.updatedAt) - Date.parse(r.createdAt)) / 1000))
       .filter((n) => Number.isFinite(n) && n > 0)
@@ -240,8 +268,19 @@ function measureCi() {
     if (secs.length) {
       const mid = Math.floor(secs.length / 2);
       const median = secs.length % 2 ? secs[mid] : Math.round((secs[mid - 1] + secs[mid]) / 2);
-      console.log(`  ci · PR run          ${median} s median of ${secs.length} (${secs.join(', ')})`);
-      return { prRun: { workflow, repo, medianSeconds: median, runs: secs.length, measuredAt: today, command } };
+      console.log(
+        `  ci · PR run          ${median} s median of ${secs.length} (${secs.join(', ')})`,
+      );
+      return {
+        prRun: {
+          workflow,
+          repo,
+          medianSeconds: median,
+          runs: secs.length,
+          measuredAt: today,
+          command,
+        },
+      };
     }
   } catch {
     /* fall through to the previous measurement */
@@ -249,7 +288,9 @@ function measureCi() {
   try {
     const prev = JSON.parse(readFileSync(OUT, 'utf8')).ci;
     if (prev?.prRun) {
-      console.log(`  ci · PR run          ${prev.prRun.medianSeconds} s (kept from ${prev.prRun.measuredAt}; gh unavailable)`);
+      console.log(
+        `  ci · PR run          ${prev.prRun.medianSeconds} s (kept from ${prev.prRun.measuredAt}; gh unavailable)`,
+      );
       return prev;
     }
   } catch {
@@ -265,7 +306,7 @@ const measured = {
     'Written by tools/measure-test-counts.mjs. Do not hand-edit — run `npm run measure:counts`. ' +
     'check-published-numbers.mjs asserts every published figure against this file.',
   measuredAt: today,
-  jest: { tests: jestTests, suites: jestSuites },
+  jest: { tests: jestTests, suites: jestSuites, subsumed: Number(subsumedJest) || 0 },
   playwright: { projects, tiers, distinct: distinctPlaywright },
   total: jestTests + distinctPlaywright,
   // What a clean clone can actually run: no backend, no credentials.

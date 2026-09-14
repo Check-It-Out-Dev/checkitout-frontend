@@ -120,24 +120,39 @@ export function wrapJestTest(source, fullName, marker) {
   let reason = 'not-found';
   const nameOf = (arg) =>
     arg && (ts.isStringLiteral(arg) || ts.isNoSubstitutionTemplateLiteral(arg)) ? arg.text : null;
+  // a name built at run time — `it(\`step ${id}: …\`)` in a loop — is one generator for many
+  // tests; its static parts become a pattern, and a demoted test that matches it is reported as
+  // `generated`: wrapping the generator would demote every test it makes, which is a person's edit
+  const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const patternOf = (arg) => {
+    if (!arg) return '.*';
+    if (ts.isTemplateExpression(arg))
+      return [arg.head.text, ...arg.templateSpans.map((s) => s.literal.text)].map(esc).join('.*');
+    return '.*';
+  };
+  const matchesGenerated = (stack, arg) =>
+    new RegExp(
+      `^${[...stack.map((s) => (s === null ? '.*' : esc(s))), patternOf(arg)].join(' ')}$`,
+    ).test(fullName);
   const visit = (node, stack) => {
     if (hit) return;
     if (ts.isCallExpression(node)) {
       const callee = node.expression.getText(sf);
       const name = nameOf(node.arguments[0]);
       if (/^(describe|fdescribe|xdescribe)$/.test(callee)) {
-        if (name === null) {
-          for (const arg of node.arguments) ts.forEachChild(arg, (c) => visit(c, stack));
-          return;
-        }
+        // a dynamic describe name is a wildcard in the chain
         for (const arg of node.arguments) ts.forEachChild(arg, (c) => visit(c, [...stack, name]));
         return;
       }
       if (/^(it|test)$/.test(callee) || /^subsumed\((it|test)\)$/.test(callee)) {
         const wrapped = callee.startsWith('subsumed(');
-        if (name === null) {
-          const full = [...stack, node.arguments[0]?.getText(sf) ?? ''].join(' ');
-          if (full.replace(/[`'"]/g, '') === fullName) reason = 'dynamic-name';
+        if (name === null || stack.includes(null)) {
+          // a generator that could have made this name — unless a plainer reason is known
+          if (
+            reason === 'not-found' &&
+            matchesGenerated(stack, name === null ? node.arguments[0] : null)
+          )
+            reason = name === null ? 'generated' : 'generated-describe';
           return;
         }
         if ([...stack, name].join(' ') === fullName) {
