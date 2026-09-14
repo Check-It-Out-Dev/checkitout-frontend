@@ -110,7 +110,13 @@ jobs:
       - name: Every number in the review is in a report (I5)
         id: i5
         continue-on-error: true
-        run: node tools/subsume/pr-numbers-check.mjs --comment reports/review/comment.md --reports reports/review
+        run: |
+          # The action's step can end before the file the model wrote is visible to the next step;
+          # a review that exists must not be reported as "the reviewer wrote nothing" (FE #35,
+          # 2026-09-14: I5 saw no file at 18:39:02, the artefact upload had it at 18:39:04).
+          for i in 1 2 3 4 5; do [ -s reports/review/comment.md ] && break; sleep 2; done
+          ls -la reports/review
+          node tools/subsume/pr-numbers-check.mjs --comment reports/review/comment.md --reports reports/review
 
       # The workflow posts, not the model, and only after I5: a review with a number from
       # nowhere never reaches the pull request, and the person is told that it was withheld.
