@@ -1,0 +1,103 @@
+# Test governance — the proposal run. Never on a pull request: on demand, and weekly after the
+# nightly. It measures the whole tier on a GitHub runner, twice for the probes that flip, runs the
+# whole-estate Stryker matrix, computes the proposal and the pack, and publishes all of it to Pages
+# under subsume/<run number>/ and subsume/latest/ — the base every ordinary pull request's invariants
+# job is judged against, and the artefacts a governance branch names in its round file.
+#
+# Why here and not on a developer box: a base made on another machine disagrees with a runner on
+# environment-dependent branches, and that disagreement is not a lost test (docs/testing/ai-in-the-loop.md).
+# Beside the gzipped artefacts the jobs consume, index.html is the same numbers for a person.
+#
+# The demotion itself stays a person's or an agent's act on a branch (tools/subsume/apply.mjs, the
+# round file, the label test-governance); the special job re-measures it. The method is
+# tools/subsume/README.md and docs/ci/ADR-test-subsumption.md.
+name: test-governance
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 3 * * 0'
+
+concurrency:
+  group: test-governance-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+env:
+  TZ: UTC
+  PAGES: https://check-it-out-dev.github.io/checkitout-frontend
+
+jobs:
+  proposal:
+    name: Proposal run — the base every pull request is judged against
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    env:
+      RUN: ${{ github.run_number }}
+      SHA: ${{ github.sha }}
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+
+      # The whole tier — SUITE=nightly runs any test a previous round demoted — armed, twice.
+      - name: Full tier, armed, twice
+        env:
+          SUBSUME_PROBES: '1'
+          SUITE: nightly
+        run: |
+          mkdir -p run
+          npx jest --ci --coverage
+          node tools/subsume/merge-probes.mjs reports/subsume
+          mv reports/subsume/probes.jsonl run/probes.jsonl && cp reports/subsume/maps.json run/maps.json
+          npx jest --ci --coverage
+          node tools/subsume/merge-probes.mjs reports/subsume
+          mv reports/subsume/probes.jsonl run/probes2.jsonl
+          wc -l run/probes.jsonl run/probes2.jsonl
+
+      # The whole-estate kill matrix, every killer recorded. Four workers on a four-vCPU runner.
+      - name: Whole-estate kill matrix
+        env:
+          SUITE: nightly
+        run: |
+          npx stryker run stryker.estate.conf.json --concurrency 4
+          cp reports/mutation-estate/mutation.json run/mutation.json
+
+      - name: The proposal, the pack, the page
+        run: |
+          node tools/subsume/propose.mjs --repo frontend --probes run/probes.jsonl --maps run/maps.json \
+            --mutation run/mutation.json --out run --commit "$SHA" | tail -n 1 | tee -a "$GITHUB_STEP_SUMMARY"
+          node tools/subsume/pack.mjs --report run/subsume-report.json --probes run/probes.jsonl \
+            --probes2 run/probes2.jsonl --out run | head -n 1 | tee -a "$GITHUB_STEP_SUMMARY"
+          mkdir -p "site/subsume/$RUN"
+          node tools/subsume/site.mjs --repo frontend --run "$RUN" --report run/subsume-report.json \
+            --pack run/pack.json --diagram run/diagram.md --links "this run=$RUN_URL" --out "site/subsume/$RUN"
+          for f in probes.jsonl probes2.jsonl maps.json mutation.json subsume-report.json; do
+            gzip -c "run/$f" > "site/subsume/$RUN/$f.gz"
+          done
+          cp run/pack.json run/pack.md run/diagram.md run/subsume-report.md "site/subsume/$RUN/"
+          rm -rf site/subsume/latest && cp -r "site/subsume/$RUN" site/subsume/latest
+          mkdir -p "site/mutation-estate/$RUN" && cp reports/mutation-estate/mutation.html "site/mutation-estate/$RUN/index.html"
+          rm -rf site/mutation-estate/latest && cp -r "site/mutation-estate/$RUN" site/mutation-estate/latest
+          echo "Base artefacts and the page: $PAGES/subsume/$RUN/ · the estate's Stryker report: $PAGES/mutation-estate/$RUN/" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Publish to Pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PAGES_REPLACE: subsume/latest mutation-estate/latest
+        run: |
+          bash tools/ci/publish-pages.sh site "subsume: proposal run $RUN"
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: proposal-run-${{ github.run_number }}
+          path: run
+          if-no-files-found: warn
+          retention-days: 30

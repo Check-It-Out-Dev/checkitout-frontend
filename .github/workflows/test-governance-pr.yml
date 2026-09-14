@@ -1,0 +1,200 @@
+# Test governance — the special pull-request job. It runs only for a governance branch
+# (test-governance/round-<n>-<runId>) that carries the label `test-governance`; an ordinary pull
+# request never sees it, and gets the invariants job in ci-tests.yml instead.
+#
+# It trusts nothing the proposal said. The reduced tier is run here, armed, and the invariants are
+# judged from this run's own probes against the base artefacts the proposal run published; the
+# tier is run again in random order, so a kept test that only passed because a demoted one ran
+# before it shows itself; the kill matrix is re-run on the reduced tier, so the mutation score is
+# measured, not projected. The ledger then applies one rule: at least one of tests or seconds
+# lower, and none of coverage on unchanged code, kills on unchanged code, or mutation score lower,
+# both runs green, the published numbers consistent. Anything unmeasured is INCOMPLETE. The
+# method is tools/subsume/README.md and docs/ci/ADR-test-subsumption.md.
+#
+# Every value that somebody else chooses — a branch name, an event field, the round file's
+# contents — reaches a shell through `env:`, never interpolated into a `run:` body.
+name: test-governance-pr
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+
+concurrency:
+  group: test-governance-pr-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+env:
+  TZ: UTC
+  PAGES: https://check-it-out-dev.github.io/checkitout-frontend
+
+jobs:
+  measure:
+    name: Re-measure the reduced tier
+    if: ${{ startsWith(github.head_ref, 'test-governance/') && contains(github.event.pull_request.labels.*.name, 'test-governance') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      BASE_REF: ${{ github.base_ref }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      PR: ${{ github.event.pull_request.number }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+
+      # The round file is the link between this branch and the proposal run — a tracked file,
+      # never the pull-request body, which anyone can edit.
+      - name: The round file
+        id: round
+        run: |
+          test -f docs/testing/governance/round.json || { echo "::error::no docs/testing/governance/round.json on this branch"; exit 2; }
+          node -e "const r=require('./docs/testing/governance/round.json'); for (const k of ['runId','baseCommit','round']) console.log(k+'='+r[k])" >> "$GITHUB_OUTPUT"
+          node -e "const r=require('./docs/testing/governance/round.json'); console.log('Round '+r.round+' from run '+r.runId+' on '+r.baseCommit+': '+r.demoted.length+' demoted, '+r.notApplied.length+' not applied')" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Base artefacts of the proposal run, from Pages (a missing one is INCOMPLETE, never PASS)
+        env:
+          RUN_ID: ${{ steps.round.outputs.runId }}
+        run: |
+          mkdir -p base base2 && cd base
+          for f in probes.jsonl maps.json mutation.json subsume-report.json; do
+            curl -fsSL "$PAGES/subsume/$RUN_ID/$f.gz" -o "$f.gz" \
+              || { echo "::error::$f missing on Pages for run $RUN_ID"; exit 2; }
+            gunzip -f "$f.gz"
+          done
+          # the proposal run's second armed run: probes that flip between the two are drift, set
+          # aside by I1 rather than reported as a lost test
+          curl -fsSL "$PAGES/subsume/$RUN_ID/probes2.jsonl.gz" -o ../base2/probes.jsonl.gz \
+            || { echo "::error::probes2.jsonl missing on Pages for run $RUN_ID"; exit 2; }
+          gunzip -f ../base2/probes.jsonl.gz && cp maps.json ../base2/
+          ls -la . ../base2
+
+      - name: What this pull request changed
+        run: git diff --name-only "origin/$BASE_REF...HEAD" > changed.txt && wc -l < changed.txt
+
+      # The before, on this machine: the full tier (SUITE=nightly runs the demoted tests too) armed,
+      # twice — once for the coverage every test gives here, once more for the probes that flip
+      # between two runs and are set aside. A base made on another machine disagrees with this one
+      # on environment-dependent branches, and that disagreement is not a lost test.
+      - name: Full tier, armed, twice (the before, on this machine)
+        env:
+          SUBSUME_PROBES: '1'
+          SUITE: nightly
+        run: |
+          mkdir -p before before2
+          npx jest --ci --coverage
+          node tools/subsume/merge-probes.mjs reports/subsume
+          mv reports/subsume/probes.jsonl before/ && cp reports/subsume/maps.json before/ && cp base/mutation.json before/
+          npx jest --ci --coverage
+          node tools/subsume/merge-probes.mjs reports/subsume
+          mv reports/subsume/probes.jsonl before2/ && cp reports/subsume/maps.json before2/
+          wc -l before/probes.jsonl before2/probes.jsonl
+
+      - name: Reduced tier, armed, declared order
+        id: tier
+        env:
+          SUBSUME_PROBES: '1'
+        run: |
+          START=$(date +%s)
+          npx jest --ci --coverage --json --outputFile=jest-results.json
+          echo "seconds=$(( $(date +%s) - START ))" >> "$GITHUB_OUTPUT"
+          node tools/subsume/merge-probes.mjs reports/subsume
+
+      - name: The published numbers are still the measured ones (I4)
+        id: numbers
+        run: npm run --silent check:published-numbers && echo "i4=pass" >> "$GITHUB_OUTPUT" || echo "i4=fail" >> "$GITHUB_OUTPUT"
+
+      - name: Invariants I1–I4, from this run's own probes
+        continue-on-error: true
+        env:
+          I4: ${{ steps.numbers.outputs.i4 }}
+          BASE_COMMIT: ${{ steps.round.outputs.baseCommit }}
+        run: |
+          node tools/subsume/invariant.mjs --repo frontend --base before --base2 before2 --head reports/subsume \
+            --changed changed.txt --suite jest-results.json --i4 "$I4" \
+            --base-commit "$BASE_COMMIT" --head-commit "$HEAD_SHA" --out reports/subsume
+
+      # A kept test that passes only because a demoted one used to run before it is the tangling
+      # the matrices cannot see; a second run in random order is what sees it.
+      - name: Reduced tier, random order
+        id: random
+        run: npx jest --ci --randomize && echo "result=pass" >> "$GITHUB_OUTPUT" || echo "result=fail" >> "$GITHUB_OUTPUT"
+
+      # The whole-estate matrix the proposal was computed on (stryker.estate.conf.json), not the
+      # scoped one that keeps the published score; a demoted test is skipped under Stryker the way
+      # it is under Jest, so this is the reduced tier's kill matrix. Four workers on a four-vCPU runner.
+      - name: Kill matrix on the reduced tier (measured, not projected)
+        # the config file by position: `-c` is Stryker's short flag for --concurrency
+        run: npx stryker run stryker.estate.conf.json --concurrency 4
+
+      - name: The ledger, and the merge rule
+        id: ledger
+        continue-on-error: true
+        env:
+          SECONDS_AFTER: ${{ steps.tier.outputs.seconds }}
+          RANDOM_ORDER: ${{ steps.random.outputs.result }}
+        run: |
+          node tools/subsume/ledger.mjs --round docs/testing/governance/round.json \
+            --proposal base/subsume-report.json --invariants reports/subsume/invariant-report.json \
+            --suite jest-results.json --before-probes before/probes.jsonl --head-probes reports/subsume/probes.jsonl --seconds-after "$SECONDS_AFTER" \
+            --kills-before base/mutation.json --kills-after reports/mutation-estate/mutation.json \
+            --changed changed.txt --random-order "$RANDOM_ORDER" --out reports/subsume
+
+      - name: The gains diagram
+        if: always()
+        run: |
+          node tools/subsume/gains.mjs --ledger reports/subsume/governance-ledger.json --out reports/subsume
+          cat reports/subsume/gains.md >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: governance-round-${{ steps.round.outputs.round }}
+          path: |
+            reports/subsume
+            reports/mutation-estate/mutation.json
+            jest-results.json
+          if-no-files-found: warn
+          retention-days: 90
+
+      # One sticky comment per pull request, replaced on every run; numbers from the ledger only.
+      - name: The comment
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ steps.round.outputs.runId }}
+          BASE_COMMIT: ${{ steps.round.outputs.baseCommit }}
+          ROUND: ${{ steps.round.outputs.round }}
+        run: |
+          {
+            echo '<!-- test-governance -->'
+            echo '▮ Invariants — replay plane · no model · I1–I5'
+            echo
+            node -e "const l=require('./reports/subsume/governance-ledger.json'); import('./tools/subsume/ledger.mjs').then(m=>console.log('**'+m.summaryLine(l)+'**'))"
+            echo
+            cat reports/subsume/gains.md
+            echo
+            echo "Artefacts: run $GITHUB_RUN_ID, \`governance-round-$ROUND\`. Base: run \`$RUN_ID\` on \`$BASE_COMMIT\`."
+          } > comment.md
+          ID=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" --paginate --jq '.[] | select(.body | startswith("<!-- test-governance -->")) | .id' | head -n 1)
+          if [ -n "$ID" ]; then gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$ID" -F body=@comment.md >/dev/null
+          else gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" -F body=@comment.md >/dev/null; fi
+
+      - name: Verdict
+        if: always()
+        env:
+          LEDGER: ${{ steps.ledger.outcome }}
+        run: |
+          case "$LEDGER" in
+            success) echo "MERGEABLE";;
+            *) echo "::error::the round is not mergeable — see the ledger"; exit 1;;
+          esac

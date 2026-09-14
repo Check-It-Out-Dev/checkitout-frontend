@@ -17,3 +17,13 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 Object.defineProperty(window, 'CSS', { value: null });
+
+// Per-test coverage probes for the subsumption analysis. Silent unless jest runs with --coverage;
+// see tools/subsume/jest-probes.ts.
+import './tools/subsume/jest-probes';
+
+// A test the subsumption analysis demoted is written `subsumed(it)('name', …)`: it leaves the
+// pull-request tier and still runs in the nightly (SUITE=nightly). Demote, never delete; the
+// marker comment above it names what carries it. See tools/subsume/README.md.
+(globalThis as { subsumed?: unknown }).subsumed = <T extends { skip: unknown }>(fn: T): T =>
+  process.env['SUITE'] === 'nightly' ? fn : (fn.skip as T);

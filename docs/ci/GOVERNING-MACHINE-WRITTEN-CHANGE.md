@@ -128,19 +128,20 @@ level of abstraction and no more.
 
 _Status per row. ✅ running here · 🟡 partly · ⬜ designed, not built._
 
-| Method                                 | What it governs                                           | Industrial precedent                                                                                                                                                                                                             | The machine check                                                                                                    | Status                                                           |
-| -------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| Byte-identical generated artefact      | The API contract                                          | Nearest analogue: AWS Cedar's daily differential testing of the Rust engine against its Lean model                                                                                                                               | Regenerate, then diff. Any difference is a contract change by definition                                             | 🟡 artefact committed both sides; no gate compares them — §10    |
-| Ratchet with human ratification        | Any metric an agent could optimise against                | Google runs mutation testing against the diff and surfaces it in review (Petrović & Ivanković, ICSE SEIP 2018)                                                                                                                   | A committed baseline; lowering is free, raising requires a person running `--write-baseline`, never CI               | ✅ `tools/ci/fuzz-baseline.json`, mutation floors both repos     |
-| Report on the diff, not at night       | Whether a finding is ever acted on                        | Meta's Infer: batch fix rate ≈0%, at diff time >70% (Distefano et al., CACM 2019)                                                                                                                                                | Which tier a check sits in: `pr.yml` versus `nightly.yml`                                                            | 🟡 the expensive tiers are nightly here                          |
-| Tests generated from a declared domain | The gap between the declared input space and the real one | MongoDB abandoned trace-checking after 10 weeks, then generated 4,913 tests from the same spec and reached 100% branch coverage in about two                                                                                     | Schemathesis generating requests from the OpenAPI document against a running server                                  | ✅ `api-fuzz.yml`; it found an undocumented 401 on its first run |
-| Model as an oracle, not as a proof     | Business logic                                            | AWS Cedar: the Lean proofs found 4 bugs, differential testing against the same model found 21                                                                                                                                    | Random command sequences run against a reference model and the implementation, compared                              | ⬜ designed — §12                                                |
-| Model checking a protocol design       | Concurrency, retries, idempotency                         | AWS on S3, DynamoDB and EBS: engineers productive in 2-3 weeks; one DynamoDB defect needed a 35-step counterexample (Newcombe et al., 2015)                                                                                      | TLC or Quint over a small model, in CI                                                                               | ⬜ designed                                                      |
-| Learning the model from behaviour      | Drift between intent and what runs                        | Protocol state fuzzing learned automata from TLS implementations and found real flaws by diffing them against the specification (de Ruiter & Poll, USENIX Security 2015); AWS PObserve checks production logs against the P spec | Conformance check of an event log against the model                                                                  | ⬜ designed                                                      |
-| Dismissal register                     | Human judgement under deadline pressure                   | — (own)                                                                                                                                                                                                                          | Every dismissal has a comment, a disposition document that exists, a test holding its control, and a per-rule budget | 🟡 all true by hand today, nothing enforces it                   |
-| Attestations and seeded canaries       | Whether the reviewer read the diff                        | TSA projects synthetic threat images into X-ray screening to measure attention rather than trust it                                                                                                                              | Detection rate per reviewer; attestation fields tied to diff content                                                 | ⬜ designed — §9                                                 |
+| Method                                 | What it governs                                           | Industrial precedent                                                                                                                                                                                                             | The machine check                                                                                                                                | Status                                                               |
+| -------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------- |
+| Byte-identical generated artefact      | The API contract                                          | Nearest analogue: AWS Cedar's daily differential testing of the Rust engine against its Lean model                                                                                                                               | Regenerate, then diff. Any difference is a contract change by definition                                                                         | 🟡 artefact committed both sides; no gate compares them — §10        |
+| Ratchet with human ratification        | Any metric an agent could optimise against                | Google runs mutation testing against the diff and surfaces it in review (Petrović & Ivanković, ICSE SEIP 2018)                                                                                                                   | A committed baseline; lowering is free, raising requires a person running `--write-baseline`, never CI                                           | ✅ `tools/ci/fuzz-baseline.json`, mutation floors both repos         |
+| Report on the diff, not at night       | Whether a finding is ever acted on                        | Meta's Infer: batch fix rate ≈0%, at diff time >70% (Distefano et al., CACM 2019)                                                                                                                                                | Which tier a check sits in: `pr.yml` versus `nightly.yml`                                                                                        | 🟡 the expensive tiers are nightly here                              |
+| Tests generated from a declared domain | The gap between the declared input space and the real one | MongoDB abandoned trace-checking after 10 weeks, then generated 4,913 tests from the same spec and reached 100% branch coverage in about two                                                                                     | Schemathesis generating requests from the OpenAPI document against a running server                                                              | ✅ `api-fuzz.yml`; it found an undocumented 401 on its first run     |
+| Model as an oracle, not as a proof     | Business logic                                            | AWS Cedar: the Lean proofs found 4 bugs, differential testing against the same model found 21                                                                                                                                    | Random command sequences run against a reference model and the implementation, compared                                                          | ⬜ designed — §12                                                    |
+| Model checking a protocol design       | Concurrency, retries, idempotency                         | AWS on S3, DynamoDB and EBS: engineers productive in 2-3 weeks; one DynamoDB defect needed a 35-step counterexample (Newcombe et al., 2015)                                                                                      | TLC or Quint over a small model, in CI                                                                                                           | ⬜ designed                                                          |
+| Learning the model from behaviour      | Drift between intent and what runs                        | Protocol state fuzzing learned automata from TLS implementations and found real flaws by diffing them against the specification (de Ruiter & Poll, USENIX Security 2015); AWS PObserve checks production logs against the P spec | Conformance check of an event log against the model                                                                                              | ⬜ designed                                                          |
+| Dismissal register                     | Human judgement under deadline pressure                   | — (own)                                                                                                                                                                                                                          | Every dismissal has a comment, a disposition document that exists, a test holding its control, and a per-rule budget                             | 🟡 all true by hand today, nothing enforces it                       |
+| Attestations and seeded canaries       | Whether the reviewer read the diff                        | TSA projects synthetic threat images into X-ray screening to measure attention rather than trust it                                                                                                                              | Detection rate per reviewer; attestation fields tied to diff content                                                                             | ⬜ designed — §9                                                     |
+| Subsumption under invariants           | The test population, now also machine-written             | Google surfaces per-test mutation results in review (Petrović & Ivanković 2018); test-suite reduction by set cover (Harrold, Gupta & Soffa, TOSEM 1993)                                                                          | Coverage necessary, mutant kills sufficient, from per-test matrices; four invariants on every pull request; the reviewer bound to quote the gate | 🟡 Jest instrument shipped and self-checked; the rest designed — §14 |
 
-Three of these are running, two partly, four not at all. The catalogue is deliberately wider than
+Three of these are running, three partly, four not at all. The catalogue is deliberately wider than
 the implementation, because the sequencing decision — which of them to buy next — is the actual
 engineering, and it depends on which failure you have evidence of. Ours is in §10.
 
@@ -442,25 +443,58 @@ fires._ That is the form AWS uses for TLA+ — not "bugs fell by N%", but "this 
 
 ---
 
-## 14 · Open problem — the test population
+## 14 · The test population — a method, and its first instance
 
-_Stated, not answered. The method is being developed; this section will be replaced when it is._
+_Design of record 2026-09-14, replacing the open problem stated here on 09-12. The Jest instrument
+is shipped and checked; the rest is being built. The decision and its rejected alternatives are in
+[`ADR-test-subsumption.md`](ADR-test-subsumption.md)._
 
-Governing the code leaves the suite ungoverned, and the suite is now also machine-written. Three
-questions I do not yet have a principled answer to:
+Governing the code leaves the suite ungoverned, and the suite is now also machine-written. Of the
+three questions this section asked two days ago, the second has a method; the first and third are
+still open and are stated below without pretending otherwise.
 
-1. **How many tests are the right number?** Test count is a vanity metric, and an agent will happily
-   add a thousand assertions that restate the implementation.
-2. **Which tests may be deleted?** The measurable that looks most promising: a test whose removal
-   changes no mutation outcome kills nothing its neighbours do not already kill. That is a deletion
-   criterion with an instrument behind it rather than a taste argument.
-3. **How do you rewrite a test so it stops depending on the code it judges?** The independence lost
-   in §1 has to be rebuilt structurally — the oracle derived from the specification, not from the
-   implementation, and the agent that writes it denied sight of the implementation.
+**2 — which tests may leave the pull-request tier.** Not "which may be deleted": nothing is deleted,
+because the published counts are gated facts and the nightly needs every test as evidence. A test
+is _subsumed_ when three things hold at once, each read from an artefact rather than judged:
 
-The instruments needed already run here: mutation score per test, and coverage differential between
-tiers (a branch reached only by unit tests and never by a black-box tier is either dead or outside
-the contract). What is missing is the method, not the data.
+|     | Condition                                                                                    | Instrument                                                                       |
+| --- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| a   | Every statement, function and branch path it exercises is exercised by the tests that remain | per-test probes: `tools/subsume/jest-probes.ts`; a JUnit listener on the backend |
+| b   | Every mutant it kills is killed by the tests that remain                                     | the full kill matrix — Stryker with `disableBail`, PIT with `fullMutationMatrix` |
+| c   | It is not the only killer of any mutant once the ten-run flaky window is applied             | `tools/ci/flaky-report.mjs`                                                      |
+
+Coverage alone was the obvious criterion and the wrong one: two tests can run the same lines and
+assert different things, and coverage cannot see the assertion. So (a) is necessary, (b) is what
+makes it sufficient, and where mutation does not reach — most of the estate, deliberately — a test
+is at most a suspect and is never acted on.
+
+The mechanism is the one §4 and §8 describe, with the roles filled: an agent applies the demotions
+(`@Tag("subsumed")`, or a `subsumed()` wrapper in Jest) and may touch nothing else; a gate with no
+model in it checks four invariants on every pull request — coverage not lower on any unchanged
+file, class or method; no mutant that `main` killed now surviving; the suite green; the published
+numbers moved in the same commit; a second agent writes the review, with a diagram generated from
+the same artefacts and every number quoted from the gate, and is bound by a fifth invariant that
+fails the job if it invents one; and a person merges. The proposer chooses which confirmed candidate
+to apply first; it never decides that a test is redundant, because that decision belongs to the
+matrices, or the judge would again depend on the judged.
+
+**What is measured so far.** The Jest instrument was checked against itself before anything was
+built on it: for every spec file it records both the per-test increments and the counters that
+ended above zero, and `check-probes.mjs` proves the union of the first equals the second — 140 of
+140 spec files, 1,241 tests, on the first full run. istanbul's own summary was tried as the
+reference first and rejected: it is source-mapped back to TypeScript and counts a different set of
+statements than the runtime counters, so the two can never agree count for count. That is the kind
+of instrument error §13 exists to catch, and it was caught by the drill, not by the design.
+
+```bash
+SUBSUME_PROBES=1 npx jest --coverage && node tools/subsume/merge-probes.mjs && node tools/subsume/check-probes.mjs
+```
+
+**1 — how many tests is the right number** stays open; the honest position is that the subsumed
+share, measured, is the first number that says anything about it. **3 — rebuilding independence**
+stays open; demotion under invariants governs the population that exists, it does not make a new
+test independent of the code it judges. The contracts every remaining part is built against are in
+[`tools/subsume/README.md`](../../tools/subsume/README.md).
 
 ---
 
@@ -468,22 +502,22 @@ the contract). What is missing is the method, not the data.
 
 _The whole page in one table. ⬜ means designed and not built; nothing here is aspirational prose._
 
-| #   | Mechanism                                           | Status | The machine check today                                                                                                            |
-| --- | --------------------------------------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------- |
-| 5   | Ratchets with human-only loosening                  | ✅     | `fuzz-verdict.mjs --write-baseline`, refuses to run in CI                                                                          |
-| 5   | Tests generated from the declared domain            | ✅     | `api-fuzz.yml` (Schemathesis)                                                                                                      |
-| 5   | Mutation tiers with floors                          | ✅     | `mutation.yml` both repositories, floors 70 and 40                                                                                 |
-| 5   | Published numbers gated against a generated file    | ✅     | `check-published-numbers.mjs` (G15)                                                                                                |
-| 7   | Byte-identical contract artefact                    | 🟡     | Generated deterministically; **nothing compares the two repositories** — §10                                                       |
-| 5   | Checks on the diff rather than at night             | 🟡     | The expensive tiers are nightly                                                                                                    |
-| 11  | Dismissal register                                  | 🟡     | Convention holds by hand; no check                                                                                                 |
-| 12  | Subscription transition table and generated diagram | ⬜     | none yet                                                                                                                           |
-| 12  | Reference-model differential testing                | ⬜     | none yet                                                                                                                           |
-| 5   | Model checking the webhook races                    | ⬜     | none yet                                                                                                                           |
-| 9   | Attestations and seeded canaries                    | ⬜     | none yet                                                                                                                           |
-| 9   | Branch protection, rulesets, CODEOWNERS             | 🟡     | Ruleset on `main`, both repositories: pull request required, `Merge verdict` required, no bypass. Zero approvals required — see §9 |
-| 13  | Seeded-violation detection rate                     | ⬜     | none yet                                                                                                                           |
-| 13  | Test-population method                              | ⬜     | open problem — §13                                                                                                                 |
+| #   | Mechanism                                           | Status | The machine check today                                                                                                              |
+| --- | --------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| 5   | Ratchets with human-only loosening                  | ✅     | `fuzz-verdict.mjs --write-baseline`, refuses to run in CI                                                                            |
+| 5   | Tests generated from the declared domain            | ✅     | `api-fuzz.yml` (Schemathesis)                                                                                                        |
+| 5   | Mutation tiers with floors                          | ✅     | `mutation.yml` both repositories, floors 70 and 40                                                                                   |
+| 5   | Published numbers gated against a generated file    | ✅     | `check-published-numbers.mjs` (G15)                                                                                                  |
+| 7   | Byte-identical contract artefact                    | 🟡     | Generated deterministically; **nothing compares the two repositories** — §10                                                         |
+| 5   | Checks on the diff rather than at night             | 🟡     | The expensive tiers are nightly                                                                                                      |
+| 11  | Dismissal register                                  | 🟡     | Convention holds by hand; no check                                                                                                   |
+| 12  | Subscription transition table and generated diagram | ⬜     | none yet                                                                                                                             |
+| 12  | Reference-model differential testing                | ⬜     | none yet                                                                                                                             |
+| 5   | Model checking the webhook races                    | ⬜     | none yet                                                                                                                             |
+| 9   | Attestations and seeded canaries                    | ⬜     | none yet                                                                                                                             |
+| 9   | Branch protection, rulesets, CODEOWNERS             | 🟡     | Ruleset on `main`, both repositories: pull request required, `Merge verdict` required, no bypass. Zero approvals required — see §9   |
+| 13  | Seeded-violation detection rate                     | 🟡     | six breakages defined for the subsumption gate (`tools/subsume/README.md`); the first drill already caught an instrument error — §14 |
+| 14  | Test-population method                              | 🟡     | per-test probes shipped and self-checked for Jest (140/140 specs); matrices, core, gate, agents designed — §14                       |
 
 ---
 
@@ -506,3 +540,5 @@ The precedents cited above, in order of appearance:
 - AWS P language case studies and PObserve — production logs checked against the specification.
 - GitClear, _AI code quality and maintainability_, 2026 — duplication and refactoring-share trends.
 - DORA, _State of AI-assisted software development_, 2025 — throughput up, stability down.
+- Harrold, Gupta & Soffa, _A methodology for controlling the size of a test suite_, TOSEM 1993 —
+  test-suite reduction as set cover, the shape of the selection in §14.

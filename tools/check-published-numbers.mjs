@@ -24,7 +24,7 @@
  * intent — a test count that nobody has to maintain is a test count nobody can
  * trust.
  */
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join, dirname, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -70,7 +70,10 @@ function likeOriginal(original, measured) {
  * sentence can be the same digits, and a naive replace would rewrite the wrong one.
  */
 function replaceGroup(text, pattern, groupIndex, measured) {
-  const withIndices = new RegExp(pattern.source, pattern.flags.includes('d') ? pattern.flags : pattern.flags + 'd');
+  const withIndices = new RegExp(
+    pattern.source,
+    pattern.flags.includes('d') ? pattern.flags : pattern.flags + 'd',
+  );
   const found = withIndices.exec(text);
   if (!found || !found.indices || !found.indices[groupIndex]) return null;
   const [start, end] = found.indices[groupIndex];
@@ -111,6 +114,31 @@ const eq = (found, expected) => digits(found) === digits(expected);
 
 const failures = [];
 const checked = [];
+
+// The tests a governance round demoted from the pull-request tier: `subsumed(it)(` in the
+// product's specs, counted from the tree here in milliseconds, so the key in the measured file
+// can never be stale without this check saying so (measure:counts writes it; this reads it back).
+{
+  let inTree = 0;
+  const walk = (d) => {
+    for (const e of readdirSync(d, { withFileTypes: true })) {
+      const p = join(d, e.name);
+      if (e.isDirectory()) walk(p);
+      else if (/\.spec\.ts$/.test(e.name))
+        inTree += (readFileSync(p, 'utf8').match(/\bsubsumed\((?:it|test)\)\(/g) ?? []).length;
+    }
+  };
+  walk(join(REPO_ROOT, 'src'));
+  if ((m.jest.subsumed ?? 0) !== inTree)
+    failures.push({
+      file: relative(REPO_ROOT, COUNTS),
+      label: 'jest.subsumed',
+      got: String(m.jest.subsumed ?? 'missing'),
+      want: inTree,
+      detail: 'demoted tests in the tree — run `npm run measure:counts`',
+    });
+  else checked.push(`${relative(REPO_ROOT, COUNTS)} · jest.subsumed`);
+}
 
 /**
  * Assert one figure. `pattern` must capture the number in group 1 (or in the
@@ -251,16 +279,31 @@ claim(
 // The four remaining literal copies in the README. They are prose rather than a
 // table, which is exactly why they were the ones left behind the last time.
 claim('README.md', 'prose total', /\*\*([\d,]+) tests\.\*\* Five layers/, m.total);
-claim('README.md', 'in-progress · integration row', /\| ([\d,]+) live-backend integration tests/, t.integration);
+claim(
+  'README.md',
+  'in-progress · integration row',
+  /\| ([\d,]+) live-backend integration tests/,
+  t.integration,
+);
 claim(
   'README.md',
   'in-progress · visual row',
   /\| ([\d,]+) visual snapshots over ([\d,]+) fixtures \+ ([\d,]+) parity diffs/,
   [t.visual, m.gates.visualFixtures, t.visualParity],
 );
-claim('README.md', 'in-progress · experience row', /Experience tier — ([\d,]+) measurements/, p.perf);
+claim(
+  'README.md',
+  'in-progress · experience row',
+  /Experience tier — ([\d,]+) measurements/,
+  p.perf,
+);
 claim('README.md', 'roadmap row', /\| ([\d,]+) Jest unit \+ component tests/, jest);
-claim('README.md', 'sandbox line', /npm run test:sandbox\s+# ([\d,]+) component-sandbox/, t.sandbox);
+claim(
+  'README.md',
+  'sandbox line',
+  /npm run test:sandbox\s+# ([\d,]+) component-sandbox/,
+  t.sandbox,
+);
 claim('README.md', 'perf line', /npm run test:perf\s+# ([\d,]+) experience/, p.perf);
 claim('README.md', 'pyramid suites', /│ {2,}(\d+) suites/, m.jest.suites);
 // Two figures this gate was standing next to without checking. The badge-note total was even
@@ -281,7 +324,12 @@ claim('docs/README.md', 'docs index Jest', /the ([\d,]+) Jest tests and the gate
 if (m.ci?.prRun) {
   // The CI/CD table rounds to the nearest ten seconds - a median that moves by four seconds is not a
   // change anyone should have to edit a README for - so the gate rounds the measured value the same way.
-  claim('README.md', 'PR run duration', /\|\s*~(\d+) s\s*\|/, String(Math.round(m.ci.prRun.medianSeconds / 10) * 10));
+  claim(
+    'README.md',
+    'PR run duration',
+    /\|\s*~(\d+) s\s*\|/,
+    String(Math.round(m.ci.prRun.medianSeconds / 10) * 10),
+  );
 }
 
 // ── The live site. Numbers appear in both locales and must agree with the repo,
@@ -314,9 +362,12 @@ for (const locale of ['en', 'pl']) {
 const c = m.coverage;
 // The coverage badge reads from the quality dashboard now, so there is no number in the file to gate -
 // and nothing to go stale. What IS worth asserting is that it still points at this repository's badge.
-claim('README.md', 'coverage badge is live',
+claim(
+  'README.md',
+  'coverage badge is live',
   /img\.shields\.io\/endpoint\?url=https:\/\/check-it-out-dev\.github\.io\/(checkitout-frontend)\/badges\/coverage\.json/,
-  'checkitout-frontend');
+  'checkitout-frontend',
+);
 for (const [row, key] of [
   ['Lines', 'lines'],
   ['Statements', 'statements'],
@@ -334,7 +385,10 @@ for (const [row, key] of [
 // ── The date the page claims its numbers were measured on. A stale date is a
 //    quieter lie than a stale number and outlives it. ───────────────────────
 for (const [label, pattern] of [
-  ['badge note', /the test count is static — [\d,]+ across every tier, measured (\d{4}-\d{2}-\d{2})/],
+  [
+    'badge note',
+    /the test count is static — [\d,]+ across every tier, measured (\d{4}-\d{2}-\d{2})/,
+  ],
   ['page note', /was measured on \*\*(\d{4}-\d{2}-\d{2})\*\*/],
   ['coverage note', /Measured (\d{4}-\d{2}-\d{2})\. Coverage excludes/],
 ]) {
@@ -415,7 +469,12 @@ claim(
     // rather than whenever the code changes, so leaving it out would make every new claim a
     // two-step edit and, the second time, an ignored red line.
     const rewritten = FIX
-      ? replaceGroup(read('README.md'), /disagreeing with the measured one — (\d+) figures/, 1, asserted)
+      ? replaceGroup(
+          read('README.md'),
+          /disagreeing with the measured one — (\d+) figures/,
+          1,
+          asserted,
+        )
       : null;
     if (rewritten != null) {
       write('README.md', rewritten);

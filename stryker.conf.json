@@ -30,8 +30,15 @@
     "",
     "First measurement (2026-09-10, 486 mutants over 18 files): 72.84 % overall, 83.29 % on covered",
     "code. The floor in the workflow sits at 70 - a ratchet, raised when the score rises, never",
-    "lowered to make a red run green."
+    "lowered to make a red run green.",
+    "",
+    "  disableBail  By default Stryker stops at the first test that kills a mutant, so the report's",
+    "           `killedBy` names one test even when ten would have caught it. The subsumption",
+    "           analysis (tools/subsume) needs the full kill matrix - every test that kills every",
+    "           mutant - because a test is only redundant if OTHER tests kill everything it kills.",
+    "           Costs run time; buys the matrix."
   ],
+  "disableBail": true,
   "packageManager": "npm",
   "testRunner": "jest",
   "jest": {

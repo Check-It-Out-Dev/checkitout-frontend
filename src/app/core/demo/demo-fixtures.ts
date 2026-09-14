@@ -534,6 +534,14 @@ export function resetDemoTourStores(): void {
   SOCIAL = SEED_SOCIAL.map((c) => ({ ...c }));
   CREATED_TICKETS = [];
   nextTicketNo = 190;
+  // The seeded thread takes the admin tour's reply in place; a spec that ran that beat before
+  // one that expects the thread unanswered would otherwise see the reply (found by the
+  // random-order run of governance round 1, 2026-09-14).
+  TICKET.responses = [];
+  TICKET.status = TicketStatus.OPEN;
+  TICKET.statusDisplay = 'Otwarte';
+  TICKET.resolved = false;
+  TICKET.lastUpdateTime = '2026-09-01T10:05:00';
   totpSubmissions = 0;
   companyMailVerified = false;
   // The application the influencer tour makes is not seed data; a fresh tour

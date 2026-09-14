@@ -98,7 +98,8 @@ describe('NotificationPanelComponent (keyboard a11y)', () => {
 
   // The category chip used to print the raw enum ("PARTNERSHIP") next to the
   // timestamp; it now goes through notifications.category.<value>.
-  it('renders the notification category as a translated label, not the enum', () => {
+  it('renders the notification category as a translated label, not the enum', async () => {
+    await setup(); // its own fixture: in random order this may run first
     const text = host.textContent ?? '';
     expect(text).toContain('Partnership');
     expect(text).not.toMatch(/\bPARTNERSHIP\b/);
