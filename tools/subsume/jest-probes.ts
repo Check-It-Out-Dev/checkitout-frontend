@@ -67,8 +67,10 @@ function write(record: object): void {
   appendFileSync(probesFile, JSON.stringify(record) + '\n');
 }
 
-function emit(test: string, hits: Hits): void {
-  write({ test, spec: rel(expect.getState().testPath), hits: relHits(hits) });
+let startedAt = 0;
+
+function emit(test: string, hits: Hits, seconds: number | null): void {
+  write({ test, spec: rel(expect.getState().testPath), seconds, hits: relHits(hits) });
   for (const file of Object.keys(hits)) {
     if (mapped.has(file)) continue;
     mapped.add(file);
@@ -90,15 +92,20 @@ function emit(test: string, hits: Hits): void {
 beforeAll(() => {
   if (!active()) return;
   const cur = snapshot(g.__coverage__);
-  emit(`${rel(expect.getState().testPath)} :: (module load)`, diff({}, cur));
+  emit(`${rel(expect.getState().testPath)} :: (module load)`, diff({}, cur), null);
   prev = cur;
+});
+
+beforeEach(() => {
+  startedAt = performance.now();
 });
 
 afterEach(() => {
   if (!active()) return;
+  const seconds = Math.round(performance.now() - startedAt) / 1000;
   const cur = snapshot(g.__coverage__);
   const state = expect.getState();
-  emit(`${rel(state.testPath)} :: ${state.currentTestName}`, diff(prev, cur));
+  emit(`${rel(state.testPath)} :: ${state.currentTestName}`, diff(prev, cur), seconds);
   prev = cur;
 });
 

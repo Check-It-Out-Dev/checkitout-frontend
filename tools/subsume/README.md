@@ -79,7 +79,11 @@ and count different things.
 exec file written at JVM exit holding only the last test — and diffed against the previous
 snapshot; the agent instruments only `com.sm.instagram.platform.*` (`<includes>` in the pom), which
 keeps a snapshot around 100 KB. A `{"final":true,"totals":{"<fqcn>":n}}` record and
-`self-check.json` (`{"tests","classes","mismatches":[]}`) close the file, as for Jest.
+`self-check.json` (`{"tests","classes","mismatches":[]}`) close the file, as for Jest. Measured
+2026-09-14: 10,576 tests, 666 classes with hits, 39,653 probes mapped, self-check clean. About a
+quarter of the hit classes map to no lines at all: JaCoCo filters Lombok-generated bodies out of
+its reports, so their probes stay in the subsumption universe (a test that exercises them does
+exercise something) but carry no weight in I1, which is measured in the lines JaCoCo reports.
 
 ### `kills.json` — designed (both)
 
@@ -110,11 +114,23 @@ Backend: PIT with `fullMutationMatrix=true` + `exportLineCoverage=true`, XML →
 (pipe-joined). Frontend: Stryker's `mutation.json` with `disableBail`, `killedBy` resolved through
 `testFiles` to the identity above. `fileSha` is what lets the gate skip mutants whose code changed.
 
-### `timings.json` — designed (both)
+### `seconds` and `flaky.json`
 
-`{"schema":1,"tests":{"<test id>":{"seconds":0.012,"runs":10,"failures":1,"flaky":true}}}` — seconds
-from surefire `time=` or Jest `assertionResults[].duration`; `runs`, `failures`, `flaky` from the
-existing ten-run window (`tools/ci/flaky-report.mjs`).
+Every test record carries `"seconds"`: the hook measures the test itself (`beforeEach` to
+`afterEach` in Jest, `executionStarted` to `executionFinished` in JUnit), so no report has to be
+joined back by a display name that may not round-trip. Pseudo-records carry `null`. The only
+external input is the flaky window: `flaky.json` = `{"schema":1,"window":10,"tests":["<test id>",…]}`,
+the tests that failed or flaked in the last ten runs per `tools/ci/flaky-report.mjs`; a flaky test
+carries nothing for anyone else and is never demoted on its own record either.
+
+### What "coverage" means in the projection
+
+For Java, `classes.json` maps a probe to source lines and a method, so I1 is checked per file,
+class and method in source lines. For Jest, the runtime ids index the transpiled file; but an
+unchanged file has an identical statement, function and branch map on `main` and on the pull
+request, so I1 compares the sets of covered statement ids, function ids and branch paths per file
+and per function directly — no source-map decoding, and nothing to disagree with istanbul's own
+line numbers. Lines appear in reports only where they are exact.
 
 ## The core, in one paragraph each
 
