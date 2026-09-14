@@ -33,10 +33,15 @@ permissions:
 jobs:
   review:
     name: ◇ Reviewer
+    # A test-governance-pr run on an ordinary branch has a skipped job and no artefacts; reviewing it
+    # would overwrite the comment the pr run just produced with "not reported". Only governance branches
+    # have a governance run worth reading.
     if: >-
       ${{ github.event.workflow_run.event == 'pull_request'
           && github.event.workflow_run.pull_requests[0] != null
-          && github.event.workflow_run.head_repository.fork == false }}
+          && github.event.workflow_run.head_repository.fork == false
+          && (github.event.workflow_run.name != 'test-governance-pr'
+              || startsWith(github.event.workflow_run.head_branch, 'test-governance/')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment: ai-review
