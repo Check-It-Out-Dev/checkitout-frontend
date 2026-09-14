@@ -48,17 +48,27 @@ export function judge(
   const inScope = inMutationScope(matrix, testId);
   const probesOk = missingProbes.length === 0;
   const killsOk = missingKills.length === 0;
+  // A test the instrument cannot see — no probe at all, because it loads nothing instrumented —
+  // would satisfy "every probe is carried" vacuously. It is unobserved, not redundant.
+  const unobserved = t.probes.size === 0;
   let tier = 'KEEP';
-  if (t.flaky) tier = 'KEEP';
+  let reason = null;
+  if (t.flaky) reason = 'flaky';
+  else if (unobserved) reason = 'unobserved';
   else if (probesOk && killsOk && inScope) tier = 'CONFIRMED';
-  else if (probesOk) tier = 'SUSPECTED';
+  else if (probesOk) {
+    tier = 'SUSPECTED';
+    reason = inScope ? 'sole-killer' : 'out-of-scope';
+  } else reason = 'unique-probes';
   const outOfScope = [...t.units].filter((u) => !matrix.scope.has(u));
   return {
     test: testId,
     tier,
+    reason,
     probesOk,
     killsOk,
     inScope,
+    unobserved,
     flaky: t.flaky,
     missingProbes,
     missingKills,

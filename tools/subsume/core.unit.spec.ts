@@ -152,6 +152,18 @@ describe('subsume core', () => {
     );
   });
 
+  it('a test with no probes is unobserved, not redundant', () => {
+    const m = build({
+      tests: [
+        { id: 'seen', probes: [1], kills: [], seconds: 0.1 },
+        { id: 'unseen', probes: [], kills: [], seconds: 0.1 },
+      ],
+    });
+    const j = judge(m, 'unseen', new Set(['seen']));
+    expect(j.tier).toBe('KEEP');
+    expect(j.reason).toBe('unobserved');
+  });
+
   it('a flaky test is kept and carries nothing for anyone else', () => {
     const m = build({
       tests: [

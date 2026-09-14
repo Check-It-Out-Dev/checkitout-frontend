@@ -75,11 +75,16 @@ and count different things.
 `classes.json`: `{"<fqcn>":{"file":"src/main/java/...","id":"<jacoco class id, hex>","probes":[{"method":"bar(Ljava/lang/String;)V","lines":[41,42],"branchLines":[42]}, ...]}}`
 — index = probe id; a probe stands for a basic block, so it may cover several lines, and
 `branchLines` are the lines whose branch counter that probe alone moves. Collected in-process from
-`RT.getAgent().getExecutionData(false)` after every test — never with reset, which would leave the
-exec file written at JVM exit holding only the last test — and diffed against the previous
-snapshot; the agent instruments only `com.sm.instagram.platform.*` (`<includes>` in the pom), which
-keeps a snapshot around 100 KB. A `{"final":true,"totals":{"<fqcn>":n}}` record and
-`self-check.json` (`{"tests","classes","mismatches":[]}`) close the file, as for Jest. Measured
+`RT.getAgent().getExecutionData(true)` after every test — **with reset**, because JaCoCo probes
+are booleans: once an earlier test has flipped one it stays flipped, so a diff of cumulative
+snapshots would credit a line to the first test that reached it and to no other (istanbul's
+counters are counts, which is why the Jest hook can diff instead). Resetting would leave the exec
+file the agent writes at JVM exit holding only the last test, so the listener keeps the union of
+everything it collected and appends it to `target/jacoco-unit.exec` before exit; the report merges
+the blocks and comes out whole, and `exec-check.json` (`{"tests","classes","exec","missingFromExec":[]}`)
+records that the file read back contains every probe of the union. The agent instruments only
+`com.sm.instagram.platform.*` (`<includes>` in the pom), which keeps a snapshot around 100 KB. A
+`{"final":true,"totals":{"<fqcn>":n}}` record closes the file, as for Jest. Measured
 2026-09-14: 10,576 tests, 666 classes with hits, 39,653 probes mapped, self-check clean. About a
 quarter of the hit classes map to no lines at all: JaCoCo filters Lombok-generated bodies out of
 its reports, so their probes stay in the subsumption universe (a test that exercises them does
