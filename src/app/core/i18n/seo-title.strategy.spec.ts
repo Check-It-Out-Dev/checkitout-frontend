@@ -87,13 +87,15 @@ describe('SeoTitleStrategy', () => {
     expect(meta.getTag('property="og:url"')).toBeNull();
   });
 
-  it('titles a routed page as "<page> | <site>"', async () => {
+  // subsumed-by: seo-title.strategy.spec.ts :: SeoTitleStrategy re-titles the current page on language switch without a navigation (round 1)
+  subsumed(it)('titles a routed page as "<page> | <site>"', async () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/login');
     expect(title.getTitle()).toBe('Zaloguj się | Check It Out');
   });
 
-  it('falls back to the bare site title on routes without a title key', async () => {
+  // subsumed-by: seo-title.strategy.spec.ts :: SeoTitleStrategy re-titles the current page on language switch without a navigation, seo-title.strategy.spec.ts :: SeoTitleStrategy removes the description when the next page declares none (round 1)
+  subsumed(it)('falls back to the bare site title on routes without a title key', async () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/login');
     await harness.navigateByUrl('/plain');
@@ -108,7 +110,8 @@ describe('SeoTitleStrategy', () => {
     expect(title.getTitle()).toBe('Sign In | Check It Out');
   });
 
-  it('titles /error/:type through the resolver end to end', async () => {
+  // subsumed-by: seo-title.strategy.spec.ts :: SeoTitleStrategy re-titles the current page on language switch without a navigation, seo-title.strategy.spec.ts :: SeoTitleStrategy errorTitleKey maps known types and coerces the rest to 404 (round 1)
+  subsumed(it)('titles /error/:type through the resolver end to end', async () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/error/404');
     expect(title.getTitle()).toBe('404 - Strona nie znaleziona | Check It Out');

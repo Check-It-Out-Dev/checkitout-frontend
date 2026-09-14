@@ -25,7 +25,8 @@ describe('shellHeadersInterceptor', () => {
     httpMock.verify();
   });
 
-  it('forwards X-Consent-Required to the shell-status service', () => {
+  // subsumed-by: shell-headers.interceptor.spec.ts :: shellHeadersInterceptor forwards X-Email-Verification-Required to the shell-status service, shell-status.service.spec.ts :: ShellStatusService clearConsent / clearEmailVerification clearConsent flips consentRequired back to false, shell-status.service.spec.ts :: ShellStatusService noteResponseHeaders does not flip on absent headers (round 1)
+  subsumed(it)('forwards X-Consent-Required to the shell-status service', () => {
     expect(shellStatus.consentRequired()).toBe(false);
     http.get('/api/whatever').subscribe();
 
@@ -69,21 +70,25 @@ describe('shellHeadersInterceptor', () => {
     expect(shellStatus.consentRequired()).toBe(true);
   });
 
-  it('does NOT update the service on error responses (only HttpResponse events count)', () => {
-    http.get('/api/failure').subscribe({
-      next: () => {},
-      error: () => {},
-    });
-    const req = httpMock.expectOne('/api/failure');
-    req.flush('Boom', {
-      status: 500,
-      statusText: 'Internal Server Error',
-      headers: { 'X-Consent-Required': '1' },
-    });
+  // subsumed-by: shell-headers.interceptor.spec.ts :: shellHeadersInterceptor forwards X-Email-Verification-Required to the shell-status service, shell-status.service.spec.ts :: ShellStatusService noteResponseHeaders does not flip on absent headers (round 1)
+  subsumed(it)(
+    'does NOT update the service on error responses (only HttpResponse events count)',
+    () => {
+      http.get('/api/failure').subscribe({
+        next: () => {},
+        error: () => {},
+      });
+      const req = httpMock.expectOne('/api/failure');
+      req.flush('Boom', {
+        status: 500,
+        statusText: 'Internal Server Error',
+        headers: { 'X-Consent-Required': '1' },
+      });
 
-    // HttpErrorResponse is NOT instanceof HttpResponse, so the
-    // interceptor's tap() branch skips it. (Errors are still observed
-    // separately by errorInterceptor.)
-    expect(shellStatus.consentRequired()).toBe(false);
-  });
+      // HttpErrorResponse is NOT instanceof HttpResponse, so the
+      // interceptor's tap() branch skips it. (Errors are still observed
+      // separately by errorInterceptor.)
+      expect(shellStatus.consentRequired()).toBe(false);
+    },
+  );
 });

@@ -183,7 +183,7 @@ describe('invariants gate', () => {
       unstable,
     });
     expect(r.verdict).toBe('PASS');
-    expect(r.i1?.unstable).toEqual({ probes: 1, units: ['src/a.ts'] });
+    expect(r.i1?.unstable).toEqual({ probes: 1, witnessed: 0, units: ['src/a.ts'] });
     expect(summaryLine(r)).toContain('(1 drifting probes in 1 classes set aside)');
   });
 

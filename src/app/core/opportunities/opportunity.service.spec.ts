@@ -44,7 +44,8 @@ describe('OpportunityApiService', () => {
     });
   });
 
-  it('list() accepts custom filters + sort and forwards them', () => {
+  // subsumed-by: opportunity.service.spec.ts :: OpportunityApiService list() builds the pageable envelope with defaults (round 1)
+  subsumed(it)('list() accepts custom filters + sort and forwards them', () => {
     api.findPaginated7.mockReturnValue(
       of({ content: [] } as unknown as PagePartnershipOpportunityDtoOut),
     );
@@ -59,7 +60,8 @@ describe('OpportunityApiService', () => {
     });
   });
 
-  it('list() clones the sort array (defensive — callers may mutate after call)', () => {
+  // subsumed-by: opportunity.service.spec.ts :: OpportunityApiService list() builds the pageable envelope with defaults (round 1)
+  subsumed(it)('list() clones the sort array (defensive — callers may mutate after call)', () => {
     api.findPaginated7.mockReturnValue(
       of({ content: [] } as unknown as PagePartnershipOpportunityDtoOut),
     );

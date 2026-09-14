@@ -4,7 +4,7 @@
   "jest": {
     "tests": 1306,
     "suites": 152,
-    "subsumed": 0
+    "subsumed": 74
   },
   "playwright": {
     "projects": {

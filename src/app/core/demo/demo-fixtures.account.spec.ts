@@ -23,7 +23,8 @@ describe('demo fixtures — account, addresses and preferences', () => {
   });
 
   describe('profile', () => {
-    it('serves a user by id as the current persona', () => {
+    // subsumed-by: demo-fixtures.account.spec.ts :: demo fixtures — account, addresses and preferences profile ignores a field that is not editable, and a non-string value for one that is (round 1)
+    subsumed(it)('serves a user by id as the current persona', () => {
       const byId = matchDemoFixture('GET', '/api/users/501', null) as UserDtoOut;
       expect(byId.id).toBe(currentDemoUser().id);
     });

@@ -27,7 +27,8 @@ describe('AddressApi', () => {
     service = TestBed.inject(AddressApi);
   });
 
-  it('createForUser(userId, dto) builds the right envelope', () => {
+  // subsumed-by: address.service.spec.ts :: AddressApi passes dto by reference — no clone (caller mutation reaches BE) (round 1)
+  subsumed(it)('createForUser(userId, dto) builds the right envelope', () => {
     const dto: AddressDtoIn = {
       street: 'Marszałkowska 12',
       city: 'Warszawa',

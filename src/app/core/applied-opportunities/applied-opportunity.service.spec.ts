@@ -36,7 +36,8 @@ describe('AppliedOpportunityApiService', () => {
     service = TestBed.inject(AppliedOpportunityApiService);
   });
 
-  it('apply(id) builds dto with ONLY partnershipOpportunity when no note', () => {
+  // subsumed-by: applied-opportunity.service.spec.ts :: AppliedOpportunityApiService apply(id, "") treats empty-string note as falsy → omits the key, applied-opportunity.service.spec.ts :: AppliedOpportunityApiService apply(id, note) includes note in the dto when truthy (round 1)
+  subsumed(it)('apply(id) builds dto with ONLY partnershipOpportunity when no note', () => {
     api.create11.mockReturnValue(of({} as AppliedOpportunityDtoOut));
 
     service.apply(42).subscribe();
@@ -92,7 +93,8 @@ describe('AppliedOpportunityApiService', () => {
     });
   });
 
-  it('list() clones the sort array (caller mutation does not corrupt request)', () => {
+  // subsumed-by: applied-opportunity.service.spec.ts :: AppliedOpportunityApiService list() builds pageable + filters envelope with defaults (round 1)
+  subsumed(it)('list() clones the sort array (caller mutation does not corrupt request)', () => {
     api.findPaginated11.mockReturnValue(of({ content: [] } as any));
     const sort = ['title,asc'];
     service.list(0, 20, {}, sort).subscribe();

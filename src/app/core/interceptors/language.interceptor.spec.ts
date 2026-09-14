@@ -36,7 +36,8 @@ describe('languageInterceptor', () => {
     httpMock.verify();
   });
 
-  it('sets Accept-Language from the Transloco active locale', () => {
+  // subsumed-by: language.interceptor.spec.ts :: languageInterceptor reflects locale changes between requests (round 1)
+  subsumed(it)('sets Accept-Language from the Transloco active locale', () => {
     transloco.setActiveLang('en');
     http.get('/api/whatever').subscribe();
 
