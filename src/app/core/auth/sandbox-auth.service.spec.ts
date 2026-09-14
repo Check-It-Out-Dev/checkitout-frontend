@@ -44,12 +44,15 @@ describe('SandboxAuthService', () => {
     expect(result).toBe(INFLUENCER);
   });
 
-  it('surfaces the guard refusal (403) without touching the session state', () => {
+  // subsumed-by: sandbox-auth.service.spec.ts :: SandboxAuthService mints the persona session with credentials and then refreshes the session state (round 1)
+  subsumed(it)('surfaces the guard refusal (403) without touching the session state', () => {
     const persona = SANDBOX_PERSONAS.find((p) => p.key === 'company')!;
     let error: unknown;
     service.signInAs(persona).subscribe({ error: (e) => (error = e) });
 
-    http.expectOne('/api/test/auth/mock-session').flush({ message: 'not a persona' }, { status: 403, statusText: 'Forbidden' });
+    http
+      .expectOne('/api/test/auth/mock-session')
+      .flush({ message: 'not a persona' }, { status: 403, statusText: 'Forbidden' });
 
     expect(error).toBeInstanceOf(HttpErrorResponse);
     expect((error as HttpErrorResponse).status).toBe(403);

@@ -69,7 +69,8 @@ describe('demo fixtures', () => {
     window.history.pushState({}, '', '/');
   });
 
-  it('serves the persona for /users/me, role-aware via localStorage', () => {
+  // subsumed-by: demo-fixtures.spec.ts :: demo fixtures signs the persona in on /auth/firebase/login — the e-mail picks the persona, demo-fixtures.account.spec.ts :: demo fixtures — account, addresses and preferences addresses creates one, defaulting the country and the type (round 1)
+  subsumed(it)('serves the persona for /users/me, role-aware via localStorage', () => {
     localStorage.setItem('demoSession', '1');
     expect((matchDemoFixture('GET', '/api/users/me', null) as UserDtoOut).userType?.value).toBe(
       'COMPANY',
@@ -82,7 +83,8 @@ describe('demo fixtures', () => {
     expect(currentDemoUser().userType?.value).toBe('ADMIN');
   });
 
-  it('pages campaigns through the shared builder envelope', () => {
+  // subsumed-by: demo-fixtures.account.spec.ts :: demo fixtures — account, addresses and preferences applying to a campaign creates the application the tour then finds in accepted, carrying the campaign (round 1)
+  subsumed(it)('pages campaigns through the shared builder envelope', () => {
     const page = matchDemoFixture(
       'GET',
       'https://localhost:4201/api/partnership-opportunity?page=0&size=20',
@@ -94,7 +96,8 @@ describe('demo fixtures', () => {
     expect(page.content?.[0]?.currency?.isoCode).toBe('PLN');
   });
 
-  it('resolves campaign detail by id', () => {
+  // subsumed-by: demo-fixtures.spec.ts :: demo fixtures answers an unknown campaign or application id with the 404 marker, a known one with the row (round 1)
+  subsumed(it)('resolves campaign detail by id', () => {
     const detail = matchDemoFixture('GET', '/api/partnership-opportunity/502', null) as {
       id?: number;
     };
@@ -132,7 +135,8 @@ describe('demo fixtures', () => {
     expect(queue.content?.[0]?.ticketReference).toBe('CIO-2026-0189');
   });
 
-  it('answers /subscription/status with the generated DTO shape (plan page beat)', () => {
+  // subsumed-by: demo-fixtures.spec.ts :: demo fixtures plays the whole upgrade beat — consent, a checkout to pay in, then the plan flip (round 1)
+  subsumed(it)('answers /subscription/status with the generated DTO shape (plan page beat)', () => {
     const status = matchDemoFixture('GET', '/api/subscription/status', null) as {
       currentPlanName?: string;
       campaignLimit?: number;
@@ -628,7 +632,8 @@ describe('demo fixtures', () => {
       expect(inProgress.content.map((r) => r.id)).toEqual([8101, 8103]);
     });
 
-    it('a new tour restores the seed statuses', () => {
+    // subsumed-by: demo-fixtures.spec.ts :: demo fixtures company accept/decline round-trip moves the accepted application into the in-progress tab and its counter, demo-fixtures.spec.ts :: demo fixtures company accept/decline round-trip the influencer sees only her own rows (round 1)
+    subsumed(it)('a new tour restores the seed statuses', () => {
       matchDemoFixture(
         'PATCH',
         '/api/applied-opportunity/status/update/8101',

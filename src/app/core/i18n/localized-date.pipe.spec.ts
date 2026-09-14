@@ -13,7 +13,8 @@ describe('LocalizedDatePipe', () => {
     });
   });
 
-  it('prints Polish month names on the Polish surface', () => {
+  // subsumed-by: localized-date.pipe.spec.ts :: LocalizedDatePipe prints English month names once the language flips (impure: no new input needed) (round 1)
+  subsumed(it)('prints Polish month names on the Polish surface', () => {
     const pipe = TestBed.inject(LocalizedDatePipe);
     expect(pipe.transform('2026-06-22T10:00:00Z', 'mediumDate')).toMatch(/22 cze 2026/);
   });

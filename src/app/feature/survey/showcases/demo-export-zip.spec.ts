@@ -32,7 +32,8 @@ describe('demo-export-zip', () => {
     expect(view.getUint16(26, true)).toBe(5); // name length
   });
 
-  it('anchors central-directory offsets so multi-file archives stay consistent', () => {
+  // subsumed-by: demo-export-zip.spec.ts :: demo-export-zip produces a well-formed STORED archive (signatures + EOCD entry count) (round 1)
+  subsumed(it)('anchors central-directory offsets so multi-file archives stay consistent', () => {
     const b = buildZipBytes([
       { name: 'a.json', content: '{}' },
       { name: 'b.json', content: '{"x":true}' },

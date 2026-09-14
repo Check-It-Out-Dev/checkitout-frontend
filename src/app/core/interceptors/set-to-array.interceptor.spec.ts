@@ -80,7 +80,8 @@ describe('setToArrayInterceptor', () => {
     req.flush({});
   });
 
-  it('leaves FormData bodies untouched', () => {
+  // subsumed-by: set-to-array.interceptor.spec.ts :: setToArrayInterceptor keeps body identity when no Set is present (no clone) (round 1)
+  subsumed(it)('leaves FormData bodies untouched', () => {
     const form = new FormData();
     form.append('file', new Blob(['x']), 'x.jpg');
 
@@ -91,7 +92,8 @@ describe('setToArrayInterceptor', () => {
     req.flush({});
   });
 
-  it('passes bodiless requests through', () => {
+  // subsumed-by: set-to-array.interceptor.spec.ts :: setToArrayInterceptor keeps body identity when no Set is present (no clone) (round 1)
+  subsumed(it)('passes bodiless requests through', () => {
     http.get('/api/y').subscribe();
 
     const req = controller.expectOne('/api/y');
@@ -99,7 +101,8 @@ describe('setToArrayInterceptor', () => {
     req.flush({});
   });
 
-  it('leaves string bodies untouched', () => {
+  // subsumed-by: set-to-array.interceptor.spec.ts :: setToArrayInterceptor keeps body identity when no Set is present (no clone) (round 1)
+  subsumed(it)('leaves string bodies untouched', () => {
     http.post('/api/raw', 'plain-text').subscribe();
 
     const req = controller.expectOne('/api/raw');

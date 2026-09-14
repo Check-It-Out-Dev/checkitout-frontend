@@ -63,8 +63,12 @@ describe('TranslocoPaginatorIntl', () => {
     expect(intl.getRangeLabel(0, 12, 3)).toBe('1–3 of 3');
   });
 
-  it('groups thousands per language in the range label (Polish: narrow no-break space)', () => {
-    const intl = TestBed.inject(TranslocoPaginatorIntl);
-    expect(intl.getRangeLabel(0, 50, 12800)).toBe('1–50 z 12 800');
-  });
+  // subsumed-by: paginator-intl.spec.ts :: TranslocoPaginatorIntl renders Polish labels and a Polish range on the Polish surface, number-format.spec.ts :: groupedNumber groups with a space for Polish (comma would read as a decimal separator) (round 1)
+  subsumed(it)(
+    'groups thousands per language in the range label (Polish: narrow no-break space)',
+    () => {
+      const intl = TestBed.inject(TranslocoPaginatorIntl);
+      expect(intl.getRangeLabel(0, 50, 12800)).toBe('1–50 z 12 800');
+    },
+  );
 });

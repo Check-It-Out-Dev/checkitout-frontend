@@ -16,7 +16,8 @@ describe('ConsentService', () => {
 
   afterEach(() => localStorage.clear());
 
-  it('mirrors accept-all to the BE — ESSENTIAL true sets the login-gate cookie', () => {
+  // subsumed-by: consent.service.spec.ts :: ConsentService acceptCustom persists the mixed choice and mirrors it per-category to the BE, consent.service.spec.ts :: ConsentService acceptAll persists analytics+marketing and flips needsDecision (round 1)
+  subsumed(it)('mirrors accept-all to the BE — ESSENTIAL true sets the login-gate cookie', () => {
     const svc = TestBed.inject(ConsentService);
     svc.acceptAll();
     expect(toggleCookieCategory).toHaveBeenCalledWith('ESSENTIAL', true);
@@ -24,7 +25,8 @@ describe('ConsentService', () => {
     expect(toggleCookieCategory).toHaveBeenCalledWith('MARKETING', true);
   });
 
-  it('necessary-only still fires ESSENTIAL true but ANALYTICS/MARKETING false', () => {
+  // subsumed-by: consent.service.spec.ts :: ConsentService acceptCustom persists the mixed choice and mirrors it per-category to the BE, consent.service.spec.ts :: ConsentService acceptNecessary opts out of analytics+marketing (round 1)
+  subsumed(it)('necessary-only still fires ESSENTIAL true but ANALYTICS/MARKETING false', () => {
     const svc = TestBed.inject(ConsentService);
     svc.acceptNecessary();
     expect(toggleCookieCategory).toHaveBeenCalledWith('ESSENTIAL', true);

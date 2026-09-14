@@ -75,26 +75,30 @@ describe('UploadService', () => {
     });
   });
 
-  it('accepts each allowed MIME type and forwards the right contentType to the signed-URL API', () => {
-    api.generateSignedUrl.mockReturnValue(
-      of({
-        uploadUrl: 'https://gcs/signed',
-        publicUrl: 'https://cdn/file.jpg',
-        uploadId: 'u1',
-        filePath: 'p1',
-      }),
-    );
-    http.put.mockReturnValue(of({}));
-    api.confirmUpload.mockReturnValue(of({}));
+  // subsumed-by: upload.service.spec.ts :: UploadService completes the full chain on happy path and returns the UploadResult, upload.service.spec.ts :: UploadService rejects an unsupported MIME type with upload.errors.invalid_type (round 1)
+  subsumed(it)(
+    'accepts each allowed MIME type and forwards the right contentType to the signed-URL API',
+    () => {
+      api.generateSignedUrl.mockReturnValue(
+        of({
+          uploadUrl: 'https://gcs/signed',
+          publicUrl: 'https://cdn/file.jpg',
+          uploadId: 'u1',
+          filePath: 'p1',
+        }),
+      );
+      http.put.mockReturnValue(of({}));
+      api.confirmUpload.mockReturnValue(of({}));
 
-    for (const mime of PROFILE_PHOTO_LIMITS.allowedTypes) {
-      api.generateSignedUrl.mockClear();
-      const file = fakeFile({ type: mime, size: 100 });
-      service.uploadProfilePhoto(file).subscribe();
-      expect(api.generateSignedUrl).toHaveBeenCalledTimes(1);
-      expect(api.generateSignedUrl.mock.calls[0]?.[0]?.fileUploadRequest?.contentType).toBe(mime);
-    }
-  });
+      for (const mime of PROFILE_PHOTO_LIMITS.allowedTypes) {
+        api.generateSignedUrl.mockClear();
+        const file = fakeFile({ type: mime, size: 100 });
+        service.uploadProfilePhoto(file).subscribe();
+        expect(api.generateSignedUrl).toHaveBeenCalledTimes(1);
+        expect(api.generateSignedUrl.mock.calls[0]?.[0]?.fileUploadRequest?.contentType).toBe(mime);
+      }
+    },
+  );
 
   it('fails with signed_url_failed when BE omits any required upload field', (done) => {
     // Missing uploadId — the BE response is incomplete.

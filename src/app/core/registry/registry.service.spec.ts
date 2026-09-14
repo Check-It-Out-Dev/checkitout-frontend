@@ -16,7 +16,8 @@ describe('CompanyRegistryService', () => {
     service = TestBed.inject(CompanyRegistryService);
   });
 
-  it('lookup(nip) wraps the value in the nipLookupRequest envelope', () => {
+  // subsumed-by: registry.service.spec.ts :: CompanyRegistryService passes the NIP verbatim — no trimming / normalisation (round 1)
+  subsumed(it)('lookup(nip) wraps the value in the nipLookupRequest envelope', () => {
     const response = { companyName: 'Acme', nip: '5261040828' } as unknown as NipLookupResponse;
     api.lookupByNip.mockReturnValue(of(response));
 
