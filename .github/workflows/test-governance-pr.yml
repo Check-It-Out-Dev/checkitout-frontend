@@ -115,7 +115,8 @@ jobs:
       # scoped one that keeps the published score; a demoted test is skipped under Stryker the way
       # it is under Jest, so this is the reduced tier's kill matrix. Four workers on a four-vCPU runner.
       - name: Kill matrix on the reduced tier (measured, not projected)
-        run: npx stryker run -c stryker.estate.conf.json --concurrency 4
+        # the config file by position: `-c` is Stryker's short flag for --concurrency
+        run: npx stryker run stryker.estate.conf.json --concurrency 4
 
       - name: The ledger, and the merge rule
         id: ledger
