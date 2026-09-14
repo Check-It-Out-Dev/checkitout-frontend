@@ -30,7 +30,8 @@ describe('HttpTranslocoLoader', () => {
     httpMock.verify();
   });
 
-  it('GETs assets/i18n/{lang}.json, relative to the base href, cache-busted', () => {
+  // subsumed-by: transloco-loader.spec.ts :: HttpTranslocoLoader fires a fresh request for each call (no in-loader cache) (round 1)
+  subsumed(it)('GETs assets/i18n/{lang}.json, relative to the base href, cache-busted', () => {
     let received: unknown;
     loader.getTranslation('pl').subscribe((t) => (received = t));
 

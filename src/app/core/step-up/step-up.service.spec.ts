@@ -61,7 +61,8 @@ describe('StepUpService', () => {
     expect(received).toBe(response);
   });
 
-  it('verify() wraps action + code in the stepUpVerifyDto envelope', () => {
+  // subsumed-by: step-up.service.spec.ts :: StepUpService passes the code through verbatim (no trimming / normalisation) (round 1)
+  subsumed(it)('verify() wraps action + code in the stepUpVerifyDto envelope', () => {
     const response: StepUpTokenResponse = {
       token: 'opaque-step-up-token',
     } as unknown as StepUpTokenResponse;

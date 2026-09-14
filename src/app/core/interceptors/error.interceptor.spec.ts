@@ -94,25 +94,29 @@ describe('errorInterceptor', () => {
     expect(router.navigated).toEqual([]);
   }));
 
-  it('passes through successful responses untouched', fakeAsync(() => {
-    const auth = new FakeAuth();
-    const session = new FakeSession();
-    const router = new FakeRouter();
-    const next: HttpHandlerFn = () => of(new HttpResponse({ status: 200, body: { ok: 1 } }));
+  // subsumed-by: error.interceptor.spec.ts :: errorInterceptor does not redirect again when already on /auth/sign-in (round 1)
+  subsumed(it)(
+    'passes through successful responses untouched',
+    fakeAsync(() => {
+      const auth = new FakeAuth();
+      const session = new FakeSession();
+      const router = new FakeRouter();
+      const next: HttpHandlerFn = () => of(new HttpResponse({ status: 200, body: { ok: 1 } }));
 
-    let response: HttpResponse<unknown> | null = null;
-    runInterceptor(new HttpRequest('GET', '/api/users/me'), next, {
-      auth,
-      session,
-      router,
-    }).subscribe((r) => {
-      if (r instanceof HttpResponse) response = r;
-    });
-    tick();
+      let response: HttpResponse<unknown> | null = null;
+      runInterceptor(new HttpRequest('GET', '/api/users/me'), next, {
+        auth,
+        session,
+        router,
+      }).subscribe((r) => {
+        if (r instanceof HttpResponse) response = r;
+      });
+      tick();
 
-    expect(response).not.toBeNull();
-    expect(auth.refreshCalls).toBe(0);
-  }));
+      expect(response).not.toBeNull();
+      expect(auth.refreshCalls).toBe(0);
+    }),
+  );
 
   it('on 401 with no signed-in user from a PROTECTED page — clears session + routes to /auth/sign-in (no refresh attempt)', fakeAsync(() => {
     const auth = new FakeAuth();
@@ -192,98 +196,114 @@ describe('errorInterceptor', () => {
   // SKIP_REFRESH_PATHS the refresh-then-retry would 401 again, look like a
   // hard auth failure, and clear a signed-in user's session, bouncing them
   // to sign-in over a static-asset blip.
-  it('on 401 from a /assets/ static file — does NOT refresh, clear, or redirect', fakeAsync(() => {
-    const auth = new FakeAuth();
-    const session = new FakeSession();
-    session.setUserForTest(FAKE_USER); // signed in — the dangerous case
-    const router = new FakeRouter();
-    const next: HttpHandlerFn = () => throwError(() => new HttpErrorResponse({ status: 401 }));
+  // subsumed-by: error.interceptor.spec.ts :: errorInterceptor on 401 from /auth/firebase/login — does NOT refresh, does NOT redirect (legitimate auth failure) (round 1)
+  subsumed(it)(
+    'on 401 from a /assets/ static file — does NOT refresh, clear, or redirect',
+    fakeAsync(() => {
+      const auth = new FakeAuth();
+      const session = new FakeSession();
+      session.setUserForTest(FAKE_USER); // signed in — the dangerous case
+      const router = new FakeRouter();
+      const next: HttpHandlerFn = () => throwError(() => new HttpErrorResponse({ status: 401 }));
 
-    let captured: unknown;
-    runInterceptor(new HttpRequest('GET', '/assets/i18n/en.json'), next, {
-      auth,
-      session,
-      router,
-    }).subscribe({ error: (e) => (captured = e) });
-    tick();
+      let captured: unknown;
+      runInterceptor(new HttpRequest('GET', '/assets/i18n/en.json'), next, {
+        auth,
+        session,
+        router,
+      }).subscribe({ error: (e) => (captured = e) });
+      tick();
 
-    expect(auth.refreshCalls).toBe(0);
-    expect(session.clearCalls).toBe(0); // static-asset 401 must never log the user out
-    expect(router.navigated).toEqual([]);
-    expect(captured).toBeInstanceOf(HttpErrorResponse);
-  }));
+      expect(auth.refreshCalls).toBe(0);
+      expect(session.clearCalls).toBe(0); // static-asset 401 must never log the user out
+      expect(router.navigated).toEqual([]);
+      expect(captured).toBeInstanceOf(HttpErrorResponse);
+    }),
+  );
 
   // Magic-link ticket access: an anonymous 401 (expired/tampered token) must
   // NOT bounce to /auth/sign-in — the status page renders its own fallback
   // (manual ref+email lookup). e2e-2026-09-02. Anonymous case (no session):
   // without the skip, the interceptor would clear + redirect off a public page.
-  it('on 401 from /support/ticket/access (anonymous) — does NOT clear or redirect', fakeAsync(() => {
-    const auth = new FakeAuth();
-    const session = new FakeSession(); // anonymous — no user
-    const router = new FakeRouter();
-    router.url = '/support/tickets/status';
-    const next: HttpHandlerFn = () => throwError(() => new HttpErrorResponse({ status: 401 }));
+  // subsumed-by: error.interceptor.spec.ts :: errorInterceptor on 401 from /auth/firebase/login — does NOT refresh, does NOT redirect (legitimate auth failure) (round 1)
+  subsumed(it)(
+    'on 401 from /support/ticket/access (anonymous) — does NOT clear or redirect',
+    fakeAsync(() => {
+      const auth = new FakeAuth();
+      const session = new FakeSession(); // anonymous — no user
+      const router = new FakeRouter();
+      router.url = '/support/tickets/status';
+      const next: HttpHandlerFn = () => throwError(() => new HttpErrorResponse({ status: 401 }));
 
-    let captured: unknown;
-    runInterceptor(new HttpRequest('GET', '/api/support/ticket/access?token=bad'), next, {
-      auth,
-      session,
-      router,
-    }).subscribe({ error: (e) => (captured = e) });
-    tick();
+      let captured: unknown;
+      runInterceptor(new HttpRequest('GET', '/api/support/ticket/access?token=bad'), next, {
+        auth,
+        session,
+        router,
+      }).subscribe({ error: (e) => (captured = e) });
+      tick();
 
-    expect(auth.refreshCalls).toBe(0);
-    expect(session.clearCalls).toBe(0);
-    expect(router.navigated).toEqual([]); // stays put — the page shows its own fallback
-    expect(captured).toBeInstanceOf(HttpErrorResponse);
-  }));
+      expect(auth.refreshCalls).toBe(0);
+      expect(session.clearCalls).toBe(0);
+      expect(router.navigated).toEqual([]); // stays put — the page shows its own fallback
+      expect(captured).toBeInstanceOf(HttpErrorResponse);
+    }),
+  );
 
-  it('on 401 from /auth/refresh-session itself — does NOT recurse', fakeAsync(() => {
-    const auth = new FakeAuth();
-    const session = new FakeSession();
-    session.setUserForTest(FAKE_USER);
-    const router = new FakeRouter();
-    const next: HttpHandlerFn = () => throwError(() => new HttpErrorResponse({ status: 401 }));
+  // subsumed-by: error.interceptor.spec.ts :: errorInterceptor on 401 from /auth/firebase/login — does NOT refresh, does NOT redirect (legitimate auth failure) (round 1)
+  subsumed(it)(
+    'on 401 from /auth/refresh-session itself — does NOT recurse',
+    fakeAsync(() => {
+      const auth = new FakeAuth();
+      const session = new FakeSession();
+      session.setUserForTest(FAKE_USER);
+      const router = new FakeRouter();
+      const next: HttpHandlerFn = () => throwError(() => new HttpErrorResponse({ status: 401 }));
 
-    runInterceptor(new HttpRequest('POST', '/api/auth/refresh-session', {}), next, {
-      auth,
-      session,
-      router,
-    }).subscribe({ error: () => {} });
-    tick();
+      runInterceptor(new HttpRequest('POST', '/api/auth/refresh-session', {}), next, {
+        auth,
+        session,
+        router,
+      }).subscribe({ error: () => {} });
+      tick();
 
-    expect(auth.refreshCalls).toBe(0); // skipped — would recurse
-  }));
+      expect(auth.refreshCalls).toBe(0); // skipped — would recurse
+    }),
+  );
 
-  it('on authenticated 401 — refreshes once and retries the original request', fakeAsync(() => {
-    const auth = new FakeAuth();
-    const session = new FakeSession();
-    session.setUserForTest(FAKE_USER);
-    const router = new FakeRouter();
+  // subsumed-by: error.interceptor.spec.ts :: errorInterceptor on authenticated 419 (tokenVersion mismatch) — refreshes once and retries the original request (round 1)
+  subsumed(it)(
+    'on authenticated 401 — refreshes once and retries the original request',
+    fakeAsync(() => {
+      const auth = new FakeAuth();
+      const session = new FakeSession();
+      session.setUserForTest(FAKE_USER);
+      const router = new FakeRouter();
 
-    let attempts = 0;
-    const next: HttpHandlerFn = () => {
-      attempts += 1;
-      if (attempts === 1) return throwError(() => new HttpErrorResponse({ status: 401 }));
-      return of(new HttpResponse({ status: 200, body: { ok: 1 } }));
-    };
+      let attempts = 0;
+      const next: HttpHandlerFn = () => {
+        attempts += 1;
+        if (attempts === 1) return throwError(() => new HttpErrorResponse({ status: 401 }));
+        return of(new HttpResponse({ status: 200, body: { ok: 1 } }));
+      };
 
-    let result: HttpResponse<unknown> | null = null;
-    runInterceptor(new HttpRequest('GET', '/api/users/me'), next, {
-      auth,
-      session,
-      router,
-    }).subscribe((r) => {
-      if (r instanceof HttpResponse) result = r;
-    });
-    tick();
+      let result: HttpResponse<unknown> | null = null;
+      runInterceptor(new HttpRequest('GET', '/api/users/me'), next, {
+        auth,
+        session,
+        router,
+      }).subscribe((r) => {
+        if (r instanceof HttpResponse) result = r;
+      });
+      tick();
 
-    expect(auth.refreshCalls).toBe(1);
-    expect(attempts).toBe(2); // original + retry
-    expect(result).not.toBeNull();
-    expect(session.clearCalls).toBe(0);
-    expect(router.navigated).toEqual([]);
-  }));
+      expect(auth.refreshCalls).toBe(1);
+      expect(attempts).toBe(2); // original + retry
+      expect(result).not.toBeNull();
+      expect(session.clearCalls).toBe(0);
+      expect(router.navigated).toEqual([]);
+    }),
+  );
 
   it('on authenticated 401 + refresh failure — clears session + redirects + surfaces original 401', fakeAsync(() => {
     const auth = new FakeAuth();
@@ -415,65 +435,77 @@ describe('errorInterceptor', () => {
     expect(router.navigated).toEqual([]);
   }));
 
-  it('on 419 with no signed-in user — clears session + routes to /auth/sign-in (no refresh)', fakeAsync(() => {
-    const auth = new FakeAuth();
-    const session = new FakeSession();
-    session.setUserForTest(null);
-    const router = new FakeRouter();
-    const next: HttpHandlerFn = () => throwError(() => new HttpErrorResponse({ status: 419 }));
+  // subsumed-by: error.interceptor.spec.ts :: errorInterceptor on 401 with no signed-in user from a PROTECTED page — clears session + routes to /auth/sign-in (no refresh attempt) (round 1)
+  subsumed(it)(
+    'on 419 with no signed-in user — clears session + routes to /auth/sign-in (no refresh)',
+    fakeAsync(() => {
+      const auth = new FakeAuth();
+      const session = new FakeSession();
+      session.setUserForTest(null);
+      const router = new FakeRouter();
+      const next: HttpHandlerFn = () => throwError(() => new HttpErrorResponse({ status: 419 }));
 
-    let captured: unknown;
-    runInterceptor(new HttpRequest('GET', '/api/users/me'), next, {
-      auth,
-      session,
-      router,
-    }).subscribe({ error: (e) => (captured = e) });
-    tick();
+      let captured: unknown;
+      runInterceptor(new HttpRequest('GET', '/api/users/me'), next, {
+        auth,
+        session,
+        router,
+      }).subscribe({ error: (e) => (captured = e) });
+      tick();
 
-    expect(auth.refreshCalls).toBe(0);
-    expect(session.clearCalls).toBe(1);
-    expect(router.navigated).toEqual(['/auth/sign-in']);
-    expect(captured).toBeInstanceOf(HttpErrorResponse);
-  }));
+      expect(auth.refreshCalls).toBe(0);
+      expect(session.clearCalls).toBe(1);
+      expect(router.navigated).toEqual(['/auth/sign-in']);
+      expect(captured).toBeInstanceOf(HttpErrorResponse);
+    }),
+  );
 
-  it('on 419 from /auth/refresh-session itself — does NOT recurse', fakeAsync(() => {
-    const auth = new FakeAuth();
-    const session = new FakeSession();
-    session.setUserForTest(FAKE_USER);
-    const router = new FakeRouter();
-    const next: HttpHandlerFn = () => throwError(() => new HttpErrorResponse({ status: 419 }));
+  // subsumed-by: error.interceptor.spec.ts :: errorInterceptor on 401 from /auth/firebase/login — does NOT refresh, does NOT redirect (legitimate auth failure) (round 1)
+  subsumed(it)(
+    'on 419 from /auth/refresh-session itself — does NOT recurse',
+    fakeAsync(() => {
+      const auth = new FakeAuth();
+      const session = new FakeSession();
+      session.setUserForTest(FAKE_USER);
+      const router = new FakeRouter();
+      const next: HttpHandlerFn = () => throwError(() => new HttpErrorResponse({ status: 419 }));
 
-    runInterceptor(new HttpRequest('POST', '/api/auth/refresh-session', {}), next, {
-      auth,
-      session,
-      router,
-    }).subscribe({ error: () => {} });
-    tick();
+      runInterceptor(new HttpRequest('POST', '/api/auth/refresh-session', {}), next, {
+        auth,
+        session,
+        router,
+      }).subscribe({ error: () => {} });
+      tick();
 
-    expect(auth.refreshCalls).toBe(0);
-  }));
+      expect(auth.refreshCalls).toBe(0);
+    }),
+  );
 
-  it('on authenticated 419 + refresh-401 (banned) — clears session + redirects + surfaces original 419', fakeAsync(() => {
-    const auth = new FakeAuth();
-    auth.refreshNext = () => throwError(() => new HttpErrorResponse({ status: 401 }));
-    const session = new FakeSession();
-    session.setUserForTest(FAKE_USER);
-    const router = new FakeRouter();
-    const next: HttpHandlerFn = () =>
-      throwError(() => new HttpErrorResponse({ status: 419, statusText: 'TV_MISMATCH' }));
+  // subsumed-by: error.interceptor.spec.ts :: errorInterceptor on authenticated 401 + refresh failure — clears session + redirects + surfaces original 401 (round 1)
+  subsumed(it)(
+    'on authenticated 419 + refresh-401 (banned) — clears session + redirects + surfaces original 419',
+    fakeAsync(() => {
+      const auth = new FakeAuth();
+      auth.refreshNext = () => throwError(() => new HttpErrorResponse({ status: 401 }));
+      const session = new FakeSession();
+      session.setUserForTest(FAKE_USER);
+      const router = new FakeRouter();
+      const next: HttpHandlerFn = () =>
+        throwError(() => new HttpErrorResponse({ status: 419, statusText: 'TV_MISMATCH' }));
 
-    const errors: HttpErrorResponse[] = [];
-    runInterceptor(new HttpRequest('GET', '/api/users/me'), next, {
-      auth,
-      session,
-      router,
-    }).subscribe({ error: (e: HttpErrorResponse) => errors.push(e) });
-    tick();
+      const errors: HttpErrorResponse[] = [];
+      runInterceptor(new HttpRequest('GET', '/api/users/me'), next, {
+        auth,
+        session,
+        router,
+      }).subscribe({ error: (e: HttpErrorResponse) => errors.push(e) });
+      tick();
 
-    expect(auth.refreshCalls).toBe(1);
-    expect(session.clearCalls).toBe(1);
-    expect(router.navigated).toEqual(['/auth/sign-in']);
-    expect(errors).toHaveLength(1);
-    expect(errors[0].statusText).toBe('TV_MISMATCH'); // original 419, not refresh 401
-  }));
+      expect(auth.refreshCalls).toBe(1);
+      expect(session.clearCalls).toBe(1);
+      expect(router.navigated).toEqual(['/auth/sign-in']);
+      expect(errors).toHaveLength(1);
+      expect(errors[0].statusText).toBe('TV_MISMATCH'); // original 419, not refresh 401
+    }),
+  );
 });

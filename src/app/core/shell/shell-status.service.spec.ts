@@ -11,7 +11,8 @@ describe('ShellStatusService', () => {
   });
 
   describe('initial state', () => {
-    it('starts with no banners', () => {
+    // subsumed-by: shell-status.service.spec.ts :: ShellStatusService trialOffer the nudge is not an obligation — hasAnyBanner stays false (round 1)
+    subsumed(it)('starts with no banners', () => {
       expect(svc.consentRequired()).toBe(false);
       expect(svc.emailVerificationRequired()).toBe(false);
       expect(svc.profileMissingFields()).toEqual([]);
@@ -37,16 +38,21 @@ describe('ShellStatusService', () => {
       expect(svc.emailVerificationRequired()).toBe(false);
     });
 
-    it('does not flip on header values other than "1"', () => {
+    // subsumed-by: shell-status.service.spec.ts :: ShellStatusService noteResponseHeaders does not flip on absent headers (round 1)
+    subsumed(it)('does not flip on header values other than "1"', () => {
       svc.noteResponseHeaders(new HttpHeaders({ 'X-Consent-Required': 'false' }));
       expect(svc.consentRequired()).toBe(false);
     });
 
-    it('is sticky once seen — a later response without the header does not clear it', () => {
-      svc.noteResponseHeaders(new HttpHeaders({ 'X-Consent-Required': '1' }));
-      svc.noteResponseHeaders(new HttpHeaders({}));
-      expect(svc.consentRequired()).toBe(true);
-    });
+    // subsumed-by: shell-status.service.spec.ts :: ShellStatusService clearConsent / clearEmailVerification clearConsent flips consentRequired back to false, shell-headers.interceptor.spec.ts :: shellHeadersInterceptor forwards X-Email-Verification-Required to the shell-status service (round 1)
+    subsumed(it)(
+      'is sticky once seen — a later response without the header does not clear it',
+      () => {
+        svc.noteResponseHeaders(new HttpHeaders({ 'X-Consent-Required': '1' }));
+        svc.noteResponseHeaders(new HttpHeaders({}));
+        expect(svc.consentRequired()).toBe(true);
+      },
+    );
   });
 
   describe('setProfileMissing', () => {

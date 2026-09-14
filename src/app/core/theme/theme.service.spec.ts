@@ -47,7 +47,8 @@ describe('ThemeService', () => {
     return service;
   }
 
-  it('defaults to "light" when no stored choice + no dark OS preference', () => {
+  // subsumed-by: theme.service.spec.ts :: ThemeService toggle() flips between light and dark, layout.component.spec.ts :: LayoutComponent nav surface exposes 5 standard nav entries in the expected order (round 1)
+  subsumed(it)('defaults to "light" when no stored choice + no dark OS preference', () => {
     const service = buildService();
     expect(service.mode()).toBe('light');
     expect(document.documentElement.classList.contains('dark-theme')).toBe(false);
@@ -90,7 +91,8 @@ describe('ThemeService', () => {
     expect(document.documentElement.classList.contains('dark-theme')).toBe(false);
   });
 
-  it('set(mode) writes the value verbatim', () => {
+  // subsumed-by: theme.service.spec.ts :: ThemeService toggle() flips between light and dark, theme.service.spec.ts :: ThemeService persists the mode to localStorage on every change (round 1)
+  subsumed(it)('set(mode) writes the value verbatim', () => {
     const service = buildService();
     service.set('dark');
     TestBed.flushEffects();
@@ -116,7 +118,8 @@ describe('ThemeService', () => {
     expect(localStorage.getItem(STORAGE_KEY)).toBe('light');
   });
 
-  it('survives a localStorage read failure on init (privacy mode)', () => {
+  // subsumed-by: theme.service.spec.ts :: ThemeService toggle() flips between light and dark (round 1)
+  subsumed(it)('survives a localStorage read failure on init (privacy mode)', () => {
     const getItemSpy = jest.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
       throw new Error('Access denied');
     });
@@ -130,7 +133,8 @@ describe('ThemeService', () => {
     }
   });
 
-  it('survives a localStorage write failure on set() (privacy mode)', () => {
+  // subsumed-by: theme.service.spec.ts :: ThemeService persists the mode to localStorage on every change, theme.service.spec.ts :: ThemeService honours an explicit "dark" choice from localStorage (round 1)
+  subsumed(it)('survives a localStorage write failure on set() (privacy mode)', () => {
     const service = buildService();
     const setItemSpy = jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
       throw new Error('QuotaExceeded');

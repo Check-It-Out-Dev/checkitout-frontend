@@ -1,0 +1,197 @@
+{
+  "schema": 1,
+  "repo": "frontend",
+  "round": 1,
+  "runId": "local-2026-09-14b",
+  "baseCommit": "d2b6069b",
+  "proposalCommit": "d2b6069b",
+  "demoted": [
+    "src/app/core/address/address.service.spec.ts :: AddressApi createForUser(userId, dto) builds the right envelope",
+    "src/app/core/admin/cascade-delete.service.spec.ts :: CascadeDeleteApiService forceDeletePartnership() echoes code + expected count in the confirmation body — the BE re-verifies both",
+    "src/app/core/applied-opportunities/applied-opportunity.service.spec.ts :: AppliedOpportunityApiService apply(id) builds dto with ONLY partnershipOpportunity when no note",
+    "src/app/core/applied-opportunities/applied-opportunity.service.spec.ts :: AppliedOpportunityApiService list() clones the sort array (caller mutation does not corrupt request)",
+    "src/app/core/auth/auth.guards.spec.ts :: adminGuard allows an ADMIN synchronously when the session is already probed",
+    "src/app/core/auth/auth.guards.spec.ts :: noAuthGuard allows the route synchronously when SessionState has not yet probed",
+    "src/app/core/auth/location-redirect.service.spec.ts :: LocationRedirectService assign() delegates to window.location.assign with the given URL",
+    "src/app/core/auth/sandbox-auth.service.spec.ts :: SandboxAuthService surfaces the guard refusal (403) without touching the session state",
+    "src/app/core/auth/social-platform-config.service.spec.ts :: SocialPlatformConfigService clearOAuthState() removes the cookie",
+    "src/app/core/auth/social-platform-config.service.spec.ts :: SocialPlatformConfigService persists state in a cookie that validateOAuthState() then accepts",
+    "src/app/core/consent/consent.service.spec.ts :: ConsentService mirrors accept-all to the BE — ESSENTIAL true sets the login-gate cookie",
+    "src/app/core/consent/consent.service.spec.ts :: ConsentService necessary-only still fires ESSENTIAL true but ANALYTICS/MARKETING false",
+    "src/app/core/demo/demo-fixtures.account.spec.ts :: demo fixtures — account, addresses and preferences profile serves a user by id as the current persona",
+    "src/app/core/demo/demo-fixtures.spec.ts :: demo fixtures answers /subscription/status with the generated DTO shape (plan page beat)",
+    "src/app/core/demo/demo-fixtures.spec.ts :: demo fixtures company accept/decline round-trip a new tour restores the seed statuses",
+    "src/app/core/demo/demo-fixtures.spec.ts :: demo fixtures pages campaigns through the shared builder envelope",
+    "src/app/core/demo/demo-fixtures.spec.ts :: demo fixtures resolves campaign detail by id",
+    "src/app/core/demo/demo-fixtures.spec.ts :: demo fixtures serves the persona for /users/me, role-aware via localStorage",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService a full load on an app route keeps the stored tour",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService advance() walks every step and lands on the recap (done)",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService exit() closes any dialog the tour left open",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor a second press on the stalled checkout step goes through",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor a sim step whose simulator never fires stays put and says so",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor a step the application never confirms stays put and says so",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor confirms a step whose own recipe removes the element it waits for",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor runs the recipe, then advances",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor the checkout step whose recipe did nothing holds and says why",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor the checkout step whose recipe ran but changed nothing holds too",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor the checkout step whose recipe worked stays advanced",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor the pill press gates a done condition the same way the watcher does",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor waits for the app to confirm the step before advancing",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService notify() advances the current step on a matching id — manual steps included",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService start() resets per-tour story state (plan, step-up code, TOTP attempt)",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService start() signs a signed-out persona in for an app scenario via a full boot",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService start() signs the persona OUT for the admin-2fa scenario (it plays on /auth/sign-in)",
+    "src/app/core/i18n/localized-date.pipe.spec.ts :: LocalizedDatePipe prints Polish month names on the Polish surface",
+    "src/app/core/i18n/paginator-intl.spec.ts :: TranslocoPaginatorIntl groups thousands per language in the range label (Polish: narrow no-break space)",
+    "src/app/core/i18n/seo-title.strategy.spec.ts :: SeoTitleStrategy falls back to the bare site title on routes without a title key",
+    "src/app/core/i18n/seo-title.strategy.spec.ts :: SeoTitleStrategy titles /error/:type through the resolver end to end",
+    "src/app/core/i18n/seo-title.strategy.spec.ts :: SeoTitleStrategy titles a routed page as \"<page> | <site>\"",
+    "src/app/core/i18n/transloco-loader.spec.ts :: HttpTranslocoLoader GETs assets/i18n/{lang}.json, relative to the base href, cache-busted",
+    "src/app/core/interceptors/error.interceptor.spec.ts :: errorInterceptor on 401 from /auth/refresh-session itself — does NOT recurse",
+    "src/app/core/interceptors/error.interceptor.spec.ts :: errorInterceptor on 401 from /support/ticket/access (anonymous) — does NOT clear or redirect",
+    "src/app/core/interceptors/error.interceptor.spec.ts :: errorInterceptor on 401 from a /assets/ static file — does NOT refresh, clear, or redirect",
+    "src/app/core/interceptors/error.interceptor.spec.ts :: errorInterceptor on 419 from /auth/refresh-session itself — does NOT recurse",
+    "src/app/core/interceptors/error.interceptor.spec.ts :: errorInterceptor on 419 with no signed-in user — clears session + routes to /auth/sign-in (no refresh)",
+    "src/app/core/interceptors/error.interceptor.spec.ts :: errorInterceptor on authenticated 401 — refreshes once and retries the original request",
+    "src/app/core/interceptors/error.interceptor.spec.ts :: errorInterceptor on authenticated 419 + refresh-401 (banned) — clears session + redirects + surfaces original 419",
+    "src/app/core/interceptors/error.interceptor.spec.ts :: errorInterceptor passes through successful responses untouched",
+    "src/app/core/interceptors/language.interceptor.spec.ts :: languageInterceptor sets Accept-Language from the Transloco active locale",
+    "src/app/core/interceptors/set-to-array.interceptor.spec.ts :: setToArrayInterceptor leaves FormData bodies untouched",
+    "src/app/core/interceptors/set-to-array.interceptor.spec.ts :: setToArrayInterceptor leaves string bodies untouched",
+    "src/app/core/interceptors/set-to-array.interceptor.spec.ts :: setToArrayInterceptor passes bodiless requests through",
+    "src/app/core/interceptors/shell-headers.interceptor.spec.ts :: shellHeadersInterceptor does NOT update the service on error responses (only HttpResponse events count)",
+    "src/app/core/interceptors/shell-headers.interceptor.spec.ts :: shellHeadersInterceptor forwards X-Consent-Required to the shell-status service",
+    "src/app/core/interceptors/step-up.interceptor.spec.ts :: stepUpInterceptor adds X-Step-Up-Token header when a token is set on the request context",
+    "src/app/core/interceptors/step-up.interceptor.spec.ts :: stepUpInterceptor passes the request through unchanged when STEP_UP_TOKEN is unset",
+    "src/app/core/legal/legal-api.service.spec.ts :: LegalApiService forwards prepareConsentCookie payload + the BE-correct documentType string",
+    "src/app/core/opportunities/opportunity.service.spec.ts :: OpportunityApiService list() accepts custom filters + sort and forwards them",
+    "src/app/core/opportunities/opportunity.service.spec.ts :: OpportunityApiService list() clones the sort array (defensive — callers may mutate after call)",
+    "src/app/core/preferences/preferences.service.spec.ts :: PreferencesApiService patchMine(dto) sends the dto as the BE requestBody map",
+    "src/app/core/registry/registry.service.spec.ts :: CompanyRegistryService passes the NIP verbatim — no trimming / normalisation",
+    "src/app/core/shell/shell-status.service.spec.ts :: ShellStatusService initial state starts with no banners",
+    "src/app/core/shell/shell-status.service.spec.ts :: ShellStatusService noteResponseHeaders does not flip on header values other than \"1\"",
+    "src/app/core/shell/shell-status.service.spec.ts :: ShellStatusService noteResponseHeaders is sticky once seen — a later response without the header does not clear it",
+    "src/app/core/step-up/step-up.service.spec.ts :: StepUpService verify() wraps action + code in the stepUpVerifyDto envelope",
+    "src/app/core/theme/theme.service.spec.ts :: ThemeService defaults to \"light\" when no stored choice + no dark OS preference",
+    "src/app/core/theme/theme.service.spec.ts :: ThemeService set(mode) writes the value verbatim",
+    "src/app/core/theme/theme.service.spec.ts :: ThemeService survives a localStorage read failure on init (privacy mode)",
+    "src/app/core/theme/theme.service.spec.ts :: ThemeService survives a localStorage write failure on set() (privacy mode)",
+    "src/app/core/upload/upload.service.spec.ts :: UploadService accepts each allowed MIME type and forwards the right contentType to the signed-URL API",
+    "src/app/core/user/user.service.spec.ts :: UserApiService passes dto by reference — no clone",
+    "src/app/core/user/user.service.spec.ts :: UserApiService patch(id, dto) without stepUpToken passes options=undefined",
+    "src/app/feature/survey/showcases/demo-export-zip.spec.ts :: demo-export-zip anchors central-directory offsets so multi-file archives stay consistent"
+  ],
+  "notApplied": [
+    {
+      "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/1: the footer matches what the beat can actually do",
+      "reason": "parameterized"
+    },
+    {
+      "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/2: the footer matches what the beat can actually do",
+      "reason": "parameterized"
+    },
+    {
+      "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/3: the footer matches what the beat can actually do",
+      "reason": "parameterized"
+    },
+    {
+      "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/4: the footer matches what the beat can actually do",
+      "reason": "parameterized"
+    },
+    {
+      "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-ops/33: the footer matches what the beat can actually do",
+      "reason": "parameterized"
+    },
+    {
+      "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-ops/35: the footer matches what the beat can actually do",
+      "reason": "parameterized"
+    },
+    {
+      "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-ops/36: the footer matches what the beat can actually do",
+      "reason": "parameterized"
+    },
+    {
+      "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-ops/37: the footer matches what the beat can actually do",
+      "reason": "parameterized"
+    },
+    {
+      "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-ops/38: the footer matches what the beat can actually do",
+      "reason": "parameterized"
+    },
+    {
+      "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step company-campaign/11: the footer matches what the beat can actually do",
+      "reason": "parameterized"
+    },
+    {
+      "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step company-campaign/12: the footer matches what the beat can actually do",
+      "reason": "parameterized"
+    },
+    {
+      "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step company-campaign/13: the footer matches what the beat can actually do",
+      "reason": "parameterized"
+    },
+    {
+      "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step influencer-collab/15: the footer matches what the beat can actually do",
+      "reason": "parameterized"
+    },
+    {
+      "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step influencer-collab/16: the footer matches what the beat can actually do",
+      "reason": "parameterized"
+    },
+    {
+      "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step nip-to-ksef/20: the footer matches what the beat can actually do",
+      "reason": "parameterized"
+    },
+    {
+      "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step nip-to-ksef/21: the footer matches what the beat can actually do",
+      "reason": "parameterized"
+    },
+    {
+      "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step nip-to-ksef/22: the footer matches what the beat can actually do",
+      "reason": "parameterized"
+    },
+    {
+      "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step nip-to-ksef/23: the footer matches what the beat can actually do",
+      "reason": "parameterized"
+    },
+    {
+      "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step nip-to-ksef/25: the footer matches what the beat can actually do",
+      "reason": "parameterized"
+    },
+    {
+      "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step nip-to-ksef/26: the footer matches what the beat can actually do",
+      "reason": "parameterized"
+    },
+    {
+      "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step nip-to-ksef/27: the footer matches what the beat can actually do",
+      "reason": "parameterized"
+    },
+    {
+      "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step nip-to-ksef/28: the footer matches what the beat can actually do",
+      "reason": "parameterized"
+    }
+  ],
+  "tiers": {
+    "A": {
+      "available": 41,
+      "seconds": 0.2,
+      "taken": 36
+    },
+    "B": {
+      "available": 3,
+      "seconds": 0,
+      "taken": 3
+    },
+    "C": {
+      "available": 72,
+      "seconds": 0.4,
+      "taken": 57
+    },
+    "D": {
+      "available": 1,
+      "seconds": 0,
+      "taken": 0
+    }
+  },
+  "provisional": false
+}

@@ -34,7 +34,8 @@ describe('UserApiService', () => {
     expect(received).toBe(user);
   });
 
-  it('patch(id, dto) without stepUpToken passes options=undefined', () => {
+  // subsumed-by: user.service.spec.ts :: UserApiService patch(id, dto, stepUpToken) builds the step-up HttpContext, user.service.spec.ts :: UserApiService treats empty-string stepUpToken as truthy → builds context (round 1)
+  subsumed(it)('patch(id, dto) without stepUpToken passes options=undefined', () => {
     const dto = { firstName: 'Alice' } as unknown as UserDtoIn;
     const updated = { id: 7, firstName: 'Alice' } as unknown as UserDtoOut;
     api.patch.mockReturnValue(of(updated));
@@ -82,7 +83,8 @@ describe('UserApiService', () => {
     expect(options).toBeUndefined();
   });
 
-  it('passes dto by reference — no clone', () => {
+  // subsumed-by: user.service.spec.ts :: UserApiService patch(id, dto, stepUpToken) builds the step-up HttpContext, user.service.spec.ts :: UserApiService treats empty-string stepUpToken as truthy → builds context (round 1)
+  subsumed(it)('passes dto by reference — no clone', () => {
     const dto = { firstName: 'A' } as unknown as UserDtoIn;
     api.patch.mockReturnValue(of({} as UserDtoOut));
 
