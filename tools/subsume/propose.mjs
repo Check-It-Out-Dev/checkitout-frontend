@@ -105,7 +105,9 @@ export async function propose(
         mutationObserved: j.mutationObserved,
         unitsOutOfScope: j.outOfScope.length,
         fullCarriers: full.length,
-        sameClassCarrier: full.some((id2) => matrix.tests.get(id2).spec === t.spec),
+        sameClassCarrier: [...full, ...c.carriers].some(
+          (id2) => matrix.tests.get(id2)?.spec === t.spec,
+        ),
         exactDuplicateOf,
       },
       redundancy: {

@@ -311,6 +311,22 @@ rounds) lives in the governance workflow, not here.
 }
 ```
 
+### Demotion — `apply.mjs`, `round.json`
+
+`apply.mjs --repo backend|frontend --pack pack.json --root <repo> --round N --run-id <id> --base-commit <sha> [--dry-run]`
+demotes every test the pack names and deletes nothing. JUnit: `@Tag("subsumed")` above the
+method's annotations, with `// subsumed-by: <carrier> (round N)`; the backend's `test` profile
+excludes the tag (`-Dsubsume.excludedGroups=never` in the nightly runs everything). Jest: `it(` →
+`subsumed(it)(` — the global from `setup-jest.ts` that is `it` under `SUITE=nightly` and `it.skip`
+otherwise — with the same marker. It finds a test where its id says it lives (the nested-class
+chain for JUnit, the describe chain for Jest) and refuses, naming the reason, a parameterised
+invocation (`parameterized`: the method is one unit until instance 1b), a name that is not a
+string literal (`dynamic-name`), an `it.skip`/`it.only`/`it.each` (`not-a-plain-it`), one already
+demoted (`already`), one it cannot find (`not-found`, `file-missing`). It writes
+`docs/testing/governance/round.json` — `{schema, repo, round, runId, baseCommit, proposalCommit,
+demoted[], notApplied[], tiers, provisional}` — the tracked link between the governance branch
+and the proposal run; the pull-request body is never the link.
+
 ### `invariant-report.json`
 
 ```jsonc

@@ -150,6 +150,11 @@ export function pack(
     forecast[t] = { tests: rest.length, seconds: sum(rest) };
   }
   const abcLeft = forecast.A.seconds + forecast.B.seconds + forecast.C.seconds;
+  const abcLeftTests = forecast.A.tests + forecast.B.tests + forecast.C.tests;
+  const rounds = Math.max(
+    budgetSeconds > 0 ? Math.ceil(abcLeft / budgetSeconds) : 0,
+    budgetTests > 0 ? Math.ceil(abcLeftTests / budgetTests) : 0,
+  );
   return {
     schema: 1,
     repo: report.repo,
@@ -181,7 +186,7 @@ export function pack(
     saturated: abcAvailable - taken.filter((x) => x.tier !== 'D').length === 0,
     forecast: {
       ...forecast,
-      roundsToSaturationAtThisBudget: budgetSeconds > 0 ? Math.ceil(abcLeft / budgetSeconds) : null,
+      roundsToSaturationAtThisBudget: rounds,
     },
   };
 }
