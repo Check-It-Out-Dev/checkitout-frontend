@@ -1,0 +1,1114 @@
+{
+ "schema": 1,
+ "repo": "frontend",
+ "commit": "6d7924f3",
+ "budget": {
+  "share": 0.1,
+  "seconds": 7.9,
+  "tests": 300,
+  "classCap": 0.5
+ },
+ "gates": {
+  "determinism": "measured",
+  "frozen": [],
+  "excluded": {
+   "no-carrier-in-class": 8,
+   "look-twice": 9,
+   "not-confirmed": 531
+  }
+ },
+ "provisional": false,
+ "tiers": {
+  "A": {
+   "available": 41,
+   "seconds": 0.2,
+   "taken": 36
+  },
+  "B": {
+   "available": 3,
+   "seconds": 0,
+   "taken": 3
+  },
+  "C": {
+   "available": 72,
+   "seconds": 0.5,
+   "taken": 57
+  },
+  "D": {
+   "available": 1,
+   "seconds": 0,
+   "taken": 0
+  }
+ },
+ "taken": [
+  {
+   "test": "src/app/core/i18n/seo-title.strategy.spec.ts :: SeoTitleStrategy titles a routed page as \"<page> | <site>\"",
+   "unit": "src/app/core/i18n/seo-title.strategy.spec.ts",
+   "tier": "A",
+   "seconds": 0.031,
+   "carriers": [
+    "src/app/core/i18n/seo-title.strategy.spec.ts :: SeoTitleStrategy re-titles the current page on language switch without a navigation"
+   ],
+   "exactDuplicateOf": "src/app/core/i18n/seo-title.strategy.spec.ts :: SeoTitleStrategy re-titles the current page on language switch without a navigation"
+  },
+  {
+   "test": "src/app/core/interceptors/error.interceptor.spec.ts :: errorInterceptor on authenticated 401 + refresh failure — clears session + redirects + surfaces original 401",
+   "unit": "src/app/core/interceptors/error.interceptor.spec.ts",
+   "tier": "A",
+   "seconds": 0.015,
+   "carriers": [
+    "src/app/core/interceptors/error.interceptor.spec.ts :: errorInterceptor on authenticated 419 + refresh-401 (banned) — clears session + redirects + surfaces original 419"
+   ],
+   "exactDuplicateOf": "src/app/core/interceptors/error.interceptor.spec.ts :: errorInterceptor on authenticated 419 + refresh-401 (banned) — clears session + redirects + surfaces original 419"
+  },
+  {
+   "test": "src/app/core/interceptors/language.interceptor.spec.ts :: languageInterceptor sets Accept-Language from the Transloco active locale",
+   "unit": "src/app/core/interceptors/language.interceptor.spec.ts",
+   "tier": "A",
+   "seconds": 0.015,
+   "carriers": [
+    "src/app/core/interceptors/language.interceptor.spec.ts :: languageInterceptor reflects locale changes between requests"
+   ],
+   "exactDuplicateOf": "src/app/core/interceptors/language.interceptor.spec.ts :: languageInterceptor reflects locale changes between requests"
+  },
+  {
+   "test": "src/app/core/registry/registry.service.spec.ts :: CompanyRegistryService lookup(nip) wraps the value in the nipLookupRequest envelope",
+   "unit": "src/app/core/registry/registry.service.spec.ts",
+   "tier": "A",
+   "seconds": 0.012,
+   "carriers": [
+    "src/app/core/registry/registry.service.spec.ts :: CompanyRegistryService passes the NIP verbatim — no trimming / normalisation"
+   ],
+   "exactDuplicateOf": "src/app/core/registry/registry.service.spec.ts :: CompanyRegistryService passes the NIP verbatim — no trimming / normalisation"
+  },
+  {
+   "test": "src/app/core/interceptors/error.interceptor.spec.ts :: errorInterceptor on 401 with no signed-in user from a PROTECTED page — clears session + routes to /auth/sign-in (no refresh attempt)",
+   "unit": "src/app/core/interceptors/error.interceptor.spec.ts",
+   "tier": "A",
+   "seconds": 0.011,
+   "carriers": [
+    "src/app/core/interceptors/error.interceptor.spec.ts :: errorInterceptor on 419 with no signed-in user — clears session + routes to /auth/sign-in (no refresh)"
+   ],
+   "exactDuplicateOf": "src/app/core/interceptors/error.interceptor.spec.ts :: errorInterceptor on 419 with no signed-in user — clears session + routes to /auth/sign-in (no refresh)"
+  },
+  {
+   "test": "src/app/core/interceptors/error.interceptor.spec.ts :: errorInterceptor on authenticated 401 — refreshes once and retries the original request",
+   "unit": "src/app/core/interceptors/error.interceptor.spec.ts",
+   "tier": "A",
+   "seconds": 0.01,
+   "carriers": [
+    "src/app/core/interceptors/error.interceptor.spec.ts :: errorInterceptor on authenticated 419 (tokenVersion mismatch) — refreshes once and retries the original request"
+   ],
+   "exactDuplicateOf": "src/app/core/interceptors/error.interceptor.spec.ts :: errorInterceptor on authenticated 419 (tokenVersion mismatch) — refreshes once and retries the original request"
+  },
+  {
+   "test": "src/app/core/address/address.service.spec.ts :: AddressApi createForUser(userId, dto) builds the right envelope",
+   "unit": "src/app/core/address/address.service.spec.ts",
+   "tier": "A",
+   "seconds": 0.009,
+   "carriers": [
+    "src/app/core/address/address.service.spec.ts :: AddressApi passes dto by reference — no clone (caller mutation reaches BE)"
+   ],
+   "exactDuplicateOf": "src/app/core/address/address.service.spec.ts :: AddressApi passes dto by reference — no clone (caller mutation reaches BE)"
+  },
+  {
+   "test": "src/app/core/i18n/transloco-loader.spec.ts :: HttpTranslocoLoader GETs assets/i18n/{lang}.json, relative to the base href, cache-busted",
+   "unit": "src/app/core/i18n/transloco-loader.spec.ts",
+   "tier": "A",
+   "seconds": 0.009,
+   "carriers": [
+    "src/app/core/i18n/transloco-loader.spec.ts :: HttpTranslocoLoader fires a fresh request for each call (no in-loader cache)"
+   ],
+   "exactDuplicateOf": "src/app/core/i18n/transloco-loader.spec.ts :: HttpTranslocoLoader fires a fresh request for each call (no in-loader cache)"
+  },
+  {
+   "test": "src/app/core/auth/location-redirect.service.spec.ts :: LocationRedirectService assign() delegates to window.location.assign with the given URL",
+   "unit": "src/app/core/auth/location-redirect.service.spec.ts",
+   "tier": "A",
+   "seconds": 0.007,
+   "carriers": [
+    "src/app/core/auth/location-redirect.service.spec.ts :: LocationRedirectService preserves the exact URL string (no normalisation)"
+   ],
+   "exactDuplicateOf": "src/app/core/auth/location-redirect.service.spec.ts :: LocationRedirectService preserves the exact URL string (no normalisation)"
+  },
+  {
+   "test": "src/app/core/preferences/preferences.service.spec.ts :: PreferencesApiService patchMine(dto) sends the dto as the BE requestBody map",
+   "unit": "src/app/core/preferences/preferences.service.spec.ts",
+   "tier": "A",
+   "seconds": 0.007,
+   "carriers": [
+    "src/app/core/preferences/preferences.service.spec.ts :: PreferencesApiService patchMine() passes the dto by reference — no clone or normalisation"
+   ],
+   "exactDuplicateOf": "src/app/core/preferences/preferences.service.spec.ts :: PreferencesApiService patchMine() passes the dto by reference — no clone or normalisation"
+  },
+  {
+   "test": "src/app/core/legal/legal-api.service.spec.ts :: LegalApiService forwards prepareConsentCookie payload + the BE-correct documentType string",
+   "unit": "src/app/core/legal/legal-api.service.spec.ts",
+   "tier": "A",
+   "seconds": 0.005,
+   "carriers": [
+    "src/app/core/legal/legal-api.service.spec.ts :: LegalApiService forwards COOKIE_POLICY (no S — matches BE LegalDocumentType enum)"
+   ],
+   "exactDuplicateOf": "src/app/core/legal/legal-api.service.spec.ts :: LegalApiService forwards COOKIE_POLICY (no S — matches BE LegalDocumentType enum)"
+  },
+  {
+   "test": "src/app/core/step-up/step-up.service.spec.ts :: StepUpService verify() wraps action + code in the stepUpVerifyDto envelope",
+   "unit": "src/app/core/step-up/step-up.service.spec.ts",
+   "tier": "A",
+   "seconds": 0.005,
+   "carriers": [
+    "src/app/core/step-up/step-up.service.spec.ts :: StepUpService passes the code through verbatim (no trimming / normalisation)"
+   ],
+   "exactDuplicateOf": "src/app/core/step-up/step-up.service.spec.ts :: StepUpService passes the code through verbatim (no trimming / normalisation)"
+  },
+  {
+   "test": "src/app/core/admin/cascade-delete.service.spec.ts :: CascadeDeleteApiService forceDeletePartnership() echoes code + expected count in the confirmation body — the BE re-verifies both",
+   "unit": "src/app/core/admin/cascade-delete.service.spec.ts",
+   "tier": "A",
+   "seconds": 0.004,
+   "carriers": [
+    "src/app/core/admin/cascade-delete.service.spec.ts :: CascadeDeleteApiService forceDeletePartnership() sends undefined reason when the admin gives none"
+   ],
+   "exactDuplicateOf": "src/app/core/admin/cascade-delete.service.spec.ts :: CascadeDeleteApiService forceDeletePartnership() sends undefined reason when the admin gives none"
+  },
+  {
+   "test": "src/app/core/interceptors/error.interceptor.spec.ts :: errorInterceptor on 401 from a /assets/ static file — does NOT refresh, clear, or redirect",
+   "unit": "src/app/core/interceptors/error.interceptor.spec.ts",
+   "tier": "A",
+   "seconds": 0.003,
+   "carriers": [
+    "src/app/core/interceptors/error.interceptor.spec.ts :: errorInterceptor on 401 from /auth/firebase/login — does NOT refresh, does NOT redirect (legitimate auth failure)"
+   ],
+   "exactDuplicateOf": "src/app/core/interceptors/error.interceptor.spec.ts :: errorInterceptor on 401 from /auth/firebase/login — does NOT refresh, does NOT redirect (legitimate auth failure)"
+  },
+  {
+   "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step company-campaign/12: the footer matches what the beat can actually do",
+   "unit": "src/app/core/demo/guide-hint.spec.ts",
+   "tier": "A",
+   "seconds": 0.001,
+   "carriers": [
+    "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+   ],
+   "exactDuplicateOf": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+  },
+  {
+   "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step company-campaign/13: the footer matches what the beat can actually do",
+   "unit": "src/app/core/demo/guide-hint.spec.ts",
+   "tier": "A",
+   "seconds": 0.001,
+   "carriers": [
+    "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+   ],
+   "exactDuplicateOf": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+  },
+  {
+   "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step influencer-collab/16: the footer matches what the beat can actually do",
+   "unit": "src/app/core/demo/guide-hint.spec.ts",
+   "tier": "A",
+   "seconds": 0.001,
+   "carriers": [
+    "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+   ],
+   "exactDuplicateOf": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+  },
+  {
+   "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step nip-to-ksef/26: the footer matches what the beat can actually do",
+   "unit": "src/app/core/demo/guide-hint.spec.ts",
+   "tier": "A",
+   "seconds": 0.001,
+   "carriers": [
+    "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+   ],
+   "exactDuplicateOf": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+  },
+  {
+   "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/1: the footer matches what the beat can actually do",
+   "unit": "src/app/core/demo/guide-hint.spec.ts",
+   "tier": "A",
+   "seconds": 0,
+   "carriers": [
+    "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+   ],
+   "exactDuplicateOf": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+  },
+  {
+   "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/2: the footer matches what the beat can actually do",
+   "unit": "src/app/core/demo/guide-hint.spec.ts",
+   "tier": "A",
+   "seconds": 0,
+   "carriers": [
+    "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+   ],
+   "exactDuplicateOf": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+  },
+  {
+   "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/3: the footer matches what the beat can actually do",
+   "unit": "src/app/core/demo/guide-hint.spec.ts",
+   "tier": "A",
+   "seconds": 0,
+   "carriers": [
+    "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+   ],
+   "exactDuplicateOf": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+  },
+  {
+   "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/4: the footer matches what the beat can actually do",
+   "unit": "src/app/core/demo/guide-hint.spec.ts",
+   "tier": "A",
+   "seconds": 0,
+   "carriers": [
+    "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+   ],
+   "exactDuplicateOf": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+  },
+  {
+   "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-ops/33: the footer matches what the beat can actually do",
+   "unit": "src/app/core/demo/guide-hint.spec.ts",
+   "tier": "A",
+   "seconds": 0,
+   "carriers": [
+    "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+   ],
+   "exactDuplicateOf": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+  },
+  {
+   "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-ops/35: the footer matches what the beat can actually do",
+   "unit": "src/app/core/demo/guide-hint.spec.ts",
+   "tier": "A",
+   "seconds": 0,
+   "carriers": [
+    "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+   ],
+   "exactDuplicateOf": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+  },
+  {
+   "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-ops/36: the footer matches what the beat can actually do",
+   "unit": "src/app/core/demo/guide-hint.spec.ts",
+   "tier": "A",
+   "seconds": 0,
+   "carriers": [
+    "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+   ],
+   "exactDuplicateOf": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+  },
+  {
+   "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-ops/37: the footer matches what the beat can actually do",
+   "unit": "src/app/core/demo/guide-hint.spec.ts",
+   "tier": "A",
+   "seconds": 0,
+   "carriers": [
+    "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+   ],
+   "exactDuplicateOf": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+  },
+  {
+   "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-ops/38: the footer matches what the beat can actually do",
+   "unit": "src/app/core/demo/guide-hint.spec.ts",
+   "tier": "A",
+   "seconds": 0,
+   "carriers": [
+    "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+   ],
+   "exactDuplicateOf": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+  },
+  {
+   "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step company-campaign/11: the footer matches what the beat can actually do",
+   "unit": "src/app/core/demo/guide-hint.spec.ts",
+   "tier": "A",
+   "seconds": 0,
+   "carriers": [
+    "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+   ],
+   "exactDuplicateOf": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+  },
+  {
+   "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step influencer-collab/15: the footer matches what the beat can actually do",
+   "unit": "src/app/core/demo/guide-hint.spec.ts",
+   "tier": "A",
+   "seconds": 0,
+   "carriers": [
+    "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+   ],
+   "exactDuplicateOf": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+  },
+  {
+   "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step nip-to-ksef/20: the footer matches what the beat can actually do",
+   "unit": "src/app/core/demo/guide-hint.spec.ts",
+   "tier": "A",
+   "seconds": 0,
+   "carriers": [
+    "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+   ],
+   "exactDuplicateOf": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+  },
+  {
+   "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step nip-to-ksef/21: the footer matches what the beat can actually do",
+   "unit": "src/app/core/demo/guide-hint.spec.ts",
+   "tier": "A",
+   "seconds": 0,
+   "carriers": [
+    "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+   ],
+   "exactDuplicateOf": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+  },
+  {
+   "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step nip-to-ksef/22: the footer matches what the beat can actually do",
+   "unit": "src/app/core/demo/guide-hint.spec.ts",
+   "tier": "A",
+   "seconds": 0,
+   "carriers": [
+    "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+   ],
+   "exactDuplicateOf": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+  },
+  {
+   "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step nip-to-ksef/23: the footer matches what the beat can actually do",
+   "unit": "src/app/core/demo/guide-hint.spec.ts",
+   "tier": "A",
+   "seconds": 0,
+   "carriers": [
+    "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+   ],
+   "exactDuplicateOf": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+  },
+  {
+   "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step nip-to-ksef/25: the footer matches what the beat can actually do",
+   "unit": "src/app/core/demo/guide-hint.spec.ts",
+   "tier": "A",
+   "seconds": 0,
+   "carriers": [
+    "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+   ],
+   "exactDuplicateOf": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+  },
+  {
+   "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step nip-to-ksef/27: the footer matches what the beat can actually do",
+   "unit": "src/app/core/demo/guide-hint.spec.ts",
+   "tier": "A",
+   "seconds": 0,
+   "carriers": [
+    "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+   ],
+   "exactDuplicateOf": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+  },
+  {
+   "test": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step nip-to-ksef/28: the footer matches what the beat can actually do",
+   "unit": "src/app/core/demo/guide-hint.spec.ts",
+   "tier": "A",
+   "seconds": 0,
+   "carriers": [
+    "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+   ],
+   "exactDuplicateOf": "src/app/core/demo/guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do"
+  },
+  {
+   "test": "src/app/core/interceptors/error.interceptor.spec.ts :: errorInterceptor passes through successful responses untouched",
+   "unit": "src/app/core/interceptors/error.interceptor.spec.ts",
+   "tier": "B",
+   "seconds": 0.005,
+   "carriers": [
+    "src/app/core/interceptors/error.interceptor.spec.ts :: errorInterceptor does not redirect again when already on /auth/sign-in"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/demo/demo-fixtures.account.spec.ts :: demo fixtures — account, addresses and preferences profile serves a user by id as the current persona",
+   "unit": "src/app/core/demo/demo-fixtures.account.spec.ts",
+   "tier": "B",
+   "seconds": 0.002,
+   "carriers": [
+    "src/app/core/demo/demo-fixtures.account.spec.ts :: demo fixtures — account, addresses and preferences profile ignores a field that is not editable, and a non-string value for one that is"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/demo/demo-fixtures.spec.ts :: demo fixtures pages campaigns through the shared builder envelope",
+   "unit": "src/app/core/demo/demo-fixtures.spec.ts",
+   "tier": "B",
+   "seconds": 0.001,
+   "carriers": [
+    "src/app/core/demo/demo-fixtures.account.spec.ts :: demo fixtures — account, addresses and preferences applying to a campaign creates the application the tour then finds in accepted, carrying the campaign"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/applied-opportunities/applied-opportunity.service.spec.ts :: AppliedOpportunityApiService apply(id) builds dto with ONLY partnershipOpportunity when no note",
+   "unit": "src/app/core/applied-opportunities/applied-opportunity.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.04,
+   "carriers": [
+    "src/app/core/applied-opportunities/applied-opportunity.service.spec.ts :: AppliedOpportunityApiService apply(id, \"\") treats empty-string note as falsy → omits the key",
+    "src/app/core/applied-opportunities/applied-opportunity.service.spec.ts :: AppliedOpportunityApiService apply(id, note) includes note in the dto when truthy"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/interceptors/error.interceptor.spec.ts :: errorInterceptor on 419 from /auth/refresh-session itself — does NOT recurse",
+   "unit": "src/app/core/interceptors/error.interceptor.spec.ts",
+   "tier": "C",
+   "seconds": 0.024,
+   "carriers": [
+    "src/app/core/interceptors/error.interceptor.spec.ts :: errorInterceptor on 401 from /auth/firebase/login — does NOT refresh, does NOT redirect (legitimate auth failure)"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/interceptors/set-to-array.interceptor.spec.ts :: setToArrayInterceptor leaves string bodies untouched",
+   "unit": "src/app/core/interceptors/set-to-array.interceptor.spec.ts",
+   "tier": "C",
+   "seconds": 0.02,
+   "carriers": [
+    "src/app/core/interceptors/set-to-array.interceptor.spec.ts :: setToArrayInterceptor keeps body identity when no Set is present (no clone)"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/i18n/seo-title.strategy.spec.ts :: SeoTitleStrategy falls back to the bare site title on routes without a title key",
+   "unit": "src/app/core/i18n/seo-title.strategy.spec.ts",
+   "tier": "C",
+   "seconds": 0.018,
+   "carriers": [
+    "src/app/core/i18n/seo-title.strategy.spec.ts :: SeoTitleStrategy re-titles the current page on language switch without a navigation",
+    "src/app/core/i18n/seo-title.strategy.spec.ts :: SeoTitleStrategy removes the description when the next page declares none"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/opportunities/opportunity.service.spec.ts :: OpportunityApiService list() clones the sort array (defensive — callers may mutate after call)",
+   "unit": "src/app/core/opportunities/opportunity.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.017,
+   "carriers": [
+    "src/app/core/opportunities/opportunity.service.spec.ts :: OpportunityApiService list() builds the pageable envelope with defaults"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/theme/theme.service.spec.ts :: ThemeService defaults to \"light\" when no stored choice + no dark OS preference",
+   "unit": "src/app/core/theme/theme.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.016,
+   "carriers": [
+    "src/app/core/theme/theme.service.spec.ts :: ThemeService toggle() flips between light and dark",
+    "src/app/layout/layout.component.spec.ts :: LayoutComponent nav surface exposes 5 standard nav entries in the expected order"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/theme/theme.service.spec.ts :: ThemeService set(mode) writes the value verbatim",
+   "unit": "src/app/core/theme/theme.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.015,
+   "carriers": [
+    "src/app/core/theme/theme.service.spec.ts :: ThemeService toggle() flips between light and dark",
+    "src/app/core/theme/theme.service.spec.ts :: ThemeService persists the mode to localStorage on every change"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/interceptors/shell-headers.interceptor.spec.ts :: shellHeadersInterceptor forwards X-Consent-Required to the shell-status service",
+   "unit": "src/app/core/interceptors/shell-headers.interceptor.spec.ts",
+   "tier": "C",
+   "seconds": 0.014,
+   "carriers": [
+    "src/app/core/interceptors/shell-headers.interceptor.spec.ts :: shellHeadersInterceptor forwards X-Email-Verification-Required to the shell-status service",
+    "src/app/core/shell/shell-status.service.spec.ts :: ShellStatusService noteResponseHeaders flips consentRequired when X-Consent-Required is \"1\"",
+    "src/app/core/shell/shell-status.service.spec.ts :: ShellStatusService noteResponseHeaders does not flip on absent headers"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor a sim step whose simulator never fires stays put and says so",
+   "unit": "src/app/core/demo/sandbox-director.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.013,
+   "carriers": [
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor a second press on a stalled sim step moves on regardless"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/i18n/seo-title.strategy.spec.ts :: SeoTitleStrategy titles /error/:type through the resolver end to end",
+   "unit": "src/app/core/i18n/seo-title.strategy.spec.ts",
+   "tier": "C",
+   "seconds": 0.013,
+   "carriers": [
+    "src/app/core/i18n/seo-title.strategy.spec.ts :: SeoTitleStrategy re-titles the current page on language switch without a navigation",
+    "src/app/core/i18n/seo-title.strategy.spec.ts :: SeoTitleStrategy errorTitleKey maps known types and coerces the rest to 404"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/theme/theme.service.spec.ts :: ThemeService survives a localStorage read failure on init (privacy mode)",
+   "unit": "src/app/core/theme/theme.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.013,
+   "carriers": [
+    "src/app/core/theme/theme.service.spec.ts :: ThemeService toggle() flips between light and dark"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService advance() walks every step and lands on the recap (done)",
+   "unit": "src/app/core/demo/sandbox-director.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.012,
+   "carriers": [
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor advances a step without a recipe straight away",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService is idle until started",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService a full load on the landing page with a stored tour drops it at construction"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/auth/sandbox-auth.service.spec.ts :: SandboxAuthService surfaces the guard refusal (403) without touching the session state",
+   "unit": "src/app/core/auth/sandbox-auth.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.011,
+   "carriers": [
+    "src/app/core/auth/sandbox-auth.service.spec.ts :: SandboxAuthService mints the persona session with credentials and then refreshes the session state"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService notify() advances the current step on a matching id — manual steps included",
+   "unit": "src/app/core/demo/sandbox-director.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.011,
+   "carriers": [
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor does not advance twice when the recipe itself made the simulator notify"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService start() signs a signed-out persona in for an app scenario via a full boot",
+   "unit": "src/app/core/demo/sandbox-director.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.01,
+   "carriers": [
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService start() boots when the page remembers a different session than the store",
+    "src/app/core/demo/demo-fixtures.spec.ts :: demo fixtures sign-up takes the role from the form and signs in; sign-out signs out",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService a step done by hand advances the tour without touching the guide",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService exit() from a signed-out tour is a plain hop, and carries its destination",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService start() keeps the persona it is about to set"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/i18n/localized-date.pipe.spec.ts :: LocalizedDatePipe prints Polish month names on the Polish surface",
+   "unit": "src/app/core/i18n/localized-date.pipe.spec.ts",
+   "tier": "C",
+   "seconds": 0.01,
+   "carriers": [
+    "src/app/core/i18n/localized-date.pipe.spec.ts :: LocalizedDatePipe prints English month names once the language flips (impure: no new input needed)"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/interceptors/step-up.interceptor.spec.ts :: stepUpInterceptor adds X-Step-Up-Token header when a token is set on the request context",
+   "unit": "src/app/core/interceptors/step-up.interceptor.spec.ts",
+   "tier": "C",
+   "seconds": 0.01,
+   "carriers": [
+    "src/app/core/interceptors/step-up.interceptor.spec.ts :: stepUpInterceptor does not leak the token across subsequent requests"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/interceptors/step-up.interceptor.spec.ts :: stepUpInterceptor passes the request through unchanged when STEP_UP_TOKEN is unset",
+   "unit": "src/app/core/interceptors/step-up.interceptor.spec.ts",
+   "tier": "C",
+   "seconds": 0.01,
+   "carriers": [
+    "src/app/core/interceptors/step-up.interceptor.spec.ts :: stepUpInterceptor does not leak the token across subsequent requests"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/consent/consent.service.spec.ts :: ConsentService necessary-only still fires ESSENTIAL true but ANALYTICS/MARKETING false",
+   "unit": "src/app/core/consent/consent.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.009,
+   "carriers": [
+    "src/app/core/consent/consent.service.spec.ts :: ConsentService acceptCustom persists the mixed choice and mirrors it per-category to the BE",
+    "src/app/core/consent/consent.service.spec.ts :: ConsentService acceptNecessary opts out of analytics+marketing"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService start() signs the persona OUT for the admin-2fa scenario (it plays on /auth/sign-in)",
+   "unit": "src/app/core/demo/sandbox-director.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.009,
+   "carriers": [
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService reset() primes the persona for the start route — a replay from a signed-in recap boots signed out",
+    "src/app/core/demo/demo-fixtures.spec.ts :: demo fixtures signs the persona in on /auth/firebase/login — the e-mail picks the persona",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService start() boots when the page remembers a different session than the store"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/consent/consent.service.spec.ts :: ConsentService mirrors accept-all to the BE — ESSENTIAL true sets the login-gate cookie",
+   "unit": "src/app/core/consent/consent.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.008,
+   "carriers": [
+    "src/app/core/consent/consent.service.spec.ts :: ConsentService acceptCustom persists the mixed choice and mirrors it per-category to the BE",
+    "src/app/core/consent/consent.service.spec.ts :: ConsentService acceptAll persists analytics+marketing and flips needsDecision"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/auth/social-platform-config.service.spec.ts :: SocialPlatformConfigService persists state in a cookie that validateOAuthState() then accepts",
+   "unit": "src/app/core/auth/social-platform-config.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.007,
+   "carriers": [
+    "src/app/core/auth/social-platform-config.service.spec.ts :: SocialPlatformConfigService clears the state cookie after a single validation attempt"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService a full load on an app route keeps the stored tour",
+   "unit": "src/app/core/demo/sandbox-director.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.007,
+   "carriers": [
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService a full load on the landing page with a stored tour drops it at construction",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService a tour ends when the visitor leaves the app area the hub without a start link ends it; a start link and app routes keep it"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/shell/shell-status.service.spec.ts :: ShellStatusService initial state starts with no banners",
+   "unit": "src/app/core/shell/shell-status.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.007,
+   "carriers": [
+    "src/app/core/shell/shell-status.service.spec.ts :: ShellStatusService trialOffer the nudge is not an obligation — hasAnyBanner stays false"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/auth/auth.guards.spec.ts :: adminGuard allows an ADMIN synchronously when the session is already probed",
+   "unit": "src/app/core/auth/auth.guards.spec.ts",
+   "tier": "C",
+   "seconds": 0.006,
+   "carriers": [
+    "src/app/core/auth/auth.guards.spec.ts :: adminGuard probes once on a cold session and decides on the answer",
+    "src/app/core/auth/auth.guards.spec.ts :: adminGuard sends a signed-in non-admin back to the dashboard"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/interceptors/set-to-array.interceptor.spec.ts :: setToArrayInterceptor leaves FormData bodies untouched",
+   "unit": "src/app/core/interceptors/set-to-array.interceptor.spec.ts",
+   "tier": "C",
+   "seconds": 0.006,
+   "carriers": [
+    "src/app/core/interceptors/set-to-array.interceptor.spec.ts :: setToArrayInterceptor keeps body identity when no Set is present (no clone)"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/theme/theme.service.spec.ts :: ThemeService survives a localStorage write failure on set() (privacy mode)",
+   "unit": "src/app/core/theme/theme.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.006,
+   "carriers": [
+    "src/app/core/theme/theme.service.spec.ts :: ThemeService persists the mode to localStorage on every change",
+    "src/app/core/theme/theme.service.spec.ts :: ThemeService honours an explicit \"dark\" choice from localStorage"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/upload/upload.service.spec.ts :: UploadService accepts each allowed MIME type and forwards the right contentType to the signed-URL API",
+   "unit": "src/app/core/upload/upload.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.006,
+   "carriers": [
+    "src/app/core/upload/upload.service.spec.ts :: UploadService completes the full chain on happy path and returns the UploadResult",
+    "src/app/core/upload/upload.service.spec.ts :: UploadService rejects an unsupported MIME type with upload.errors.invalid_type"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor a second press on the stalled checkout step goes through",
+   "unit": "src/app/core/demo/sandbox-director.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.005,
+   "carriers": [
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor a second attempt on a stalled step moves on regardless",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor advances a step without a recipe straight away"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor confirms a step whose own recipe removes the element it waits for",
+   "unit": "src/app/core/demo/sandbox-director.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.005,
+   "carriers": [
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor ignores a second press while a recipe is running",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor advances a step without a recipe straight away"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor the pill press gates a done condition the same way the watcher does",
+   "unit": "src/app/core/demo/sandbox-director.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.005,
+   "carriers": [
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor ignores a second press while a recipe is running",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService reset() clears the same artifacts — a reload does not empty sessionStorage",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor advances a step without a recipe straight away"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService start() resets per-tour story state (plan, step-up code, TOTP attempt)",
+   "unit": "src/app/core/demo/sandbox-director.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.005,
+   "carriers": [
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService reset() clears the same artifacts — a reload does not empty sessionStorage",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService start() sweeps demo leftovers out of localStorage too, and leaves the visitor alone"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/interceptors/shell-headers.interceptor.spec.ts :: shellHeadersInterceptor does NOT update the service on error responses (only HttpResponse events count)",
+   "unit": "src/app/core/interceptors/shell-headers.interceptor.spec.ts",
+   "tier": "C",
+   "seconds": 0.005,
+   "carriers": [
+    "src/app/core/interceptors/shell-headers.interceptor.spec.ts :: shellHeadersInterceptor forwards X-Email-Verification-Required to the shell-status service",
+    "src/app/core/shell/shell-status.service.spec.ts :: ShellStatusService noteResponseHeaders does not flip on absent headers"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/user/user.service.spec.ts :: UserApiService passes dto by reference — no clone",
+   "unit": "src/app/core/user/user.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.005,
+   "carriers": [
+    "src/app/core/user/user.service.spec.ts :: UserApiService patch(id, dto, stepUpToken) builds the step-up HttpContext",
+    "src/app/core/user/user.service.spec.ts :: UserApiService treats empty-string stepUpToken as truthy → builds context"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/applied-opportunities/applied-opportunity.service.spec.ts :: AppliedOpportunityApiService list() clones the sort array (caller mutation does not corrupt request)",
+   "unit": "src/app/core/applied-opportunities/applied-opportunity.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.004,
+   "carriers": [
+    "src/app/core/applied-opportunities/applied-opportunity.service.spec.ts :: AppliedOpportunityApiService list() builds pageable + filters envelope with defaults"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/auth/auth.guards.spec.ts :: noAuthGuard allows the route synchronously when SessionState has not yet probed",
+   "unit": "src/app/core/auth/auth.guards.spec.ts",
+   "tier": "C",
+   "seconds": 0.004,
+   "carriers": [
+    "src/app/core/auth/auth.guards.spec.ts :: noAuthGuard allows the route synchronously when probed + unauthenticated"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/auth/social-platform-config.service.spec.ts :: SocialPlatformConfigService clearOAuthState() removes the cookie",
+   "unit": "src/app/core/auth/social-platform-config.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.004,
+   "carriers": [
+    "src/app/core/auth/social-platform-config.service.spec.ts :: SocialPlatformConfigService clears the state cookie after a single validation attempt"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService exit() closes any dialog the tour left open",
+   "unit": "src/app/core/demo/sandbox-director.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.004,
+   "carriers": [
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService exit() clears state, signs the persona out and boots to the hub when the tour had signed it in",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService reset() clears the same artifacts — a reload does not empty sessionStorage",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService a tour ends when the visitor leaves the app area landing on the marketing page drops the tour and closes dialogs"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor runs the recipe, then advances",
+   "unit": "src/app/core/demo/sandbox-director.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.004,
+   "carriers": [
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor ignores a second press while a recipe is running",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor a second attempt on a stalled step moves on regardless"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor the checkout step whose recipe did nothing holds and says why",
+   "unit": "src/app/core/demo/sandbox-director.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.004,
+   "carriers": [
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor a second attempt on a stalled step moves on regardless",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor advances a step without a recipe straight away"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor the checkout step whose recipe worked stays advanced",
+   "unit": "src/app/core/demo/sandbox-director.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.004,
+   "carriers": [
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor ignores a second press while a recipe is running",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor advances a step without a recipe straight away"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor waits for the app to confirm the step before advancing",
+   "unit": "src/app/core/demo/sandbox-director.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.004,
+   "carriers": [
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor ignores a second press while a recipe is running"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/i18n/paginator-intl.spec.ts :: TranslocoPaginatorIntl groups thousands per language in the range label (Polish: narrow no-break space)",
+   "unit": "src/app/core/i18n/paginator-intl.spec.ts",
+   "tier": "C",
+   "seconds": 0.004,
+   "carriers": [
+    "src/app/core/i18n/paginator-intl.spec.ts :: TranslocoPaginatorIntl renders Polish labels and a Polish range on the Polish surface",
+    "src/app/core/i18n/number-format.spec.ts :: groupedNumber groups with a space for Polish (comma would read as a decimal separator)"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/opportunities/opportunity.service.spec.ts :: OpportunityApiService list() accepts custom filters + sort and forwards them",
+   "unit": "src/app/core/opportunities/opportunity.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.004,
+   "carriers": [
+    "src/app/core/opportunities/opportunity.service.spec.ts :: OpportunityApiService list() builds the pageable envelope with defaults"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/user/user.service.spec.ts :: UserApiService patch(id, dto) without stepUpToken passes options=undefined",
+   "unit": "src/app/core/user/user.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.004,
+   "carriers": [
+    "src/app/core/user/user.service.spec.ts :: UserApiService patch(id, dto, stepUpToken) builds the step-up HttpContext",
+    "src/app/core/user/user.service.spec.ts :: UserApiService treats empty-string stepUpToken as truthy → builds context"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor a step the application never confirms stays put and says so",
+   "unit": "src/app/core/demo/sandbox-director.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.003,
+   "carriers": [
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor a second attempt on a stalled step moves on regardless"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor the checkout step whose recipe ran but changed nothing holds too",
+   "unit": "src/app/core/demo/sandbox-director.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.003,
+   "carriers": [
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor a second attempt on a stalled step moves on regardless",
+    "src/app/core/demo/sandbox-director.service.spec.ts :: SandboxDirectorService next() — \"Dalej\" performs the step for the visitor advances a step without a recipe straight away"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/interceptors/error.interceptor.spec.ts :: errorInterceptor on 401 from /auth/refresh-session itself — does NOT recurse",
+   "unit": "src/app/core/interceptors/error.interceptor.spec.ts",
+   "tier": "C",
+   "seconds": 0.003,
+   "carriers": [
+    "src/app/core/interceptors/error.interceptor.spec.ts :: errorInterceptor on 401 from /auth/firebase/login — does NOT refresh, does NOT redirect (legitimate auth failure)"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/interceptors/error.interceptor.spec.ts :: errorInterceptor on 401 from /support/ticket/access (anonymous) — does NOT clear or redirect",
+   "unit": "src/app/core/interceptors/error.interceptor.spec.ts",
+   "tier": "C",
+   "seconds": 0.003,
+   "carriers": [
+    "src/app/core/interceptors/error.interceptor.spec.ts :: errorInterceptor on 401 from /auth/firebase/login — does NOT refresh, does NOT redirect (legitimate auth failure)"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/interceptors/set-to-array.interceptor.spec.ts :: setToArrayInterceptor passes bodiless requests through",
+   "unit": "src/app/core/interceptors/set-to-array.interceptor.spec.ts",
+   "tier": "C",
+   "seconds": 0.003,
+   "carriers": [
+    "src/app/core/interceptors/set-to-array.interceptor.spec.ts :: setToArrayInterceptor keeps body identity when no Set is present (no clone)"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/shell/shell-status.service.spec.ts :: ShellStatusService noteResponseHeaders does not flip on header values other than \"1\"",
+   "unit": "src/app/core/shell/shell-status.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.003,
+   "carriers": [
+    "src/app/core/shell/shell-status.service.spec.ts :: ShellStatusService noteResponseHeaders does not flip on absent headers"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/shell/shell-status.service.spec.ts :: ShellStatusService noteResponseHeaders is sticky once seen — a later response without the header does not clear it",
+   "unit": "src/app/core/shell/shell-status.service.spec.ts",
+   "tier": "C",
+   "seconds": 0.002,
+   "carriers": [
+    "src/app/core/shell/shell-status.service.spec.ts :: ShellStatusService noteResponseHeaders flips consentRequired when X-Consent-Required is \"1\"",
+    "src/app/core/interceptors/shell-headers.interceptor.spec.ts :: shellHeadersInterceptor forwards X-Email-Verification-Required to the shell-status service"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/demo/demo-fixtures.spec.ts :: demo fixtures answers /subscription/status with the generated DTO shape (plan page beat)",
+   "unit": "src/app/core/demo/demo-fixtures.spec.ts",
+   "tier": "C",
+   "seconds": 0.001,
+   "carriers": [
+    "src/app/core/demo/demo-fixtures.spec.ts :: demo fixtures plays the whole upgrade beat — consent, a checkout to pay in, then the plan flip"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/demo/demo-fixtures.spec.ts :: demo fixtures resolves campaign detail by id",
+   "unit": "src/app/core/demo/demo-fixtures.spec.ts",
+   "tier": "C",
+   "seconds": 0.001,
+   "carriers": [
+    "src/app/core/demo/demo-fixtures.spec.ts :: demo fixtures answers an unknown campaign or application id with the 404 marker, a known one with the row"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/demo/demo-fixtures.spec.ts :: demo fixtures serves the persona for /users/me, role-aware via localStorage",
+   "unit": "src/app/core/demo/demo-fixtures.spec.ts",
+   "tier": "C",
+   "seconds": 0.001,
+   "carriers": [
+    "src/app/core/demo/demo-fixtures.spec.ts :: demo fixtures signs the persona in on /auth/firebase/login — the e-mail picks the persona",
+    "src/app/core/demo/demo-fixtures.account.spec.ts :: demo fixtures — account, addresses and preferences addresses creates one, defaulting the country and the type"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/core/demo/demo-fixtures.spec.ts :: demo fixtures company accept/decline round-trip a new tour restores the seed statuses",
+   "unit": "src/app/core/demo/demo-fixtures.spec.ts",
+   "tier": "C",
+   "seconds": 0,
+   "carriers": [
+    "src/app/core/demo/demo-fixtures.spec.ts :: demo fixtures company accept/decline round-trip moves the accepted application into the in-progress tab and its counter",
+    "src/app/core/demo/demo-fixtures.spec.ts :: demo fixtures company accept/decline round-trip the influencer sees only her own rows"
+   ],
+   "exactDuplicateOf": null
+  },
+  {
+   "test": "src/app/feature/survey/showcases/demo-export-zip.spec.ts :: demo-export-zip anchors central-directory offsets so multi-file archives stay consistent",
+   "unit": "src/app/feature/survey/showcases/demo-export-zip.spec.ts",
+   "tier": "C",
+   "seconds": 0,
+   "carriers": [
+    "src/app/feature/survey/showcases/demo-export-zip.spec.ts :: demo-export-zip produces a well-formed STORED archive (signatures + EOCD entry count)"
+   ],
+   "exactDuplicateOf": null
+  }
+ ],
+ "seconds": 0,
+ "classesTouched": 31,
+ "classCapped": 20,
+ "lookTwice": [
+  {
+   "test": "src/app/core/consent/consent.service.spec.ts :: ConsentService starts with needsDecision=true and record=null when storage is empty",
+   "unit": "src/app/core/consent/consent.service.spec.ts",
+   "seconds": 0.004
+  },
+  {
+   "test": "src/app/core/demo/demo-fixtures.spec.ts :: demo fixtures answers /users/me with null while the persona is signed out (no bounce, no error)",
+   "unit": "src/app/core/demo/demo-fixtures.spec.ts",
+   "seconds": 0.006
+  },
+  {
+   "test": "src/app/core/interceptors/rate-limit-cache.interceptor.spec.ts :: rateLimitInterceptor notifies with null when Retry-After is an HTTP-date (not delta-seconds)",
+   "unit": "src/app/core/interceptors/rate-limit-cache.interceptor.spec.ts",
+   "seconds": 0.004
+  },
+  {
+   "test": "src/app/core/interceptors/rate-limit-cache.interceptor.spec.ts :: rateLimitInterceptor passes successful responses through unchanged (no rate-limit notify)",
+   "unit": "src/app/core/interceptors/rate-limit-cache.interceptor.spec.ts",
+   "seconds": 0.009
+  },
+  {
+   "test": "src/app/core/interceptors/rate-limit-cache.interceptor.spec.ts :: rateLimitInterceptor re-throws the 429 unchanged (preserves status + body for downstream handlers)",
+   "unit": "src/app/core/interceptors/rate-limit-cache.interceptor.spec.ts",
+   "seconds": 0.009
+  },
+  {
+   "test": "src/app/core/interceptors/step-up.interceptor.spec.ts :: stepUpInterceptor treats an explicit null context value as \"no token\" (default behavior)",
+   "unit": "src/app/core/interceptors/step-up.interceptor.spec.ts",
+   "seconds": 0.005
+  },
+  {
+   "test": "src/app/core/rate-limit/rate-limit-state.service.spec.ts :: RateLimitStateService activates with the given Retry-After and auto-dismisses after the window",
+   "unit": "src/app/core/rate-limit/rate-limit-state.service.spec.ts",
+   "seconds": 0.012
+  },
+  {
+   "test": "src/app/core/rate-limit/rate-limit-state.service.spec.ts :: RateLimitStateService caps an oversized Retry-After so the banner cannot be pinned forever",
+   "unit": "src/app/core/rate-limit/rate-limit-state.service.spec.ts",
+   "seconds": 0.013
+  },
+  {
+   "test": "src/app/core/shell/shell-status.service.spec.ts :: ShellStatusService setProfileMissing clears banners when set to empty array",
+   "unit": "src/app/core/shell/shell-status.service.spec.ts",
+   "seconds": 0.003
+  }
+ ],
+ "saturated": false,
+ "forecast": {
+  "A": {
+   "tests": 5,
+   "seconds": 0
+  },
+  "B": {
+   "tests": 0,
+   "seconds": 0
+  },
+  "C": {
+   "tests": 15,
+   "seconds": 0
+  },
+  "D": {
+   "tests": 1,
+   "seconds": 0
+  },
+  "roundsToSaturationAtThisBudget": 1
+ }
+}
