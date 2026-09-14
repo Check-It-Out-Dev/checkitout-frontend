@@ -108,7 +108,7 @@ const jestSuites = Number(
 if (!jestTests) throw new Error('could not read the Jest total');
 // Tests a governance round demoted from the pull-request tier — `subsumed(it)(` in the tree,
 // so the figure is derivable from the checkout like every other one here.
-const subsumedJest = countSubsumed(['src', 'tools']);
+const subsumedJest = countSubsumed(['src']);
 console.log(
   `  jest                 ${jestTests} tests in ${jestSuites} suites (${subsumedJest} demoted from the pull-request tier)`,
 );
