@@ -128,6 +128,7 @@
     "dotenv": "^17.4.2",
     "fast-check": "4.10.0",
     "firebase-admin": "^13.9.0",
+    "highs": "1.15.3",
     "husky": "^9.1.7",
     "jest": "^30.5.1",
     "jest-cli": "^30.4.2",

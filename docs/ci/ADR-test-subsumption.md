@@ -92,6 +92,17 @@ Reasons, in the order they mattered:
   a run that bailed is refused by the loader (it records `config.disableBail`; PIT's `kills.json`
   records `fullMatrix`): with one killer per mutant, kill-subsumption is vacuous and a proposal
   built on it is wrong from its first line.
+- The core is chosen exactly, not greedily. Greedy weighted set cover is within a few percent of
+  the optimum on suites like these (Noemmer & Haas, SWQD 2020) and stays as the incumbent; the
+  kept set is the minimum-cost set of reliable tests covering every probe and every killed mutant
+  — the integer programme of Black, Melachrinoudis & Kaeli (ICSE 2004) and MINTS (Hsu & Orso,
+  ICSE 2009) with both criteria as hard constraints — solved by HiGHS (`highs`, MIT, WebAssembly,
+  pinned) after the optimum-preserving reductions of the set-cover literature (Beasley 1987;
+  Tallam & Gupta 2005), with a time limit and a reported gap. Universe = probes ∪ kills because
+  coverage-adequate reduction loses up to 20.5 % of killed mutants while kill-adequate reduction
+  loses none (Shi, Gyori, Gligoric, Zaytsev & Marinov, FSE 2014). The per-test judgement remains
+  the invariant check on every test outside the core: minimal (no single test removable) is not
+  minimum (least cost), and the gate must hold either way.
 - The pull-request tier gains an invariants job in both repositories, fed by the nightly's cache on
   Pages; the nightly gains the matrices. That is §5's "report on the diff, not at night" applied to
   the one metric an agent can most easily game.

@@ -14,10 +14,10 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, sep } from 'node:path';
 
 import { clusters } from './cluster.mjs';
-import { greedyCover } from './cover.mjs';
 import { diagram } from './diagram.mjs';
 import { short } from './ident.mjs';
 import { loadJava, loadJest, realTests } from './load.mjs';
+import { exactCover } from './solve.mjs';
 import { carriedUnion, carriers, judge } from './subsume.mjs';
 
 const sha = (path) =>
@@ -27,11 +27,14 @@ const r4 = (x) => Math.round(x * 10000) / 10000;
 
 /**
  * @param {ReturnType<typeof import('./load.mjs').newMatrix>} matrix
- * @param {{ commit?: string | null, inputs?: Record<string, string | null>, window?: number }} [options]
+ * @param {{ commit?: string | null, inputs?: Record<string, string | null>, window?: number, timeLimit?: number, gap?: number }} [options]
  */
-export function propose(matrix, { commit = null, inputs = {}, window = 10 } = {}) {
+export async function propose(
+  matrix,
+  { commit = null, inputs = {}, window = 10, timeLimit = 120, gap = 0.005 } = {},
+) {
   const tests = realTests(matrix);
-  const cover = greedyCover(matrix);
+  const cover = await exactCover(matrix, { timeLimit, gap });
   const cl = clusters(matrix);
 
   // how many non-flaky tests reach each unit — a unit with count 1 is unique to its test
@@ -119,6 +122,7 @@ export function propose(matrix, { commit = null, inputs = {}, window = 10 } = {}
       duplicateClusters: cl.length,
       uncoveredByReliableTests: cover.uncovered.length,
     },
+    solver: cover.solver,
     candidates,
     clusters: cl,
     slowest,
@@ -192,13 +196,20 @@ if (isMain) {
       .filter(([, v]) => v)
       .map(([k, v]) => [k, sha(v)]),
   );
-  const report = propose(matrix, { commit: arg('commit', null), inputs });
-  mkdirSync(out, { recursive: true });
-  writeFileSync(join(out, 'subsume-report.json'), JSON.stringify(report, null, 1));
-  writeFileSync(join(out, 'subsume-report.md'), toMarkdown(report));
-  writeFileSync(join(out, 'diagram.md'), diagram(report));
-  const s = report.summary;
-  console.log(
-    `propose: ${s.confirmed} CONFIRMED, ${s.suspected} SUSPECTED of ${s.tests} tests; PR tier ${s.prTierSeconds.before} s -> ${s.prTierSeconds.after} s; probes ${s.probes.carriedAfter}/${s.probes.total}, kills ${s.kills.carriedAfter}/${s.kills.total} -> ${out}`,
-  );
+  propose(matrix, {
+    commit: arg('commit', null),
+    inputs,
+    timeLimit: Number(arg('time-limit', 120)),
+    gap: Number(arg('gap', 0.005)),
+  }).then((report) => {
+    mkdirSync(out, { recursive: true });
+    writeFileSync(join(out, 'subsume-report.json'), JSON.stringify(report, null, 1));
+    writeFileSync(join(out, 'subsume-report.md'), toMarkdown(report));
+    writeFileSync(join(out, 'diagram.md'), diagram(report));
+    const s = report.summary;
+    const v = report.solver;
+    console.log(
+      `propose: ${s.confirmed} CONFIRMED, ${s.suspected} SUSPECTED of ${s.tests} tests; PR tier ${s.prTierSeconds.before} s -> ${s.prTierSeconds.after} s; probes ${s.probes.carriedAfter}/${s.probes.total}, kills ${s.kills.carriedAfter}/${s.kills.total}; core by ${v.method} (${v.status}, ${v.columns} columns, ${v.distinctRows} rows, ${v.forced} forced, ${v.dominatedDropped} dominated, gap ${v.gapPct ?? '—'} %, ${v.seconds} s) -> ${out}`,
+    );
+  });
 }

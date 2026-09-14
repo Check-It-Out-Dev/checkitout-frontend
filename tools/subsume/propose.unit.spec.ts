@@ -94,7 +94,16 @@ const matrix = () =>
   );
 
 describe('propose', () => {
-  const report = propose(matrix(), { commit: 'abc' });
+  let report: Awaited<ReturnType<typeof propose>>;
+  beforeAll(async () => {
+    report = await propose(matrix(), { commit: 'abc' });
+  });
+
+  it('names the solver that chose the core, and its certificate', () => {
+    expect(report.solver.method).toMatch(/^(mip|reduction)$/);
+    expect(report.solver.incumbentCost).toBeLessThanOrEqual(report.solver.greedyCost);
+    expect(report.solver.gapPct).toBe(0);
+  });
 
   it('confirms only what the kept tests carry inside the kill matrix scope', () => {
     const tiers = Object.fromEntries(report.candidates.map((c) => [c.test, c.tier]));

@@ -200,6 +200,32 @@ Tiers: **CONFIRMED** = coverage-subsumed ∧ kill-subsumed ∧ not a sole killer
 coverage-subsumed but outside mutation scope or a sole killer inside the flaky window. Only
 CONFIRMED is ever applied. `representative` = the fastest member of a cluster, then the best-named.
 
+### The core: an exact cover, with a certificate
+
+The kept set is the minimum-cost set of reliable tests that covers every probe and every killed
+mutant — the integer programme of Black, Melachrinoudis & Kaeli (ICSE 2004) and Hsu & Orso's
+MINTS (ICSE 2009) with both criteria as constraints and seconds as the objective, solved by
+HiGHS (`highs@1.15.3`, MIT, WebAssembly) after the reductions that keep the optimum: identical
+rows merge, a row with one coverer forces it, a test another covers at no greater cost is dropped
+(Beasley 1987; Tallam & Gupta, PASTE 2005). Greedy cover stays the incumbent and the cheaper of
+the two wins. The report says so under `solver`:
+
+```jsonc
+"solver": {
+  "method": "mip",            // mip | reduction (nothing left to choose) | greedy (solver unavailable or slower)
+  "status": "optimal",        // HiGHS model status; "timeLimit" means the gap below is real
+  "greedyCost": 75.4, "incumbentCost": 60.0, "dualBound": 60.0, "gapPct": 0,
+  "columns": 312, "distinctRows": 282, "forced": 2921, "dominatedDropped": 7343,
+  "flakyOnly": 0,             // elements only a flaky test reaches — reported, never credited
+  "timeLimit": 120, "gapLimit": 0.005, "nodes": 0, "seconds": 0.8
+}
+```
+
+Measured 2026-09-14 on the backend's whole-estate matrix (10,576 tests, 21,497 probes, 5,189
+kills): the reductions force 2,921 tests and drop 7,343, HiGHS proves the remaining 312 × 282
+optimal in 0.8 s. The per-test judgement still runs on every test outside the core: the solver
+decides, the invariants verify.
+
 ### `invariant-report.json`
 
 ```jsonc
