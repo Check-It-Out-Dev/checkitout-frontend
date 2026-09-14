@@ -7,19 +7,14 @@
  * the next run starts clean — left in place, three armed runs on the box merged into 5,082
  * "tests" of a 1,302-test suite (2026-09-14), and a tally of the merged file counted them all.
  *
- *   node tools/subsume/merge-probes.mjs [reports/subsume]
+ *   node tools/subsume/merge-probes.mjs          # always reports/subsume under the working tree
  */
 import { existsSync, readdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
-import { join, resolve, sep } from 'node:path';
+import { join } from 'node:path';
 
-// The directory is an argument, so it is resolved and kept inside the working tree: every caller
-// passes reports/subsume, and a path that escapes the tree is a mistake, not a use case.
-const root = process.cwd();
-const dir = resolve(root, process.argv[2] ?? join('reports', 'subsume'));
-if (dir !== root && !dir.startsWith(root + sep)) {
-  console.error('merge-probes: the directory must be inside the working tree');
-  process.exit(2);
-}
+// The directory is fixed. Every caller — the workflows, the README — merges reports/subsume under
+// the working tree; a directory taken from the command line was a path with questions attached.
+const dir = join(process.cwd(), 'reports', 'subsume');
 if (!existsSync(dir)) {
   console.error(`merge-probes: no ${dir} — run jest with --coverage first`);
   process.exit(2);
