@@ -2045,7 +2045,7 @@
               "d": "weryfikowalna zgoda · prawdziwe usuwanie"
             },
             "tests": {
-              "t": "10 922 testów",
+              "t": "10 926 testów",
               "d": "jednostkowe · integracyjne · E2E"
             },
             "graph": {
@@ -2131,7 +2131,7 @@
             "detail": "131 fixture'ów sandboksa na 2 silnikach chromium — baseliny commitowane i przeglądane jako obrazy w diffie"
           },
           "unit": {
-            "count": "1 302",
+            "count": "1 306",
             "name": "Specyfikacje jednostkowe",
             "detail": "Jest, jedna suita na komponent i serwis — działa na końcu bramki, z --bail"
           }
@@ -3278,7 +3278,7 @@
           "frontend": {
             "kind": "Frontend · Angular 22",
             "owns": "Przepisanie aplikacji i strategia testów, która za nim stoi: dziewięć warstw testów, piętnaście bramek pre-commit, klient generowany z kontraktu.",
-            "figure": "2 014 testów · 9 warstw · 15 bramek",
+            "figure": "2 018 testów · 9 warstw · 15 bramek",
             "answers": "czy strategia testów jest poparta kodem?",
             "docs": "Architektura warstw testów"
           },
@@ -3305,7 +3305,7 @@
           "pr": {
             "name": "Każdy push i pull request",
             "trigger": "pr.yml · ubuntu-latest",
-            "what": "Jedno z dwóch wejść, kończy się jedną linią zamiast dziewięcioma statusami: jedenaście bramek statycznych, dwa typechecki, ng build ze strictTemplates, 1302 testów Jest z pokryciem i dowody kontraktu L0, a na końcu bramka Sonara na nowym kodzie. Hermetycznie: bez backendu, bez przeglądarek, bez Dockera.",
+            "what": "Jedno z dwóch wejść, kończy się jedną linią zamiast dziewięcioma statusami: jedenaście bramek statycznych, dwa typechecki, ng build ze strictTemplates, 1306 testów Jest z pokryciem i dowody kontraktu L0, a na końcu bramka Sonara na nowym kodzie. Hermetycznie: bez backendu, bez przeglądarek, bez Dockera.",
             "figure": "352 s · mediana 6 ostatnich"
           },
           "browser": {

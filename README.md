@@ -10,7 +10,7 @@ it is ever a bug. Every tier above that re-proves the same truth at a higher lev
 [![License: MIT](https://img.shields.io/badge/License-MIT-1f6feb.svg)](LICENSE)
 [![Angular](https://img.shields.io/badge/Angular-22-dd0031.svg)](https://angular.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178c6.svg)](https://www.typescriptlang.org/)
-[![Tests](https://img.shields.io/badge/tests-2014-15c213.svg)](#-testing)
+[![Tests](https://img.shields.io/badge/tests-2018-15c213.svg)](#-testing)
 [![Coverage](https://img.shields.io/endpoint?url=https://check-it-out-dev.github.io/checkitout-frontend/badges/coverage.json)](https://check-it-out-dev.github.io/checkitout-frontend/)
 [![Flaky](https://img.shields.io/endpoint?url=https://check-it-out-dev.github.io/checkitout-frontend/badges/flaky.json)](https://check-it-out-dev.github.io/checkitout-frontend/)
 [![Lighthouse](https://img.shields.io/endpoint?url=https://check-it-out-dev.github.io/checkitout-frontend/badges/lighthouse.json)](https://check-it-out-dev.github.io/checkitout-frontend/lighthouse/latest.json)
@@ -25,7 +25,7 @@ it is ever a bug. Every tier above that re-proves the same truth at a higher lev
 [![deploy sandbox](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/deploy-sandbox.yml/badge.svg)](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/deploy-sandbox.yml)
 
 <sub>Two workflow badges, because there are two pipelines: everything else runs inside one of them.
-Only the test count is static — 2014 across every tier, measured 2026-09-14 and gated by G15.
+Only the test count is static — 2018 across every tier, measured 2026-09-14 and gated by G15.
 Coverage, the flaky list, mutation score, security findings and the Lighthouse scores are read live
 from the <a href="https://check-it-out-dev.github.io/checkitout-frontend/">quality dashboard</a>, which every run on <code>main</code> republishes.</sub>
 
@@ -54,7 +54,7 @@ Three claims, and the rest of this page is where you check them:
 | Claim                                                                                                                                                                                                                              | Where to check it                               |
 | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------- |
 | **The backend contract cannot silently drift.** 181 model types and 41 API services are generated from the backend's spec; three separate mechanisms refuse to let hand-written code diverge from them.                            | [The contract pipeline](#the-contract-pipeline) |
-| **2,014 tests across nine tiers, and each proves something the others structurally cannot.** 1302 Jest · 148 BDD scenarios · 222 live-backend integration · 142 visual · 82 experience · counted by the runners, skipped included. | [Testing](#-testing)                            |
+| **2,018 tests across nine tiers, and each proves something the others structurally cannot.** 1306 Jest · 148 BDD scenarios · 222 live-backend integration · 142 visual · 82 experience · counted by the runners, skipped included. | [Testing](#-testing)                            |
 | **Fifteen gates run before any commit lands, and each was born from a specific defect that got through.**                                                                                                                          | [Quality gates](#-quality-gates)                |
 
 > [!NOTE]
@@ -82,7 +82,7 @@ npm run build:demo
 npx http-server dist/check-it-out-fe-greenfield/browser
 ```
 
-That is also enough to run **1,591 of the 2,014 tests**: every Jest test, the fifteen-gate wall, and
+That is also enough to run **1,595 of the 2,018 tests**: every Jest test, the fifteen-gate wall, and
 the sandbox, visual and experience tiers.
 
 **3 · Run the whole platform — a weekend.** From the
@@ -107,7 +107,7 @@ npm run start                            # https://localhost:4201
 <summary><b>Every test command</b></summary>
 
 ```bash
-npm test                  # 1302 Jest unit + component tests          ~20 s
+npm test                  # 1306 Jest unit + component tests          ~20 s
 npm test -- --coverage    # …with coverage, gated by a threshold
 npm run check:full        # the entire fifteen-gate wall, exactly as CI runs it
 npm run test:bdd          # 148 Cucumber scenarios       (needs the stack)
@@ -135,7 +135,7 @@ npm run measure:counts    # re-ask the runners; writes docs/testing/measured-cou
 > durations, and links to the reports themselves. The numbers below are the design; the dashboard is
 > the measurement.
 
-**2,014 tests.** Five layers in the pyramid, four tiers beside it. The point is not the count — it
+**2,018 tests.** Five layers in the pyramid, four tiers beside it. The point is not the count — it
 is that the layers are **connected**: each is built from the artifacts of the one below, so a
 regression cannot pass a lower layer and hide in a higher one. The tiers beside the pyramid are
 there because they answer questions the chain structurally cannot.
@@ -150,9 +150,9 @@ there because they answer questions the chain structurally cannot.
                     │  screens a real user touches                 │  needs the full stack
                 ┌───┴──────────────────────────────────────────────┴───┐
                 │  L2 · COMPONENT                                      │
-                │  UI logic against service interfaces, never HTTP     │  1302 tests
+                │  UI logic against service interfaces, never HTTP     │  1306 tests
             ┌───┴──────────────────────────────────────────────────────┴───┐
-            │  L1 · SERVICE                                                │  151 suites
+            │  L1 · SERVICE                                                │  152 suites
             │  every wrapper's URL, verb, body and return type             │  ~20 s
         ┌───┴──────────────────────────────────────────────────────────────┴───┐
         │  L0 · CONTRACT — compile time, zero runtime cost                     │  18 assertions
@@ -166,7 +166,7 @@ there because they answer questions the chain structurally cannot.
    ▸ SCENARIOS   · multi-actor flows     6 tests ·  3 files · two people, one campaign
    ▸ EXPERIENCE  · perf                 82 tests · 15 files · smooth, readable, honest in motion
 
-   1302 Jest + 712 Playwright = 2,014 tests. Counted by the runners themselves,
+   1306 Jest + 712 Playwright = 2,018 tests. Counted by the runners themselves,
    skipped and fixme included — `npx playwright test <dir> --list` says so.
 ```
 
@@ -316,7 +316,7 @@ written for this repository, and each exists because something specific got thro
 | G12 | `typecheck` + `typecheck:e2e`         | Any type error, app or test                                                                                                                  | Strict everywhere, tests included                                                              |
 | G13 | `build:check`                         | Template type errors — `strictTemplates` only fires in `ng build`                                                                            | `tsc --noEmit` does **not** check templates                                                    |
 | G14 | `jest --bail` + coverage threshold    | A failing test, or coverage sliding below the floor                                                                                          | —                                                                                              |
-| G15 | `check:published-numbers`             | Any number this repo publishes about itself disagreeing with the measured one — 75 figures across the README, both locales and one component | The site said 216 generated models against a directory holding 181, and 949 Jest against 1,141 |
+| G15 | `check:published-numbers`             | Any number this repo publishes about itself disagreeing with the measured one — 76 figures across the README, both locales and one component | The site said 216 generated models against a directory holding 181, and 949 Jest against 1,141 |
 
 The pre-commit hook runs G1–G10 and G12–G15 by name; G11 rides in `check:static`, which CI runs and
 the hook does not — a gap worth knowing about rather than papering over.
@@ -431,7 +431,7 @@ shipped · 🟡 under way · ⬜ designed, not started.
 | :-- | :------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | ✅  | Contract pipeline, end to end                            | Spec → codegen → wrappers → compile-time proofs → every tier                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | ✅  | Fifteen-gate wall, local and in CI                       | Identical locally and on pull requests                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| ✅  | 1302 Jest unit + component tests                         | Coverage measured and gated                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| ✅  | 1306 Jest unit + component tests                         | Coverage measured and gated                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | ✅  | 148 BDD scenarios from the backend corpus                | 27 feature files; 26 of 34 backend features ported, 8 waived, gated by G7                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | ✅  | 222 live-backend integration tests                       | Each citing the feature it ports                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | ✅  | 142 visual snapshots over 146 fixtures + 41 parity diffs | Coverage gated by G4, freshness by G5                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |

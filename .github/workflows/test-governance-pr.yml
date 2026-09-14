@@ -43,10 +43,10 @@ jobs:
       HEAD_SHA: ${{ github.event.pull_request.head.sha }}
       PR: ${{ github.event.pull_request.number }}
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020  # v7.0.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -81,10 +81,28 @@ jobs:
       - name: What this pull request changed
         run: git diff --name-only "origin/$BASE_REF...HEAD" > changed.txt && wc -l < changed.txt
 
+      # The before, on this machine: the full tier (SUITE=nightly runs the demoted tests too) armed,
+      # twice — once for the coverage every test gives here, once more for the probes that flip
+      # between two runs and are set aside. A base made on another machine disagrees with this one
+      # on environment-dependent branches, and that disagreement is not a lost test.
+      - name: Full tier, armed, twice (the before, on this machine)
+        env:
+          SUBSUME_PROBES: '1'
+          SUITE: nightly
+        run: |
+          mkdir -p before before2
+          npx jest --ci --coverage
+          node tools/subsume/merge-probes.mjs reports/subsume
+          mv reports/subsume/probes.jsonl before/ && cp reports/subsume/maps.json before/ && cp base/mutation.json before/
+          npx jest --ci --coverage
+          node tools/subsume/merge-probes.mjs reports/subsume
+          mv reports/subsume/probes.jsonl before2/ && cp reports/subsume/maps.json before2/
+          wc -l before/probes.jsonl before2/probes.jsonl
+
       - name: Reduced tier, armed, declared order
         id: tier
         env:
-          SUBSUME_PROBES: "1"
+          SUBSUME_PROBES: '1'
         run: |
           START=$(date +%s)
           npx jest --ci --coverage --json --outputFile=jest-results.json
@@ -101,7 +119,7 @@ jobs:
           I4: ${{ steps.numbers.outputs.i4 }}
           BASE_COMMIT: ${{ steps.round.outputs.baseCommit }}
         run: |
-          node tools/subsume/invariant.mjs --repo frontend --base base --base2 base2 --head reports/subsume \
+          node tools/subsume/invariant.mjs --repo frontend --base before --base2 before2 --head reports/subsume \
             --changed changed.txt --suite jest-results.json --i4 "$I4" \
             --base-commit "$BASE_COMMIT" --head-commit "$HEAD_SHA" --out reports/subsume
 
@@ -127,7 +145,7 @@ jobs:
         run: |
           node tools/subsume/ledger.mjs --round docs/testing/governance/round.json \
             --proposal base/subsume-report.json --invariants reports/subsume/invariant-report.json \
-            --suite jest-results.json --head-probes reports/subsume/probes.jsonl --seconds-after "$SECONDS_AFTER" \
+            --suite jest-results.json --before-probes before/probes.jsonl --head-probes reports/subsume/probes.jsonl --seconds-after "$SECONDS_AFTER" \
             --kills-before base/mutation.json --kills-after reports/mutation-estate/mutation.json \
             --changed changed.txt --random-order "$RANDOM_ORDER" --out reports/subsume
 
@@ -137,7 +155,7 @@ jobs:
           node tools/subsume/gains.mjs --ledger reports/subsume/governance-ledger.json --out reports/subsume
           cat reports/subsume/gains.md >> "$GITHUB_STEP_SUMMARY"
 
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()
         with:
           name: governance-round-${{ steps.round.outputs.round }}

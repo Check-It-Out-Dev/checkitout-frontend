@@ -65,7 +65,7 @@ describe('governance ledger', () => {
       lost: [],
     });
     expect(summaryLine(l)).toContain(
-      'MERGEABLE — 2 tests demoted · tests 100 → 98 · tier 50 s → 45.5 s (-9 %)',
+      'MERGEABLE — 2 tests demoted · tests 100 → 98 · tier 50 s → 45.5 s (-9 %, proposal vs this machine)',
     );
     const g = gains(l);
     expect(g).toContain('```mermaid');
@@ -100,6 +100,54 @@ describe('governance ledger', () => {
     });
     expect(l2.verdict).toBe('NOT-MERGEABLE');
     expect(l2.kept.randomOrderGreen).toBe(false);
+  });
+
+  it('charges a lost kill to the machine when every killer stayed, and takes the before from the same machine', () => {
+    // m2 was killed on the base by a test that stays in the tier: losing it on this machine is
+    // the machine's doing, listed and not held against the round; m1's killer was demoted
+    const p = join(d, 'before-killers.json');
+    writeFileSync(
+      p,
+      JSON.stringify({
+        mutants: {
+          m1: { file: 'src/a.java', status: 'KILLED', killedBy: ['t1'] },
+          m2: { file: 'src/a.java', status: 'KILLED', killedBy: ['kept-1', 'kept-2'] },
+          m3: { file: 'src/a.java', status: 'TIMED_OUT', killedBy: ['kept-1'] },
+        },
+      }),
+    );
+    const before2 = killsOf(p)!;
+    expect([...before2.killed].sort()).toEqual(['m1', 'm2', 'm3']); // a time-out is a detection
+    const afterEnv = killsFile(d, 'after-env.json', ['m1', 'm3'], ['m2']);
+    const l = ledger({
+      round,
+      proposal,
+      invariants: okInvariants,
+      suiteAfter: { tests: 98, failed: 0 },
+      probesBefore: { tests: 100, seconds: 52 },
+      probesAfter: { tests: 98, seconds: 45 },
+      killsBefore: before2,
+      killsAfter: afterEnv,
+      randomOrder: 'pass',
+    });
+    expect(l.before).toEqual({ tests: 100, seconds: 52, sameMachine: true });
+    expect(l.mutation).toMatchObject({ lost: [], lostByEnvironment: ['m2'] });
+    expect(l.verdict).toBe('MERGEABLE');
+    expect(summaryLine(l)).toContain('1 mutant(s) lost to the machine, not the round');
+    expect(summaryLine(l)).toContain('same machine');
+    const afterDem = killsFile(d, 'after-dem.json', ['m2', 'm3'], ['m1']);
+    const l2 = ledger({
+      round,
+      proposal,
+      invariants: okInvariants,
+      suiteAfter: { tests: 98, failed: 0 },
+      probesAfter: { tests: 98, seconds: 45 },
+      killsBefore: before2,
+      killsAfter: afterDem,
+      randomOrder: 'pass',
+    });
+    expect(l2.mutation).toMatchObject({ lost: ['m1'], lostByEnvironment: [] });
+    expect(l2.verdict).toBe('NOT-MERGEABLE');
   });
 
   it('is INCOMPLETE when anything is unmeasured, and says what', () => {

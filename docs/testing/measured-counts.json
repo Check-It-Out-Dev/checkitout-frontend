@@ -2,9 +2,9 @@
   "$comment": "Written by tools/measure-test-counts.mjs. Do not hand-edit — run `npm run measure:counts`. check-published-numbers.mjs asserts every published figure against this file.",
   "measuredAt": "2026-09-14",
   "jest": {
-    "tests": 1302,
-    "suites": 151,
-    "subsumed": 1
+    "tests": 1306,
+    "suites": 152,
+    "subsumed": 0
   },
   "playwright": {
     "projects": {
@@ -25,8 +25,8 @@
     },
     "distinct": 712
   },
-  "total": 2014,
-  "offline": 1591,
+  "total": 2018,
+  "offline": 1595,
   "generatedClient": {
     "models": 182,
     "services": 40

@@ -15,18 +15,18 @@
  * diagram.md, pack.md), each also in its grouped form and rounded to one and two decimals, because
  * a step summary prints 5,190 for 5190 and 39.9 for 39.93.
  */
-import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join, sep } from 'node:path';
 
 const NOT_A_MEASUREMENT = [
   /\bI[1-5]\b/g, // the invariants' names
   /#\d+/g, // pull requests, issues, test-template invocations
   /\b\d{4}-\d{2}-\d{2}(?:T[\d:.]+Z?)?\b/g, // dates
-  /\b[0-9a-f]{7,40}\b/g, // commit hashes
+  /\b(?=[0-9a-f]*[a-f])[0-9a-f]{7,40}\b/g, // commit hashes — with a letter in them, so a count of seven digits stays a count
   /\b\d{1,2}:\d{2}(?::\d{2})?\b/g, // clock times
   /\bv?\d+\.\d+\.\d+\b/g, // versions
   /\bround \d+\b/gi, // the round's ordinal
-  /\b(?:20\d\d)\b/g, // a year on its own
+  /\b20[23]\d\b/g, // a year of this decade on its own — 2,014 tests is a count, not a year
 ];
 
 /** Numbers in a text, as normalised strings: no separators, no sign. */
@@ -105,6 +105,6 @@ if (isMain) {
     : `I5: PASS — every number in the review is in a report (${vouched.size} vouched forms)`;
   console.log(line);
   if (process.env.GITHUB_STEP_SUMMARY)
-    require('node:fs').writeFileSync(process.env.GITHUB_STEP_SUMMARY, line + '\n', { flag: 'a' });
+    writeFileSync(process.env.GITHUB_STEP_SUMMARY, line + '\n', { flag: 'a' });
   process.exit(bad.length ? 1 : 0);
 }
