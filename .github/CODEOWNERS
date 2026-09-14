@@ -33,5 +33,9 @@
 /sonar-project.properties           @RamzesX
 /stryker.conf.json                  @RamzesX
 
+# The test population under invariants: the instrument, the gate, and the two agents' prompts.
+# An agent may apply a demotion the matrices confirmed; it may not change what "confirmed" means.
+/tools/subsume/                     @RamzesX
+
 # The design of record and its ADRs.
 /docs/ci/                           @RamzesX

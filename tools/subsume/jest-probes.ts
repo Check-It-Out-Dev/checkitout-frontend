@@ -25,9 +25,20 @@
  * stays off regardless of the flag.
  */
 import { appendFileSync, mkdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, relative } from 'node:path';
 
 import { diff, snapshot, type Counters, type Hits, type Snapshot } from './probe-diff';
+
+/** Paths in the artefact are repository-relative with forward slashes, so a matrix cached from a
+ *  runner compares with one produced on a developer's machine. */
+function rel(p: string | undefined): string {
+  return relative(process.cwd(), p ?? '')
+    .split('\\')
+    .join('/');
+}
+function relHits(hits: Hits): Hits {
+  return Object.fromEntries(Object.entries(hits).map(([file, h]) => [rel(file), h]));
+}
 
 type FileCoverage = Counters & {
   statementMap: unknown;
@@ -57,7 +68,7 @@ function write(record: object): void {
 }
 
 function emit(test: string, hits: Hits): void {
-  write({ test, spec: expect.getState().testPath, hits });
+  write({ test, spec: rel(expect.getState().testPath), hits: relHits(hits) });
   for (const file of Object.keys(hits)) {
     if (mapped.has(file)) continue;
     mapped.add(file);
@@ -66,7 +77,7 @@ function emit(test: string, hits: Hits): void {
     appendFileSync(
       mapsFile,
       JSON.stringify({
-        file,
+        file: rel(file),
         statementMap: fc.statementMap,
         fnMap: fc.fnMap,
         branchMap: fc.branchMap,
@@ -79,7 +90,7 @@ function emit(test: string, hits: Hits): void {
 beforeAll(() => {
   if (!active()) return;
   const cur = snapshot(g.__coverage__);
-  emit(`${expect.getState().testPath} :: (module load)`, diff({}, cur));
+  emit(`${rel(expect.getState().testPath)} :: (module load)`, diff({}, cur));
   prev = cur;
 });
 
@@ -87,7 +98,7 @@ afterEach(() => {
   if (!active()) return;
   const cur = snapshot(g.__coverage__);
   const state = expect.getState();
-  emit(`${state.testPath} :: ${state.currentTestName}`, diff(prev, cur));
+  emit(`${rel(state.testPath)} :: ${state.currentTestName}`, diff(prev, cur));
   prev = cur;
 });
 
@@ -95,11 +106,11 @@ afterAll(() => {
   if (!active()) return;
   const totals: Record<string, { s: number; f: number; b: number }> = {};
   for (const [file, c] of Object.entries(snapshot(g.__coverage__))) {
-    totals[file] = {
+    totals[rel(file)] = {
       s: Object.values(c.s).filter((n) => n > 0).length,
       f: Object.values(c.f).filter((n) => n > 0).length,
       b: Object.values(c.b).reduce((acc, paths) => acc + paths.filter((n) => n > 0).length, 0),
     };
   }
-  write({ final: true, spec: expect.getState().testPath, totals });
+  write({ final: true, spec: rel(expect.getState().testPath), totals });
 });
