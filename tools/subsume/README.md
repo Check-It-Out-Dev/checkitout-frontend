@@ -261,6 +261,56 @@ kills): the reductions force 2,921 tests and drop 7,343, HiGHS proves the remain
 optimal in 0.8 s. The per-test judgement still runs on every test outside the core: the solver
 decides, the invariants verify.
 
+### `pack.json` — the round policy (`pack.mjs`)
+
+What leaves the tier _this round_, from what the proposal says _may_ leave — by evidence tier,
+never by a probability: **A** an exact duplicate of a kept test in the same class with own kills;
+**B** kill-carried with own kills and two or more kept tests that each alone carry it; **C** one
+such carrier; **D** kills nothing the matrix models. Gates before any tier: CONFIRMED; run by the
+kill matrix; a carrier in the same class; probes identical across two armed runs when a second
+`probes.jsonl` is given (else `provisional: true`); not name-flagged (`boundary`, `regression`,
+`issue-`, `null`, `empty`, `invalid`, `timeout`, … wait on `lookTwice` until a person lists them in
+`docs/testing/governance/cleared.json`). The budget — a share of tier seconds and a test count,
+never more than half of any class — is spent from A downward; D is never taken while A–C hold
+anything; `saturated` means A–C are empty at these gates. The ratchet that sets the budget
+(double after a clean round, halve after a failed re-measurement, freeze the failing tier two
+rounds) lives in the governance workflow, not here.
+
+```jsonc
+{
+  "schema": 1,
+  "repo": "backend",
+  "commit": "<sha>",
+  "budget": { "share": 0.1, "seconds": 7.5, "tests": 300, "classCap": 0.5 },
+  "gates": {
+    "determinism": "measured",
+    "frozen": [],
+    "excluded": { "look-twice": 12, "no-carrier-in-class": 3, "not-confirmed": 4418 },
+  },
+  "provisional": false,
+  "tiers": { "A": { "available": 900, "seconds": 6.1, "taken": 210 }, "B": {}, "C": {}, "D": {} },
+  "taken": [
+    {
+      "test": "<id>",
+      "unit": "<class>",
+      "tier": "A",
+      "seconds": 0.02,
+      "carriers": ["<id>"],
+      "exactDuplicateOf": "<id>",
+    },
+  ],
+  "lookTwice": [{ "test": "<id>", "unit": "<class>", "seconds": 0.1 }],
+  "saturated": false,
+  "forecast": {
+    "A": { "tests": 690, "seconds": 4.2 },
+    "B": {},
+    "C": {},
+    "D": {},
+    "roundsToSaturationAtThisBudget": 3,
+  },
+}
+```
+
 ### `invariant-report.json`
 
 ```jsonc

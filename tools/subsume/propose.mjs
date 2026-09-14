@@ -50,12 +50,46 @@ export async function propose(
     [...t.kills].filter((k) => reach.get(`kill:${k}`) === 1).length;
 
   const perTest = testMetrics(matrix);
+  // kept tests reaching each probe, so a candidate's full carriers — kept tests that alone carry
+  // every probe and kill it has — are found among those reaching its rarest probe
+  const reaching = new Map();
+  for (const id of cover.kept) {
+    const k = matrix.tests.get(id);
+    if (!k || k.flaky) continue;
+    for (const p of k.probes) {
+      if (!reaching.has(p)) reaching.set(p, []);
+      reaching.get(p).push(id);
+    }
+  }
+  const fullCarriersOf = (t) => {
+    if (t.probes.size === 0) return [];
+    let rarest = null;
+    for (const p of t.probes) {
+      const n = reaching.get(p)?.length ?? 0;
+      if (rarest === null || n < (reaching.get(rarest)?.length ?? 0)) rarest = p;
+    }
+    return (reaching.get(rarest) ?? []).filter((id) => {
+      if (id === t.id) return false;
+      const k = matrix.tests.get(id);
+      for (const p of t.probes) if (!k.probes.has(p)) return false;
+      for (const m of t.kills) if (!k.kills.has(m)) return false;
+      return true;
+    });
+  };
   const candidates = [];
   for (const id of cover.residual) {
     const j = judge(matrix, id, cover.kept);
     const t = matrix.tests.get(id);
     const c = j.tier === 'KEEP' ? { carriers: [] } : carriers(matrix, id, cover.kept);
     const r = perTest.get(id);
+    const full = j.tier === 'KEEP' ? [] : fullCarriersOf(t);
+    const exactDuplicateOf =
+      full.find((id2) => {
+        const k = matrix.tests.get(id2);
+        return (
+          k.spec === t.spec && k.probes.size === t.probes.size && k.kills.size === t.kills.size
+        );
+      }) ?? null;
     candidates.push({
       test: id,
       tier: j.tier,
@@ -70,6 +104,9 @@ export async function propose(
         inMutationScope: j.inScope,
         mutationObserved: j.mutationObserved,
         unitsOutOfScope: j.outOfScope.length,
+        fullCarriers: full.length,
+        sameClassCarrier: full.some((id2) => matrix.tests.get(id2).spec === t.spec),
+        exactDuplicateOf,
       },
       redundancy: {
         covRed: r.covRed,
@@ -126,6 +163,9 @@ export async function propose(
     commit,
     generatedAt: new Date().toISOString(),
     inputs: { ...inputs, window },
+    unitTests: Object.fromEntries(
+      [...tests.reduce((m, t) => m.set(t.spec, (m.get(t.spec) ?? 0) + 1), new Map())].sort(),
+    ),
     summary: {
       tests: tests.length,
       units: new Set(tests.map((t) => t.spec)).size,
