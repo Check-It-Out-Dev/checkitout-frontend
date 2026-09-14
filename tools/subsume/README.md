@@ -377,6 +377,16 @@ flat — and nothing else. The special pull-request job (`test-governance-pr.yml
 `probes.jsonl` or `kills.json` on base is never a pass — silence is not success), else `PASS`.
 Exit codes: 0 PASS, 1 FAIL, 2 INCOMPLETE.
 
+Two rules the first real round taught (backend, 2026-09-14). **Drift is set aside, not
+reported as a lost test:** the proposal run performs two armed runs and publishes both; probes
+that differ between them (`--base2`) are time- and network-dependent paths — cron jobs firing
+during the run, a startup validator reaching a server; 11 probes in 3 classes on the backend —
+and I1 leaves them out, naming them under `i1.unstable`. Without that rule the round read as
+"coverage LOWER on 3 of 2,853 methods". **A container kill is kept while its class remains:** PIT
+can name the killer of a mutant by a nested-class id with no `[method:…]` segment (a class-level
+failure under the mutant), which the listener never records as a test; I2 counts such a kill as
+kept while any test of that class is still in the tier (`i2.containerKillsKept`).
+
 ### The step summary, exactly
 
 ```

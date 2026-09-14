@@ -71,11 +71,44 @@ export function javaFile(fqcn) {
 }
 
 /**
+ * Probes that differ between two armed runs of the same base: time- and network-dependent paths
+ * (cron jobs firing during the run, a startup validator reaching a server) flip between runs no
+ * matter what the tier contains. They are named, counted, and left out of I1 — a regression on
+ * them would be drift, not a lost test.
+ */
+export function unstableProbes(matrixA, matrixB) {
+  const union = (m) => {
+    const s = new Set();
+    for (const t of realTests(m)) for (const p of t.probes) s.add(p);
+    return s;
+  };
+  const a = union(matrixA);
+  const b = union(matrixB);
+  const out = new Set();
+  for (const p of a) if (!b.has(p)) out.add(p);
+  for (const p of b) if (!a.has(p)) out.add(p);
+  return out;
+}
+
+/**
  * The judgement. `base` and `head` are what loadArtefacts returned (head without kills);
  * `changed` is the set of repo-relative paths the pull request touched; `suite` is
- * `{ tests, failed }` or null; `i4` is 'pass', 'fail' or null.
+ * `{ tests, failed }` or null; `i4` is 'pass', 'fail' or null; `unstable` the probes a second
+ * base run showed to flip on their own.
+ * @param {{ repo: string, base: any, head: any, changed: Set<string>, suite: { tests: number, failed: number } | null,
+ *   i4: string | null, baseCommit?: string | null, headCommit?: string | null, unstable?: Set<string> }} input
  */
-export function checkInvariants({ repo, base, head, changed, suite, i4, baseCommit, headCommit }) {
+export function checkInvariants({
+  repo,
+  base,
+  head,
+  changed,
+  suite,
+  i4,
+  baseCommit = null,
+  headCommit = null,
+  unstable = new Set(),
+}) {
   const incomplete = [...(base?.missing ?? []), ...(head?.missing ?? [])];
   if (!suite) incomplete.push('suite result');
   if (i4 !== 'pass' && i4 !== 'fail') incomplete.push('published-numbers check');
@@ -115,7 +148,7 @@ export function checkInvariants({ repo, base, head, changed, suite, i4, baseComm
     for (const [member, bm] of b.members) {
       methods += 1;
       const hm = h?.members.get(member);
-      const lost = [...bm.probes].filter((p) => !hm?.probes.has(p));
+      const lost = [...bm.probes].filter((p) => !hm?.probes.has(p) && !unstable.has(p));
       if (lost.length === 0) continue;
       regressions.push({
         file,
@@ -128,10 +161,13 @@ export function checkInvariants({ repo, base, head, changed, suite, i4, baseComm
     }
   }
   regressions.sort((a, b) => a.unit.localeCompare(b.unit) || a.method.localeCompare(b.method));
+  const unstableUnits = new Set();
+  for (const p of unstable) unstableUnits.add(base.matrix.probes.get(p)?.unit ?? p.split('|')[0]);
   report.i1 = {
     status: regressions.length ? 'FAIL' : 'PASS',
     unchangedFiles: files.size,
     checked: { files: files.size, classes, methods },
+    unstable: { probes: unstable.size, units: [...unstableUnits].sort() },
     regressions,
   };
 
@@ -147,13 +183,31 @@ export function checkInvariants({ repo, base, head, changed, suite, i4, baseComm
       unchangedUnits.add(mu.unit);
     }
   }
+  // PIT names a class-level failure under a mutant by the container (a nested class with no
+  // [method:…] segment), which the listener never records as a test; such a kill is kept while
+  // any test of that class remains in the tier.
+  const isContainer = (k) => !/\[(method|test-template):/.test(k);
+  const headIds = [...headSet];
+  const containerKept = (k) => headIds.some((id) => id.startsWith(k + '/'));
+  let containerKills = 0;
   const lost = lostKills(base.matrix, headSet, unchangedUnits)
+    .filter((l) => {
+      const byContainer = l.killedByOnBase.some((k) => isContainer(k) && containerKept(k));
+      if (byContainer) containerKills += 1;
+      return !byContainer;
+    })
     .map((l) => ({
       ...l,
       reason: l.killedByOnBase.some((k) => headSet.has(k)) ? 'killer flaky' : 'test demoted',
     }))
     .sort((a, b) => a.mutant.localeCompare(b.mutant));
-  report.i2 = { status: lost.length ? 'FAIL' : 'PASS', mutantsChecked, skippedChangedCode, lost };
+  report.i2 = {
+    status: lost.length ? 'FAIL' : 'PASS',
+    mutantsChecked,
+    skippedChangedCode,
+    containerKillsKept: containerKills,
+    lost,
+  };
 
   // I3, I4 — results handed in
   if (suite)
@@ -181,9 +235,12 @@ export function summaryLine(r) {
   if (r.verdict === 'INCOMPLETE' && !r.i1)
     return `Invariants: INCOMPLETE — missing: ${r.incomplete.join(', ')}`;
   const c = r.i1.checked;
+  const drift = r.i1.unstable?.probes
+    ? ` (${n(r.i1.unstable.probes)} drifting probes in ${n(r.i1.unstable.units.length)} classes set aside)`
+    : '';
   const coverage = r.i1.regressions.length
-    ? `coverage LOWER on ${n(r.i1.regressions.length)} of ${n(c.methods)} methods`
-    : `coverage unchanged on ${n(c.files)} files, ${n(c.classes)} classes, ${n(c.methods)} methods`;
+    ? `coverage LOWER on ${n(r.i1.regressions.length)} of ${n(c.methods)} methods${drift}`
+    : `coverage unchanged on ${n(c.files)} files, ${n(c.classes)} classes, ${n(c.methods)} methods${drift}`;
   const suite = r.i3
     ? r.i3.failed === 0
       ? `suite green (${n(r.i3.tests)} tests)`
@@ -236,6 +293,11 @@ if (isMain) {
   );
   const base = loadArtefacts(repo, arg('base', 'reports/subsume/base'), { flaky: arg('flaky') });
   const head = loadArtefacts(repo, arg('head', 'reports/subsume'), { kills: false });
+  // a second armed run of the base names the probes that flip on their own
+  const base2Dir = arg('base2');
+  const base2 = base2Dir ? loadArtefacts(repo, base2Dir, { kills: false }) : null;
+  const unstable =
+    base?.matrix && base2?.matrix ? unstableProbes(base.matrix, base2.matrix) : new Set();
   const report = checkInvariants({
     repo,
     base,
@@ -245,6 +307,7 @@ if (isMain) {
     i4: arg('i4', null),
     baseCommit: arg('base-commit', null),
     headCommit: arg('head-commit', null),
+    unstable,
   });
   mkdirSync(out, { recursive: true });
   writeFileSync(join(out, 'invariant-report.json'), JSON.stringify(report, null, 1));

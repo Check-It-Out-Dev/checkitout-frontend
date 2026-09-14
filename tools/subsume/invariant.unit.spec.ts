@@ -2,7 +2,14 @@ import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { checkInvariants, javaFile, loadArtefacts, readSuite, summaryLine } from './invariant.mjs';
+import {
+  checkInvariants,
+  javaFile,
+  loadArtefacts,
+  readSuite,
+  summaryLine,
+  unstableProbes,
+} from './invariant.mjs';
 
 /**
  * The gate is believed only after the seeded violations are red (tools/subsume/README.md):
@@ -152,6 +159,32 @@ describe('invariants gate', () => {
         reason: 'test demoted',
       },
     ]);
+  });
+
+  it('sets aside probes that flip between two runs of the same base, and says so', () => {
+    const d = mkdtempSync(join(tmpdir(), 'inv-'));
+    side(d, 'base', full);
+    side(d, 'base2', [
+      { id: T1, s: [0, 1] }, // probe 2 flipped off on its own in the second base run
+      { id: T2, s: [0, 1] },
+    ]);
+    side(d, 'head', [{ id: T1, s: [0, 1] }], { kills: false });
+    const base = loadArtefacts('frontend', join(d, 'base'));
+    const base2 = loadArtefacts('frontend', join(d, 'base2'), { kills: false });
+    const unstable = unstableProbes(base.matrix, base2.matrix);
+    expect([...unstable]).toEqual(['src/a.ts|s|2']);
+    const r = checkInvariants({
+      repo: 'frontend',
+      base,
+      head: loadArtefacts('frontend', join(d, 'head'), { kills: false }),
+      changed: new Set<string>(),
+      suite: { tests: 1, failed: 0 },
+      i4: 'pass',
+      unstable,
+    });
+    expect(r.verdict).toBe('PASS');
+    expect(r.i1?.unstable).toEqual({ probes: 1, units: ['src/a.ts'] });
+    expect(summaryLine(r)).toContain('(1 drifting probes in 1 classes set aside)');
   });
 
   it('changed code is judged by the coverage floors, not by I1/I2', () => {
