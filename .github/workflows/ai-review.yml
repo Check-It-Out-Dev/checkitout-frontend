@@ -1,0 +1,112 @@
+# ◇ Reviewer — instance two of "AI in the loop, invariants in charge" (docs/ci/ADR-test-subsumption.md).
+#
+# Claude Code reads a finished pull-request run — the gate's invariant report, a governance round's
+# ledger and gains, the diff — and writes one comment that quotes the reports and computes nothing.
+# It never approves, requests changes or merges; a person does. A step after the comment (I5) reads
+# every number in it back against the reports and fails the job on the first one that came from
+# nowhere.
+#
+# It runs after a pipeline completes (`workflow_run`), not on the pull request itself: that is where
+# the artefacts are, and it is the only event that can hold the OAuth token in the `ai-review`
+# environment for a pull request from a branch of this repository. A fork's pull request is skipped
+# by name — the token is never in the same job as a stranger's code.
+#
+# Every value that somebody else chooses — a branch, a number, a title — reaches a shell through
+# `env:`, never interpolated into a `run:` body.
+name: ai-review
+
+on:
+  workflow_run:
+    workflows: [pr, test-governance-pr]
+    types: [completed]
+
+concurrency:
+  group: ai-review-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  actions: read
+
+jobs:
+  review:
+    name: ◇ Reviewer
+    if: >-
+      ${{ github.event.workflow_run.event == 'pull_request'
+          && github.event.workflow_run.pull_requests[0] != null
+          && github.event.workflow_run.head_repository.fork == false }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: ai-review
+    env:
+      PR: ${{ github.event.workflow_run.pull_requests[0].number }}
+      RUN_ID: ${{ github.event.workflow_run.id }}
+      HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+      SOURCE: ${{ github.event.workflow_run.name }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+
+      # What the run left behind: the invariants job's report on an ordinary pull request, the
+      # governance round's ledger, gains and invariants on a governance one. Whatever is absent is
+      # absent, and the reviewer says so rather than inventing it.
+      - name: The reports of the run that finished
+        run: |
+          mkdir -p reports/review reports/download
+          gh run download "$RUN_ID" -D reports/download || echo "no artefacts on run $RUN_ID"
+          for f in invariant-report.json governance-ledger.json gains.md diagram.md subsume-report.json pack.json round.json; do
+            p=$(find reports/download -name "$f" | head -n 1)
+            [ -n "$p" ] && cp "$p" reports/review/
+          done
+          test -f docs/testing/governance/round.json && cp docs/testing/governance/round.json reports/review/ || true
+          gh pr view "$PR" --json title,body --jq '"# " + .title + "\n\n" + .body' > reports/review/pull-request.md
+          gh pr diff "$PR" > reports/review/diff.patch || : > reports/review/diff.patch
+          echo "Reports for pull request $PR from $SOURCE run $RUN_ID:"; ls -la reports/review
+
+      # A pull request whose head predates the tooling branch has no role file and no check; both
+      # come from the tooling branch then, so the reviewer reads the same instructions everywhere.
+      - name: The role file and the check, when this head predates them
+        run: |
+          for f in tools/subsume/agent/reviewer.md tools/subsume/pr-numbers-check.mjs; do
+            [ -f "$f" ] && continue
+            mkdir -p "$(dirname "$f")"
+            gh api "repos/$GITHUB_REPOSITORY/contents/$f?ref=feature/ai-in-the-loop" --jq .content | base64 -d > "$f"
+            echo "fetched $f from feature/ai-in-the-loop"
+          done
+
+      - name: The comment
+        uses: anthropics/claude-code-action@a73a99cefc6aea0126f858804cd22a7a44e11924 # v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          prompt: |
+            Read tools/subsume/agent/reviewer.md and follow it exactly. You are reviewing pull request #${{ env.PR }} of this repository.
+            The reports are the files in reports/review/ — list that directory first and use only what is there: invariant-report.json,
+            governance-ledger.json, gains.md, diagram.md, subsume-report.json, round.json, pull-request.md (the title and body the
+            proposer wrote) and diff.patch. A report that is not there is stated as not there; nothing is inferred from its absence.
+            Every number you write must appear in one of those files; quote, never compute.
+            Write the comment to reports/review/comment.md. Its first line is exactly:
+            ◇ Reviewer — Claude Code Action · quotes gate numbers only · never approves
+            and its last line is exactly:
+            I do not approve or merge; a person does.
+            Then post it with exactly this command and nothing else:
+            gh pr comment ${{ env.PR }} --body-file reports/review/comment.md
+          claude_args: '--allowedTools Read,Glob,Grep,Write,Bash(ls:*),Bash(cat:*),Bash(gh pr comment:*) --max-turns 25'
+
+      - name: Every number in the review is in a report (I5)
+        run: node tools/subsume/pr-numbers-check.mjs --comment reports/review/comment.md --reports reports/review
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: ai-review-${{ github.event.workflow_run.pull_requests[0].number }}
+          path: reports/review
+          if-no-files-found: warn
+          retention-days: 30
