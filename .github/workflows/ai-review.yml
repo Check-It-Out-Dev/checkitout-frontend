@@ -70,6 +70,17 @@ jobs:
           gh pr diff "$PR" > reports/review/diff.patch || : > reports/review/diff.patch
           echo "Reports for pull request $PR from $SOURCE run $RUN_ID:"; ls -la reports/review
 
+      # A pull request whose head predates the tooling branch has no role file and no check; both
+      # come from the tooling branch then, so the reviewer reads the same instructions everywhere.
+      - name: The role file and the check, when this head predates them
+        run: |
+          for f in tools/subsume/agent/reviewer.md tools/subsume/pr-numbers-check.mjs; do
+            [ -f "$f" ] && continue
+            mkdir -p "$(dirname "$f")"
+            gh api "repos/$GITHUB_REPOSITORY/contents/$f?ref=feature/ai-in-the-loop" --jq .content | base64 -d > "$f"
+            echo "fetched $f from feature/ai-in-the-loop"
+          done
+
       - name: The comment
         uses: anthropics/claude-code-action@a73a99cefc6aea0126f858804cd22a7a44e11924 # v1
         with:
