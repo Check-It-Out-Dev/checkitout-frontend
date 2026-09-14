@@ -12,6 +12,7 @@ describe('demo fixtures', () => {
   beforeEach(() => {
     localStorage.clear();
     sessionStorage.clear();
+    resetDemoTourStores(); // every spec starts from the seed, whatever ran before it
   });
 
   it('answers /users/me with null while the persona is signed out (no bounce, no error)', () => {
