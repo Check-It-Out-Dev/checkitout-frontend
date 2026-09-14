@@ -55,6 +55,25 @@ export function markFlaky(matrix, ids) {
 const PSEUDO = /^(\(plan setup\)|\(plan teardown\)|.* :: \(module load\))$/;
 export const isPseudo = (id) => PSEUDO.test(id);
 
+/**
+ * A kill matrix from a run that stopped at the first killer — Stryker without `disableBail`, PIT
+ * without `fullMutationMatrix` — names one test per mutant, and every other test kills nothing.
+ * "Its kills are carried by the kept tests" is then true of every test and means nothing. Such a
+ * file is refused, not warned about: the proposal is wrong from the first line, and a gate fed with
+ * it would be green for the wrong reason.
+ */
+export function assertFullMatrix(kind, report, path) {
+  const ok = kind === 'stryker' ? report.config?.disableBail === true : report.fullMatrix === true;
+  if (!ok)
+    throw new Error(
+      `${path}: not a full kill matrix (${
+        kind === 'stryker'
+          ? 'Stryker ran without disableBail: true'
+          : 'PIT ran without fullMutationMatrix=true, or the file predates the fullMatrix field'
+      }); kill-subsumption would be vacuous. Regenerate it and run again.`,
+    );
+}
+
 // ── Jest ──────────────────────────────────────────────────────────────────────────────────────
 
 /** Which function of `maps.fnMap` contains a transpiled line; the member for I1's per-function view. */
@@ -96,6 +115,7 @@ export function loadJest({ probes, maps, mutation, flaky }) {
   }
   if (mutation) {
     const r = JSON.parse(readFileSync(mutation, 'utf8'));
+    assertFullMatrix('stryker', r, mutation);
     const byId = new Map();
     for (const [file, tf] of Object.entries(r.testFiles ?? {})) {
       for (const tt of tf.tests ?? [])
@@ -161,6 +181,7 @@ export function loadJava({ probes, classes, kills, flaky }) {
   }
   if (kills) {
     const r = JSON.parse(readFileSync(kills, 'utf8'));
+    assertFullMatrix('pit', r, kills);
     for (const [id, mu] of Object.entries(r.mutants)) {
       m.scope.add(mu.class);
       const killers = new Set(mu.killedBy);

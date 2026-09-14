@@ -105,11 +105,16 @@ export function toKills(mutations, { root, commit, tool }) {
       coveredBy: mu.coveredBy,
     };
   }
+  // A run without fullMutationMatrix writes <killingTest> (singular), which the parser does not
+  // read; every KILLED mutant then has no killer, and the loader refuses the file.
+  const killed = Object.values(mutants).filter((mu) => mu.status === 'KILLED');
+  const fullMatrix = killed.length > 0 && killed.every((mu) => mu.killedBy.length > 0);
   return {
     schema: 1,
     repo: 'backend',
     commit: commit ?? null,
     tool,
+    fullMatrix,
     generatedAt: new Date().toISOString(),
     mutants,
   };

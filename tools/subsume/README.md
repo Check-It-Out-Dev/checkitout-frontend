@@ -119,6 +119,13 @@ Backend: PIT with `fullMutationMatrix=true` + `exportLineCoverage=true`, XML →
 (pipe-joined). Frontend: Stryker's `mutation.json` with `disableBail`, `killedBy` resolved through
 `testFiles` to the identity above. `fileSha` is what lets the gate skip mutants whose code changed.
 
+A matrix from a run that stopped at the first killer is **refused**, not warned about: the loader
+requires `config.disableBail === true` in `mutation.json` and `fullMatrix: true` in `kills.json`
+(set by `pit-matrix.mjs` only when every `KILLED` mutant names a killer). With one killer per
+mutant every other test kills nothing, so "its kills are carried" is true of every test and means
+nothing — the first frontend proposal was built on such a file (351 killed, 0 with two killers)
+and confirmed twenty tests that kill nothing at all.
+
 ### `seconds` and `flaky.json`
 
 Every test record carries `"seconds"`: the hook measures the test itself (`beforeEach` to

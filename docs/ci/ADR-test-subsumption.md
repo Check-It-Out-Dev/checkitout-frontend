@@ -88,7 +88,10 @@ Reasons, in the order they mattered:
   README carries the artefact and report contracts, so the parts can be built in any order and by
   any hand — including a different agent than the one that designed them.
 - `stryker.conf.json` runs with `disableBail: true` from this commit: `killedBy` names every test
-  that kills a mutant rather than the first. The job gets slower; the matrix exists.
+  that kills a mutant rather than the first. The job gets slower; the matrix exists. A report from
+  a run that bailed is refused by the loader (it records `config.disableBail`; PIT's `kills.json`
+  records `fullMatrix`): with one killer per mutant, kill-subsumption is vacuous and a proposal
+  built on it is wrong from its first line.
 - The pull-request tier gains an invariants job in both repositories, fed by the nightly's cache on
   Pages; the nightly gains the matrices. That is §5's "report on the diff, not at night" applied to
   the one metric an agent can most easily game.
