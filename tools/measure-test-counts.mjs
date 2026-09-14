@@ -63,7 +63,9 @@ function run(bin, args, env = {}) {
     stdio: ['ignore', 'pipe', 'pipe'],
   });
   if (r.error) throw r.error;
-  return String(r.stdout ?? '') + String(r.stderr ?? '');
+  // Jest colours its summary in some shells even without a TTY; the numbers are read from the
+  // text, so the colour codes go first.
+  return (String(r.stdout ?? '') + String(r.stderr ?? '')).replace(/\x1b\[[0-9;]*m/g, '');
 }
 
 /** `Total: N tests in M files` — Playwright's own tally, skipped included. */

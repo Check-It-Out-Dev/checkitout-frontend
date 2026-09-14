@@ -19,7 +19,7 @@ import { CodePanelComponent } from '../ui/code-panel.component';
  * trace-equivalence tier + BE Testcontainers cover the runtime-conformance
  * class CDC also targets. Deliberately NOT oversold as a CDC superset.
  *
- * Every repo count re-measured 2026-09-30: 181 generated models + 41 services
+ * Every repo count re-measured 2026-09-30: 182 generated models + 40 services
  * (src/app/api), 31 typed wrapper modules (src/app/core), 27 ported Cucumber
  * features (e2e-tests/bdd), 18 L0 pins (src/testing/contract, Expect<Equal>),
  * 222 integration tests. These drifted badly once — the page claimed 216/74
