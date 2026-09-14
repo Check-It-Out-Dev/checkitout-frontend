@@ -72,6 +72,34 @@ describe('pr-body', () => {
     expect(body).not.toContain('| table |');
   });
 
+  it('draws only what the round demoted when it has the report', () => {
+    const carrier = junit.replace('shouldDo', 'keeps');
+    const declined = junit.replace('shouldDo()', 'p(int)]/[test-template-invocation:#1');
+    const report = {
+      candidates: [
+        {
+          test: junit,
+          tier: 'CONFIRMED',
+          unit: 'com.sm.x.unit.FooUnitTest$Bar',
+          subsumedBy: [carrier],
+          why: { probes: { own: 3 }, kills: { own: 1 } },
+        },
+        {
+          test: declined,
+          tier: 'CONFIRMED',
+          unit: 'com.sm.x.unit.FooUnitTest$Bar',
+          subsumedBy: [carrier],
+          why: { probes: { own: 2 }, kills: { own: 1 } },
+        },
+      ],
+    };
+    const { body } = prBody({ round: { ...round, demoted: [junit] }, pack, report });
+    expect(body).toContain('Only the tests this round demoted are drawn.');
+    expect(body).toContain('shouldDo()');
+    expect(body).toContain('3 probes · 1 kills');
+    expect(body).not.toContain('test-template-invocation');
+  });
+
   it('shortens ids the way a person reads them', () => {
     expect(shortName(junit)).toBe('FooUnitTest$Bar#shouldDo()');
     expect(

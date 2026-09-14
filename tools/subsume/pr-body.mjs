@@ -8,8 +8,11 @@
  *
  *   node tools/subsume/pr-body.mjs --round docs/testing/governance/round.json --pack pack.json
  *        [--ledger governance-ledger.json] [--invariants invariant-report.json]
- *        [--gains gains.md] [--diagram diagram.md] [--artefacts <where the full reports are>]
- *        --out reports/subsume
+ *        [--gains gains.md] [--report subsume-report.json | --diagram diagram.md]
+ *        [--artefacts <where the full reports are>] --out reports/subsume
+ *
+ * With --report the subsumption diagram is drawn from the proposal restricted to the tests the
+ * round demoted; --diagram pastes the proposal's own picture and says so.
  *
  * Writes pr-title.txt and pr-body.md.
  */
@@ -17,6 +20,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, sep } from 'node:path';
 
 import { parseJUnitId } from './apply.mjs';
+import { diagram as drawDiagram } from './diagram.mjs';
 import { summaryLine as invariantLine } from './invariant.mjs';
 import { summaryLine as ledgerLine } from './ledger.mjs';
 
@@ -44,7 +48,7 @@ export function mermaidBlock(md) {
 
 /**
  * @param {{ round: any, pack?: any, ledger?: any, invariants?: any, gains?: string | null,
- *   diagram?: string | null, artefacts?: string | null, listCap?: number }} input
+ *   diagram?: string | null, report?: any, artefacts?: string | null, listCap?: number }} input
  */
 export function prBody({
   round,
@@ -53,6 +57,7 @@ export function prBody({
   invariants = null,
   gains = null,
   diagram = null,
+  report = null,
   artefacts = null,
   listCap = 40,
 }) {
@@ -117,12 +122,24 @@ export function prBody({
     '',
   );
 
-  // who carries what
-  const block = mermaidBlock(diagram);
+  // who carries what — drawn from the proposal restricted to what this round demoted, so a row
+  // the round declined (a parameterised invocation, a generated name) is not in the picture; the
+  // proposal's own diagram only when no report is at hand, and then said to be the proposal's
+  const demotedSet = new Set(round.demoted ?? []);
+  const drawn = report
+    ? drawDiagram({
+        ...report,
+        candidates: (report.candidates ?? []).filter((c) => demotedSet.has(c.test)),
+      })
+    : diagram;
+  const block = mermaidBlock(drawn);
   if (block) {
     out.push('## What leaves, and who carries it', '', block, '');
     out.push(
-      `Dashed leaves the tier; the edge says what the carrier also reaches. The full table with every id is in the artefacts${artefacts ? ` (${artefacts})` : ''}.`,
+      (report
+        ? 'Only the tests this round demoted are drawn. '
+        : 'The proposal’s diagram — rows the round declined are in it too. ') +
+        `Dashed leaves the tier; the edge says what the carrier also reaches. The full table with every id is in the artefacts${artefacts ? ` (${artefacts})` : ''}.`,
       '',
     );
   }
@@ -175,6 +192,7 @@ if (isMain) {
     invariants: json(arg('invariants')),
     gains: text(arg('gains')),
     diagram: text(arg('diagram')),
+    report: json(arg('report')),
     artefacts: arg('artefacts', null),
   });
   const out = arg('out', 'reports/subsume');
