@@ -92,8 +92,26 @@ jobs:
       # keyboard and the right one on a runner. The threshold in jest.config.js
       # is a ratchet set two points under the measured figure — it exists to
       # catch a slide, not to be admired.
+      # Armed: the probe hook records what every test exercised (reports/subsume/), which is
+      # what the invariants job below judges the change on.
       - name: 🧪 Unit tests + coverage threshold (G14)
-        run: npm test -- --bail --ci --coverage --json --outputFile=jest-results.json
+        env:
+          SUBSUME_PROBES: "1"
+        run: |
+          npm test -- --bail --ci --coverage --json --outputFile=jest-results.json
+          node tools/subsume/merge-probes.mjs reports/subsume
+
+      - name: 📤 Probes artifact (for the invariants job)
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        with:
+          name: unit-probes
+          path: |
+            reports/subsume/probes.jsonl
+            reports/subsume/maps.json
+            jest-results.json
+          retention-days: 14
+          if-no-files-found: warn
 
       # No escape sequences anywhere in this script on purpose: it lives inside a
       # YAML block scalar inside a single-quoted shell string, and a backslash-n
@@ -173,3 +191,66 @@ jobs:
         # now and the loser of the race used to drop its whole report. See the script's header.
         run: |
           bash tools/ci/publish-pages.sh site "ci-tests run ${{ github.run_number }}: unit results and coverage"
+
+  # The invariants of the test population, on every change (docs/ci/ADR-test-subsumption.md):
+  # coverage never lower on a file, class or method this change did not touch, no mutant killed on
+  # base left unkilled, the suite green, the published numbers consistent — judged from this run's
+  # own probes against the base artefacts the last governance run published. Until the first
+  # governance run publishes `subsume/latest`, the verdict is INCOMPLETE and the job says so
+  # without blocking; FAIL always blocks. A governance branch gets the fuller re-measurement in
+  # test-governance-pr.yml instead of this.
+  invariants:
+    name: Invariants of the test population
+    needs: quality-gates
+    if: ${{ !startsWith(github.head_ref, 'test-governance/') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    env:
+      PAGES: https://check-it-out-dev.github.io/checkitout-frontend
+      BASE_REF: ${{ github.base_ref }}
+      HEAD_SHA: ${{ github.sha }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020  # v7.0.0
+        with:
+          node-version-file: '.nvmrc'
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
+        with:
+          name: unit-probes
+          path: head
+      - name: Base artefacts of the last governance run
+        run: |
+          mkdir -p base base2 && cd base
+          for f in probes.jsonl maps.json mutation.json; do
+            curl -fsSL "$PAGES/subsume/latest/$f.gz" -o "$f.gz" && gunzip -f "$f.gz" || echo "::warning::$f is not on Pages yet — the verdict will be INCOMPLETE"
+          done
+          curl -fsSL "$PAGES/subsume/latest/probes2.jsonl.gz" -o ../base2/probes.jsonl.gz && gunzip -f ../base2/probes.jsonl.gz && cp maps.json ../base2/ 2>/dev/null || true
+      - name: What this change touched
+        run: |
+          if [ -n "$BASE_REF" ]; then git diff --name-only "origin/$BASE_REF...HEAD" > changed.txt
+          else git diff --name-only HEAD~1...HEAD > changed.txt 2>/dev/null || : > changed.txt; fi
+          wc -l < changed.txt
+      - name: The published numbers are still the measured ones (I4)
+        id: numbers
+        run: node tools/check-published-numbers.mjs && echo "i4=pass" >> "$GITHUB_OUTPUT" || echo "i4=fail" >> "$GITHUB_OUTPUT"
+      - name: Invariants I1–I4
+        env:
+          I4: ${{ steps.numbers.outputs.i4 }}
+        run: |
+          set +e
+          node tools/subsume/invariant.mjs --repo frontend --base base --base2 base2 --head head/reports/subsume             --changed changed.txt --suite head/jest-results.json --i4 "$I4"             --head-commit "$HEAD_SHA" --out reports/subsume
+          code=$?
+          set -e
+          # 0 PASS, 1 FAIL, 2 INCOMPLETE: only FAIL blocks — an INCOMPLETE verdict is printed, never hidden
+          if [ "$code" = "1" ]; then exit 1; fi
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        if: always()
+        with:
+          name: invariants
+          path: reports/subsume/invariant-report.json
+          if-no-files-found: warn
+          retention-days: 30
