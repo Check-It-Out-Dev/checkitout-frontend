@@ -17,3 +17,7 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 Object.defineProperty(window, 'CSS', { value: null });
+
+// Per-test coverage probes for the subsumption analysis. Silent unless jest runs with --coverage;
+// see tools/subsume/jest-probes.ts.
+import './tools/subsume/jest-probes';
