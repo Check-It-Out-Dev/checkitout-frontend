@@ -31,7 +31,8 @@ describe('SocialPlatformConfigService', () => {
     expect(params.get('state')).toMatch(/^[0-9a-f]{64}$/);
   });
 
-  it('persists state in a cookie that validateOAuthState() then accepts', () => {
+  // subsumed-by: social-platform-config.service.spec.ts :: SocialPlatformConfigService clears the state cookie after a single validation attempt (round 1)
+  subsumed(it)('persists state in a cookie that validateOAuthState() then accepts', () => {
     const url = svc.getOAuthUrl('instagram') as string;
     const issuedState = new URL(url).searchParams.get('state') as string;
     expect(svc.validateOAuthState(issuedState)).toBe(true);
@@ -55,7 +56,8 @@ describe('SocialPlatformConfigService', () => {
     expect(svc.validateOAuthState(issuedState)).toBe(false);
   });
 
-  it('clearOAuthState() removes the cookie', () => {
+  // subsumed-by: social-platform-config.service.spec.ts :: SocialPlatformConfigService clears the state cookie after a single validation attempt (round 1)
+  subsumed(it)('clearOAuthState() removes the cookie', () => {
     svc.getOAuthUrl('instagram');
     svc.clearOAuthState();
     // No state stored → any subsequent validate returns false.

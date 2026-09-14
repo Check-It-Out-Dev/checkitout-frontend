@@ -33,20 +33,24 @@ describe('CascadeDeleteApiService', () => {
     expect(result?.confirmationCode).toBe('ABC123');
   });
 
-  it('forceDeletePartnership() echoes code + expected count in the confirmation body — the BE re-verifies both', () => {
-    api.forceDeletePartnershipOpportunity.mockReturnValue(of({ success: true }));
+  // subsumed-by: cascade-delete.service.spec.ts :: CascadeDeleteApiService forceDeletePartnership() sends undefined reason when the admin gives none (round 1)
+  subsumed(it)(
+    'forceDeletePartnership() echoes code + expected count in the confirmation body — the BE re-verifies both',
+    () => {
+      api.forceDeletePartnershipOpportunity.mockReturnValue(of({ success: true }));
 
-    service.forceDeletePartnership(501, 'ABC123', 7, 'duplikat kampanii').subscribe();
+      service.forceDeletePartnership(501, 'ABC123', 7, 'duplikat kampanii').subscribe();
 
-    expect(api.forceDeletePartnershipOpportunity).toHaveBeenCalledWith({
-      poId: 501,
-      cascadeDeleteConfirmationRequest: {
-        confirmationCode: 'ABC123',
-        expectedEntityCount: 7,
-        reason: 'duplikat kampanii',
-      },
-    });
-  });
+      expect(api.forceDeletePartnershipOpportunity).toHaveBeenCalledWith({
+        poId: 501,
+        cascadeDeleteConfirmationRequest: {
+          confirmationCode: 'ABC123',
+          expectedEntityCount: 7,
+          reason: 'duplikat kampanii',
+        },
+      });
+    },
+  );
 
   it('forceDeletePartnership() sends undefined reason when the admin gives none', () => {
     api.forceDeletePartnershipOpportunity.mockReturnValue(of({ success: true }));

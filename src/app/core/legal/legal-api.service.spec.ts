@@ -56,37 +56,41 @@ describe('LegalApiService', () => {
     ]);
   });
 
-  it('forwards prepareConsentCookie payload + the BE-correct documentType string', async () => {
-    const { service, api } = setup();
-    const proof: ConsentProofDtoIn = {
-      timestamp: 1700000000000,
-      eventTrusted: true,
-      checkboxId: 'tos-checkbox',
-      documentHash: 'hash-abc',
-    } as ConsentProofDtoIn;
-
-    await lastValueFrom(
-      service.prepareConsentCookie({
-        documentType: LegalDocumentType.TERMS_OF_SERVICE,
-        version: 3,
+  // subsumed-by: legal-api.service.spec.ts :: LegalApiService forwards COOKIE_POLICY (no S — matches BE LegalDocumentType enum) (round 1)
+  subsumed(it)(
+    'forwards prepareConsentCookie payload + the BE-correct documentType string',
+    async () => {
+      const { service, api } = setup();
+      const proof: ConsentProofDtoIn = {
+        timestamp: 1700000000000,
+        eventTrusted: true,
+        checkboxId: 'tos-checkbox',
         documentHash: 'hash-abc',
-        proof,
-      }),
-    );
+      } as ConsentProofDtoIn;
 
-    expect(api.prepareCalls).toHaveLength(1);
-    expect(api.prepareCalls[0]).toEqual({
-      consentPrepareRequest: {
-        // Critical: BE accepts these literal strings (LegalDocumentType.valueOf
-        // on the server). Don't conflate with the buggy
-        // ConsentPrepareRequestDocumentTypeEnum which has stale values.
-        documentType: 'TERMS_OF_SERVICE',
-        version: 3,
-        documentHash: 'hash-abc',
-        proof,
-      },
-    });
-  });
+      await lastValueFrom(
+        service.prepareConsentCookie({
+          documentType: LegalDocumentType.TERMS_OF_SERVICE,
+          version: 3,
+          documentHash: 'hash-abc',
+          proof,
+        }),
+      );
+
+      expect(api.prepareCalls).toHaveLength(1);
+      expect(api.prepareCalls[0]).toEqual({
+        consentPrepareRequest: {
+          // Critical: BE accepts these literal strings (LegalDocumentType.valueOf
+          // on the server). Don't conflate with the buggy
+          // ConsentPrepareRequestDocumentTypeEnum which has stale values.
+          documentType: 'TERMS_OF_SERVICE',
+          version: 3,
+          documentHash: 'hash-abc',
+          proof,
+        },
+      });
+    },
+  );
 
   it('forwards COOKIE_POLICY (no S — matches BE LegalDocumentType enum)', async () => {
     const { service, api } = setup();

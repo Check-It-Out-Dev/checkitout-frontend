@@ -21,7 +21,8 @@ describe('LocationRedirectService', () => {
     replaceFn = jest.fn();
   });
 
-  it('assign() delegates to window.location.assign with the given URL', () => {
+  // subsumed-by: location-redirect.service.spec.ts :: LocationRedirectService preserves the exact URL string (no normalisation) (round 1)
+  subsumed(it)('assign() delegates to window.location.assign with the given URL', () => {
     const service = make({ location: { assign: assignFn, replace: replaceFn } });
     service.assign('https://example.com/oauth/start');
 

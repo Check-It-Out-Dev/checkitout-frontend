@@ -38,7 +38,8 @@ describe('PreferencesApiService', () => {
     expect(received).toBe(prefs);
   });
 
-  it('patchMine(dto) sends the dto as the BE requestBody map', () => {
+  // subsumed-by: preferences.service.spec.ts :: PreferencesApiService patchMine() passes the dto by reference — no clone or normalisation (round 1)
+  subsumed(it)('patchMine(dto) sends the dto as the BE requestBody map', () => {
     const dto = {
       language: 'en',
       emailNotificationsEnabled: false,

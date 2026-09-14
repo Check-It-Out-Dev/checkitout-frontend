@@ -29,7 +29,8 @@ describe('stepUpInterceptor', () => {
     httpMock.verify();
   });
 
-  it('passes the request through unchanged when STEP_UP_TOKEN is unset', () => {
+  // subsumed-by: step-up.interceptor.spec.ts :: stepUpInterceptor does not leak the token across subsequent requests (round 1)
+  subsumed(it)('passes the request through unchanged when STEP_UP_TOKEN is unset', () => {
     http.get('/api/some-endpoint').subscribe();
 
     const req = httpMock.expectOne('/api/some-endpoint');
@@ -37,7 +38,8 @@ describe('stepUpInterceptor', () => {
     req.flush({});
   });
 
-  it('adds X-Step-Up-Token header when a token is set on the request context', () => {
+  // subsumed-by: step-up.interceptor.spec.ts :: stepUpInterceptor does not leak the token across subsequent requests (round 1)
+  subsumed(it)('adds X-Step-Up-Token header when a token is set on the request context', () => {
     const ctx = withStepUpToken('totp-12345');
     http.patch('/api/users/email', { email: 'new@example.com' }, { context: ctx }).subscribe();
 

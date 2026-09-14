@@ -55,9 +55,7 @@ function runGuardSync(
   guard: typeof authGuard | typeof noAuthGuard,
 ): boolean | UrlTree | Observable<true | UrlTree> {
   return TestBed.runInInjectionContext(() => guard(FAKE_ROUTE, FAKE_STATE)) as
-    | boolean
-    | UrlTree
-    | Observable<true | UrlTree>;
+    boolean | UrlTree | Observable<true | UrlTree>;
 }
 
 function configureWith(session: FakeSession) {
@@ -127,7 +125,8 @@ describe('adminGuard', () => {
     userType: { value: 'ADMIN', label: 'Administrator' },
   } as unknown as UserDtoOut;
 
-  it('allows an ADMIN synchronously when the session is already probed', () => {
+  // subsumed-by: auth.guards.spec.ts :: adminGuard probes once on a cold session and decides on the answer, auth.guards.spec.ts :: adminGuard sends a signed-in non-admin back to the dashboard (round 1)
+  subsumed(it)('allows an ADMIN synchronously when the session is already probed', () => {
     const session = new FakeSession();
     session.setUser(ADMIN_USER);
     configureWith(session);
@@ -163,7 +162,8 @@ describe('adminGuard', () => {
 });
 
 describe('noAuthGuard', () => {
-  it('allows the route synchronously when SessionState has not yet probed', () => {
+  // subsumed-by: auth.guards.spec.ts :: noAuthGuard allows the route synchronously when probed + unauthenticated (round 1)
+  subsumed(it)('allows the route synchronously when SessionState has not yet probed', () => {
     // Default fresh session: probed=false, user=null. Public routes must
     // render immediately for unauthenticated visitors — no async probe.
     const session = new FakeSession();

@@ -84,7 +84,8 @@ describe('SandboxDirectorService', () => {
     expect(service.step()).toBeNull();
   });
 
-  it('start() signs a signed-out persona in for an app scenario via a full boot', () => {
+  // subsumed-by: sandbox-director.service.spec.ts :: SandboxDirectorService start() boots when the page remembers a different session than the store, demo-fixtures.spec.ts :: demo fixtures sign-up takes the role from the form and signs in; sign-out signs out, sandbox-director.service.spec.ts :: SandboxDirectorService a step done by hand advances the tour without touching the guide, sandbox-director.service.spec.ts :: SandboxDirectorService exit() from a signed-out tour is a plain hop, and carries its destination, sandbox-director.service.spec.ts :: SandboxDirectorService start() keeps the persona it is about to set (round 1)
+  subsumed(it)('start() signs a signed-out persona in for an app scenario via a full boot', () => {
     localStorage.removeItem('demoSession');
     const reload = jest
       .spyOn(service as unknown as { reload(url: string): void }, 'reload')
@@ -98,18 +99,22 @@ describe('SandboxDirectorService', () => {
     expect(router.navigateByUrl).not.toHaveBeenCalled();
   });
 
-  it('start() signs the persona OUT for the admin-2fa scenario (it plays on /auth/sign-in)', () => {
-    localStorage.setItem('demoRole', 'ADMIN');
-    const reload = jest
-      .spyOn(service as unknown as { reload(url: string): void }, 'reload')
-      .mockImplementation(() => undefined);
+  // subsumed-by: sandbox-director.service.spec.ts :: SandboxDirectorService reset() primes the persona for the start route — a replay from a signed-in recap boots signed out, demo-fixtures.spec.ts :: demo fixtures signs the persona in on /auth/firebase/login — the e-mail picks the persona, sandbox-director.service.spec.ts :: SandboxDirectorService start() boots when the page remembers a different session than the store (round 1)
+  subsumed(it)(
+    'start() signs the persona OUT for the admin-2fa scenario (it plays on /auth/sign-in)',
+    () => {
+      localStorage.setItem('demoRole', 'ADMIN');
+      const reload = jest
+        .spyOn(service as unknown as { reload(url: string): void }, 'reload')
+        .mockImplementation(() => undefined);
 
-    service.start('admin-2fa');
+      service.start('admin-2fa');
 
-    expect(localStorage.getItem('demoSession')).toBe('0');
-    expect(localStorage.getItem('demoRole')).toBe('ADMIN');
-    expect(reload).toHaveBeenCalledWith('/auth/sign-in');
-  });
+      expect(localStorage.getItem('demoSession')).toBe('0');
+      expect(localStorage.getItem('demoRole')).toBe('ADMIN');
+      expect(reload).toHaveBeenCalledWith('/auth/sign-in');
+    },
+  );
 
   it('start() boots when the page remembers a different session than the store', () => {
     // The store says the company persona is signed in, but this page still
@@ -133,7 +138,8 @@ describe('SandboxDirectorService', () => {
     expect(router.navigateByUrl).toHaveBeenCalledWith(companyScenario.steps[0].route);
   });
 
-  it('start() resets per-tour story state (plan, step-up code, TOTP attempt)', () => {
+  // subsumed-by: sandbox-director.service.spec.ts :: SandboxDirectorService reset() clears the same artifacts — a reload does not empty sessionStorage, sandbox-director.service.spec.ts :: SandboxDirectorService start() sweeps demo leftovers out of localStorage too, and leaves the visitor alone (round 1)
+  subsumed(it)('start() resets per-tour story state (plan, step-up code, TOTP attempt)', () => {
     sessionStorage.setItem('demoPlan', 'ENTERPRISE');
     sessionStorage.setItem('demoStepUpCode', '123456');
     sessionStorage.setItem('demoTotp', JSON.stringify({ attempt: 2, code: '408952' }));
@@ -195,7 +201,8 @@ describe('SandboxDirectorService', () => {
     expect(sessionStorage.getItem('demoTotp')).toBeNull();
   });
 
-  it('advance() walks every step and lands on the recap (done)', () => {
+  // subsumed-by: sandbox-director.service.spec.ts :: SandboxDirectorService next() — "Dalej" performs the step for the visitor advances a step without a recipe straight away, sandbox-director.service.spec.ts :: SandboxDirectorService is idle until started, sandbox-director.service.spec.ts :: SandboxDirectorService a full load on the landing page with a stored tour drops it at construction (round 1)
+  subsumed(it)('advance() walks every step and lands on the recap (done)', () => {
     service.start(companyScenario.key);
     for (let i = 0; i < companyScenario.steps.length; i++) service.advance();
 
@@ -263,14 +270,18 @@ describe('SandboxDirectorService', () => {
     expect(service.state()).toMatchObject({ key: 'admin-2fa', step: 0, done: false });
   });
 
-  it('notify() advances the current step on a matching id — manual steps included', () => {
-    service.start(companyScenario.key);
-    const before = service.state()?.step ?? 0;
-    // A simulator's button IS the action a manual step describes: the click
-    // must move the tour on, not leave the reader to press "Dalej" as well.
-    service.notify(companyScenario.steps[0].id);
-    expect(service.state()?.step).toBe(before + 1);
-  });
+  // subsumed-by: sandbox-director.service.spec.ts :: SandboxDirectorService next() — "Dalej" performs the step for the visitor does not advance twice when the recipe itself made the simulator notify (round 1)
+  subsumed(it)(
+    'notify() advances the current step on a matching id — manual steps included',
+    () => {
+      service.start(companyScenario.key);
+      const before = service.state()?.step ?? 0;
+      // A simulator's button IS the action a manual step describes: the click
+      // must move the tour on, not leave the reader to press "Dalej" as well.
+      service.notify(companyScenario.steps[0].id);
+      expect(service.state()?.step).toBe(before + 1);
+    },
+  );
 
   it('notify() ignores an id that is not the current step', () => {
     service.start(companyScenario.key);
@@ -295,7 +306,8 @@ describe('SandboxDirectorService', () => {
       expect(service.state()?.done).toBe(true);
     });
 
-    it('runs the recipe, then advances', async () => {
+    // subsumed-by: sandbox-director.service.spec.ts :: SandboxDirectorService next() — "Dalej" performs the step for the visitor ignores a second press while a recipe is running, sandbox-director.service.spec.ts :: SandboxDirectorService next() — "Dalej" performs the step for the visitor a second attempt on a stalled step moves on regardless (round 1)
+    subsumed(it)('runs the recipe, then advances', async () => {
       service.start(companyScenario.key);
       const first = service.step()!;
       expect(first.perform?.length).toBeGreaterThan(0);
@@ -330,7 +342,8 @@ describe('SandboxDirectorService', () => {
      * `ksef-sim-done` on the live demo and pressing once completed the whole
      * tour, narrating a KSeF registration that never took place.
      */
-    it('a sim step whose simulator never fires stays put and says so', async () => {
+    // subsumed-by: sandbox-director.service.spec.ts :: SandboxDirectorService next() — "Dalej" performs the step for the visitor a second press on a stalled sim step moves on regardless (round 1)
+    subsumed(it)('a sim step whose simulator never fires stays put and says so', async () => {
       service.start('nip-to-ksef');
       service.advance();
       service.advance(); // → verify-mail (sim step, no `done`)
@@ -358,7 +371,8 @@ describe('SandboxDirectorService', () => {
       expect(service.stalled()).toBeNull();
     });
 
-    it('the checkout step whose recipe did nothing holds and says why', async () => {
+    // subsumed-by: sandbox-director.service.spec.ts :: SandboxDirectorService next() — "Dalej" performs the step for the visitor a second attempt on a stalled step moves on regardless, sandbox-director.service.spec.ts :: SandboxDirectorService next() — "Dalej" performs the step for the visitor advances a step without a recipe straight away (round 1)
+    subsumed(it)('the checkout step whose recipe did nothing holds and says why', async () => {
       service.start('nip-to-ksef');
       const def = scenarioByKey('nip-to-ksef')!;
       const at = def.steps.findIndex((st) => st.id === 'upgrade-confirm');
@@ -378,7 +392,8 @@ describe('SandboxDirectorService', () => {
      * reporting success. Only the purchase is missing, and the stored plan is
      * what says so.
      */
-    it('the checkout step whose recipe ran but changed nothing holds too', async () => {
+    // subsumed-by: sandbox-director.service.spec.ts :: SandboxDirectorService next() — "Dalej" performs the step for the visitor a second attempt on a stalled step moves on regardless, sandbox-director.service.spec.ts :: SandboxDirectorService next() — "Dalej" performs the step for the visitor advances a step without a recipe straight away (round 1)
+    subsumed(it)('the checkout step whose recipe ran but changed nothing holds too', async () => {
       service.start('nip-to-ksef');
       const def = scenarioByKey('nip-to-ksef')!;
       const at = def.steps.findIndex((st) => st.id === 'upgrade-confirm');
@@ -392,7 +407,8 @@ describe('SandboxDirectorService', () => {
       expect(service.stalled()).toBe('upgrade-confirm');
     });
 
-    it('a second press on the stalled checkout step goes through', async () => {
+    // subsumed-by: sandbox-director.service.spec.ts :: SandboxDirectorService next() — "Dalej" performs the step for the visitor a second attempt on a stalled step moves on regardless, sandbox-director.service.spec.ts :: SandboxDirectorService next() — "Dalej" performs the step for the visitor advances a step without a recipe straight away (round 1)
+    subsumed(it)('a second press on the stalled checkout step goes through', async () => {
       service.start('nip-to-ksef');
       const def = scenarioByKey('nip-to-ksef')!;
       const at = def.steps.findIndex((st) => st.id === 'upgrade-confirm');
@@ -408,7 +424,8 @@ describe('SandboxDirectorService', () => {
 
     /** The reload path itself: whoever bought the tier, landing back with the
      *  plan stored means that beat is over. */
-    it('the checkout step whose recipe worked stays advanced', async () => {
+    // subsumed-by: sandbox-director.service.spec.ts :: SandboxDirectorService next() — "Dalej" performs the step for the visitor ignores a second press while a recipe is running, sandbox-director.service.spec.ts :: SandboxDirectorService next() — "Dalej" performs the step for the visitor advances a step without a recipe straight away (round 1)
+    subsumed(it)('the checkout step whose recipe worked stays advanced', async () => {
       service.start('nip-to-ksef');
       const def = scenarioByKey('nip-to-ksef')!;
       const at = def.steps.findIndex((st) => st.id === 'upgrade-confirm');
@@ -431,7 +448,8 @@ describe('SandboxDirectorService', () => {
      * carried it. Watched from before the recipe, it sees the button, then sees
      * it go.
      */
-    it('confirms a step whose own recipe removes the element it waits for', async () => {
+    // subsumed-by: sandbox-director.service.spec.ts :: SandboxDirectorService next() — "Dalej" performs the step for the visitor ignores a second press while a recipe is running, sandbox-director.service.spec.ts :: SandboxDirectorService next() — "Dalej" performs the step for the visitor advances a step without a recipe straight away (round 1)
+    subsumed(it)('confirms a step whose own recipe removes the element it waits for', async () => {
       service.start('company-campaign');
       const def = scenarioByKey('company-campaign')!;
       const at = def.steps.findIndex((st) => st.done?.disappears);
@@ -469,24 +487,29 @@ describe('SandboxDirectorService', () => {
      * away, so asked bluntly the answer is yes before anything has happened.
      * The watcher already gated that; the pill press has to use the same gate.
      */
-    it('the pill press gates a done condition the same way the watcher does', async () => {
-      service.start('admin-ops');
-      const def = scenarioByKey('admin-ops')!;
-      // by shape, not by counting: the tour gained a step when the cascade
-      // preview was split off, and a hard-coded index would have quietly
-      // pointed at a different beat
-      const at = def.steps.findIndex((st) => st.done?.disappears);
-      expect(at).toBeGreaterThan(0);
-      for (let i = 0; i < at; i++) service.advance();
-      const step = service.step()!;
-      expect(step.done?.disappears).toBeDefined();
+    // subsumed-by: sandbox-director.service.spec.ts :: SandboxDirectorService next() — "Dalej" performs the step for the visitor ignores a second press while a recipe is running, sandbox-director.service.spec.ts :: SandboxDirectorService reset() clears the same artifacts — a reload does not empty sessionStorage, sandbox-director.service.spec.ts :: SandboxDirectorService next() — "Dalej" performs the step for the visitor advances a step without a recipe straight away (round 1)
+    subsumed(it)(
+      'the pill press gates a done condition the same way the watcher does',
+      async () => {
+        service.start('admin-ops');
+        const def = scenarioByKey('admin-ops')!;
+        // by shape, not by counting: the tour gained a step when the cascade
+        // preview was split off, and a hard-coded index would have quietly
+        // pointed at a different beat
+        const at = def.steps.findIndex((st) => st.done?.disappears);
+        expect(at).toBeGreaterThan(0);
+        for (let i = 0; i < at; i++) service.advance();
+        const step = service.step()!;
+        expect(step.done?.disappears).toBeDefined();
 
-      await service.next();
+        await service.next();
 
-      expect(runner.doneWatcher).toHaveBeenCalledWith(step.done);
-    });
+        expect(runner.doneWatcher).toHaveBeenCalledWith(step.done);
+      },
+    );
 
-    it('waits for the app to confirm the step before advancing', async () => {
+    // subsumed-by: sandbox-director.service.spec.ts :: SandboxDirectorService next() — "Dalej" performs the step for the visitor ignores a second press while a recipe is running (round 1)
+    subsumed(it)('waits for the app to confirm the step before advancing', async () => {
       service.start('nip-to-ksef'); // nip-lookup: done = the confirm card appears
       const step = service.step()!;
       expect(step.done).toBeDefined();
@@ -529,7 +552,8 @@ describe('SandboxDirectorService', () => {
       expect(service.awaiting()).toBe(false);
     });
 
-    it('a step the application never confirms stays put and says so', async () => {
+    // subsumed-by: sandbox-director.service.spec.ts :: SandboxDirectorService next() — "Dalej" performs the step for the visitor a second attempt on a stalled step moves on regardless (round 1)
+    subsumed(it)('a step the application never confirms stays put and says so', async () => {
       service.start('nip-to-ksef'); // nip-lookup declares a done condition
       const step = service.step()!;
       runner.isDone.mockReturnValue(false);
@@ -607,7 +631,8 @@ describe('SandboxDirectorService', () => {
     expect(again).toHaveBeenCalledTimes(1);
   });
 
-  it('exit() closes any dialog the tour left open', () => {
+  // subsumed-by: sandbox-director.service.spec.ts :: SandboxDirectorService exit() clears state, signs the persona out and boots to the hub when the tour had signed it in, sandbox-director.service.spec.ts :: SandboxDirectorService reset() clears the same artifacts — a reload does not empty sessionStorage, sandbox-director.service.spec.ts :: SandboxDirectorService a tour ends when the visitor leaves the app area landing on the marketing page drops the tour and closes dialogs (round 1)
+  subsumed(it)('exit() closes any dialog the tour left open', () => {
     service.start(companyScenario.key);
     service.exit();
     expect(dialog.closeAll).toHaveBeenCalledTimes(1);
@@ -659,7 +684,8 @@ describe('SandboxDirectorService', () => {
     expect(sessionStorage.getItem('demoSandbox')).toBeNull();
   });
 
-  it('a full load on an app route keeps the stored tour', () => {
+  // subsumed-by: sandbox-director.service.spec.ts :: SandboxDirectorService a full load on the landing page with a stored tour drops it at construction, sandbox-director.service.spec.ts :: SandboxDirectorService a tour ends when the visitor leaves the app area the hub without a start link ends it; a start link and app routes keep it (round 1)
+  subsumed(it)('a full load on an app route keeps the stored tour', () => {
     sessionStorage.setItem(
       'demoSandbox',
       JSON.stringify({ key: companyScenario.key, step: 1, done: false }),

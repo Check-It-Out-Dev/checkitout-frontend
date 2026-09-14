@@ -28,7 +28,8 @@ describe('CompanyRegistryService', () => {
     expect(received).toBe(response);
   });
 
-  it('passes the NIP verbatim — no trimming / normalisation', () => {
+  // subsumed-by: registry.service.spec.ts :: CompanyRegistryService lookup(nip) wraps the value in the nipLookupRequest envelope (round 1)
+  subsumed(it)('passes the NIP verbatim — no trimming / normalisation', () => {
     // BE owns NIP validation; client-side trimming would mask a real
     // "user typed whitespace" UX bug. Other registry tests verify the
     // contract is "send what you got".
