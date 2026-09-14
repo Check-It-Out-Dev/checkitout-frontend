@@ -55,6 +55,7 @@ const SPEC = `describe('X', () => {
   });
   it('does z', () => {});
   it.skip('does w', () => {});
+  it.each([['a', 1]])('%s/%#: is a row', () => {});
 });
 `;
 
@@ -130,6 +131,11 @@ describe('apply: Jest', () => {
     expect(wrapJestTest(SPEC, 'X Y does q', 'x')).toMatchObject({
       applied: false,
       reason: 'generated',
+    });
+    // a row of `it.each(table)('%s/%#: …')` — Jest's parameterised test, one unit until 1b
+    expect(wrapJestTest(SPEC, 'X a/0: is a row', 'x')).toMatchObject({
+      applied: false,
+      reason: 'parameterized',
     });
   });
 });

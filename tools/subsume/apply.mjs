@@ -134,9 +134,44 @@ export function wrapJestTest(source, fullName, marker) {
     new RegExp(
       `^${[...stack.map((s) => (s === null ? '.*' : esc(s))), patternOf(arg)].join(' ')}$`,
     ).test(fullName);
+  // `it.each(table)('%s/%#: …', fn)` — Jest's parameterised test: the callee is itself a call, the
+  // name a format (`%s` `%d` `%#` `$key`…); its runs are one unit until instance 1b, as a JUnit
+  // [test-template-invocation] is, and a match is declined as `parameterized`
+  const eachOf = (node) => {
+    const e = node.expression;
+    if (ts.isCallExpression(e)) {
+      const m = e.expression.getText(sf).match(/^(describe|it|test)\.(?:only\.|skip\.)?each$/);
+      if (m) return m[1];
+    }
+    if (ts.isTaggedTemplateExpression(e)) {
+      const m = e.tag.getText(sf).match(/^(describe|it|test)\.(?:only\.|skip\.)?each$/);
+      if (m) return m[1];
+    }
+    return null;
+  };
+  const formatPattern = (arg) => {
+    const text = nameOf(arg);
+    if (text === null) return '.*';
+    return text
+      .split(/%[sdifjo#%]|\$[A-Za-z_][\w.]*/)
+      .map(esc)
+      .join('.*');
+  };
   const visit = (node, stack) => {
     if (hit) return;
     if (ts.isCallExpression(node)) {
+      const each = eachOf(node);
+      if (each === 'describe') {
+        for (const arg of node.arguments) ts.forEachChild(arg, (c) => visit(c, [...stack, null]));
+        return;
+      }
+      if (each) {
+        const re = new RegExp(
+          `^${[...stack.map((s) => (s === null ? '.*' : esc(s))), formatPattern(node.arguments[0])].join(' ')}$`,
+        );
+        if (reason === 'not-found' && re.test(fullName)) reason = 'parameterized';
+        return;
+      }
       const callee = node.expression.getText(sf);
       const name = nameOf(node.arguments[0]);
       if (/^(describe|fdescribe|xdescribe)$/.test(callee)) {
