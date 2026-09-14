@@ -108,6 +108,7 @@ export function checkInvariants({
   baseCommit = null,
   headCommit = null,
   unstable = new Set(),
+  witnessed = 0,
 }) {
   const incomplete = [...(base?.missing ?? []), ...(head?.missing ?? [])];
   if (!suite) incomplete.push('suite result');
@@ -173,7 +174,7 @@ export function checkInvariants({
     status: regressions.length ? 'FAIL' : 'PASS',
     unchangedFiles: files.size,
     checked: { files: files.size, classes, methods },
-    unstable: { probes: unstable.size, units: [...unstableUnits].sort() },
+    unstable: { probes: unstable.size, witnessed, units: [...unstableUnits].sort() },
     regressions,
   };
 
@@ -304,6 +305,32 @@ if (isMain) {
   const base2 = base2Dir ? loadArtefacts(repo, base2Dir, { kills: false }) : null;
   const unstable =
     base?.matrix && base2?.matrix ? unstableProbes(base.matrix, base2.matrix) : new Set();
+  // Every other pair of armed runs made on this machine is a witness to drift: a class whose
+  // probes flipped between two identical runs is time- or order-dependent whichever commit the
+  // pair was made at, and is judged by nothing. Two base runs see only the flips that happened
+  // to occur in them — the backend's round 1 lost a branch of InMemoryGeoLocationCache that the
+  // proposal run's pair had already seen flip. A witness never adds coverage; the report counts
+  // what it set aside. `--witness a --witness b` names one pair; repeat the flag for more.
+  const args = (name) => process.argv.flatMap((v, i) => (v === `--${name}` ? [process.argv[i + 1]] : []));
+  const witnessDirs = args('witness');
+  let witnessed = 0;
+  for (let i = 0; i + 1 < witnessDirs.length; i += 2) {
+    let a = null;
+    let b = null;
+    try {
+      a = loadArtefacts(repo, witnessDirs[i], { kills: false });
+      b = loadArtefacts(repo, witnessDirs[i + 1], { kills: false });
+    } catch {
+      a = null; // an absent witness is no witness
+    }
+    if (!a?.matrix || !b?.matrix) continue;
+    for (const p of unstableProbes(a.matrix, b.matrix)) {
+      if (!unstable.has(p)) {
+        unstable.add(p);
+        witnessed++;
+      }
+    }
+  }
   const report = checkInvariants({
     repo,
     base,
@@ -314,6 +341,7 @@ if (isMain) {
     baseCommit: arg('base-commit', null),
     headCommit: arg('head-commit', null),
     unstable,
+    witnessed,
   });
   mkdirSync(out, { recursive: true });
   writeFileSync(join(out, 'invariant-report.json'), JSON.stringify(report, null, 1));

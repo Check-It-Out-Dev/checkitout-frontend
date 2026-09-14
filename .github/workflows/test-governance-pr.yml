@@ -77,6 +77,16 @@ jobs:
             || { echo "::error::probes2.jsonl missing on Pages for run $RUN_ID"; exit 2; }
           gunzip -f ../base2/probes.jsonl.gz && cp maps.json ../base2/
           ls -la . ../base2
+          # every other pair of armed runs on this machine is a drift witness: the latest proposal
+          # run's pair joins the round's own, so a file seen to flip in either is judged by nothing
+          mkdir -p ../latest ../latest2 && cd ../latest
+          if curl -fsSL "$PAGES/subsume/latest/probes.jsonl.gz" -o probes.jsonl.gz \
+             && curl -fsSL "$PAGES/subsume/latest/maps.json.gz" -o maps.json.gz \
+             && curl -fsSL "$PAGES/subsume/latest/probes2.jsonl.gz" -o ../latest2/probes.jsonl.gz; then
+            gunzip -f probes.jsonl.gz maps.json.gz ../latest2/probes.jsonl.gz && cp maps.json ../latest2/
+          else
+            echo "::warning::no latest pair on Pages — the round's own base pair is the only witness"
+          fi
 
       - name: What this pull request changed
         run: git diff --name-only "origin/$BASE_REF...HEAD" > changed.txt && wc -l < changed.txt
@@ -120,6 +130,7 @@ jobs:
           BASE_COMMIT: ${{ steps.round.outputs.baseCommit }}
         run: |
           node tools/subsume/invariant.mjs --repo frontend --base before --base2 before2 --head reports/subsume \
+            --witness base --witness base2 --witness latest --witness latest2 \
             --changed changed.txt --suite jest-results.json --i4 "$I4" \
             --base-commit "$BASE_COMMIT" --head-commit "$HEAD_SHA" --out reports/subsume
 
