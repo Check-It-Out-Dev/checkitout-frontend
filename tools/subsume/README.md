@@ -251,9 +251,11 @@ a script can parse it.
 ### `diagram.md` — Mermaid, one level of abstraction
 
 One `subgraph` per class that lost a test; inside it, demoted tests (dashed) point at the kept tests
-that carry them; the edge label says what is carried. At most eight subgraphs in a comment — the
-rest go in a table under it. Generated from `subsume-report.json` by `diagram.mjs`, never written
-by hand.
+that carry them, left to right; the edge label says what is carried. A test inside its own class
+box is named by its method or its Jest name, a carrier from another class by class and method,
+every label cut at 48 characters (the full ids are in the report). At most six subgraphs of four
+rows in a comment — the rest go in a table under it. Generated from `subsume-report.json` by
+`diagram.mjs`, never written by hand; verified rendered on GitHub on 2026-09-14.
 
 ```mermaid
 flowchart LR
