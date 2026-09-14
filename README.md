@@ -542,7 +542,9 @@ random-order run found two specs that passed only in the order they were written
 test was demoted. The plain-words guide, with the loop drawn and a round explained step by step, is
 [docs/testing/ai-in-the-loop.md](docs/testing/ai-in-the-loop.md); the mechanics are under
 [Test governance](#test-governance) above; the decision is
-[docs/ci/ADR-test-subsumption.md](docs/ci/ADR-test-subsumption.md).
+[docs/ci/ADR-test-subsumption.md](docs/ci/ADR-test-subsumption.md). If mutants, kills and set cover
+are new words, [docs/testing/mutation-primer.md](docs/testing/mutation-primer.md) starts from a house
+and its guards and ends at our metrics.
 
 ---
 
