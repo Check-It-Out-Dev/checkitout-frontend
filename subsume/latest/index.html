@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Test governance · frontend · run local-2026-09-14b</title>
+<style>
+  :root { color-scheme: light dark; --ink: #1c211e; --ink-2: #4b534e; --ink-3: #7b847e; --paper: #f4f5f2; --paper-2: #eaece6; --rule: #d3d8d1; --accent: #1f5f4a; }
+  @media (prefers-color-scheme: dark) { :root { --ink: #e5e8e2; --ink-2: #b4bcb5; --ink-3: #8a938c; --paper: #151917; --paper-2: #1d2320; --rule: #333b36; --accent: #7fc4a6; } }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.55 "Atkinson Hyperlegible", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; padding-block: 2rem 4rem; padding-inline: clamp(16px, 5vw, 48px); }
+  main { max-width: 76ch; margin: 0 auto; }
+  h1 { font: 600 1.9rem/1.2 Georgia, "Iowan Old Style", serif; margin: 0 0 0.4rem; text-wrap: balance; }
+  h2 { font: 600 1.25rem/1.25 Georgia, serif; margin: 2.2rem 0 0.6rem; padding-top: 0.8rem; border-top: 1px solid var(--rule); }
+  .eyebrow { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-3); font-weight: 700; margin: 0 0 0.4rem; }
+  .lede { color: var(--ink-2); margin: 0.4rem 0 1rem; }
+  table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+  th, td { text-align: left; padding: 0.45rem 0.6rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  thead th { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-3); }
+  tbody th { font-weight: 600; }
+  td.num { text-align: right; white-space: nowrap; }
+  td.note { color: var(--ink-3); font-size: 0.9rem; }
+  .wrap { overflow-x: auto; }
+  pre.mermaid { background: var(--paper-2); padding: 0.8rem; border-radius: 4px; overflow-x: auto; }
+  code { font-family: "JetBrains Mono", Consolas, monospace; font-size: 0.82em; background: var(--paper-2); padding: 0.05em 0.3em; border-radius: 3px; }
+  ul { padding-left: 1.2rem; } li { margin: 0.2rem 0; overflow-wrap: anywhere; }
+  .verdict { font-weight: 700; }
+  a { color: var(--accent); }
+  footer { margin-top: 3rem; color: var(--ink-3); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<main>
+  <p class="eyebrow">▮ Invariants — replay plane · no model · I1–I5</p>
+  <h1>Test governance · frontend · run local-2026-09-14b</h1>
+  <p class="lede">What the proposal run measured, what the pack would take this round, and who carries whom. Every number on this page is read from the run’s reports; the gzipped artefacts beside it are what the pull-request jobs consume. <a href="https://github.com/Check-It-Out-Dev/checkitout-frontend/pull/33">pull request #33</a>.</p>
+
+  <h2>The round’s ledger</h2><p class="verdict">Verdict: MERGEABLE</p>
+  <div class="wrap"><table><thead><tr><th>Measure</th><th>Before</th><th>After</th></tr></thead><tbody>
+  <tr><th scope="row">Tests in the tier</th><td class="num">1,306</td><td class="num">1,232</td></tr>
+  <tr><th scope="row">Tier seconds (per-test sum, same machine)</th><td class="num">78.9 s</td><td class="num">79.1 s</td></tr>
+  <tr><th scope="row">Mutation score</th><td class="num">28.13 %</td><td class="num">28.09 %</td></tr>
+  <tr><th scope="row">Kills lost to the round · to the machine</th><td class="num" colspan="2">0 · 3</td></tr>
+  </tbody></table></div>
+  <pre class="mermaid">flowchart LR
+  subgraph before[&quot;Before · d2b6069b&quot;]
+    direction TB
+    b0[&quot;Tests in the tier&lt;br/&gt;1,306&quot;]
+    b1[&quot;Tier seconds&lt;br/&gt;78.9 s&quot;]
+    b2[&quot;Coverage on unchanged code&lt;br/&gt;1,437 methods&quot;]
+    b3[&quot;Kills on unchanged code&lt;br/&gt;1,901 killed&quot;]
+    b4[&quot;Mutation score&lt;br/&gt;28.13 %&quot;]
+  end
+  subgraph after[&quot;After · round 1&quot;]
+    direction TB
+    a0[&quot;1,232&quot;]:::gain
+    a1[&quot;79.1 s&quot;]:::gain
+    a2[&quot;unchanged&quot;]:::kept
+    a3[&quot;1,898 killed&quot;]:::kept
+    a4[&quot;28.09 %&quot;]:::kept
+  end
+  b0 -- &quot;−74&quot; --&gt; a0
+  b1 -- &quot;0.3 %&quot; --&gt; a1
+  b2 -- &quot;=&quot; --&gt; a2
+  b3 -- &quot;=&quot; --&gt; a3
+  b4 -- &quot;LOWER&quot; --&gt; a4
+  classDef gain stroke-width:2px
+  classDef kept stroke-dasharray: 2 2</pre>
+
+  <h2>The proposal</h2>
+  <div class="wrap"><table><tbody><tr><th scope="row">Tests in the pull-request tier</th><td class="num">1,306</td><td class="note">the population the proposal judged</td></tr><tr><th scope="row">CONFIRMED · SUSPECTED</th><td class="num">133 · 300</td><td class="note">both instruments agree · coverage only, never acted on</td></tr><tr><th scope="row">Tier seconds, before → after the exact cover</th><td class="num">78.9 s → 78.3 s</td><td class="note">sum of the tests’ own seconds</td></tr><tr><th scope="row">Dominator mutation score</th><td class="num">0.0528 %</td><td class="note">killed dominators over dominators plus unkilled mutants — the de-inflated score</td></tr><tr><th scope="row">Redundancy share of tier time</th><td class="num">88.9 %</td><td class="note">each test against the rest; not what can leave together</td></tr><tr><th scope="row">Removable together</th><td class="num">133 tests · 0.6 s</td><td class="note">the confirmed cover’s complement</td></tr><tr><th scope="row">Cover</th><td class="num">mip · optimal · gap 0 %</td><td class="note">the cheapest set that keeps every probe and kill, with its certificate</td></tr></tbody></table></div>
+
+  <h2>The pack, surest tier first</h2>
+  <div class="wrap"><table><thead><tr><th>Tier</th><th>Taken</th><th>Available</th><th>Seconds</th></tr></thead><tbody><tr><th scope="row">A</th><td class="num">36</td><td class="num">41</td><td class="num">0.2 s</td></tr><tr><th scope="row">B</th><td class="num">3</td><td class="num">3</td><td class="num">0 s</td></tr><tr><th scope="row">C</th><td class="num">57</td><td class="num">72</td><td class="num">0.4 s</td></tr><tr><th scope="row">D</th><td class="num">0</td><td class="num">1</td><td class="num">0 s</td></tr></tbody></table></div>
+  <p class="lede">A: an exact duplicate of a kept test in the same class · B: two or more carriers · C: one carrier · D: kills nothing, never taken while A–C are non-empty. Determinism measured. 1 more round(s) to saturation at this budget.</p>
+
+  <h2>Who carries whom</h2><pre class="mermaid">flowchart LR
+  subgraph n0[&quot;guide-hint&quot;]
+    direction LR
+    n1[&quot;E-PROMISE — what the guide may promise about a…&quot;]:::demoted
+    n2[&quot;E-PROMISE — what the guide may promise about a…&quot;]
+    n1 -- &quot;26 probes · 7 kills&quot; --&gt; n2
+    n3[&quot;E-PROMISE — what the guide may promise about a…&quot;]:::demoted
+    n3 -- &quot;26 probes · 7 kills&quot; --&gt; n2
+    n4[&quot;E-PROMISE — what the guide may promise about a…&quot;]:::demoted
+    n4 -- &quot;26 probes · 7 kills&quot; --&gt; n2
+    n5[&quot;E-PROMISE — what the guide may promise about a…&quot;]:::demoted
+    n5 -- &quot;26 probes · 7 kills&quot; --&gt; n2
+    n6[&quot;… 35 more&quot;]:::demoted
+  end
+  subgraph n7[&quot;sandbox-director.service&quot;]
+    direction LR
+    n8[&quot;SandboxDirectorService a full load on an app ro…&quot;]:::demoted
+    n9[&quot;SandboxDirectorService a full load on the landi…&quot;]
+    n8 -- &quot;70 probes · 19 kills&quot; --&gt; n9
+    n10[&quot;SandboxDirectorService advance() walks every st…&quot;]:::demoted
+    n11[&quot;SandboxDirectorService next() — #quot;Dalej#quot; perform…&quot;]
+    n10 -- &quot;195 probes · 40 kills&quot; --&gt; n11
+    n12[&quot;SandboxDirectorService exit() closes any dialog…&quot;]:::demoted
+    n13[&quot;SandboxDirectorService exit() clears state, sig…&quot;]
+    n12 -- &quot;179 probes · 10 kills&quot; --&gt; n13
+    n14[&quot;SandboxDirectorService next() — #quot;Dalej#quot; perform…&quot;]:::demoted
+    n15[&quot;SandboxDirectorService next() — #quot;Dalej#quot; perform…&quot;]
+    n14 -- &quot;244 probes · 67 kills&quot; --&gt; n15
+    n16[&quot;… 13 more&quot;]:::demoted
+  end
+  subgraph n17[&quot;error.interceptor&quot;]
+    direction LR
+    n18[&quot;errorInterceptor on 401 from /auth/refresh-sess…&quot;]:::demoted
+    n19[&quot;errorInterceptor on 401 from /auth/firebase/log…&quot;]
+    n18 -- &quot;24 probes · 7 kills&quot; --&gt; n19
+    n20[&quot;errorInterceptor on 401 from /support/ticket/ac…&quot;]:::demoted
+    n20 -- &quot;24 probes · 10 kills&quot; --&gt; n19
+    n21[&quot;errorInterceptor on 401 from a /assets/ static…&quot;]:::demoted
+    n21 -- &quot;24 probes · 11 kills&quot; --&gt; n19
+    n22[&quot;errorInterceptor on 419 from /auth/refresh-sess…&quot;]:::demoted
+    n22 -- &quot;24 probes · 7 kills&quot; --&gt; n19
+    n23[&quot;… 4 more&quot;]:::demoted
+  end
+  subgraph n24[&quot;demo-fixtures&quot;]
+    direction LR
+    n25[&quot;demo fixtures answers /subscription/status with…&quot;]:::demoted
+    n26[&quot;demo fixtures plays the whole upgrade beat — co…&quot;]
+    n25 -- &quot;56 probes · 15 kills&quot; --&gt; n26
+    n27[&quot;demo fixtures answers /users/me with null while…&quot;]:::demoted
+    n28[&quot;demo fixtures sign-up takes the role from the f…&quot;]
+    n27 -- &quot;54 probes · 9 kills&quot; --&gt; n28
+    n29[&quot;demo fixtures company accept/decline round-trip…&quot;]:::demoted
+    n30[&quot;demo fixtures company accept/decline round-trip…&quot;]
+    n29 -- &quot;99 probes · 40 kills&quot; --&gt; n30
+    n31[&quot;demo fixtures pages campaigns through the share…&quot;]:::demoted
+    n31 -- &quot;55 probes · 13 kills&quot; --&gt; n32
+    n33[&quot;… 3 more&quot;]:::demoted
+  end
+  subgraph n34[&quot;shell-status.service&quot;]
+    direction LR
+    n35[&quot;ShellStatusService initial state starts with no…&quot;]:::demoted
+    n36[&quot;ShellStatusService trialOffer the nudge is not…&quot;]
+    n35 -- &quot;22 probes · 8 kills&quot; --&gt; n36
+    n37[&quot;ShellStatusService noteResponseHeaders does not…&quot;]:::demoted
+    n38[&quot;ShellStatusService noteResponseHeaders does not…&quot;]
+    n37 -- &quot;21 probes · 3 kills&quot; --&gt; n38
+    n39[&quot;ShellStatusService noteResponseHeaders flips em…&quot;]:::demoted
+    n39 -- &quot;22 probes · 7 kills&quot; --&gt; n40
+    n41[&quot;ShellStatusService noteResponseHeaders is stick…&quot;]:::demoted
+    n42[&quot;ShellStatusService clearConsent / clearEmailVer…&quot;]
+    n41 -- &quot;23 probes · 5 kills&quot; --&gt; n42
+    n43[&quot;… 2 more&quot;]:::demoted
+  end
+  subgraph n44[&quot;shell-headers.interceptor&quot;]
+    direction LR
+    n45[&quot;shellHeadersInterceptor does NOT update the ser…&quot;]:::demoted
+    n45 -- &quot;22 probes · 3 kills&quot; --&gt; n40
+    n46[&quot;shellHeadersInterceptor forwards X-Consent-Requ…&quot;]:::demoted
+    n46 -- &quot;30 probes · 13 kills&quot; --&gt; n40
+    n47[&quot;shellHeadersInterceptor honours sticky semantic…&quot;]:::demoted
+    n47 -- &quot;31 probes · 12 kills&quot; --&gt; n40
+    n48[&quot;shellHeadersInterceptor leaves the service unto…&quot;]:::demoted
+    n48 -- &quot;29 probes · 8 kills&quot; --&gt; n40
+  end
+  n32[&quot;demo-fixtures.account :: demo fixtures — accoun…&quot;]
+  n40[&quot;shell-headers.interceptor :: shellHeadersInterc…&quot;]
+  classDef demoted stroke-dasharray: 4 3</pre><p class="lede">Dashed leaves the pull-request tier; the edge says what the carrier also reaches. At most six classes and four rows each are drawn; the rest are in the report.</p>
+
+  <h2>Look twice (9) — waiting for a person</h2><p class="lede">Their names carry a scenario word; nothing happens to them until <code>docs/testing/governance/cleared.json</code> says so.</p><ul><li><code>src/app/core/consent/consent.service.spec.ts :: ConsentService starts with needsDecision=true and record=null when storage is empty</code></li><li><code>src/app/core/demo/demo-fixtures.spec.ts :: demo fixtures answers /users/me with null while the persona is signed out (no bounce, no error)</code></li><li><code>src/app/core/interceptors/rate-limit-cache.interceptor.spec.ts :: rateLimitInterceptor notifies with null when Retry-After is an HTTP-date (not delta-seconds)</code></li><li><code>src/app/core/interceptors/rate-limit-cache.interceptor.spec.ts :: rateLimitInterceptor passes successful responses through unchanged (no rate-limit notify)</code></li><li><code>src/app/core/interceptors/rate-limit-cache.interceptor.spec.ts :: rateLimitInterceptor re-throws the 429 unchanged (preserves status + body for downstream handlers)</code></li><li><code>src/app/core/interceptors/step-up.interceptor.spec.ts :: stepUpInterceptor treats an explicit null context value as &quot;no token&quot; (default behavior)</code></li><li><code>src/app/core/rate-limit/rate-limit-state.service.spec.ts :: RateLimitStateService activates with the given Retry-After and auto-dismisses after the window</code></li><li><code>src/app/core/rate-limit/rate-limit-state.service.spec.ts :: RateLimitStateService caps an oversized Retry-After so the banner cannot be pinned forever</code></li><li><code>src/app/core/shell/shell-status.service.spec.ts :: ShellStatusService setProfileMissing clears banners when set to empty array</code></li></ul>
+
+  <footer>Generated by <code>tools/subsume/site.mjs</code> from the run’s reports. The method: the frontend’s <code>tools/subsume/README.md</code> and <code>docs/testing/ai-in-the-loop.md</code>.</footer>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.6.0/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, theme: matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'neutral' });</script>
+</body>
+</html>
