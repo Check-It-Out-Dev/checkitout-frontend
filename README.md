@@ -492,12 +492,57 @@ rendered as diagrams a person can review, with a human ratifying every loosening
 progress, and the method, its precedents and its honest status are in
 **[docs/ci/GOVERNING-MACHINE-WRITTEN-CHANGE.md](docs/ci/GOVERNING-MACHINE-WRITTEN-CHANGE.md)**.
 
-The first instance is the suite itself, which is now also machine-written. An agent may retire a
-test from the pull-request tier only when the tests that remain provably carry it — every probe it
-covers and every mutant it kills — and four invariants a machine checks on every pull request say
-whether that held; a second agent draws what changed and may quote the gate but not compute; a
-person merges. The per-test instrument is shipped and checked against itself
-(`tools/subsume/`); the decision is [docs/ci/ADR-test-subsumption.md](docs/ci/ADR-test-subsumption.md).
+---
+
+## 🤝 AI in the loop, invariants in charge
+
+Agents write and remove code here now. What keeps the system intact is not the agent's judgement but
+five **invariants** — things that must stay true after every change, checked by a machine from the
+change's own measurements before a person looks:
+
+1. Coverage never drops for any file, class or method the change did not touch.
+2. No deliberate defect the suite caught yesterday survives today.
+3. The suite is green — in the order it was written and in a random one.
+4. Every number this README publishes moved in the same commit as the code.
+5. Every number the reviewing agent writes appears in a report the machine produced.
+
+An agent may propose anything; the invariants dispose; a person merges. Two planes, meeting at that
+person:
+
+```mermaid
+flowchart LR
+  subgraph model["Model plane · agents"]
+    direction LR
+    P["▣ Proposer<br/>applies CONFIRMED only"] --> PR["Pull request<br/>tracked round file"]
+    PR --> R["◇ Reviewer<br/>quotes, never computes"]
+  end
+  subgraph replay["Replay plane · no model, no secret"]
+    direction LR
+    M["Per-test coverage<br/>+ kill matrix"] --> G["▮ Invariants I1–I5<br/>from the PR's own run"]
+    G --> L["Ledger + gains diagram"]
+  end
+  PR --> G
+  L --> H(["A person merges"])
+  R --> H
+```
+
+**The first thing governed this way is the suite itself: a redundant-test killer that may not lose
+anything.** Coverage says a test walked past a line; mutation testing says whether it would notice
+the line being wrong — Stryker makes one deliberate change at a time (a _mutant_: `<` becomes `<=`,
+a condition is negated), runs the tests that reach it, and records every test that fails (_kills_ it).
+A test may leave the pull-request tier only when the tests that stay cover every statement and branch
+it covers **and** kill every mutant it kills; it is rewritten `subsumed(it)(`, never deleted, and the
+nightly still runs it. One pair from the first round, in `demo-fixtures.spec.ts`: _serves the persona
+for /users/me, role-aware via localStorage_ reaches nothing that _signs the persona in on
+/auth/firebase/login_ and one account test do not, and kills nothing they do not, so it leaves with a
+marker naming both — and if anyone later weakens either, invariant 2 on their pull request says so. Before the door closes, the round's own job re-measures everything on its own machine: the full
+tier, the reduced tier, the reduced tier in random order, Stryker again over the estate — and a
+ledger with one rule, tests or seconds lower and nothing the invariants guard lower. The first
+random-order run found two specs that passed only in the order they were written, before a single
+test was demoted. The plain-words guide, with the loop drawn and a round explained step by step, is
+[docs/testing/ai-in-the-loop.md](docs/testing/ai-in-the-loop.md); the mechanics are under
+[Test governance](#test-governance) above; the decision is
+[docs/ci/ADR-test-subsumption.md](docs/ci/ADR-test-subsumption.md).
 
 ---
 
