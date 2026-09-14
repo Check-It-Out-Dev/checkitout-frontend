@@ -1,0 +1,49 @@
+{
+  "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "_comment": [
+    "The whole-estate kill matrix for the subsumption analysis: every production file under src/app, disableBail, written beside the scoped report. Run on a developer box or a governance job with time to spare, never on a pull request; the scoped stryker.conf.json keeps the published score.",
+    "npx stryker run stryker.estate.conf.json",
+    "Components, modules and routes are excluded: instrumenting them makes Stryker's mutant switch recurse without end in the dry run (2026-09-14); ignoreStatic for the same reason."
+  ],
+  "disableBail": true,
+  "packageManager": "npm",
+  "testRunner": "jest",
+  "jest": {
+    "projectType": "custom",
+    "configFile": "jest.config.js"
+  },
+  "reporters": ["html", "json", "clear-text", "progress"],
+  "jsonReporter": {
+    "fileName": "reports/mutation-estate/mutation.json"
+  },
+  "clearTextReporter": {
+    "maxTestsToLog": 3
+  },
+  "mutate": [
+    "src/app/**/*.ts",
+    "!src/app/**/*.spec.ts",
+    "!src/app/**/*.d.ts",
+    "!src/app/api/**",
+    "!src/app/**/*.stories.ts",
+    "!src/app/**/*.component.ts",
+    "!src/app/**/*.module.ts",
+    "!src/app/**/*.routes.ts",
+    "!src/app/**/*.config.ts",
+    "!src/app/app.component.ts"
+  ],
+  "thresholds": {
+    "high": 80,
+    "low": 60,
+    "break": null
+  },
+  "timeoutMS": 60000,
+  "concurrency": 12,
+  "disableTypeChecks": true,
+  "tempDirName": ".stryker-tmp",
+  "cleanTempDir": true,
+  "inPlace": true,
+  "htmlReporter": {
+    "fileName": "reports/mutation-estate/mutation.html"
+  },
+  "ignoreStatic": true
+}

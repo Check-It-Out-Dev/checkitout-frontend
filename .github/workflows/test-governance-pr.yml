@@ -37,7 +37,7 @@ jobs:
     name: Re-measure the reduced tier
     if: ${{ startsWith(github.head_ref, 'test-governance/') && contains(github.event.pull_request.labels.*.name, 'test-governance') }}
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 120
     env:
       BASE_REF: ${{ github.base_ref }}
       HEAD_SHA: ${{ github.event.pull_request.head.sha }}
@@ -111,8 +111,11 @@ jobs:
         id: random
         run: npx jest --ci --randomize && echo "result=pass" >> "$GITHUB_OUTPUT" || echo "result=fail" >> "$GITHUB_OUTPUT"
 
+      # The whole-estate matrix the proposal was computed on (stryker.estate.conf.json), not the
+      # scoped one that keeps the published score; a demoted test is skipped under Stryker the way
+      # it is under Jest, so this is the reduced tier's kill matrix. Four workers on a four-vCPU runner.
       - name: Kill matrix on the reduced tier (measured, not projected)
-        run: npx stryker run
+        run: npx stryker run -c stryker.estate.conf.json --concurrency 4
 
       - name: The ledger, and the merge rule
         id: ledger
@@ -124,7 +127,7 @@ jobs:
           node tools/subsume/ledger.mjs --round docs/testing/governance/round.json \
             --proposal base/subsume-report.json --invariants reports/subsume/invariant-report.json \
             --suite jest-results.json --head-probes reports/subsume/probes.jsonl --seconds-after "$SECONDS_AFTER" \
-            --kills-before base/mutation.json --kills-after reports/mutation/mutation.json \
+            --kills-before base/mutation.json --kills-after reports/mutation-estate/mutation.json \
             --changed changed.txt --random-order "$RANDOM_ORDER" --out reports/subsume
 
       - name: The gains diagram
@@ -139,7 +142,7 @@ jobs:
           name: governance-round-${{ steps.round.outputs.round }}
           path: |
             reports/subsume
-            reports/mutation/mutation.json
+            reports/mutation-estate/mutation.json
             jest-results.json
           if-no-files-found: warn
           retention-days: 90
