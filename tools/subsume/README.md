@@ -327,6 +327,17 @@ demoted (`already`), one it cannot find (`not-found`, `file-missing`). It writes
 demoted[], notApplied[], tiers, provisional}` — the tracked link between the governance branch
 and the proposal run; the pull-request body is never the link.
 
+### `governance-ledger.json`, `gains.md` — the measurement after the demotion
+
+`ledger.mjs` reads the round file, the proposal run's report (before), this run's
+`invariant-report.json`, suite result and wall seconds, the kill matrices before and after, and
+the random-order result, and writes the ledger with one verdict: **MERGEABLE** when at least one
+of tests or seconds went down and none of coverage on unchanged code, kills on unchanged code or
+mutation score went down, both runs green and the published numbers consistent; **NOT-MERGEABLE**
+otherwise; **INCOMPLETE** when anything is unmeasured, naming it. Exit 0 / 1 / 2. `gains.mjs` draws
+the ledger as Mermaid — before → after, one row per measure, what went down beside what stayed
+flat — and nothing else. The special pull-request job (`test-governance-pr.yml`) runs both.
+
 ### `invariant-report.json`
 
 ```jsonc
