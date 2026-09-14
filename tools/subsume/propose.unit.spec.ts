@@ -118,10 +118,13 @@ describe('propose', () => {
     expect(report.summary.kept).toBe(report.summary.tests - report.summary.confirmed);
   });
 
-  it('gives every subgraph in the diagram its own id and a readable label', () => {
+  it('gives every subgraph in the diagram its own id, a readable label, and reads left to right', () => {
     const d = diagram(report);
-    expect(d).toMatch(/subgraph n\d+\["a"\]/);
+    expect(d).toMatch(/subgraph n\d+\["a"\]\n {4}direction LR/);
     expect(d).not.toMatch(/subgraph spec/);
+    // a label never exceeds 48 characters and a `#` inside one is an entity, not a comment
+    for (const m of d.matchAll(/\["([^"]*)"\]/g)) expect(m[1].length).toBeLessThanOrEqual(48);
+    expect(d).not.toMatch(/\["[^"]*#(?!35;|quot;|lt;|gt;)/);
   });
 
   it('keeps every probe and kill after the confirmed demotions', () => {
