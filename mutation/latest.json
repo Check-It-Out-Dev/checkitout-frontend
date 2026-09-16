@@ -1,10 +1,10 @@
 {
- "mutationScore": 72.84,
- "coveredScore": 83.29,
+ "mutationScore": 72.43,
+ "coveredScore": 82.82,
  "mutants": {
   "total": 486,
-  "Killed": 351,
-  "Survived": 71,
+  "Killed": 349,
+  "Survived": 73,
   "NoCoverage": 61,
   "Timeout": 3,
   "CompileError": 0,
@@ -29,6 +29,13 @@
    "noCoverage": 25
   },
   {
+   "file": "src/app/core/auth/sandbox-personas.ts",
+   "score": 45.45,
+   "killed": 5,
+   "survived": 6,
+   "noCoverage": 0
+  },
+  {
    "file": "src/app/core/legal/legal-api.service.ts",
    "score": 50,
    "killed": 7,
@@ -41,13 +48,6 @@
    "killed": 9,
    "survived": 7,
    "noCoverage": 1
-  },
-  {
-   "file": "src/app/core/auth/sandbox-personas.ts",
-   "score": 63.64,
-   "killed": 7,
-   "survived": 4,
-   "noCoverage": 0
   },
   {
    "file": "src/app/core/auth/social-platform-config.service.ts",
