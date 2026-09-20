@@ -1,17 +1,17 @@
 {
   "url": "/",
-  "performance": 99,
+  "performance": 98,
   "accessibility": 100,
   "bestPractices": 100,
   "seo": 92,
   "pages": [
     {
       "url": "/",
-      "performance": 99,
+      "performance": 98,
       "accessibility": 100,
       "bestPractices": 100,
       "seo": 92,
-      "html": "-2026_09_19_02_18_46.html"
+      "html": "-2026_09_20_02_19_50.html"
     },
     {
       "url": "/technical-survey/engineering",
@@ -19,7 +19,7 @@
       "accessibility": 100,
       "bestPractices": 100,
       "seo": 100,
-      "html": "technical_survey_engineering-2026_09_19_02_19_48.html"
+      "html": "technical_survey_engineering-2026_09_20_02_20_34.html"
     },
     {
       "url": "/auth/sign-in",
@@ -27,7 +27,7 @@
       "accessibility": 100,
       "bestPractices": 100,
       "seo": 92,
-      "html": "auth_sign_in-2026_09_19_02_20_11.html"
+      "html": "auth_sign_in-2026_09_20_02_21_29.html"
     }
   ]
 }
