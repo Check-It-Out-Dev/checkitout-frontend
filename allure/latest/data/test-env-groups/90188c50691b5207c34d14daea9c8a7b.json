@@ -1,1 +1,0 @@
-{"id":"90188c50691b5207c34d14daea9c8a7b","fullName":"integration/auth/step-up.spec.ts › @step-up-auth — port of step-up-auth.feature (incomplete-setup subset) › COMPANY non-email PATCH succeeds without step-up token","name":"COMPANY non-email PATCH succeeds without step-up token","status":"passed","testResultsByEnv":{"default":"be2244d5bd4fbd28a2dbee10c9fa0031"}}

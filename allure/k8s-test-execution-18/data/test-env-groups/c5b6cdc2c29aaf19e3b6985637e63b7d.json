@@ -1,0 +1,1 @@
+{"id":"c5b6cdc2c29aaf19e3b6985637e63b7d","fullName":"integration/flows/profile-validation.spec.ts › @profile @validation-edge-cases — port of validation-edge-cases.feature › @phone valid with parentheses returns 200","name":"@phone valid with parentheses returns 200","status":"passed","testResultsByEnv":{"default":"674e8d27ecdf91ce22fabd5f857a1433"}}

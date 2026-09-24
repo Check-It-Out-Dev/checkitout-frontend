@@ -1,0 +1,1 @@
+{"id":"580bccbc53745f8e9437a76164d940f4","fullName":"integration/flows/profile-validation.spec.ts › @profile @validation-edge-cases — port of validation-edge-cases.feature › @firstName valid 50-char boundary returns 200","name":"@firstName valid 50-char boundary returns 200","status":"passed","testResultsByEnv":{"default":"08fe7c87eb0e7afa00509b1a7ea470b8"}}
