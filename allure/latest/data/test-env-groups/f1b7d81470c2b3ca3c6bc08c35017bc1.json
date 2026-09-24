@@ -1,0 +1,1 @@
+{"id":"f1b7d81470c2b3ca3c6bc08c35017bc1","fullName":"integration/flows/magic-link-errors.spec.ts › @magic-link-errors — port of magic-link-errors.feature › @tier-1 confirm-password-reset rejects missing oobCode (400)","name":"@tier-1 confirm-password-reset rejects missing oobCode (400)","status":"passed","testResultsByEnv":{"default":"cede185501c860ed991cafe525683aac"}}

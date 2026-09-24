@@ -1,0 +1,1 @@
+{"id":"fc0b56409c8aadf1ea450d79ffef6949","fullName":"../.features-gen/e2e-tests/bdd/features/login-errors.feature.spec.js › Authentication Error Handling › Token exchange fails with a missing Firebase token","name":"Token exchange fails with a missing Firebase token","status":"passed","testResultsByEnv":{"default":"fad833560773f76e841f15819643ed97"}}
