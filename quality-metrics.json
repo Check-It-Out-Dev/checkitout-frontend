@@ -6,22 +6,22 @@
     "id": 35969012749,
     "sha": "1606647",
     "branch": "main",
-    "workflow": "nightly-full-stack",
+    "workflow": "k8s-test-execution",
     "startedAt": "2026-09-24T07:19:41Z",
-    "durationSec": 484,
+    "durationSec": 667,
     "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/35969012749",
     "status": "red"
   },
   "tests": {
-    "total": 1739,
-    "passed": 1600,
-    "failed": 20,
+    "total": 1591,
+    "passed": 1474,
+    "failed": 1,
     "flaky": 0,
-    "skipped": 119,
-    "passRate": 0.9877,
+    "skipped": 116,
+    "passRate": 0.9993,
     "flakyRate": 0,
-    "durationMeanSec": 0.19,
-    "durationP95Sec": 0.82,
+    "durationMeanSec": 0.22,
+    "durationP95Sec": 1.06,
     "tiers": {
       "jest": {
         "total": 1306,
@@ -31,13 +31,13 @@
         "skipped": 74,
         "durationSec": 77
       },
-      "bdd": {
-        "total": 148,
-        "passed": 121,
-        "failed": 19,
+      "integration": {
+        "total": 215,
+        "passed": 174,
+        "failed": 1,
         "flaky": 0,
-        "skipped": 8,
-        "durationSec": 65
+        "skipped": 40,
+        "durationSec": 173
       },
       "sandbox": {
         "total": 64,
@@ -45,7 +45,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 2,
-        "durationSec": 54
+        "durationSec": 74
       },
       "scenarios": {
         "total": 6,
@@ -53,15 +53,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
-        "durationSec": 11
-      },
-      "integration": {
-        "total": 215,
-        "passed": 179,
-        "failed": 1,
-        "flaky": 0,
-        "skipped": 35,
-        "durationSec": 99
+        "durationSec": 10
       }
     }
   },
@@ -71,12 +63,40 @@
     "branches": 69.52,
     "functions": 66.79
   },
+  "perf": {
+    "k6": {
+      "profile": "load",
+      "requests": 197,
+      "failedRate": 0,
+      "p95Ms": 236.42,
+      "thresholdsOk": true,
+      "journeys": {
+        "browse": {
+          "p95Ms": 97.6,
+          "p99Ms": 109.74,
+          "budgetMs": 800,
+          "ok": true
+        },
+        "apply": {
+          "p95Ms": 355.82,
+          "p99Ms": 358.34,
+          "budgetMs": 1500,
+          "ok": true
+        }
+      }
+    }
+  },
   "lighthouse": {
     "url": "/",
     "performance": 98,
     "accessibility": 100,
     "bestPractices": 100,
     "seo": 92
+  },
+  "kubernetes": {
+    "shards": 4,
+    "wallSec": 107,
+    "k6Runners": 2
   },
   "mutation": {
     "score": 72.43,
@@ -98,51 +118,11 @@
   },
   "flaky": [
     {
-      "title": "Magic Link Happy Path › Email verification succeeds with valid oobCode [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/magic-link-happy-path.feature.spec.js",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 18,
-      "history": [
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "fail",
-        "pass"
-      ]
-    },
-    {
-      "title": "Notification System E2E with Real Email Delivery › Full notification lifecycle with email delivery, archive, and cross-user isolation [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/notification-e2e.feature.spec.js",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 18,
-      "history": [
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "fail",
-        "pass"
-      ]
-    },
-    {
       "title": "@registry — port of registry-company-flow.feature error-path subset › @get-data get company data without prior confirm returns 200 + empty body [chromium-desktop]",
       "file": "integration/flows/registry-company-flow.spec.ts",
       "window": 10,
       "runsFlaky": 0,
-      "runsFailed": 8,
+      "runsFailed": 10,
       "lastSeen": 17,
       "history": [
         "fail",
@@ -153,392 +133,13 @@
         "fail",
         "fail",
         "fail",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "Account Activation Notifications (NTF-003) › Company receives ACCOUNT_ACTIVATED notification after email verified and company data confirmed [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/account-activation-e2e.feature.spec.js",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 8,
-      "lastSeen": 17,
-      "history": [
         "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "Registry Company Flow › Duplicate NIP on confirm returns 409 [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/registry-company-flow.feature.spec.js",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 8,
-      "lastSeen": 17,
-      "history": [
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "Registry Company Flow › Empty NIP returns 400 [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/registry-company-flow.feature.spec.js",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 8,
-      "lastSeen": 17,
-      "history": [
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "Registry Company Flow › Full JDG flow - lookup, confirm, get [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/registry-company-flow.feature.spec.js",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 8,
-      "lastSeen": 17,
-      "history": [
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "Registry Company Flow › Full KRS flow - lookup, confirm, get [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/registry-company-flow.feature.spec.js",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 8,
-      "lastSeen": 17,
-      "history": [
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "Registry Company Flow › Get company data after confirm returns full data [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/registry-company-flow.feature.spec.js",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 8,
-      "lastSeen": 17,
-      "history": [
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "Registry Company Flow › Get company data without prior confirm returns null [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/registry-company-flow.feature.spec.js",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 8,
-      "lastSeen": 17,
-      "history": [
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "Registry Company Flow › GUS not found returns 404 [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/registry-company-flow.feature.spec.js",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 8,
-      "lastSeen": 17,
-      "history": [
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "Registry Company Flow › Inactive company returns 409 [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/registry-company-flow.feature.spec.js",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 8,
-      "lastSeen": 17,
-      "history": [
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "Registry Company Flow › Influencer user cannot access registry [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/registry-company-flow.feature.spec.js",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 8,
-      "lastSeen": 17,
-      "history": [
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "Registry Company Flow › Invalid NIP format returns 400 [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/registry-company-flow.feature.spec.js",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 8,
-      "lastSeen": 17,
-      "history": [
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "Registry Company Flow › JDG confirm with emailVerified auto-activates [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/registry-company-flow.feature.spec.js",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 8,
-      "lastSeen": 17,
-      "history": [
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "Registry Company Flow › JDG lookup returns company data with owner name [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/registry-company-flow.feature.spec.js",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 8,
-      "lastSeen": 17,
-      "history": [
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "Registry Company Flow › KRS company lookup returns full company data [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/registry-company-flow.feature.spec.js",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 8,
-      "lastSeen": 17,
-      "history": [
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "Registry Company Flow › KRS confirm with emailVerified auto-activates account [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/registry-company-flow.feature.spec.js",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 8,
-      "lastSeen": 17,
-      "history": [
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "Registry Company Flow › KRS confirm without emailVerified does not auto-activate [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/registry-company-flow.feature.spec.js",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 8,
-      "lastSeen": 17,
-      "history": [
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "Registry Company Flow › NIP already registered returns 409 [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/registry-company-flow.feature.spec.js",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 8,
-      "lastSeen": 17,
-      "history": [
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "Registry Company Flow › Refresh updates company data from registries [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/registry-company-flow.feature.spec.js",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 8,
-      "lastSeen": 17,
-      "history": [
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "pass",
-        "pass"
-      ]
-    },
-    {
-      "title": "Registry Company Flow › Unauthenticated request returns 401 [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/registry-company-flow.feature.spec.js",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 8,
-      "lastSeen": 17,
-      "history": [
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "pass",
-        "pass"
+        "fail"
       ]
     }
   ],
   "reports": {
-    "playwright": "playwright/nightly-full-stack-17/"
+    "playwright": "playwright/k8s-test-execution-17/",
+    "k6": "k6/k8s-test-execution-17/"
   }
 }
