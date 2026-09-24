@@ -20,7 +20,19 @@ import { Observable }                                        from 'rxjs';
 // @ts-ignore
 import { ApiErrorResponse } from '../model/api-error-response';
 // @ts-ignore
+import { BackupCodes } from '../model/backup-codes';
+// @ts-ignore
+import { Disabled } from '../model/disabled';
+// @ts-ignore
+import { SetupVerified } from '../model/setup-verified';
+// @ts-ignore
+import { Status } from '../model/status';
+// @ts-ignore
+import { TotpSetupResponse } from '../model/totp-setup-response';
+// @ts-ignore
 import { TotpVerifyRequest } from '../model/totp-verify-request';
+// @ts-ignore
+import { Verified } from '../model/verified';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -104,9 +116,9 @@ export class TwoFactorStatusControllerService implements TwoFactorStatusControll
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public check2FAStatus(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<object>;
-    public check2FAStatus(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<object>>;
-    public check2FAStatus(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<object>>;
+    public check2FAStatus(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Status>;
+    public check2FAStatus(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Status>>;
+    public check2FAStatus(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Status>>;
     public check2FAStatus(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
@@ -147,7 +159,7 @@ export class TwoFactorStatusControllerService implements TwoFactorStatusControll
         }
 
         let localVarPath = `/twofactor/status`;
-        return this.httpClient.request<object>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Status>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -165,9 +177,9 @@ export class TwoFactorStatusControllerService implements TwoFactorStatusControll
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public disable2FA(requestParameters: Disable2FARequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<object>;
-    public disable2FA(requestParameters: Disable2FARequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<object>>;
-    public disable2FA(requestParameters: Disable2FARequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<object>>;
+    public disable2FA(requestParameters: Disable2FARequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Disabled>;
+    public disable2FA(requestParameters: Disable2FARequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Disabled>>;
+    public disable2FA(requestParameters: Disable2FARequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Disabled>>;
     public disable2FA(requestParameters: Disable2FARequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const totpVerifyRequest = requestParameters?.totpVerifyRequest;
         if (totpVerifyRequest === null || totpVerifyRequest === undefined) {
@@ -221,7 +233,7 @@ export class TwoFactorStatusControllerService implements TwoFactorStatusControll
         }
 
         let localVarPath = `/twofactor/disable`;
-        return this.httpClient.request<object>('post', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Disabled>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: totpVerifyRequest,
@@ -240,9 +252,9 @@ export class TwoFactorStatusControllerService implements TwoFactorStatusControll
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public generateBackupCodes(requestParameters: GenerateBackupCodesRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<object>;
-    public generateBackupCodes(requestParameters: GenerateBackupCodesRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<object>>;
-    public generateBackupCodes(requestParameters: GenerateBackupCodesRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<object>>;
+    public generateBackupCodes(requestParameters: GenerateBackupCodesRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<BackupCodes>;
+    public generateBackupCodes(requestParameters: GenerateBackupCodesRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<BackupCodes>>;
+    public generateBackupCodes(requestParameters: GenerateBackupCodesRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<BackupCodes>>;
     public generateBackupCodes(requestParameters: GenerateBackupCodesRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const totpVerifyRequest = requestParameters?.totpVerifyRequest;
         if (totpVerifyRequest === null || totpVerifyRequest === undefined) {
@@ -296,7 +308,7 @@ export class TwoFactorStatusControllerService implements TwoFactorStatusControll
         }
 
         let localVarPath = `/twofactor/backup-codes`;
-        return this.httpClient.request<object>('post', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<BackupCodes>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: totpVerifyRequest,
@@ -314,9 +326,9 @@ export class TwoFactorStatusControllerService implements TwoFactorStatusControll
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public setup2FA(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<object>;
-    public setup2FA(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<object>>;
-    public setup2FA(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<object>>;
+    public setup2FA(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<TotpSetupResponse>;
+    public setup2FA(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<TotpSetupResponse>>;
+    public setup2FA(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<TotpSetupResponse>>;
     public setup2FA(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
@@ -357,7 +369,7 @@ export class TwoFactorStatusControllerService implements TwoFactorStatusControll
         }
 
         let localVarPath = `/twofactor/setup`;
-        return this.httpClient.request<object>('post', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<TotpSetupResponse>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -375,9 +387,9 @@ export class TwoFactorStatusControllerService implements TwoFactorStatusControll
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public verify2FA(requestParameters: Verify2FARequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<object>;
-    public verify2FA(requestParameters: Verify2FARequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<object>>;
-    public verify2FA(requestParameters: Verify2FARequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<object>>;
+    public verify2FA(requestParameters: Verify2FARequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Verified>;
+    public verify2FA(requestParameters: Verify2FARequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Verified>>;
+    public verify2FA(requestParameters: Verify2FARequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Verified>>;
     public verify2FA(requestParameters: Verify2FARequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const totpVerifyRequest = requestParameters?.totpVerifyRequest;
         if (totpVerifyRequest === null || totpVerifyRequest === undefined) {
@@ -431,7 +443,7 @@ export class TwoFactorStatusControllerService implements TwoFactorStatusControll
         }
 
         let localVarPath = `/twofactor/verify`;
-        return this.httpClient.request<object>('post', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Verified>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: totpVerifyRequest,
@@ -450,9 +462,9 @@ export class TwoFactorStatusControllerService implements TwoFactorStatusControll
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public verifySetup2FA(requestParameters: VerifySetup2FARequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<object>;
-    public verifySetup2FA(requestParameters: VerifySetup2FARequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<object>>;
-    public verifySetup2FA(requestParameters: VerifySetup2FARequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<object>>;
+    public verifySetup2FA(requestParameters: VerifySetup2FARequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<SetupVerified>;
+    public verifySetup2FA(requestParameters: VerifySetup2FARequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<SetupVerified>>;
+    public verifySetup2FA(requestParameters: VerifySetup2FARequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<SetupVerified>>;
     public verifySetup2FA(requestParameters: VerifySetup2FARequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const totpVerifyRequest = requestParameters?.totpVerifyRequest;
         if (totpVerifyRequest === null || totpVerifyRequest === undefined) {
@@ -506,7 +518,7 @@ export class TwoFactorStatusControllerService implements TwoFactorStatusControll
         }
 
         let localVarPath = `/twofactor/verify-setup`;
-        return this.httpClient.request<object>('post', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<SetupVerified>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: totpVerifyRequest,

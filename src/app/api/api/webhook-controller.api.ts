@@ -100,10 +100,10 @@ export class WebhookControllerService implements WebhookControllerServiceInterfa
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public handleFirebaseStorageWebhook(requestParameters: HandleFirebaseStorageWebhookRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<object>;
-    public handleFirebaseStorageWebhook(requestParameters: HandleFirebaseStorageWebhookRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<object>>;
-    public handleFirebaseStorageWebhook(requestParameters: HandleFirebaseStorageWebhookRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<object>>;
-    public handleFirebaseStorageWebhook(requestParameters: HandleFirebaseStorageWebhookRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public handleFirebaseStorageWebhook(requestParameters: HandleFirebaseStorageWebhookRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public handleFirebaseStorageWebhook(requestParameters: HandleFirebaseStorageWebhookRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public handleFirebaseStorageWebhook(requestParameters: HandleFirebaseStorageWebhookRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public handleFirebaseStorageWebhook(requestParameters: HandleFirebaseStorageWebhookRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const requestBody = requestParameters?.requestBody;
         if (requestBody === null || requestBody === undefined) {
             throw new Error('Required parameter requestBody was null or undefined when calling handleFirebaseStorageWebhook.');
@@ -119,7 +119,6 @@ export class WebhookControllerService implements WebhookControllerServiceInterfa
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*',
                 'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
@@ -160,7 +159,7 @@ export class WebhookControllerService implements WebhookControllerServiceInterfa
         }
 
         let localVarPath = `/webhooks/firebase/storage`;
-        return this.httpClient.request<object>('post', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<any>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: requestBody,

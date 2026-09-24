@@ -26,7 +26,7 @@ export interface CompanyDataDtoOut {
     legalFormName?: string;
     nip?: string;
     ownerName?: string;
-    pkdCodes?: Array<{ [key: string]: object; }>;
+    pkdCodes?: Array<{ [key: string]: any; }>;
     registeredAddress?: { [key: string]: string; };
     /**
      * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.

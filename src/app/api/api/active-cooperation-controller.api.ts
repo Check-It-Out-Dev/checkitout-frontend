@@ -20,11 +20,11 @@ import { Observable }                                        from 'rxjs';
 // @ts-ignore
 import { ApiErrorResponse } from '../model/api-error-response';
 // @ts-ignore
+import { CoopDto } from '../model/coop-dto';
+// @ts-ignore
 import { CoopDtoRatings } from '../model/coop-dto-ratings';
 // @ts-ignore
 import { CoopDtoRegistration } from '../model/coop-dto-registration';
-// @ts-ignore
-import { MappingJacksonValue } from '../model/mapping-jackson-value';
 // @ts-ignore
 import { OpportunityStatus } from '../model/opportunity-status';
 // @ts-ignore
@@ -282,9 +282,9 @@ export class ActiveCooperationControllerService implements ActiveCooperationCont
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getOpportunitiesInProgress(requestParameters?: GetOpportunitiesInProgressRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<MappingJacksonValue>;
-    public getOpportunitiesInProgress(requestParameters?: GetOpportunitiesInProgressRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<MappingJacksonValue>>;
-    public getOpportunitiesInProgress(requestParameters?: GetOpportunitiesInProgressRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<MappingJacksonValue>>;
+    public getOpportunitiesInProgress(requestParameters?: GetOpportunitiesInProgressRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CoopDto>>;
+    public getOpportunitiesInProgress(requestParameters?: GetOpportunitiesInProgressRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CoopDto>>>;
+    public getOpportunitiesInProgress(requestParameters?: GetOpportunitiesInProgressRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CoopDto>>>;
     public getOpportunitiesInProgress(requestParameters?: GetOpportunitiesInProgressRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const page = requestParameters?.page;
         const size = requestParameters?.size;
@@ -344,7 +344,7 @@ export class ActiveCooperationControllerService implements ActiveCooperationCont
         }
 
         let localVarPath = `/activecoop/inprogress`;
-        return this.httpClient.request<MappingJacksonValue>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Array<CoopDto>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
@@ -363,9 +363,9 @@ export class ActiveCooperationControllerService implements ActiveCooperationCont
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateCompanyRating1(requestParameters: UpdateCompanyRating1RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<MappingJacksonValue>;
-    public updateCompanyRating1(requestParameters: UpdateCompanyRating1RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<MappingJacksonValue>>;
-    public updateCompanyRating1(requestParameters: UpdateCompanyRating1RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<MappingJacksonValue>>;
+    public updateCompanyRating1(requestParameters: UpdateCompanyRating1RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CoopDto>;
+    public updateCompanyRating1(requestParameters: UpdateCompanyRating1RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CoopDto>>;
+    public updateCompanyRating1(requestParameters: UpdateCompanyRating1RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CoopDto>>;
     public updateCompanyRating1(requestParameters: UpdateCompanyRating1RequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const id = requestParameters?.id;
         if (id === null || id === undefined) {
@@ -420,7 +420,7 @@ export class ActiveCooperationControllerService implements ActiveCooperationCont
         }
 
         let localVarPath = `/activecoop/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}/company-rating`;
-        return this.httpClient.request<MappingJacksonValue>('put', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<CoopDto>('put', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
@@ -439,9 +439,9 @@ export class ActiveCooperationControllerService implements ActiveCooperationCont
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateInfluencerRating1(requestParameters: UpdateInfluencerRating1RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<MappingJacksonValue>;
-    public updateInfluencerRating1(requestParameters: UpdateInfluencerRating1RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<MappingJacksonValue>>;
-    public updateInfluencerRating1(requestParameters: UpdateInfluencerRating1RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<MappingJacksonValue>>;
+    public updateInfluencerRating1(requestParameters: UpdateInfluencerRating1RequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CoopDto>;
+    public updateInfluencerRating1(requestParameters: UpdateInfluencerRating1RequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CoopDto>>;
+    public updateInfluencerRating1(requestParameters: UpdateInfluencerRating1RequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CoopDto>>;
     public updateInfluencerRating1(requestParameters: UpdateInfluencerRating1RequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const id = requestParameters?.id;
         if (id === null || id === undefined) {
@@ -496,7 +496,7 @@ export class ActiveCooperationControllerService implements ActiveCooperationCont
         }
 
         let localVarPath = `/activecoop/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}/influencer-rating`;
-        return this.httpClient.request<MappingJacksonValue>('put', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<CoopDto>('put', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,

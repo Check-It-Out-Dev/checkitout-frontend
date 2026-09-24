@@ -77,7 +77,7 @@ export interface GetPrimaryAddressByUserIdRequestParams {
 
 export interface Patch12RequestParams {
     id: number;
-    requestBody: { [key: string]: object; };
+    requestBody: { [key: string]: any; };
 }
 
 export interface SearchReusableAddressesRequestParams {
@@ -147,28 +147,28 @@ export interface AddressAPIServiceInterface {
      * Returns all addresses for a specific partnership opportunity
 * @param requestParameters
      */
-    getAddressesByOpportunityId(requestParameters: GetAddressesByOpportunityIdRequestParams, extraHttpRequestParams?: any): Observable<AddressDtoOut>;
+    getAddressesByOpportunityId(requestParameters: GetAddressesByOpportunityIdRequestParams, extraHttpRequestParams?: any): Observable<Array<AddressDtoOut>>;
 
     /**
      * Get opportunity addresses by type
      * Returns all addresses of a specific type for a partnership opportunity
 * @param requestParameters
      */
-    getAddressesByOpportunityIdAndType(requestParameters: GetAddressesByOpportunityIdAndTypeRequestParams, extraHttpRequestParams?: any): Observable<AddressDtoOut>;
+    getAddressesByOpportunityIdAndType(requestParameters: GetAddressesByOpportunityIdAndTypeRequestParams, extraHttpRequestParams?: any): Observable<Array<AddressDtoOut>>;
 
     /**
      * Get addresses by user ID
      * Returns all addresses for a specific user
 * @param requestParameters
      */
-    getAddressesByUserId(requestParameters: GetAddressesByUserIdRequestParams, extraHttpRequestParams?: any): Observable<AddressDtoOut>;
+    getAddressesByUserId(requestParameters: GetAddressesByUserIdRequestParams, extraHttpRequestParams?: any): Observable<Array<AddressDtoOut>>;
 
     /**
      * Get user addresses by type
      * Returns all addresses of a specific type for a user
 * @param requestParameters
      */
-    getAddressesByUserIdAndType(requestParameters: GetAddressesByUserIdAndTypeRequestParams, extraHttpRequestParams?: any): Observable<AddressDtoOut>;
+    getAddressesByUserIdAndType(requestParameters: GetAddressesByUserIdAndTypeRequestParams, extraHttpRequestParams?: any): Observable<Array<AddressDtoOut>>;
 
     /**
      * Get address by ID
@@ -203,7 +203,7 @@ export interface AddressAPIServiceInterface {
      * Finds existing addresses that match the given criteria and can be reused for new opportunities. All parameters are optional and support partial matching (case-insensitive).
 * @param requestParameters
      */
-    searchReusableAddresses(requestParameters: SearchReusableAddressesRequestParams, extraHttpRequestParams?: any): Observable<AddressDtoOut>;
+    searchReusableAddresses(requestParameters: SearchReusableAddressesRequestParams, extraHttpRequestParams?: any): Observable<Array<AddressDtoOut>>;
 
     /**
      * Set address as primary

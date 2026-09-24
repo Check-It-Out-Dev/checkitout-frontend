@@ -15,6 +15,9 @@ import { Observable }                                        from 'rxjs';
 import { ApiErrorResponse } from '../model/models';
 import { FileUploadRequest } from '../model/models';
 import { FileUploadResponse } from '../model/models';
+import { RateLimits } from '../model/models';
+import { UploadConfirmation } from '../model/models';
+import { UploadStats } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -39,7 +42,7 @@ export interface FileUploadServiceInterface {
      * Notifies the backend that a file was successfully uploaded
 * @param requestParameters
      */
-    confirmUpload(requestParameters: ConfirmUploadRequestParams, extraHttpRequestParams?: any): Observable<object>;
+    confirmUpload(requestParameters: ConfirmUploadRequestParams, extraHttpRequestParams?: any): Observable<UploadConfirmation>;
 
     /**
      * Generate signed URL for file upload
@@ -52,13 +55,13 @@ export interface FileUploadServiceInterface {
      * Get user\&#39;s rate limit status
      * Returns current upload limits and usage for the authenticated user
 */
-    getRateLimitStatus(extraHttpRequestParams?: any): Observable<object>;
+    getRateLimitStatus(extraHttpRequestParams?: any): Observable<RateLimits>;
 
     /**
      * Get user\&#39;s upload statistics
      * Returns detailed upload statistics and file history for the authenticated user
 */
-    getUserUploadStats(extraHttpRequestParams?: any): Observable<object>;
+    getUserUploadStats(extraHttpRequestParams?: any): Observable<UploadStats>;
 
     /**
      * Health check

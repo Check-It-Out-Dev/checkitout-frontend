@@ -40,7 +40,7 @@ export interface GetById6RequestParams {
 
 export interface Patch6RequestParams {
     id: number;
-    requestBody: { [key: string]: object; };
+    requestBody: { [key: string]: any; };
 }
 
 export interface Update6RequestParams {

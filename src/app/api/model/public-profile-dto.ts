@@ -15,8 +15,8 @@ import { AddressNoUserDtoOut } from './address-no-user-dto-out';
 
 
 /**
- * @type AppliedOpportunityDtoOutInfluencer
+ * @type PublicProfileDto
  * @export
  */
-export type AppliedOpportunityDtoOutInfluencer = CompanyPublicProfileDto | InfluencerPublicProfileDto;
+export type PublicProfileDto = CompanyPublicProfileDto | InfluencerPublicProfileDto;
 

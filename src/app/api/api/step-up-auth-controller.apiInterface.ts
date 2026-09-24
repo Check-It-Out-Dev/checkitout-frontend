@@ -52,7 +52,7 @@ export interface StepUpAuthControllerServiceInterface {
      * 
 * @param requestParameters
      */
-    requestCode(requestParameters: RequestCodeRequestParams, extraHttpRequestParams?: any): Observable<{ [key: string]: object; }>;
+    requestCode(requestParameters: RequestCodeRequestParams, extraHttpRequestParams?: any): Observable<{ [key: string]: any; }>;
 
     /**
      * 

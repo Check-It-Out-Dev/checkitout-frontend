@@ -41,7 +41,7 @@ export interface GetById9RequestParams {
 
 export interface Patch9RequestParams {
     id: number;
-    requestBody: { [key: string]: object; };
+    requestBody: { [key: string]: any; };
 }
 
 export interface Update9RequestParams {

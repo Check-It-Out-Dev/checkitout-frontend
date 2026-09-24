@@ -45,7 +45,7 @@ export interface GetFaqsByCategoryRequestParams {
 
 export interface Patch3RequestParams {
     id: number;
-    requestBody: { [key: string]: object; };
+    requestBody: { [key: string]: any; };
 }
 
 export interface SearchFaqsRequestParams {

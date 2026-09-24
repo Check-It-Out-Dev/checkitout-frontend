@@ -574,9 +574,9 @@ export class AddressAPIService implements AddressAPIServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getAddressesByOpportunityId(requestParameters: GetAddressesByOpportunityIdRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AddressDtoOut>;
-    public getAddressesByOpportunityId(requestParameters: GetAddressesByOpportunityIdRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AddressDtoOut>>;
-    public getAddressesByOpportunityId(requestParameters: GetAddressesByOpportunityIdRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AddressDtoOut>>;
+    public getAddressesByOpportunityId(requestParameters: GetAddressesByOpportunityIdRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<AddressDtoOut>>;
+    public getAddressesByOpportunityId(requestParameters: GetAddressesByOpportunityIdRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<AddressDtoOut>>>;
+    public getAddressesByOpportunityId(requestParameters: GetAddressesByOpportunityIdRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<AddressDtoOut>>>;
     public getAddressesByOpportunityId(requestParameters: GetAddressesByOpportunityIdRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const opportunityId = requestParameters?.opportunityId;
         if (opportunityId === null || opportunityId === undefined) {
@@ -621,7 +621,7 @@ export class AddressAPIService implements AddressAPIServiceInterface {
         }
 
         let localVarPath = `/address/opportunity/${this.configuration.encodeParam({name: "opportunityId", value: opportunityId, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}`;
-        return this.httpClient.request<AddressDtoOut>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Array<AddressDtoOut>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -641,9 +641,9 @@ export class AddressAPIService implements AddressAPIServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getAddressesByOpportunityIdAndType(requestParameters: GetAddressesByOpportunityIdAndTypeRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AddressDtoOut>;
-    public getAddressesByOpportunityIdAndType(requestParameters: GetAddressesByOpportunityIdAndTypeRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AddressDtoOut>>;
-    public getAddressesByOpportunityIdAndType(requestParameters: GetAddressesByOpportunityIdAndTypeRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AddressDtoOut>>;
+    public getAddressesByOpportunityIdAndType(requestParameters: GetAddressesByOpportunityIdAndTypeRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<AddressDtoOut>>;
+    public getAddressesByOpportunityIdAndType(requestParameters: GetAddressesByOpportunityIdAndTypeRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<AddressDtoOut>>>;
+    public getAddressesByOpportunityIdAndType(requestParameters: GetAddressesByOpportunityIdAndTypeRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<AddressDtoOut>>>;
     public getAddressesByOpportunityIdAndType(requestParameters: GetAddressesByOpportunityIdAndTypeRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const opportunityId = requestParameters?.opportunityId;
         if (opportunityId === null || opportunityId === undefined) {
@@ -692,7 +692,7 @@ export class AddressAPIService implements AddressAPIServiceInterface {
         }
 
         let localVarPath = `/address/opportunity/${this.configuration.encodeParam({name: "opportunityId", value: opportunityId, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}/type/${this.configuration.encodeParam({name: "type", value: type, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<AddressDtoOut>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Array<AddressDtoOut>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -712,9 +712,9 @@ export class AddressAPIService implements AddressAPIServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getAddressesByUserId(requestParameters: GetAddressesByUserIdRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AddressDtoOut>;
-    public getAddressesByUserId(requestParameters: GetAddressesByUserIdRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AddressDtoOut>>;
-    public getAddressesByUserId(requestParameters: GetAddressesByUserIdRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AddressDtoOut>>;
+    public getAddressesByUserId(requestParameters: GetAddressesByUserIdRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<AddressDtoOut>>;
+    public getAddressesByUserId(requestParameters: GetAddressesByUserIdRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<AddressDtoOut>>>;
+    public getAddressesByUserId(requestParameters: GetAddressesByUserIdRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<AddressDtoOut>>>;
     public getAddressesByUserId(requestParameters: GetAddressesByUserIdRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const userId = requestParameters?.userId;
         if (userId === null || userId === undefined) {
@@ -759,7 +759,7 @@ export class AddressAPIService implements AddressAPIServiceInterface {
         }
 
         let localVarPath = `/address/user/${this.configuration.encodeParam({name: "userId", value: userId, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}`;
-        return this.httpClient.request<AddressDtoOut>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Array<AddressDtoOut>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -779,9 +779,9 @@ export class AddressAPIService implements AddressAPIServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getAddressesByUserIdAndType(requestParameters: GetAddressesByUserIdAndTypeRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AddressDtoOut>;
-    public getAddressesByUserIdAndType(requestParameters: GetAddressesByUserIdAndTypeRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AddressDtoOut>>;
-    public getAddressesByUserIdAndType(requestParameters: GetAddressesByUserIdAndTypeRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AddressDtoOut>>;
+    public getAddressesByUserIdAndType(requestParameters: GetAddressesByUserIdAndTypeRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<AddressDtoOut>>;
+    public getAddressesByUserIdAndType(requestParameters: GetAddressesByUserIdAndTypeRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<AddressDtoOut>>>;
+    public getAddressesByUserIdAndType(requestParameters: GetAddressesByUserIdAndTypeRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<AddressDtoOut>>>;
     public getAddressesByUserIdAndType(requestParameters: GetAddressesByUserIdAndTypeRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const userId = requestParameters?.userId;
         if (userId === null || userId === undefined) {
@@ -830,7 +830,7 @@ export class AddressAPIService implements AddressAPIServiceInterface {
         }
 
         let localVarPath = `/address/user/${this.configuration.encodeParam({name: "userId", value: userId, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}/type/${this.configuration.encodeParam({name: "type", value: type, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<AddressDtoOut>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Array<AddressDtoOut>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -1132,9 +1132,9 @@ export class AddressAPIService implements AddressAPIServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public searchReusableAddresses(requestParameters?: SearchReusableAddressesRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AddressDtoOut>;
-    public searchReusableAddresses(requestParameters?: SearchReusableAddressesRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AddressDtoOut>>;
-    public searchReusableAddresses(requestParameters?: SearchReusableAddressesRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AddressDtoOut>>;
+    public searchReusableAddresses(requestParameters?: SearchReusableAddressesRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<AddressDtoOut>>;
+    public searchReusableAddresses(requestParameters?: SearchReusableAddressesRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<AddressDtoOut>>>;
+    public searchReusableAddresses(requestParameters?: SearchReusableAddressesRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<AddressDtoOut>>>;
     public searchReusableAddresses(requestParameters?: SearchReusableAddressesRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const street = requestParameters?.street;
         const city = requestParameters?.city;
@@ -1197,7 +1197,7 @@ export class AddressAPIService implements AddressAPIServiceInterface {
         }
 
         let localVarPath = `/address/search`;
-        return this.httpClient.request<AddressDtoOut>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Array<AddressDtoOut>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,

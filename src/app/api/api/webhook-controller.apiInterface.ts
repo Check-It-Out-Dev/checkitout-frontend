@@ -19,7 +19,7 @@ import { Configuration }                                     from '../configurat
 
 
 export interface HandleFirebaseStorageWebhookRequestParams {
-    requestBody: { [key: string]: object; };
+    requestBody: { [key: string]: any; };
     xFirebaseSignature?: string;
 }
 
@@ -33,6 +33,6 @@ export interface WebhookControllerServiceInterface {
      * 
 * @param requestParameters
      */
-    handleFirebaseStorageWebhook(requestParameters: HandleFirebaseStorageWebhookRequestParams, extraHttpRequestParams?: any): Observable<object>;
+    handleFirebaseStorageWebhook(requestParameters: HandleFirebaseStorageWebhookRequestParams, extraHttpRequestParams?: any): Observable<{}>;
 
 }

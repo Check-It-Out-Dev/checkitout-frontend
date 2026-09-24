@@ -14,6 +14,7 @@ import { Observable }                                        from 'rxjs';
 
 import { ApiErrorResponse } from '../model/models';
 import { CompleteSocialRegistrationRequest } from '../model/models';
+import { OAuthCallbackFailure } from '../model/models';
 import { RegisterUserRequest } from '../model/models';
 import { RegistrationResponse } from '../model/models';
 import { TokenExchangeRequest } from '../model/models';
@@ -72,14 +73,14 @@ export interface AuthControllerServiceInterface {
      * 
      * 
 */
-    health1(extraHttpRequestParams?: any): Observable<{ [key: string]: object; }>;
+    health1(extraHttpRequestParams?: any): Observable<{ [key: string]: any; }>;
 
     /**
      * 
      * 
 * @param requestParameters
      */
-    instagramCallback(requestParameters: InstagramCallbackRequestParams, extraHttpRequestParams?: any): Observable<object>;
+    instagramCallback(requestParameters: InstagramCallbackRequestParams, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * 
@@ -98,12 +99,12 @@ export interface AuthControllerServiceInterface {
      * 
      * 
 */
-    sendVerificationEmail(extraHttpRequestParams?: any): Observable<{ [key: string]: object; }>;
+    sendVerificationEmail(extraHttpRequestParams?: any): Observable<{ [key: string]: any; }>;
 
     /**
      * 
      * 
 */
-    signOut(extraHttpRequestParams?: any): Observable<{ [key: string]: object; }>;
+    signOut(extraHttpRequestParams?: any): Observable<{ [key: string]: any; }>;
 
 }

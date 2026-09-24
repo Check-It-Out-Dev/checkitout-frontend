@@ -12,7 +12,7 @@
 
 export interface AuthOperationResponse { 
     correlationId?: string;
-    data?: { [key: string]: object; };
+    data?: { [key: string]: any; };
     error?: string;
     message?: string;
     processingTime?: number;

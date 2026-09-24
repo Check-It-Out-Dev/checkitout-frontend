@@ -70,7 +70,7 @@ export interface GetUserByUserIdRequestParams {
 
 export interface PatchRequestParams {
     id: number;
-    requestBody: { [key: string]: object; };
+    requestBody: { [key: string]: any; };
 }
 
 export interface SetPremiumStatusRequestParams {

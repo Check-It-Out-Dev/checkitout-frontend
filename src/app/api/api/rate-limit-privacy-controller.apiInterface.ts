@@ -33,18 +33,18 @@ export interface RateLimitPrivacyControllerServiceInterface {
      * 
      * 
 */
-    exportMyRateLimitData(extraHttpRequestParams?: any): Observable<{ [key: string]: object; }>;
+    exportMyRateLimitData(extraHttpRequestParams?: any): Observable<{ [key: string]: any; }>;
 
     /**
      * 
      * 
 */
-    getRateLimitMetrics(extraHttpRequestParams?: any): Observable<{ [key: string]: object; }>;
+    getRateLimitMetrics(extraHttpRequestParams?: any): Observable<{ [key: string]: any; }>;
 
     /**
      * 
      * 
 */
-    getRateLimitPrivacyInfo(extraHttpRequestParams?: any): Observable<{ [key: string]: object; }>;
+    getRateLimitPrivacyInfo(extraHttpRequestParams?: any): Observable<{ [key: string]: any; }>;
 
 }

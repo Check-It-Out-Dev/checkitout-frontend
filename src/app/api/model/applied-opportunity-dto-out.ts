@@ -8,11 +8,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { AppliedOpportunityDtoOutInfluencer } from './applied-opportunity-dto-out-influencer';
 import { RateStatusDtoOut } from './rate-status-dto-out';
 import { OpportunityStatusDtoOut } from './opportunity-status-dto-out';
 import { AppliedOpportunityContentDtoOut } from './applied-opportunity-content-dto-out';
 import { PartnershipOpportunitySimpleDtoOut } from './partnership-opportunity-simple-dto-out';
+import { PublicProfileDto } from './public-profile-dto';
 
 
 export interface AppliedOpportunityDtoOut { 
@@ -27,7 +27,7 @@ export interface AppliedOpportunityDtoOut {
      */
     executionDate?: string;
     id?: number;
-    influencer?: AppliedOpportunityDtoOutInfluencer;
+    influencer?: PublicProfileDto;
     /**
      * Local date and time, ISO-8601, with no UTC offset. Not an RFC 3339 date-time: this value names no time zone.
      */

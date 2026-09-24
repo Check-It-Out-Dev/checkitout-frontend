@@ -45,7 +45,7 @@ export interface RegistryServiceInterface {
 
     /**
      * Get company data
-     * Returns the current user\&#39;s confirmed company data, or null if not yet confirmed.
+     * Returns the current user\&#39;s confirmed company data, or 204 if none is confirmed yet.
 */
     getCompanyData(extraHttpRequestParams?: any): Observable<CompanyDataDtoOut>;
 
