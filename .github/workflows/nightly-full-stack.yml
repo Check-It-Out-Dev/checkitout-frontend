@@ -7,10 +7,23 @@
 # The same tiers run on Kubernetes weekly (k8s-test-execution.yml); this is the fifteen-minute daily version.
 name: Frontend CI - Nightly Full Stack (sharded)
 
+# The inputs were lost when the tiers were folded into nightly.yml (2026-09-10): the triggers were
+# rewritten and the `inputs:` blocks went with them, while the steps kept reading them -- so this
+# tier could only ever boot the backend's main. Declared again, on both triggers, so a branch's
+# night can be run against that branch's image before it merges.
 on:
   workflow_call:
+    inputs:
+      backend_tag:
+        description: Backend image tag on ghcr.io (a short sha from build-image); empty means main
+        type: string
+        default: ""
   workflow_dispatch:
-
+    inputs:
+      backend_tag:
+        description: Backend image tag on ghcr.io (a short sha from build-image); empty means main
+        type: string
+        default: ""
 
 # The group is keyed by the CALLING pipeline as well as the ref. Without `github.workflow` --
 # which under workflow_call is the caller's name -- a push to main starts `pr`, `pr` calls this
