@@ -6,10 +6,29 @@
 # are in docs/ci/ARCHITECTURE.md §2–§4; the verdict comes from tools/ci/k8s-summary.mjs.
 name: k8s-test-execution
 
+# The inputs were lost when the tiers were folded into nightly.yml (2026-09-10); see the same note
+# in nightly-full-stack.yml. Declared again so the cluster can run a branch's backend image.
 on:
   workflow_call:
+    inputs:
+      backend_tag:
+        description: Backend image tag on ghcr.io (a short sha from build-image); empty means main
+        type: string
+        default: ""
+      shards:
+        description: Playwright shards (pods)
+        type: number
+        default: 4
   workflow_dispatch:
-
+    inputs:
+      backend_tag:
+        description: Backend image tag on ghcr.io (a short sha from build-image); empty means main
+        type: string
+        default: ""
+      shards:
+        description: Playwright shards (pods)
+        type: number
+        default: 4
 
 # The group is keyed by the CALLING pipeline as well as the ref. Without `github.workflow` --
 # which under workflow_call is the caller's name -- a push to main starts `pr`, `pr` calls this
@@ -213,7 +232,7 @@ jobs:
         run: |
           set -o pipefail
           cp "site/allure/history-k8s-test-execution.jsonl" history.jsonl 2>/dev/null || true
-          npx playwright merge-reports --reporter allure-playwright ci-reports/blobs
+          npx playwright merge-reports --reporter ./tools/ci/allure-merge-reporter.cjs ci-reports/blobs
           npx --yes allure@3.17.0 generate --config allurerc.mjs ./allure-results --output allure-report
           # Bound by size, not by line count; see the note in browser-tiers.yml.
           node tools/ci/trim-history.mjs history.jsonl

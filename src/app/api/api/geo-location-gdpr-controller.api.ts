@@ -104,9 +104,9 @@ export class GeoLocationGdprControllerService implements GeoLocationGdprControll
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public anonymizeOldData(requestParameters?: AnonymizeOldDataRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<{ [key: string]: object; }>;
-    public anonymizeOldData(requestParameters?: AnonymizeOldDataRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<{ [key: string]: object; }>>;
-    public anonymizeOldData(requestParameters?: AnonymizeOldDataRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<{ [key: string]: object; }>>;
+    public anonymizeOldData(requestParameters?: AnonymizeOldDataRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<{ [key: string]: any; }>;
+    public anonymizeOldData(requestParameters?: AnonymizeOldDataRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<{ [key: string]: any; }>>;
+    public anonymizeOldData(requestParameters?: AnonymizeOldDataRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<{ [key: string]: any; }>>;
     public anonymizeOldData(requestParameters?: AnonymizeOldDataRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const olderThanDays = requestParameters?.olderThanDays;
 
@@ -154,7 +154,7 @@ export class GeoLocationGdprControllerService implements GeoLocationGdprControll
         }
 
         let localVarPath = `/gdpr/location/anonymize`;
-        return this.httpClient.request<{ [key: string]: object; }>('post', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<{ [key: string]: any; }>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
@@ -173,9 +173,9 @@ export class GeoLocationGdprControllerService implements GeoLocationGdprControll
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public deleteIpData(requestParameters: DeleteIpDataRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<{ [key: string]: object; }>;
-    public deleteIpData(requestParameters: DeleteIpDataRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<{ [key: string]: object; }>>;
-    public deleteIpData(requestParameters: DeleteIpDataRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<{ [key: string]: object; }>>;
+    public deleteIpData(requestParameters: DeleteIpDataRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<{ [key: string]: any; }>;
+    public deleteIpData(requestParameters: DeleteIpDataRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<{ [key: string]: any; }>>;
+    public deleteIpData(requestParameters: DeleteIpDataRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<{ [key: string]: any; }>>;
     public deleteIpData(requestParameters: DeleteIpDataRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const ip = requestParameters?.ip;
         if (ip === null || ip === undefined) {
@@ -220,7 +220,7 @@ export class GeoLocationGdprControllerService implements GeoLocationGdprControll
         }
 
         let localVarPath = `/gdpr/location/ip/${this.configuration.encodeParam({name: "ip", value: ip, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<{ [key: string]: object; }>('delete', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<{ [key: string]: any; }>('delete', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -238,9 +238,9 @@ export class GeoLocationGdprControllerService implements GeoLocationGdprControll
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public deleteUserData(requestParameters: DeleteUserDataRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<{ [key: string]: object; }>;
-    public deleteUserData(requestParameters: DeleteUserDataRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<{ [key: string]: object; }>>;
-    public deleteUserData(requestParameters: DeleteUserDataRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<{ [key: string]: object; }>>;
+    public deleteUserData(requestParameters: DeleteUserDataRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<{ [key: string]: any; }>;
+    public deleteUserData(requestParameters: DeleteUserDataRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<{ [key: string]: any; }>>;
+    public deleteUserData(requestParameters: DeleteUserDataRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<{ [key: string]: any; }>>;
     public deleteUserData(requestParameters: DeleteUserDataRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const userId = requestParameters?.userId;
         if (userId === null || userId === undefined) {
@@ -285,7 +285,7 @@ export class GeoLocationGdprControllerService implements GeoLocationGdprControll
         }
 
         let localVarPath = `/gdpr/location/user/${this.configuration.encodeParam({name: "userId", value: userId, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}`;
-        return this.httpClient.request<{ [key: string]: object; }>('delete', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<{ [key: string]: any; }>('delete', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -303,9 +303,9 @@ export class GeoLocationGdprControllerService implements GeoLocationGdprControll
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public exportUserData(requestParameters: ExportUserDataRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<{ [key: string]: object; }>;
-    public exportUserData(requestParameters: ExportUserDataRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<{ [key: string]: object; }>>;
-    public exportUserData(requestParameters: ExportUserDataRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<{ [key: string]: object; }>>;
+    public exportUserData(requestParameters: ExportUserDataRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<{ [key: string]: any; }>;
+    public exportUserData(requestParameters: ExportUserDataRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<{ [key: string]: any; }>>;
+    public exportUserData(requestParameters: ExportUserDataRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<{ [key: string]: any; }>>;
     public exportUserData(requestParameters: ExportUserDataRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const userId = requestParameters?.userId;
         if (userId === null || userId === undefined) {
@@ -350,7 +350,7 @@ export class GeoLocationGdprControllerService implements GeoLocationGdprControll
         }
 
         let localVarPath = `/gdpr/location/export/user/${this.configuration.encodeParam({name: "userId", value: userId, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}`;
-        return this.httpClient.request<{ [key: string]: object; }>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<{ [key: string]: any; }>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -367,9 +367,9 @@ export class GeoLocationGdprControllerService implements GeoLocationGdprControll
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getComplianceStatus(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<{ [key: string]: object; }>;
-    public getComplianceStatus(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<{ [key: string]: object; }>>;
-    public getComplianceStatus(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<{ [key: string]: object; }>>;
+    public getComplianceStatus(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<{ [key: string]: any; }>;
+    public getComplianceStatus(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<{ [key: string]: any; }>>;
+    public getComplianceStatus(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<{ [key: string]: any; }>>;
     public getComplianceStatus(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
@@ -410,7 +410,7 @@ export class GeoLocationGdprControllerService implements GeoLocationGdprControll
         }
 
         let localVarPath = `/gdpr/location/compliance`;
-        return this.httpClient.request<{ [key: string]: object; }>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<{ [key: string]: any; }>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -428,9 +428,9 @@ export class GeoLocationGdprControllerService implements GeoLocationGdprControll
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getRetentionSummary(requestParameters: GetRetentionSummaryRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<{ [key: string]: object; }>;
-    public getRetentionSummary(requestParameters: GetRetentionSummaryRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<{ [key: string]: object; }>>;
-    public getRetentionSummary(requestParameters: GetRetentionSummaryRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<{ [key: string]: object; }>>;
+    public getRetentionSummary(requestParameters: GetRetentionSummaryRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<{ [key: string]: any; }>;
+    public getRetentionSummary(requestParameters: GetRetentionSummaryRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<{ [key: string]: any; }>>;
+    public getRetentionSummary(requestParameters: GetRetentionSummaryRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<{ [key: string]: any; }>>;
     public getRetentionSummary(requestParameters: GetRetentionSummaryRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const userId = requestParameters?.userId;
         if (userId === null || userId === undefined) {
@@ -475,7 +475,7 @@ export class GeoLocationGdprControllerService implements GeoLocationGdprControll
         }
 
         let localVarPath = `/gdpr/location/retention/user/${this.configuration.encodeParam({name: "userId", value: userId, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}`;
-        return this.httpClient.request<{ [key: string]: object; }>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<{ [key: string]: any; }>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,

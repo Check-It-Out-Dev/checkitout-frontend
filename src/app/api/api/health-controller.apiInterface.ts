@@ -12,6 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
+import { ApiErrorResponse } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -26,12 +27,12 @@ export interface HealthControllerServiceInterface {
      * 
      * 
 */
-    health(extraHttpRequestParams?: any): Observable<{ [key: string]: object; }>;
+    health(extraHttpRequestParams?: any): Observable<{ [key: string]: any; }>;
 
     /**
      * 
      * 
 */
-    ping(extraHttpRequestParams?: any): Observable<{ [key: string]: object; }>;
+    ping(extraHttpRequestParams?: any): Observable<{ [key: string]: any; }>;
 
 }

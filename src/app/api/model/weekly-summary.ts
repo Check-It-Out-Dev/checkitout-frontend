@@ -10,8 +10,13 @@
  */
 
 
-export interface MappingJacksonValue { 
-    filters?: object;
-    value?: object;
+/**
+ * Totals over the reporting window
+ */
+export interface WeeklySummary { 
+    averageFilesPerDay?: number;
+    totalFiles?: number;
+    totalSizeBytes?: number;
+    totalSizeMB?: number;
 }
 

@@ -158,9 +158,9 @@ export class RateLimitPrivacyControllerService implements RateLimitPrivacyContro
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public exportMyRateLimitData(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<{ [key: string]: object; }>;
-    public exportMyRateLimitData(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<{ [key: string]: object; }>>;
-    public exportMyRateLimitData(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<{ [key: string]: object; }>>;
+    public exportMyRateLimitData(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<{ [key: string]: any; }>;
+    public exportMyRateLimitData(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<{ [key: string]: any; }>>;
+    public exportMyRateLimitData(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<{ [key: string]: any; }>>;
     public exportMyRateLimitData(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
@@ -201,7 +201,7 @@ export class RateLimitPrivacyControllerService implements RateLimitPrivacyContro
         }
 
         let localVarPath = `/privacy/rate-limit/export`;
-        return this.httpClient.request<{ [key: string]: object; }>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<{ [key: string]: any; }>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -218,9 +218,9 @@ export class RateLimitPrivacyControllerService implements RateLimitPrivacyContro
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getRateLimitMetrics(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<{ [key: string]: object; }>;
-    public getRateLimitMetrics(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<{ [key: string]: object; }>>;
-    public getRateLimitMetrics(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<{ [key: string]: object; }>>;
+    public getRateLimitMetrics(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<{ [key: string]: any; }>;
+    public getRateLimitMetrics(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<{ [key: string]: any; }>>;
+    public getRateLimitMetrics(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<{ [key: string]: any; }>>;
     public getRateLimitMetrics(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
@@ -261,7 +261,7 @@ export class RateLimitPrivacyControllerService implements RateLimitPrivacyContro
         }
 
         let localVarPath = `/privacy/rate-limit/metrics`;
-        return this.httpClient.request<{ [key: string]: object; }>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<{ [key: string]: any; }>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -278,9 +278,9 @@ export class RateLimitPrivacyControllerService implements RateLimitPrivacyContro
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getRateLimitPrivacyInfo(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<{ [key: string]: object; }>;
-    public getRateLimitPrivacyInfo(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<{ [key: string]: object; }>>;
-    public getRateLimitPrivacyInfo(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<{ [key: string]: object; }>>;
+    public getRateLimitPrivacyInfo(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<{ [key: string]: any; }>;
+    public getRateLimitPrivacyInfo(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<{ [key: string]: any; }>>;
+    public getRateLimitPrivacyInfo(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<{ [key: string]: any; }>>;
     public getRateLimitPrivacyInfo(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
@@ -321,7 +321,7 @@ export class RateLimitPrivacyControllerService implements RateLimitPrivacyContro
         }
 
         let localVarPath = `/privacy/rate-limit/info`;
-        return this.httpClient.request<{ [key: string]: object; }>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<{ [key: string]: any; }>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,

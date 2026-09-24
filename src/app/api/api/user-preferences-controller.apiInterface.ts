@@ -45,16 +45,16 @@ export interface GetUserPreferencesRequestParams {
 
 export interface Patch2RequestParams {
     id: number;
-    requestBody: { [key: string]: object; };
+    requestBody: { [key: string]: any; };
 }
 
 export interface PatchCurrentUserPreferencesRequestParams {
-    requestBody: { [key: string]: object; };
+    requestBody: { [key: string]: any; };
 }
 
 export interface PatchUserPreferencesRequestParams {
     userId: number;
-    requestBody: { [key: string]: object; };
+    requestBody: { [key: string]: any; };
 }
 
 export interface Update2RequestParams {

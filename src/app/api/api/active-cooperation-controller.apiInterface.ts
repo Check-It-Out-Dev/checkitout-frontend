@@ -13,9 +13,9 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { ApiErrorResponse } from '../model/models';
+import { CoopDto } from '../model/models';
 import { CoopDtoRatings } from '../model/models';
 import { CoopDtoRegistration } from '../model/models';
-import { MappingJacksonValue } from '../model/models';
 import { OpportunityStatus } from '../model/models';
 import { RateStatus } from '../model/models';
 
@@ -77,20 +77,20 @@ export interface ActiveCooperationControllerServiceInterface {
      * 
 * @param requestParameters
      */
-    getOpportunitiesInProgress(requestParameters: GetOpportunitiesInProgressRequestParams, extraHttpRequestParams?: any): Observable<MappingJacksonValue>;
+    getOpportunitiesInProgress(requestParameters: GetOpportunitiesInProgressRequestParams, extraHttpRequestParams?: any): Observable<Array<CoopDto>>;
 
     /**
      * 
      * 
 * @param requestParameters
      */
-    updateCompanyRating1(requestParameters: UpdateCompanyRating1RequestParams, extraHttpRequestParams?: any): Observable<MappingJacksonValue>;
+    updateCompanyRating1(requestParameters: UpdateCompanyRating1RequestParams, extraHttpRequestParams?: any): Observable<CoopDto>;
 
     /**
      * 
      * 
 * @param requestParameters
      */
-    updateInfluencerRating1(requestParameters: UpdateInfluencerRating1RequestParams, extraHttpRequestParams?: any): Observable<MappingJacksonValue>;
+    updateInfluencerRating1(requestParameters: UpdateInfluencerRating1RequestParams, extraHttpRequestParams?: any): Observable<CoopDto>;
 
 }

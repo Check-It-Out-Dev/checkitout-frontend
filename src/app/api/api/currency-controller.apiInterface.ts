@@ -41,7 +41,7 @@ export interface GetById8RequestParams {
 
 export interface Patch8RequestParams {
     id: number;
-    requestBody: { [key: string]: object; };
+    requestBody: { [key: string]: any; };
 }
 
 export interface Update8RequestParams {

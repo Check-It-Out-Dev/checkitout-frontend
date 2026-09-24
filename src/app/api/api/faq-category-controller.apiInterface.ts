@@ -41,7 +41,7 @@ export interface GetById4RequestParams {
 
 export interface Patch4RequestParams {
     id: number;
-    requestBody: { [key: string]: object; };
+    requestBody: { [key: string]: any; };
 }
 
 export interface SoftDelete1RequestParams {

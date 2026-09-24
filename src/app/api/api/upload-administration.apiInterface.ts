@@ -13,7 +13,12 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { ApiErrorResponse } from '../model/models';
+import { CleanupOutcome } from '../model/models';
+import { SystemStats } from '../model/models';
 import { UploadStatus } from '../model/models';
+import { UploadsByStatus } from '../model/models';
+import { UserUploads } from '../model/models';
+import { WeeklyReport } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -40,32 +45,32 @@ export interface UploadAdministrationServiceInterface {
      * Clean up orphaned uploads
      * Manually trigger cleanup of old pending uploads
 */
-    cleanupOrphanedUploads(extraHttpRequestParams?: any): Observable<object>;
+    cleanupOrphanedUploads(extraHttpRequestParams?: any): Observable<CleanupOutcome>;
 
     /**
      * Generate weekly report
      * Creates a weekly summary of upload activity
 */
-    generateWeeklyReport(extraHttpRequestParams?: any): Observable<object>;
+    generateWeeklyReport(extraHttpRequestParams?: any): Observable<WeeklyReport>;
 
     /**
      * Get system upload statistics
      * Returns overall system upload metrics and health
 */
-    getSystemStats(extraHttpRequestParams?: any): Observable<object>;
+    getSystemStats(extraHttpRequestParams?: any): Observable<SystemStats>;
 
     /**
      * Get uploads by status
      * Returns all uploads with the specified status
 * @param requestParameters
      */
-    getUploadsByStatus(requestParameters: GetUploadsByStatusRequestParams, extraHttpRequestParams?: any): Observable<object>;
+    getUploadsByStatus(requestParameters: GetUploadsByStatusRequestParams, extraHttpRequestParams?: any): Observable<UploadsByStatus>;
 
     /**
      * Get user uploads
      * Returns all uploads for a specific user
 * @param requestParameters
      */
-    getUserUploads(requestParameters: GetUserUploadsRequestParams, extraHttpRequestParams?: any): Observable<object>;
+    getUserUploads(requestParameters: GetUserUploadsRequestParams, extraHttpRequestParams?: any): Observable<UserUploads>;
 
 }

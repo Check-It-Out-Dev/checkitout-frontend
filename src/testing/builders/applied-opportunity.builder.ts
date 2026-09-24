@@ -1,4 +1,5 @@
 import type { AppliedOpportunityDtoOut } from '../../app/api/model/applied-opportunity-dto-out';
+import { InfluencerPublicProfileDtoProfileTypeEnum } from '../../app/api/model/influencer-public-profile-dto';
 import { OpportunityStatus } from '../../app/api/model/opportunity-status';
 import { buildOpportunityStatus } from './opportunity.builder';
 import { mergeDto, type DeepPartial } from './merge';
@@ -22,8 +23,8 @@ export function buildApplication(
       influencer: {
         id: 301,
         name: 'Marta Vlogs',
-        email: 'marta.vlogs@example.com',
         profilePicture: undefined,
+        profileType: InfluencerPublicProfileDtoProfileTypeEnum.INFLUENCER,
       },
       partnershipOpportunity: {
         id: 501,

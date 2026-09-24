@@ -41,7 +41,7 @@ export interface GetById7RequestParams {
 
 export interface Patch7RequestParams {
     id: number;
-    requestBody: { [key: string]: object; };
+    requestBody: { [key: string]: any; };
 }
 
 export interface Update7RequestParams {

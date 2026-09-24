@@ -185,7 +185,7 @@ export class RegistryService implements RegistryServiceInterface {
 
     /**
      * Get company data
-     * Returns the current user\&#39;s confirmed company data, or null if not yet confirmed.
+     * Returns the current user\&#39;s confirmed company data, or 204 if none is confirmed yet.
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */

@@ -62,7 +62,7 @@ export interface GetStatusHistoryPagedRequestParams {
 
 export interface Patch11RequestParams {
     id: number;
-    requestBody: { [key: string]: object; };
+    requestBody: { [key: string]: any; };
 }
 
 export interface Update11RequestParams {
@@ -87,7 +87,7 @@ export interface UpdateOpportunityStatusRequestParams {
 
 export interface UpdateRateStatusRequestParams {
     appliedOpportunityId: number;
-    requestBody: { [key: string]: object; };
+    requestBody: { [key: string]: any; };
 }
 
 

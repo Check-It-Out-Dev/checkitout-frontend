@@ -24,7 +24,7 @@ export interface NipLookupResponse {
     legalFormName?: string;
     nip?: string;
     ownerName?: string;
-    pkdCodes?: Array<{ [key: string]: object; }>;
+    pkdCodes?: Array<{ [key: string]: any; }>;
     pkdMainCode?: string;
     pkdMainDescription?: string;
     postalCode?: string;

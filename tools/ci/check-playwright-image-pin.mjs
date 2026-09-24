@@ -15,12 +15,18 @@
  *
  * Two seconds, in the gate wall, so the next bump fails the pull request that makes it.
  *
+ * The test image's Dockerfile carries the same pin a third time, as the default of `ARG PW_VERSION`.
+ * CI overrides it from package.json, so a stale default never showed there -- but
+ * `tools/visual-docker.mjs` refuses to regenerate a baseline while it disagrees, and it had sat at
+ * 1.59.1 since the bump, so nobody could regenerate one locally. It is compared here as well.
+ *
  *   node tools/ci/check-playwright-image-pin.mjs
  */
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 const WORKFLOWS = '.github/workflows';
+const DOCKERFILE = 'deploy/k8s/tests/Dockerfile.playwright';
 const IMAGE = /mcr\.microsoft\.com\/playwright:v([0-9]+\.[0-9]+\.[0-9]+)(-\w+)?/g;
 
 const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
@@ -51,6 +57,21 @@ for (const file of readdirSync(WORKFLOWS).filter((f) => f.endsWith('.yml') || f.
   }
 }
 
+let dockerfile;
+try {
+  dockerfile = readFileSync(DOCKERFILE, 'utf8');
+} catch {
+  dockerfile = undefined;
+}
+const arg = dockerfile?.match(/^ARG PW_VERSION=([0-9]+\.[0-9]+\.[0-9]+)/m);
+if (arg && arg[1] !== declared) {
+  const line = dockerfile.slice(0, arg.index).split('\n').length;
+  problems.push(
+    `${DOCKERFILE}:${line} defaults PW_VERSION to ${arg[1]}, but package.json installs ${declared}. ` +
+      `tools/visual-docker.mjs will not regenerate a baseline until they agree.`
+  );
+}
+
 if (!found) {
   console.error(
     'check:playwright-image-pin FAILED — no workflow pins mcr.microsoft.com/playwright. ' +
@@ -71,5 +92,5 @@ if (problems.length) {
 }
 
 console.log(
-  `check:playwright-image-pin OK — ${found} workflow pin(s) at v${declared}, the version package.json installs.`
+  `check:playwright-image-pin OK — ${found} workflow pin(s)${arg ? ' and the test image default' : ''} at v${declared}, the version package.json installs.`
 );

@@ -41,7 +41,7 @@ export interface GetById5RequestParams {
 
 export interface Patch5RequestParams {
     id: number;
-    requestBody: { [key: string]: object; };
+    requestBody: { [key: string]: any; };
 }
 
 export interface Update5RequestParams {

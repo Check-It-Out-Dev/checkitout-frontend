@@ -25,6 +25,17 @@ on:
         description: Skip the kind cluster tier (it is the slowest)
         type: boolean
         default: false
+      # The night a backend branch will get, before it merges: build-image dispatched on that branch
+      # publishes ghcr.io/check-it-out-dev/checkitout-backend:<short sha> without moving any tag, and
+      # these point the tiers that need a backend at it. Empty -- as on every scheduled night -- is main.
+      backend_tag:
+        description: Backend image tag for the full-stack and Kubernetes tiers (short sha); empty means main
+        type: string
+        default: ""
+      backend_ref:
+        description: Backend commit or branch the contract tier takes the document from; empty means main
+        type: string
+        default: ""
 
 concurrency:
   group: nightly
@@ -56,6 +67,8 @@ jobs:
   full-stack:
     name: Full stack
     uses: ./.github/workflows/nightly-full-stack.yml
+    with:
+      backend_tag: ${{ inputs.backend_tag }}
     permissions:
       contents: write
     # No `secrets: inherit`, and nothing to pass: see the note on the first tier above.
@@ -64,6 +77,8 @@ jobs:
     name: Kubernetes tier
     if: ${{ !inputs.skip_kubernetes }}
     uses: ./.github/workflows/k8s-test-execution.yml
+    with:
+      backend_tag: ${{ inputs.backend_tag }}
     permissions:
       contents: write
     # No `secrets: inherit`, and nothing to pass: see the note on the first tier above.
@@ -78,6 +93,8 @@ jobs:
   contract:
     name: Contract
     uses: ./.github/workflows/contract-check.yml
+    with:
+      backend_ref: ${{ inputs.backend_ref }}
     # No `secrets: inherit`, and nothing to pass: see the note on the first tier above.
 
   mutation:

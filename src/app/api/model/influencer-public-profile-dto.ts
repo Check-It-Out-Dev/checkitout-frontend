@@ -24,6 +24,12 @@ export interface InfluencerPublicProfileDto {
     platformName?: string;
     premium?: boolean;
     profilePicture?: string;
+    profileType: InfluencerPublicProfileDtoProfileTypeEnum;
     profileUrl?: string;
 }
+export enum InfluencerPublicProfileDtoProfileTypeEnum {
+    INFLUENCER = 'INFLUENCER'
+};
+
+
 

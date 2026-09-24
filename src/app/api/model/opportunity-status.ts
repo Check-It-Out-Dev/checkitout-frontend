@@ -10,9 +10,6 @@
  */
 
 
-/**
- * OpportunityStatus enum name
- */
 export enum OpportunityStatus {
     APPLIED = 'APPLIED',
     ACCEPTED_BY_COMPANY = 'ACCEPTED_BY_COMPANY',

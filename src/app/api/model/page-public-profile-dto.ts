@@ -8,13 +8,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { AppliedOpportunityDtoOutInfluencer } from './applied-opportunity-dto-out-influencer';
 import { PageableObject } from './pageable-object';
 import { SortObject } from './sort-object';
+import { PublicProfileDto } from './public-profile-dto';
 
 
 export interface PagePublicProfileDto { 
-    content?: Array<AppliedOpportunityDtoOutInfluencer>;
+    content?: Array<PublicProfileDto>;
     empty?: boolean;
     first?: boolean;
     last?: boolean;

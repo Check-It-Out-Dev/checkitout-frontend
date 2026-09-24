@@ -244,7 +244,7 @@ jobs:
         run: |
           set -o pipefail
           cp "site/allure/history-browser-tiers.jsonl" history.jsonl 2>/dev/null || true
-          npx playwright merge-reports --reporter allure-playwright ci-reports/blobs
+          npx playwright merge-reports --reporter ./tools/ci/allure-merge-reporter.cjs ci-reports/blobs
           npx --yes allure@3.17.0 generate --config allurerc.mjs ./allure-results --output allure-report
           # Bound the history by SIZE, not by line count. Each line is one run and carries every
           # test id in it, so a line is about 1 MB here and about 7 MB in the backend: `tail -n 20`

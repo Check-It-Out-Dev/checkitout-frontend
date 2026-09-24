@@ -44,13 +44,13 @@ export interface GeoIPAdminServiceInterface {
      * Get GeoIP metrics
      * Returns cache hit rates and service statistics
 */
-    getMetrics(extraHttpRequestParams?: any): Observable<{ [key: string]: object; }>;
+    getMetrics(extraHttpRequestParams?: any): Observable<{ [key: string]: any; }>;
 
     /**
      * Get my location
      * Returns geolocation for the current request IP
 */
-    getMyLocation(extraHttpRequestParams?: any): Observable<{ [key: string]: object; }>;
+    getMyLocation(extraHttpRequestParams?: any): Observable<{ [key: string]: any; }>;
 
     /**
      * Lookup IP location
@@ -64,7 +64,7 @@ export interface GeoIPAdminServiceInterface {
      * Test travel detection between two IPs with risk scoring and detailed analysis
 * @param requestParameters
      */
-    testImpossibleTravel(requestParameters: TestImpossibleTravelRequestParams, extraHttpRequestParams?: any): Observable<{ [key: string]: object; }>;
+    testImpossibleTravel(requestParameters: TestImpossibleTravelRequestParams, extraHttpRequestParams?: any): Observable<{ [key: string]: any; }>;
 
     /**
      * Update GeoIP database

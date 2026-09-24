@@ -22,6 +22,12 @@ export interface CompanyPublicProfileDto {
     phoneNumber?: string;
     premium?: boolean;
     profilePicture?: string;
+    profileType: CompanyPublicProfileDtoProfileTypeEnum;
     website?: string;
 }
+export enum CompanyPublicProfileDtoProfileTypeEnum {
+    COMPANY = 'COMPANY'
+};
+
+
 

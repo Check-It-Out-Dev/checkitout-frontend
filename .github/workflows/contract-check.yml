@@ -4,10 +4,24 @@
 # a contract break is a build error, not a production surprise. Design: docs/ci/ARCHITECTURE.md §6.
 name: contract-check
 
+# The inputs and the backend's dispatch were lost when the tiers were folded into nightly.yml
+# (2026-09-10): the job still read `inputs.backend_ref` and `client_payload.sha`, and the backend's
+# build-image still sent `backend-published`, to a workflow that no longer listened for it.
 on:
   workflow_call:
+    inputs:
+      backend_ref:
+        description: Backend commit or branch to take the document from; empty means main
+        type: string
+        default: ""
   workflow_dispatch:
-
+    inputs:
+      backend_ref:
+        description: Backend commit or branch to take the document from; empty means main
+        type: string
+        default: ""
+  repository_dispatch:
+    types: [backend-published]
 
 permissions:
   contents: read

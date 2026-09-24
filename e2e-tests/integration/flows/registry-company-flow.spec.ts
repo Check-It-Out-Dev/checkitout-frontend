@@ -20,7 +20,7 @@ interface MockSessionResponse {
  *
  *   ✅ "Invalid NIP format returns 400"
  *   ✅ "Empty NIP returns 400"
- *   ✅ "Get company data without prior confirm returns null"
+ *   ✅ "Get company data without prior confirm returns no content"
  *   ✅ "Unauthenticated request returns 401"
  *   ✅ "Influencer user cannot access registry"
  *   ✅ "KRS company lookup returns full company data" (unblocked by dev profile)
@@ -115,12 +115,12 @@ test.describe('@registry — port of registry-company-flow.feature error-path su
   });
 
   // --------------------------------------------------------------------
-  // BE Scenario: "Get company data without prior confirm returns null"
+  // BE Scenario: "Get company data without prior confirm returns no content"
   //   When the user requests their company data
-  //   Then the response status should be 200
+  //   Then the response status should be 204
   //   And the company data response body should be empty
   // --------------------------------------------------------------------
-  test('@get-data get company data without prior confirm returns 200 + empty body', async ({
+  test('@get-data get company data without prior confirm returns 204 + no body', async ({
     page,
   }) => {
     await seedSession(page, UNIQUE_COMPANY(), 'COMPANY');
@@ -128,19 +128,10 @@ test.describe('@registry — port of registry-company-flow.feature error-path su
       ignoreHTTPSErrors: true,
       failOnStatusCode: false,
     });
-    expect(res.status(), 'company-data should be 200').toBe(200);
-    // "Empty body" in the Cucumber maps to null / empty object / no
-    // meaningful fields. The BE returns CompanyDataDtoOut with all
-    // optional fields, so accept null, undefined object, or {} with no
-    // populated NIP.
-    const text = await res.text();
-    if (text && text.trim().length > 0 && text !== 'null') {
-      const body = JSON.parse(text);
-      expect(
-        body?.nip ?? null,
-        `company-data without prior confirm should have no NIP — got ${JSON.stringify(body)}`,
-      ).toBeFalsy();
-    }
+    // "200, may be null" is not something HTTP can say, so the backend answers 204 No Content
+    // until the company data is confirmed -- and a 204 carries no body at all.
+    expect(res.status(), 'company-data without prior confirm should be 204 No Content').toBe(204);
+    expect(await res.text(), 'a 204 carries no body').toBe('');
   });
 
   // --------------------------------------------------------------------

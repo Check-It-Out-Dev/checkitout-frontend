@@ -48,40 +48,40 @@ export interface GeoLocationGdprControllerServiceInterface {
      * 
 * @param requestParameters
      */
-    anonymizeOldData(requestParameters: AnonymizeOldDataRequestParams, extraHttpRequestParams?: any): Observable<{ [key: string]: object; }>;
+    anonymizeOldData(requestParameters: AnonymizeOldDataRequestParams, extraHttpRequestParams?: any): Observable<{ [key: string]: any; }>;
 
     /**
      * 
      * 
 * @param requestParameters
      */
-    deleteIpData(requestParameters: DeleteIpDataRequestParams, extraHttpRequestParams?: any): Observable<{ [key: string]: object; }>;
+    deleteIpData(requestParameters: DeleteIpDataRequestParams, extraHttpRequestParams?: any): Observable<{ [key: string]: any; }>;
 
     /**
      * 
      * 
 * @param requestParameters
      */
-    deleteUserData(requestParameters: DeleteUserDataRequestParams, extraHttpRequestParams?: any): Observable<{ [key: string]: object; }>;
+    deleteUserData(requestParameters: DeleteUserDataRequestParams, extraHttpRequestParams?: any): Observable<{ [key: string]: any; }>;
 
     /**
      * 
      * 
 * @param requestParameters
      */
-    exportUserData(requestParameters: ExportUserDataRequestParams, extraHttpRequestParams?: any): Observable<{ [key: string]: object; }>;
+    exportUserData(requestParameters: ExportUserDataRequestParams, extraHttpRequestParams?: any): Observable<{ [key: string]: any; }>;
 
     /**
      * 
      * 
 */
-    getComplianceStatus(extraHttpRequestParams?: any): Observable<{ [key: string]: object; }>;
+    getComplianceStatus(extraHttpRequestParams?: any): Observable<{ [key: string]: any; }>;
 
     /**
      * 
      * 
 * @param requestParameters
      */
-    getRetentionSummary(requestParameters: GetRetentionSummaryRequestParams, extraHttpRequestParams?: any): Observable<{ [key: string]: object; }>;
+    getRetentionSummary(requestParameters: GetRetentionSummaryRequestParams, extraHttpRequestParams?: any): Observable<{ [key: string]: any; }>;
 
 }

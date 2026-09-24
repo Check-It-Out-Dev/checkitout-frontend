@@ -13,7 +13,13 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { ApiErrorResponse } from '../model/models';
+import { BackupCodes } from '../model/models';
+import { Disabled } from '../model/models';
+import { SetupVerified } from '../model/models';
+import { Status } from '../model/models';
+import { TotpSetupResponse } from '../model/models';
 import { TotpVerifyRequest } from '../model/models';
+import { Verified } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -44,40 +50,40 @@ export interface TwoFactorStatusControllerServiceInterface {
      * 
      * 
 */
-    check2FAStatus(extraHttpRequestParams?: any): Observable<object>;
+    check2FAStatus(extraHttpRequestParams?: any): Observable<Status>;
 
     /**
      * 
      * 
 * @param requestParameters
      */
-    disable2FA(requestParameters: Disable2FARequestParams, extraHttpRequestParams?: any): Observable<object>;
+    disable2FA(requestParameters: Disable2FARequestParams, extraHttpRequestParams?: any): Observable<Disabled>;
 
     /**
      * 
      * 
 * @param requestParameters
      */
-    generateBackupCodes(requestParameters: GenerateBackupCodesRequestParams, extraHttpRequestParams?: any): Observable<object>;
+    generateBackupCodes(requestParameters: GenerateBackupCodesRequestParams, extraHttpRequestParams?: any): Observable<BackupCodes>;
 
     /**
      * 
      * 
 */
-    setup2FA(extraHttpRequestParams?: any): Observable<object>;
+    setup2FA(extraHttpRequestParams?: any): Observable<TotpSetupResponse>;
 
     /**
      * 
      * 
 * @param requestParameters
      */
-    verify2FA(requestParameters: Verify2FARequestParams, extraHttpRequestParams?: any): Observable<object>;
+    verify2FA(requestParameters: Verify2FARequestParams, extraHttpRequestParams?: any): Observable<Verified>;
 
     /**
      * 
      * 
 * @param requestParameters
      */
-    verifySetup2FA(requestParameters: VerifySetup2FARequestParams, extraHttpRequestParams?: any): Observable<object>;
+    verifySetup2FA(requestParameters: VerifySetup2FARequestParams, extraHttpRequestParams?: any): Observable<SetupVerified>;
 
 }

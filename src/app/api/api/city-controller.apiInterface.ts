@@ -40,7 +40,7 @@ export interface GetById10RequestParams {
 
 export interface Patch10RequestParams {
     id: number;
-    requestBody: { [key: string]: object; };
+    requestBody: { [key: string]: any; };
 }
 
 export interface Update10RequestParams {

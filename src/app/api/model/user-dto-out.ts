@@ -43,7 +43,10 @@ export interface UserDtoOut {
     premium?: boolean;
     profileComplete?: boolean;
     profileMissingFields?: Array<string>;
-    profilePicture?: string;
+    /**
+     * Avatar URL; null when the user has no picture set
+     */
+    profilePicture?: string | null;
     socialConnections?: Array<UserSocialConnectionDtoOut>;
     updater?: string;
     userType?: UserTypeDtoOut;
