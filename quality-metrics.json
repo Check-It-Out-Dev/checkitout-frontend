@@ -2,26 +2,26 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 185,
-    "id": 36000594534,
-    "sha": "ac7220a",
-    "branch": "main",
+    "number": 18,
+    "id": 35995972441,
+    "sha": "4e6dc5d",
+    "branch": "fix/nightly-green",
     "workflow": "browser-tiers",
-    "startedAt": "2026-09-24T12:40:55Z",
-    "durationSec": 196,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/36000594534",
+    "startedAt": "2026-09-24T11:56:28Z",
+    "durationSec": 1268,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/35995972441",
     "status": "green"
   },
   "tests": {
-    "total": 1442,
-    "passed": 1344,
+    "total": 1890,
+    "passed": 1737,
     "failed": 0,
     "flaky": 0,
-    "skipped": 98,
+    "skipped": 153,
     "passRate": 1,
     "flakyRate": 0,
-    "durationMeanSec": 0.16,
-    "durationP95Sec": 0.89,
+    "durationMeanSec": 1.46,
+    "durationP95Sec": 1.81,
     "tiers": {
       "jest": {
         "total": 1306,
@@ -30,6 +30,22 @@
         "flaky": 0,
         "skipped": 74,
         "durationSec": 77
+      },
+      "visual": {
+        "total": 284,
+        "passed": 283,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "durationSec": 375
+      },
+      "visual-parity": {
+        "total": 82,
+        "passed": 28,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 54,
+        "durationSec": 78
       },
       "published-reports": {
         "total": 6,
@@ -53,7 +69,15 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 22,
-        "durationSec": 126
+        "durationSec": 131
+      },
+      "perf": {
+        "total": 82,
+        "passed": 82,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "durationSec": 1946
       }
     }
   },
@@ -90,7 +114,7 @@
   },
   "flaky": [],
   "reports": {
-    "playwright": "playwright/browser-tiers-185/",
-    "allure": "allure/browser-tiers-185/"
+    "playwright": "playwright/browser-tiers-18/",
+    "allure": "allure/browser-tiers-18/"
   }
 }
