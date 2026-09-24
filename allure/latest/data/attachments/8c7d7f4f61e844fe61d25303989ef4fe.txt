@@ -1,0 +1,1 @@
+  admin-2fa: fault-injected 5 ringed step(s) — [data-testid="sign-in-submit"], [data-testid="totp-sim-generate"], [data-testid="two-factor-verify-submit"], [data-testid="totp-sim-generate"], [data-testid="two-factor-verify-submit"]

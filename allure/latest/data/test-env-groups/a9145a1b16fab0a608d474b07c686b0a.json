@@ -1,1 +1,0 @@
-{"id":"a9145a1b16fab0a608d474b07c686b0a","fullName":"integration/route-smoke.spec.ts › @smoke route-smoke — every non-param route renders without errors › anon hitting AUTH_ANY routes redirects to /auth/sign-in","name":"anon hitting AUTH_ANY routes redirects to /auth/sign-in","status":"passed","testResultsByEnv":{"default":"c2856ed313b9452586c5e1d23376ee3d"}}

@@ -1,1 +1,0 @@
-{"id":"1e19dbc99ad68812c995a5f41c0678ce","fullName":"integration/auth/security-unauth.spec.ts › @security-suite @401-unauthenticated — port of security-unauthenticated-access.feature › upload endpoints reject unauthenticated requests","name":"upload endpoints reject unauthenticated requests","status":"passed","testResultsByEnv":{"default":"8eaa79ac0e204141560b9f0a646bec7c"}}

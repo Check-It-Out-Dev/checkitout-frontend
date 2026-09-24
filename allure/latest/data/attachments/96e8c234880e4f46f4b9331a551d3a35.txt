@@ -1,0 +1,4 @@
+  stepup-email
+    pill: 0@/user/settings/account → 1@/user/settings/account → 2@/user/settings/account → 3@/user/settings/account → 3@/user/settings/account → done
+    hand: 0@/user/settings/account → 1@/user/settings/account → 2@/user/settings/account → 3@/user/settings/account → 3@/user/settings/account → done
+    a visitor can do steps [2] unaided; the guide finishes [0, 3]; [1] ring a field you type into
