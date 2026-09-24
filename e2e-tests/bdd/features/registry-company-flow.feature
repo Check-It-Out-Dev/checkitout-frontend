@@ -138,12 +138,13 @@ Feature: Registry Company Flow
     And the company data response should contain NIP "5261040828"
     And the company data response should contain company name
 
+  # 204, not 200. "200, may be null" is not something HTTP can say; 204 is.
   @registry @get-data
-  Scenario: Get company data without prior confirm returns null
+  Scenario: Get company data without prior confirm returns no content
     Given registry stubs are reset
     And a COMPANY user is authenticated for registry tests
     When the user requests their company data
-    Then the response status should be 200
+    Then the response status should be 204
     And the company data response body should be empty
 
   @registry @permissions
