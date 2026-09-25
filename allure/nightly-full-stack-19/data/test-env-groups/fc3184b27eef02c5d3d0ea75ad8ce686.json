@@ -1,0 +1,1 @@
+{"id":"fc3184b27eef02c5d3d0ea75ad8ce686","fullName":"integration/flows/admin-geoip-analysis.spec.ts › @admin-geoip-analysis — port of admin-geoip-analysis.feature › @scenario-4 @validation invalid IP returns 400","name":"@scenario-4 @validation invalid IP returns 400","status":"passed","testResultsByEnv":{"default":"75e00b03313c1f28b2cb4d24e9d2ab30"}}

@@ -1,0 +1,1 @@
+{"id":"bbb8a75e10c343e787bd952dbda0fe5a","fullName":"integration/flows/profile-validation.spec.ts › @profile @validation-edge-cases — port of validation-edge-cases.feature › @companyDescription too long (> 1000 chars) returns 400","name":"@companyDescription too long (> 1000 chars) returns 400","status":"passed","testResultsByEnv":{"default":"4c250872ce664b5884917e2ff4504f52"}}

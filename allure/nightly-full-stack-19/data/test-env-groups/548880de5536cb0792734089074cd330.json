@@ -1,0 +1,1 @@
+{"id":"548880de5536cb0792734089074cd330","fullName":"integration/flows/profile-validation.spec.ts › @profile @validation-edge-cases — port of validation-edge-cases.feature › @preferences valid language \"pl\" returns 200","name":"@preferences valid language \"pl\" returns 200","status":"passed","testResultsByEnv":{"default":"6b93a1655ae76b52e2da91b804d0cb2e"}}

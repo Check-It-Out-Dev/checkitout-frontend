@@ -1,3 +1,0 @@
-
-  seven tours completed: {"admin-2fa":4,"stepup-email":3,"company-campaign":5,"influencer-collab":3,"nip-to-ksef":9,"support-ticket":3,"admin-ops":7}
-
