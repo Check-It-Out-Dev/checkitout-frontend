@@ -1,0 +1,1 @@
+{"id":"087e7f9983c19c662211ccded2cda8ed","fullName":"integration/flows/profile-validation.spec.ts › @profile @validation-edge-cases — port of validation-edge-cases.feature › @nip too long (> 20 chars) returns 400","name":"@nip too long (> 20 chars) returns 400","status":"passed","testResultsByEnv":{"default":"ee27987032021163b3ea8337b142f456"}}

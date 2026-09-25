@@ -1,1 +1,0 @@
-{"id":"c59aabddf0804af258bdda07b12f2769","fullName":"integration/flows/magic-link-errors.spec.ts › @magic-link-errors — port of magic-link-errors.feature › @tier-1 verify-reset-code rejects missing oobCode field (400)","name":"@tier-1 verify-reset-code rejects missing oobCode field (400)","status":"passed","testResultsByEnv":{"default":"e3ebd3fbc7c02f6676ccea9d6fe51690"}}
