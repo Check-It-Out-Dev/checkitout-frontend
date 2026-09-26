@@ -1,0 +1,1 @@
+{"id":"031506172b59350a8b917ec884eaba39","fullName":"../.features-gen/e2e-tests/bdd/features/rate-limiting.feature.spec.js › API Rate Limiting Protection › Different users have independent rate limit buckets","name":"Different users have independent rate limit buckets","status":"passed","testResultsByEnv":{"default":"decf701c217ad15cf54343d3a01c1f6d"}}
