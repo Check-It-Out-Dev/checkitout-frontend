@@ -1988,6 +1988,13 @@
             "velocity": "Dlaczego kompilator to najlepszy kolega AI",
             "pq": "Post-quantum TLS na edge'u"
           }
+        },
+        "code": {
+          "label": "Kod jest publiczny",
+          "hint": "Trzy repozytoria na licencji MIT. Od którego zaczniesz, do pozostałych dwóch jest jedno kliknięcie.",
+          "frontend": "Frontend — przepisanie aplikacji i strategia testów, która za nim stoi",
+          "backend": "Backend — tu mieszkają reguły biznesowe i stąd pochodzi kontrakt",
+          "method": "Metoda — system jako graf i zbudowane na nim narzędzia AI"
         }
       },
       "chapters": {

@@ -37,9 +37,20 @@ const INDEX_HTML = join(REPO_ROOT, 'src/index.html');
 const VERSION_RE = /I18N_VERSION = '([a-f0-9]+)'/;
 const PRELOAD_RE = /href="assets\/i18n\/pl\.json(?:\?v=([a-f0-9]+))?"/;
 
+/**
+ * The hash is over CONTENT, so it must not depend on how the checkout wrote
+ * the line endings. Hashing raw bytes made the stamp platform-specific: a
+ * Windows clone with `core.autocrlf=true` produces a different digest from the
+ * same commit checked out on a Linux runner, so a stamp made on one fails the
+ * gate on the other. Found 2026-09-17, when a wholesale re-checkout flipped
+ * this working tree to CRLF and the gate reported a stale stamp for files git
+ * itself considered unmodified. Normalise, then hash.
+ */
 function contentHash() {
   const h = createHash('sha256');
-  for (const f of I18N_FILES) h.update(readFileSync(join(REPO_ROOT, f)));
+  for (const f of I18N_FILES) {
+    h.update(readFileSync(join(REPO_ROOT, f), 'utf8').replace(/\r\n/g, '\n'));
+  }
   return h.digest('hex').slice(0, 12);
 }
 

@@ -21,6 +21,29 @@ module.exports = {
   ],
   moduleFileExtensions: ['ts', 'html', 'js', 'json', 'mjs'],
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
+  // Coverage is measured over code we WROTE. `src/app/api/**` is the
+  // openapi-generator's output — 271 files nobody edits and nobody should be
+  // credited or blamed for covering; counting it would move the number without
+  // moving the truth. Environments and main/bootstrap files are excluded for
+  // the same reason. Off by default (`--coverage` opts in) so the pre-commit
+  // gate stays fast.
+  collectCoverageFrom: [
+    'src/app/**/*.ts',
+    '!src/app/api/**',
+    '!src/app/**/*.spec.ts',
+    '!src/app/**/index.ts',
+    '!src/**/*.d.ts',
+  ],
+  coverageReporters: ['text-summary', 'json-summary', 'lcov'],
+  coverageDirectory: '<rootDir>/coverage',
+  // A ratchet, not an aspiration. First measurement (2026-09-12, 1141 tests):
+  // statements 76.34, branches 68.21, functions 64.71, lines 77.72. The floor
+  // sits two points under each, so an honest refactor does not trip it and a
+  // slide does. Raise it when the number rises; never lower it to make a red
+  // run green.
+  coverageThreshold: {
+    global: { statements: 74, branches: 66, functions: 62, lines: 75 },
+  },
   transform: {
     '^.+\\.(ts|js|html|svg)$': [
       'jest-preset-angular',

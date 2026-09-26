@@ -1988,6 +1988,13 @@
             "velocity": "Why the compiler is an AI's best teammate",
             "pq": "Post-quantum TLS at the edge"
           }
+        },
+        "code": {
+          "label": "The code is public",
+          "hint": "Three repositories, MIT. Whichever one you open first, the other two are a click away.",
+          "frontend": "Frontend — the rewrite, and the test strategy behind it",
+          "backend": "Backend — where the business rules live, and where the contract comes from",
+          "method": "Method — the system as a graph, and the AI tooling built on it"
         }
       },
       "chapters": {
