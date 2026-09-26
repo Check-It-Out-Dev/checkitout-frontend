@@ -92,13 +92,31 @@ describe('LayoutComponent', () => {
       ]);
     });
 
-    it('COMPANY keeps the standard surface (no admin entries)', () => {
+    it('COMPANY gets the campaign-owner surface (campaigns, board, billing — no applications)', () => {
       userApi.getCurrent.mockReturnValue(of({ id: 7, userType: { value: 'COMPANY' } }));
       configure();
       const fixture = TestBed.createComponent(LayoutComponent);
       const routes = fixture.componentInstance.navEntries().map((e) => e.route);
-      expect(routes).not.toContain('/user/list');
-      expect(routes).toContain('/collaborations/my-campaigns');
+      expect(routes).toEqual([
+        '/collaborations/list',
+        '/collaborations/my-campaigns',
+        '/collaborations/in-progress',
+        '/user/settings/account',
+        '/user/settings/plan-billing',
+      ]);
+    });
+
+    it('INFLUENCER gets the applicant surface (applications, board — no campaigns, no billing)', () => {
+      userApi.getCurrent.mockReturnValue(of({ id: 8, userType: { value: 'INFLUENCER' } }));
+      configure();
+      const fixture = TestBed.createComponent(LayoutComponent);
+      const routes = fixture.componentInstance.navEntries().map((e) => e.route);
+      expect(routes).toEqual([
+        '/collaborations/list',
+        '/collaborations/registrations',
+        '/collaborations/in-progress',
+        '/user/settings/account',
+      ]);
     });
 
     it('/users/me error → standard surface (nav never blanks)', () => {

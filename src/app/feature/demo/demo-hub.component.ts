@@ -135,7 +135,7 @@ import { isDemoMode } from '../../core/demo/demo-mode';
       </footer>
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [
     `
       /* Blueprint grid substrate — same restrained texture as the survey hub.

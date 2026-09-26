@@ -1,4 +1,5 @@
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { LocalizedDatePipe } from '../../core/i18n/localized-date.pipe';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -38,21 +39,21 @@ type LoadState = 'loading' | 'loaded' | 'empty' | 'error' | 'not-found';
  * content-submission stage.
  */
 @Component({
-    selector: 'app-content-review',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        CommonModule,
-        DatePipe,
-        ReactiveFormsModule,
-        RouterLink,
-        MatButtonModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        MatProgressSpinnerModule,
-        TranslocoModule,
-    ],
-    templateUrl: './content-review.component.html'
+  selector: 'app-content-review',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    LocalizedDatePipe,
+    ReactiveFormsModule,
+    RouterLink,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+    TranslocoModule,
+  ],
+  templateUrl: './content-review.component.html',
 })
 export class ContentReviewComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);

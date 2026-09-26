@@ -33,6 +33,7 @@ export const DOWNGRADE_CONFIRM_FIXTURES: readonly SandboxFixture[] = [
     id: 'downgrade-confirm-business-to-free',
     label: 'Downgrade confirm · Business → Free',
     component: DowngradeConfirmDialogComponent,
+    frame: 'dialog',
     viewport: { width: 480, height: 280 },
     providers: [
       { provide: MatDialogRef, useValue: DIALOG_REF_STUB },

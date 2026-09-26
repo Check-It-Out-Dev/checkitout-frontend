@@ -73,20 +73,24 @@
             <div class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
               {{ 'support.tickets.status.details.created' | transloco }}
             </div>
-            <div class="mt-0.5 text-sm text-ink">{{ t.createdTime | date: 'medium' }}</div>
+            <div class="mt-0.5 text-sm text-ink">{{ t.createdTime | localizedDate: 'medium' }}</div>
           </div>
           <div>
             <div class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
               {{ 'support.tickets.status.details.updated' | transloco }}
             </div>
-            <div class="mt-0.5 text-sm text-ink">{{ t.lastUpdateTime | date: 'medium' }}</div>
+            <div class="mt-0.5 text-sm text-ink">
+              {{ t.lastUpdateTime | localizedDate: 'medium' }}
+            </div>
           </div>
           @if (t.resolvedTime) {
             <div>
               <div class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
                 {{ 'support.tickets.status.details.resolved' | transloco }}
               </div>
-              <div class="mt-0.5 text-sm text-ink">{{ t.resolvedTime | date: 'medium' }}</div>
+              <div class="mt-0.5 text-sm text-ink">
+                {{ t.resolvedTime | localizedDate: 'medium' }}
+              </div>
             </div>
           }
           <div>
@@ -176,7 +180,7 @@
                         }
                       </span>
                       <span class="ml-2 text-xs text-slate2">
-                        {{ r.createdTime | date: 'medium' }}
+                        {{ r.createdTime | localizedDate: 'medium' }}
                       </span>
                     </div>
                     <span

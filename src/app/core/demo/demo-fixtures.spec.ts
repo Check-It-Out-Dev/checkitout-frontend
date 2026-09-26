@@ -1,4 +1,10 @@
-import { matchDemoFixture, currentDemoUser, resetDemoTourStores } from './demo-fixtures';
+import { HttpParams } from '@angular/common/http';
+import {
+  DEMO_NOT_FOUND,
+  matchDemoFixture,
+  currentDemoUser,
+  resetDemoTourStores,
+} from './demo-fixtures';
 import type { PagePartnershipOpportunityDtoOut } from '../../api/model/page-partnership-opportunity-dto-out';
 import type { UserDtoOut } from '../../api/model/user-dto-out';
 
@@ -8,7 +14,62 @@ describe('demo fixtures', () => {
     sessionStorage.clear();
   });
 
+  it('answers /users/me with null while the persona is signed out (no bounce, no error)', () => {
+    expect(matchDemoFixture('GET', '/api/users/me', null)).toBeNull();
+  });
+
+  it('signs the persona in on /auth/firebase/login — the e-mail picks the persona', () => {
+    const brand = matchDemoFixture('POST', '/api/auth/firebase/login', {
+      email: 'demo@checkitout.app',
+      password: 'x',
+    }) as { requires2FA?: boolean; registered?: boolean };
+    expect(brand.registered).toBe(true);
+    expect(brand.requires2FA).toBe(false);
+    expect(localStorage.getItem('demoSession')).toBe('1');
+    expect((matchDemoFixture('GET', '/api/users/me', null) as UserDtoOut).userType?.value).toBe(
+      'COMPANY',
+    );
+
+    matchDemoFixture('POST', '/api/auth/firebase/login', { email: 'ola@example.com' });
+    expect((matchDemoFixture('GET', '/api/users/me', null) as UserDtoOut).userType?.value).toBe(
+      'INFLUENCER',
+    );
+
+    // Admin outside the 2FA sandbox: no TOTP dialog (no phone to hand out codes).
+    const admin = matchDemoFixture('POST', '/api/auth/firebase/login', {
+      email: 'admin@checkitout.app',
+    }) as { requires2FA?: boolean };
+    expect(admin.requires2FA).toBe(false);
+    expect((matchDemoFixture('GET', '/api/users/me', null) as UserDtoOut).userType?.value).toBe(
+      'ADMIN',
+    );
+
+    // …and inside it, the TOTP beat plays.
+    sessionStorage.setItem('demoSandbox', JSON.stringify({ key: 'admin-2fa', step: 0 }));
+    const adminInTour = matchDemoFixture('POST', '/api/auth/firebase/login', {
+      email: 'admin@checkitout.app',
+    }) as { requires2FA?: boolean };
+    expect(adminInTour.requires2FA).toBe(true);
+  });
+
+  it('sign-up takes the role from the form and signs in; sign-out signs out', () => {
+    window.history.pushState({}, '', '/auth/sign-up/business');
+    matchDemoFixture('POST', '/api/auth/firebase/register', { email: 'new@brand.pl' });
+    expect(localStorage.getItem('demoRole')).toBe('COMPANY');
+    expect(localStorage.getItem('demoSession')).toBe('1');
+
+    window.history.pushState({}, '', '/auth/sign-up/influencer');
+    matchDemoFixture('POST', '/api/auth/firebase/register', { email: 'new@creator.pl' });
+    expect(localStorage.getItem('demoRole')).toBe('INFLUENCER');
+
+    matchDemoFixture('POST', '/api/auth/sign-out', null);
+    expect(localStorage.getItem('demoSession')).toBe('0');
+    expect(matchDemoFixture('GET', '/api/users/me', null)).toBeNull();
+    window.history.pushState({}, '', '/');
+  });
+
   it('serves the persona for /users/me, role-aware via localStorage', () => {
+    localStorage.setItem('demoSession', '1');
     expect((matchDemoFixture('GET', '/api/users/me', null) as UserDtoOut).userType?.value).toBe(
       'COMPANY',
     );
@@ -114,6 +175,44 @@ describe('demo fixtures', () => {
     expect(matchDemoFixture('POST', '/api/step-up/verify', { code: '000000' })).toEqual({
       success: false,
     });
+  });
+
+  it('answers an unknown campaign or application id with the 404 marker, a known one with the row', () => {
+    expect(matchDemoFixture('GET', '/api/partnership-opportunity/999999', null)).toBe(
+      DEMO_NOT_FOUND,
+    );
+    expect(matchDemoFixture('GET', '/api/applied-opportunity/1', null)).toBe(DEMO_NOT_FOUND);
+    const known = matchDemoFixture('GET', '/api/partnership-opportunity/502', null) as {
+      id?: number;
+    };
+    expect(known.id).toBe(502);
+  });
+
+  it('gives a created support ticket its own reference and lists it next to the seed', () => {
+    resetDemoTourStores();
+    const created = matchDemoFixture('POST', '/api/support/ticket', {
+      subject: 'Pytanie o fakturę',
+      description: 'Czy mogę dostać fakturę na inne dane?',
+    }) as { ticketReference?: string; responses?: unknown[]; status?: string };
+    expect(created.ticketReference).toBe('CIO-2026-0190');
+    // …and an answer of its own. The support tour's second beat says support has
+    // already replied and asks the visitor to open the ticket and read it; while
+    // only the seeded ticket carried a reply, that beat had to ring a DIFFERENT
+    // ticket from the one whose reference had just been issued.
+    expect(created.responses).toHaveLength(1);
+    expect((created.responses as { fromAdmin?: boolean }[])[0].fromAdmin).toBe(true);
+    const mine = matchDemoFixture('GET', '/api/support/ticket/my-tickets', null) as {
+      content?: { ticketReference?: string }[];
+    };
+    expect(mine.content?.map((t) => t.ticketReference)).toEqual(['CIO-2026-0190', 'CIO-2026-0189']);
+    const byRef = matchDemoFixture(
+      'GET',
+      '/api/support/ticket/status',
+      null,
+      new HttpParams({ fromObject: { reference: 'CIO-2026-0190', email: 'demo@checkitout.app' } }),
+    ) as { ticketReference?: string };
+    expect(byRef.ticketReference).toBe('CIO-2026-0190');
+    resetDemoTourStores();
   });
 
   it('answers the primary-address probe with a real address (no false banner)', () => {
@@ -319,5 +418,211 @@ describe('demo fixtures', () => {
     const pl = currentDemoUser();
     expect(pl.userType?.label).toBe('Firma');
     expect(pl.accountStatus?.label).toBe('Aktywne');
+  });
+
+  it('serves the notification bell + panel on the generated /notifications paths', () => {
+    const page = matchDemoFixture('GET', '/api/notifications', null) as {
+      content?: Array<{ id?: number; isRead?: boolean }>;
+    };
+    expect(page.content?.length).toBeGreaterThan(0);
+    const before = (
+      matchDemoFixture('GET', '/api/notifications/unread/count', null) as {
+        count?: number;
+      }
+    ).count;
+    expect(before).toBeGreaterThan(0);
+
+    const unread = page.content?.find((n) => !n.isRead);
+    matchDemoFixture('PATCH', `/api/notifications/${unread?.id}/read`, null);
+    const after = (
+      matchDemoFixture('GET', '/api/notifications/unread/count', null) as {
+        count?: number;
+      }
+    ).count;
+    expect(after).toBe((before ?? 0) - 1);
+
+    matchDemoFixture('POST', '/api/notifications/read-all', null);
+    expect(
+      (matchDemoFixture('GET', '/api/notifications/unread/count', null) as { count?: number })
+        .count,
+    ).toBe(0);
+  });
+
+  it('serves the three clickwrap documents on /legal/current (sign-up can render)', () => {
+    const docs = matchDemoFixture('GET', '/api/legal/current', null) as Array<{
+      type?: string;
+      downloadUrl?: string;
+    }>;
+    expect(docs.map((d) => d.type).sort()).toEqual([
+      'COOKIE_POLICY',
+      'PRIVACY_POLICY',
+      'TERMS_OF_SERVICE',
+    ]);
+    expect(docs.every((d) => d.downloadUrl?.startsWith('/assets/docs/'))).toBe(true);
+  });
+
+  it('serves the dictionary editor: list, categories, add, remove', () => {
+    resetDemoTourStores();
+    const all = matchDemoFixture('GET', '/api/dictionary/all', null) as Array<{ id?: string }>;
+    expect(all.length).toBeGreaterThan(0);
+    const cats = matchDemoFixture('GET', '/api/dictionary/categories', null) as string[];
+    expect(cats).toEqual(expect.arrayContaining(['service_type', 'content_type', 'platform']));
+
+    const created = matchDemoFixture('POST', '/api/dictionary/entry', {
+      key: 'platform.youtube',
+      value: 'YouTube',
+      languageCode: 'pl',
+      category: 'platform',
+    }) as { id?: string };
+    expect(created.id).toBeTruthy();
+    expect((matchDemoFixture('GET', '/api/dictionary/all', null) as unknown[]).length).toBe(
+      all.length + 1,
+    );
+
+    matchDemoFixture(
+      'DELETE',
+      '/api/dictionary/entry',
+      null,
+      new HttpParams().set('id', created.id ?? ''),
+    );
+    expect((matchDemoFixture('GET', '/api/dictionary/all', null) as unknown[]).length).toBe(
+      all.length,
+    );
+  });
+
+  it('serves submitted content per application and records review decisions', () => {
+    resetDemoTourStores();
+    const rows = matchDemoFixture(
+      'GET',
+      '/api/applied-opportunity/content/applied-opportunity/8102',
+      null,
+    ) as Array<{ id?: number; approvalStatus?: string }>;
+    expect(rows.length).toBe(3);
+    expect(rows.some((r) => r.approvalStatus === 'PENDING')).toBe(true);
+    expect(
+      matchDemoFixture('GET', '/api/applied-opportunity/content/applied-opportunity/8101', null),
+    ).toEqual([]);
+
+    const pending = rows.find((r) => r.approvalStatus === 'PENDING');
+    const rejected = matchDemoFixture(
+      'PATCH',
+      `/api/applied-opportunity/content/${pending?.id}/reject`,
+      { approvalNotes: 'Popraw kadr' },
+    ) as { approvalStatus?: string; approvalNotes?: string };
+    expect(rejected.approvalStatus).toBe('REJECTED');
+    expect(rejected.approvalNotes).toBe('Popraw kadr');
+
+    const submitted = matchDemoFixture('POST', '/api/applied-opportunity/content', {
+      appliedOpportunityId: 8101,
+      contentTypeId: 1,
+      contentCount: 1,
+      socialMediaLink: 'https://instagram.com/p/x',
+    }) as { id?: number; approvalStatus?: string };
+    expect(submitted.approvalStatus).toBe('PENDING');
+    expect(
+      (
+        matchDemoFixture(
+          'GET',
+          '/api/applied-opportunity/content/applied-opportunity/8101',
+          null,
+        ) as unknown[]
+      ).length,
+    ).toBe(1);
+    const approved = matchDemoFixture(
+      'PATCH',
+      `/api/applied-opportunity/content/${submitted.id}/approve`,
+      null,
+    ) as { approvalStatus?: string };
+    expect(approved.approvalStatus).toBe('APPROVED');
+  });
+
+  it('serves TOTP enrolment and the phone-sim verify beat (first code expired, second good)', () => {
+    const setup = matchDemoFixture('POST', '/api/twofactor/setup', null) as {
+      secret?: string;
+      qrCodeImage?: string;
+      backupCodes?: string[];
+    };
+    expect(setup.secret).toBeTruthy();
+    expect(setup.qrCodeImage?.startsWith('data:image/svg+xml')).toBe(true);
+    expect(setup.backupCodes?.length).toBe(8);
+    expect(
+      (
+        matchDemoFixture('POST', '/api/twofactor/verify-setup', { code: '123456' }) as {
+          success?: boolean;
+        }
+      ).success,
+    ).toBe(true);
+
+    // The refusal is keyed on submissions, not on how many codes the phone has
+    // produced: a visitor who presses "generate" themselves — which is what the
+    // ring tells them to do — must not spend the beat that shows the refusal.
+    const verify = (code: string): boolean =>
+      (matchDemoFixture('POST', '/api/twofactor/verify', { code }) as { success?: boolean })
+        .success === true;
+
+    resetDemoTourStores();
+    sessionStorage.setItem('demoTotp', JSON.stringify({ attempt: 1, code: '111111' }));
+    expect(verify('111111')).toBe(false); // the first code sent is always stale
+    sessionStorage.setItem('demoTotp', JSON.stringify({ attempt: 2, code: '222222' }));
+    expect(verify('222222')).toBe(true);
+    expect(verify('999999')).toBe(false); // and it still has to be the current one
+
+    // The phone generating three times before anything is sent changes nothing.
+    resetDemoTourStores();
+    sessionStorage.setItem('demoTotp', JSON.stringify({ attempt: 3, code: '333333' }));
+    expect(verify('333333')).toBe(false);
+    expect(verify('333333')).toBe(true);
+
+    const status = matchDemoFixture('GET', '/api/twofactor/status', null) as {
+      canAccessAdmin?: boolean;
+    };
+    expect(typeof status.canAccessAdmin).toBe('boolean');
+  });
+
+  describe('company accept/decline round-trip', () => {
+    beforeEach(() => resetDemoTourStores());
+    afterEach(() => resetDemoTourStores());
+
+    it('moves the accepted application into the in-progress tab and its counter', () => {
+      const before = matchDemoFixture('GET', '/api/applied-opportunity/statistics', null) as {
+        inProgress: number;
+        newOpportunities: number;
+      };
+      expect(before).toMatchObject({ inProgress: 1, newOpportunities: 1 });
+
+      matchDemoFixture(
+        'PATCH',
+        '/api/applied-opportunity/status/update/8101',
+        null,
+        new HttpParams({ fromObject: { accept: 'true' } }),
+      );
+
+      const after = matchDemoFixture('GET', '/api/applied-opportunity/statistics', null) as {
+        inProgress: number;
+        newOpportunities: number;
+      };
+      expect(after).toMatchObject({ inProgress: 2, newOpportunities: 0 });
+      const inProgress = matchDemoFixture(
+        'GET',
+        '/api/applied-opportunity/paged',
+        null,
+        new HttpParams({ fromObject: { 'filters.opportunityStatus': 'ACCEPTED_BY_COMPANY' } }),
+      ) as { content: Array<{ id?: number }> };
+      expect(inProgress.content.map((r) => r.id)).toEqual([8101, 8102]);
+    });
+
+    it('a new tour restores the seed statuses', () => {
+      matchDemoFixture(
+        'PATCH',
+        '/api/applied-opportunity/status/update/8101',
+        null,
+        new HttpParams({ fromObject: { accept: 'true' } }),
+      );
+      resetDemoTourStores();
+      const stats = matchDemoFixture('GET', '/api/applied-opportunity/statistics', null) as {
+        inProgress: number;
+      };
+      expect(stats.inProgress).toBe(1);
+    });
   });
 });

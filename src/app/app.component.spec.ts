@@ -1,18 +1,39 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { provideTransloco, TranslocoService } from '@ngneat/transloco';
+import { of } from 'rxjs';
 import { AppComponent } from './app.component';
+
+class FakeTranslocoLoader {
+  getTranslation() {
+    return of({});
+  }
+}
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AppComponent],
-      providers: [provideRouter([])],
+      providers: [
+        provideRouter([]),
+        provideTransloco({
+          config: { availableLangs: ['en', 'pl'], defaultLang: 'pl' },
+          loader: FakeTranslocoLoader,
+        }),
+      ],
     }).compileComponents();
   });
 
   it('creates', () => {
     const fixture = TestBed.createComponent(AppComponent);
     expect(fixture.componentInstance).toBeTruthy();
+  });
+
+  it('keeps <html lang> in step with the active language', () => {
+    TestBed.createComponent(AppComponent);
+    expect(document.documentElement.lang).toBe('pl');
+    TestBed.inject(TranslocoService).setActiveLang('en');
+    expect(document.documentElement.lang).toBe('en');
   });
 
   it('renders a <router-outlet /> as its entire template', () => {

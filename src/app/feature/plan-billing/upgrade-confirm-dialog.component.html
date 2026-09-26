@@ -1,11 +1,16 @@
-<h2 mat-dialog-title data-testid="upgrade-confirm-title">
+<app-dialog-header
+  icon="trending_up"
+  tone="coral"
+  [eyebrow]="'plan_billing.upgrade.confirm.eyebrow' | transloco"
+  titleTestId="upgrade-confirm-title"
+>
   {{
     'plan_billing.upgrade.confirm.title'
       | transloco: { plan: data.targetPlan, price: data.priceDisplay }
   }}
-</h2>
+</app-dialog-header>
 
-<mat-dialog-content class="!pt-2">
+<mat-dialog-content class="!pt-4">
   <p class="mb-3 text-sm text-ink">
     {{ 'plan_billing.upgrade.confirm.summary' | transloco }}
   </p>
@@ -23,7 +28,8 @@
     data-testid="upgrade-consent-checkbox"
   >
     {{
-      'plan_billing.upgrade.confirm.accept_label' | transloco: { documentName: data.documentName }
+      'plan_billing.upgrade.confirm.accept_label'
+        | transloco: { documentName: data.documentLabel ?? data.documentName }
     }}
   </mat-checkbox>
 

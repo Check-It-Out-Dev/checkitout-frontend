@@ -4,11 +4,13 @@ import { By } from '@angular/platform-browser';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { TranslocoTestingModule } from '@ngneat/transloco';
 import { ConsentService } from '../../../core/consent/consent.service';
+import { SandboxDirectorService } from '../../../core/demo/sandbox-director.service';
 import { CookieBannerComponent } from './cookie-banner.component';
 
 describe('CookieBannerComponent', () => {
   let fixture: ComponentFixture<CookieBannerComponent>;
   let needsDecision: WritableSignal<boolean>;
+  let tourActive: WritableSignal<boolean>;
   let consent: {
     needsDecision: WritableSignal<boolean>;
     acceptAll: jest.Mock;
@@ -19,6 +21,7 @@ describe('CookieBannerComponent', () => {
 
   beforeEach(async () => {
     needsDecision = signal(true);
+    tourActive = signal(false);
     consent = {
       needsDecision,
       acceptAll: jest.fn(),
@@ -34,7 +37,10 @@ describe('CookieBannerComponent', () => {
           translocoConfig: { availableLangs: ['pl'], defaultLang: 'pl' },
         }),
       ],
-      providers: [{ provide: ConsentService, useValue: consent }],
+      providers: [
+        { provide: ConsentService, useValue: consent },
+        { provide: SandboxDirectorService, useValue: { active: tourActive } },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CookieBannerComponent);
@@ -47,6 +53,15 @@ describe('CookieBannerComponent', () => {
   }
 
   it('renders when consent.needsDecision() returns true', () => {
+    expect(getBanner()).not.toBeNull();
+  });
+
+  it('waits while a guided demo tour runs (the guide owns the bottom edge)', () => {
+    tourActive.set(true);
+    fixture.detectChanges();
+    expect(getBanner()).toBeNull();
+    tourActive.set(false);
+    fixture.detectChanges();
     expect(getBanner()).not.toBeNull();
   });
 

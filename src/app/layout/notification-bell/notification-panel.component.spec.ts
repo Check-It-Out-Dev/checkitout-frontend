@@ -62,7 +62,7 @@ describe('NotificationPanelComponent (keyboard a11y)', () => {
         NotificationPanelComponent,
         NoopAnimationsModule,
         TranslocoTestingModule.forRoot({
-          langs: { en: {} },
+          langs: { en: { notifications: { category: { PARTNERSHIP: 'Partnership' } } } },
           translocoConfig: { availableLangs: ['en'], defaultLang: 'en' },
         }),
       ],
@@ -94,5 +94,13 @@ describe('NotificationPanelComponent (keyboard a11y)', () => {
 
     expect(center.markAsRead).not.toHaveBeenCalled();
     expect(navigate).not.toHaveBeenCalled();
+  });
+
+  // The category chip used to print the raw enum ("PARTNERSHIP") next to the
+  // timestamp; it now goes through notifications.category.<value>.
+  it('renders the notification category as a translated label, not the enum', () => {
+    const text = host.textContent ?? '';
+    expect(text).toContain('Partnership');
+    expect(text).not.toMatch(/\bPARTNERSHIP\b/);
   });
 });

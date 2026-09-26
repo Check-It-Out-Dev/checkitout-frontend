@@ -36,6 +36,7 @@ export const TWO_FACTOR_VERIFY_DIALOG_FIXTURES: readonly SandboxFixture[] = [
     id: 'two-factor-verify-dialog-default',
     label: 'TOTP verify dialog · awaiting 6-digit code',
     component: TwoFactorVerifyDialogComponent,
+    frame: 'dialog',
     viewport: { width: 480, height: 360 },
     providers: [
       { provide: MatDialogRef, useValue: DIALOG_REF_STUB },

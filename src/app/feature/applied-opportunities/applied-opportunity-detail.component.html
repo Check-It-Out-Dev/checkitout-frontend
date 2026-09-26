@@ -58,7 +58,7 @@
         {{ 'applied_opportunities.detail.applied_at' | transloco }}
         {{
           application()?.createdTime
-            ? ($safeNavigationMigration(application()?.createdTime) | date: 'mediumDate')
+            ? ($safeNavigationMigration(application()?.createdTime) | localizedDate: 'mediumDate')
             : '—'
         }}
       </p>
@@ -440,7 +440,7 @@
                   }}
                 </div>
                 <div class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate2">
-                  {{ entry.changedAt ? (entry.changedAt | date: 'medium') : '—' }}
+                  {{ entry.changedAt ? (entry.changedAt | localizedDate: 'medium') : '—' }}
                 </div>
                 @if (entry.changeReason) {
                   <div class="mt-1 text-xs text-slate2">{{ entry.changeReason }}</div>

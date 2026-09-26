@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslocoPipe } from '@ngneat/transloco';
 import { WorldSimShellComponent } from './world-sim-shell.component';
@@ -36,7 +36,7 @@ export function readDemoTotp(): DemoTotpState | null {
 @Component({
   selector: 'app-phone-totp-sim',
   imports: [MatIconModule, TranslocoPipe, WorldSimShellComponent],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <app-world-sim-shell position="dock" [caption]="'demo.sims.totp.caption' | transloco">
       <!-- the phone (docked: the 2FA dialog stays usable next to it) -->
@@ -72,21 +72,25 @@ export function readDemoTotp(): DemoTotpState | null {
           </div>
 
           <div class="mt-5 rounded-xl border border-beige bg-cream p-4 text-center">
-            @if (code) {
-              <div class="font-mono text-3xl font-bold tabular-nums tracking-[0.3em] text-ink">
-                {{ code }}
+            @if (code()) {
+              <div
+                class="font-mono text-3xl font-bold tabular-nums tracking-[0.3em] text-ink"
+                data-testid="totp-sim-code"
+              >
+                {{ code() }}
               </div>
             } @else {
               <div class="font-mono text-3xl font-bold tracking-[0.3em] text-ink/20">••••••</div>
             }
             <div
               class="mt-2 text-[11px] font-medium"
-              [class]="attempt === 1 ? 'text-amber-600' : 'text-slate2'"
+              [class]="attempt() === 1 ? 'text-amber-600' : 'text-slate2'"
+              [attr.data-testid]="'totp-sim-' + phase()"
             >
               {{
-                (attempt === 0
+                (attempt() === 0
                   ? 'demo.sims.totp.hintIdle'
-                  : attempt === 1
+                  : attempt() === 1
                     ? 'demo.sims.totp.hintStale'
                     : 'demo.sims.totp.hintFresh'
                 ) | transloco
@@ -97,11 +101,13 @@ export function readDemoTotp(): DemoTotpState | null {
           <button
             type="button"
             (click)="generate()"
+            data-testid="totp-sim-generate"
             class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-navy-900 px-4 py-2.5 text-sm font-semibold text-cream transition-colors hover:bg-navy-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-400"
           >
             <mat-icon class="!h-4 !w-4 !text-base">refresh</mat-icon>
             {{
-              (attempt === 0 ? 'demo.sims.totp.generate' : 'demo.sims.totp.regenerate') | transloco
+              (attempt() === 0 ? 'demo.sims.totp.generate' : 'demo.sims.totp.regenerate')
+                | transloco
             }}
           </button>
         </div>
@@ -110,24 +116,37 @@ export function readDemoTotp(): DemoTotpState | null {
   `,
 })
 export class PhoneTotpSimComponent {
-  code = '';
-  attempt = 0;
+  readonly code = signal('');
+  readonly attempt = signal(0);
+
+  /**
+   * Which of the three things the phone is currently saying.
+   *
+   * The tour needs to know a code has been minted *this* beat, and the attempt
+   * counter is the only thing that can say so — the stored code cannot, because
+   * it survives the first generate and would make the second beat look already
+   * done. Named rather than numbered so the third press does not invent a
+   * fourth state.
+   */
+  readonly phase = computed(() =>
+    this.attempt() === 0 ? 'idle' : this.attempt() === 1 ? 'stale' : 'fresh',
+  );
 
   constructor() {
     const existing = readDemoTotp();
     if (existing) {
-      this.code = existing.code;
-      this.attempt = existing.attempt;
+      this.code.set(existing.code);
+      this.attempt.set(existing.attempt);
     }
   }
 
   generate(): void {
     // Deterministic-enough demo codes; the second one is the good one.
-    this.attempt = Math.min(this.attempt + 1, 2);
-    this.code = String(Math.floor(100000 + Math.random() * 900000));
+    this.attempt.set(Math.min(this.attempt() + 1, 2));
+    this.code.set(String(Math.floor(100000 + Math.random() * 900000)));
     sessionStorage.setItem(
       TOTP_KEY,
-      JSON.stringify({ attempt: this.attempt, code: this.code } satisfies DemoTotpState),
+      JSON.stringify({ attempt: this.attempt(), code: this.code() } satisfies DemoTotpState),
     );
   }
 }

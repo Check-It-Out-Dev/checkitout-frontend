@@ -101,7 +101,9 @@ import type { UserSocialConnectionDtoOut } from '../../api/model/user-social-con
                       <span
                         class="rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-semibold uppercase text-amber-700"
                       >
-                        {{ c.connectionStatus }}
+                        {{
+                          'settings.social.status.' + c.connectionStatus.toLowerCase() | transloco
+                        }}
                       </span>
                     }
                   </div>

@@ -13,6 +13,11 @@ module.exports = {
     // T1 — TOTP helper for admin-2FA scenarios (RFC 6238). Same `.unit.spec.ts`
     // convention so Playwright runner ignores it.
     '<rootDir>/e2e-tests/_framework/**/*.unit.spec.ts',
+    // The process map — what each sandbox tour claims, phase by phase. It has
+    // to stay in step with the scenario registry, and that is a pure-TS check
+    // with no browser in it, so it belongs in the fast gate rather than in the
+    // tier that needs a served build.
+    '<rootDir>/e2e-tests/perf/**/*.unit.spec.ts',
   ],
   moduleFileExtensions: ['ts', 'html', 'js', 'json', 'mjs'],
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],

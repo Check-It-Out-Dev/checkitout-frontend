@@ -1,4 +1,9 @@
-<h2 mat-dialog-title data-testid="downgrade-confirm-title">
+<app-dialog-header
+  icon="trending_down"
+  tone="warn"
+  [eyebrow]="'plan_billing.downgrade.confirm.eyebrow' | transloco"
+  titleTestId="downgrade-confirm-title"
+>
   @if (data.isTrialCancel) {
     {{ 'plan_billing.cancel_trial.confirm.title' | transloco }}
   } @else {
@@ -7,9 +12,9 @@
         | transloco: { plan: data.targetPlan, current: data.currentPlanName }
     }}
   }
-</h2>
+</app-dialog-header>
 
-<mat-dialog-content class="!pt-2">
+<mat-dialog-content class="!pt-4">
   <p class="text-sm leading-relaxed text-ink">
     @if (data.isTrialCancel) {
       {{ 'plan_billing.cancel_trial.confirm.summary' | transloco }}
@@ -19,7 +24,7 @@
           | transloco
             : {
                 plan: data.targetPlan,
-                date: (data.billingPeriodEnd | date: 'mediumDate'),
+                date: (data.billingPeriodEnd | localizedDate: 'mediumDate'),
               }
       }}
     } @else {

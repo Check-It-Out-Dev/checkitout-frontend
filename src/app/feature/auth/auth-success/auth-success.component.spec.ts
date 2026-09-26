@@ -60,10 +60,10 @@ function create(
 describe('AuthSuccessComponent', () => {
   afterEach(() => TestBed.resetTestingModule());
 
-  it('exchanges token + probes /users/me + navigates to / on success', fakeAsync(() => {
+  it('exchanges token + probes /users/me + navigates into the app on success', fakeAsync(() => {
     const { fixture, navSpy } = create();
     tick();
-    expect(navSpy).toHaveBeenCalledWith(['/']);
+    expect(navSpy).toHaveBeenCalledWith(['/collaborations/list']);
     expect(fixture.componentInstance.errorKey()).toBeNull();
   }));
 

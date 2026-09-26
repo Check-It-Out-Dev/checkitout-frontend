@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { LocalizedDatePipe } from '../../../core/i18n/localized-date.pipe';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -56,22 +57,23 @@ const STORAGE_KEY = 'admin-tickets-filters';
  * (403) — the FE has no role guard, same as legacy.
  */
 @Component({
-    selector: 'app-admin-tickets-list',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        TranslocoModule,
-        MatButtonModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        MatPaginatorModule,
-        MatProgressSpinnerModule,
-        MatSelectModule,
-        MatSlideToggleModule,
-    ],
-    templateUrl: './admin-tickets-list.component.html'
+  selector: 'app-admin-tickets-list',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    LocalizedDatePipe,
+    ReactiveFormsModule,
+    TranslocoModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatPaginatorModule,
+    MatProgressSpinnerModule,
+    MatSelectModule,
+    MatSlideToggleModule,
+  ],
+  templateUrl: './admin-tickets-list.component.html',
 })
 export class AdminTicketsListComponent implements OnInit {
   private readonly fb = inject(NonNullableFormBuilder);

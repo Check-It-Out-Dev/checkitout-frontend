@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { LocalizedDatePipe } from '../../core/i18n/localized-date.pipe';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
@@ -37,22 +38,23 @@ type ApplyState = 'idle' | 'submitting' | 'applied' | 'error';
  * resolves the influencer from session and rejects re-apply with 409.
  */
 @Component({
-    selector: 'app-opportunity-detail',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        RouterLink,
-        MatButtonModule,
-        MatChipsModule,
-        MatDialogModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        MatProgressSpinnerModule,
-        TranslocoModule,
-    ],
-    templateUrl: './opportunity-detail.component.html'
+  selector: 'app-opportunity-detail',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    LocalizedDatePipe,
+    ReactiveFormsModule,
+    RouterLink,
+    MatButtonModule,
+    MatChipsModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+    TranslocoModule,
+  ],
+  templateUrl: './opportunity-detail.component.html',
 })
 export class OpportunityDetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);

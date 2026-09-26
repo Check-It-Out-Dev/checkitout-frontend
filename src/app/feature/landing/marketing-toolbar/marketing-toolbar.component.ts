@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@ngneat/transloco';
+import { SessionStateService } from '../../../core/auth/session-state.service';
 import { storeLangChoice } from '../../../core/i18n/lang-preference';
 
 type Locale = 'en' | 'pl';
@@ -28,6 +29,15 @@ type Locale = 'en' | 'pl';
 })
 export class MarketingToolbarComponent {
   private readonly transloco = inject(TranslocoService);
+  private readonly session = inject(SessionStateService);
+
+  /**
+   * Session CACHE only (same rule as noAuthGuard / the support centre): a
+   * signed-in visitor on /support or /grants gets "Przejdź do aplikacji"
+   * instead of "Zaloguj się / Dołącz za darmo". A cold public page stays
+   * anonymous-looking until an app route probes — no request from here.
+   */
+  readonly signedIn = computed(() => this.session.probed() && this.session.isAuthenticated());
 
   readonly activeLang = signal<Locale>((this.transloco.getActiveLang() as Locale) || 'en');
 
@@ -46,9 +56,5 @@ export class MarketingToolbarComponent {
     storeLangChoice(lang);
     this.transloco.setActiveLang(lang);
     this.activeLang.set(lang);
-  }
-
-  flag(lang: Locale): string {
-    return lang === 'pl' ? '🇵🇱' : '🇬🇧';
   }
 }

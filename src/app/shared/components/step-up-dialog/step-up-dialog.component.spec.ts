@@ -129,6 +129,27 @@ describe('StepUpDialogComponent', () => {
     expect(ref.closed).toBeUndefined();
   }));
 
+  it('hands the caret back to the emptied field after a refused code', fakeAsync(() => {
+    const api = new FakeStepUp();
+    api.verify = () =>
+      throwError(() => new HttpErrorResponse({ status: 401, statusText: 'Unauthorized' }));
+    const fixture = create(api, new FakeDialogRef());
+    tick();
+    fixture.detectChanges();
+    const input = (fixture.nativeElement as HTMLElement).querySelector<HTMLInputElement>(
+      '[data-testid="step-up-code-input"]',
+    )!;
+    input.blur();
+
+    fixture.componentInstance.codeControl.setValue('999999');
+    fixture.componentInstance.verify();
+    tick();
+    fixture.detectChanges();
+    tick(); // the focus call waits for the re-render
+
+    expect(document.activeElement).toBe(input);
+  }));
+
   it('classifies 429 as rate_limited', fakeAsync(() => {
     const api = new FakeStepUp();
     api.verify = () => throwError(() => new HttpErrorResponse({ status: 429 }));

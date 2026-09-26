@@ -45,6 +45,8 @@ describe('CreateTicketComponent', () => {
           useValue: {
             user: sessionUser,
             probed: sessionProbed,
+            // The marketing toolbar reads it for its signed-in state.
+            isAuthenticated: () => sessionUser() !== null,
             probe: jest.fn(() => of(null)),
           },
         },

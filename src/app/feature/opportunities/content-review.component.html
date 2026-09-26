@@ -144,7 +144,11 @@
               <p class="mt-1 whitespace-pre-line text-sm text-slate2">{{ row.description }}</p>
             }
             <p class="mt-1 font-mono text-[11px] uppercase tracking-[0.18em] text-slate2">
-              {{ row.contentCreationDate ? (row.contentCreationDate | date: 'mediumDate') : '—' }}
+              {{
+                row.contentCreationDate
+                  ? (row.contentCreationDate | localizedDate: 'mediumDate')
+                  : '—'
+              }}
             </p>
             @if (hasMetrics(row)) {
               <dl

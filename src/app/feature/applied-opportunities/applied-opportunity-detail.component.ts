@@ -1,4 +1,5 @@
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { LocalizedDatePipe } from '../../core/i18n/localized-date.pipe';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -35,18 +36,18 @@ type LoadState = 'loading' | 'loaded' | 'not-found' | 'error';
  * so the two views feel like the same surface.
  */
 @Component({
-    selector: 'app-applied-opportunity-detail',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        CommonModule,
-        DatePipe,
-        RouterLink,
-        MatButtonModule,
-        MatIconModule,
-        MatProgressSpinnerModule,
-        TranslocoModule,
-    ],
-    templateUrl: './applied-opportunity-detail.component.html'
+  selector: 'app-applied-opportunity-detail',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    LocalizedDatePipe,
+    RouterLink,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    TranslocoModule,
+  ],
+  templateUrl: './applied-opportunity-detail.component.html',
 })
 export class AppliedOpportunityDetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);

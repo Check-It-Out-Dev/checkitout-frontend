@@ -40,6 +40,7 @@ export const ADMIN_CASCADE_DELETE_FIXTURES: readonly SandboxFixture[] = [
     id: 'admin-cascade-delete-preview',
     label: 'Admin cascade delete · preview with entity breakdown + warning',
     component: AdminCascadeDeleteDialogComponent,
+    frame: 'dialog',
     providers: [
       { provide: CascadeDeleteApiService, useClass: StubCascadePreview },
       { provide: MatDialogRef, useClass: StubDialogRef },

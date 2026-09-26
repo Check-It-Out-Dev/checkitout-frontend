@@ -716,7 +716,7 @@
   font-family: 'Material Icons';
   font-style: normal;
   font-weight: 400;
-  src: url(/assets/fonts/materialicons_v145_subset.woff2?v=06533991790b) format('woff2');
+  src: url(/assets/fonts/materialicons_v145_subset.woff2?v=2b36b8d0002a) format('woff2');
 }
 
 .material-icons {
@@ -834,6 +834,49 @@ a {
    intentional bullets that opt in with `list-disc` are unaffected. Retires the
    per-file `list-none pl-0` bandaids added one screen at a time. */
 @layer base {
+  /* The one preflight rule everything else assumes: with the UA's content-box,
+     every `w-full` + `p-4` page root measured 100 % + 32 px, so on phones the
+     auth forms and the app sections ran 16 px past the viewport and were
+     clipped on the right (sign-in, sign-up, my-campaigns, campaign form, …).
+     Material sets border-box on its own components already. */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    /* Preflight's border reset: Tailwind's `border`, `border-t`, `divide-*`
+       utilities only set widths and colours — they assume every element
+       already has `border-style: solid` and a zero width. With preflight off
+       the UA default is `none`, so every card outline, divider and chip
+       hairline in the app was invisible (81 elements on the landing page
+       alone, 2026-09-04). Zero width keeps the UA borders of inputs, iframes
+       and hr off until a utility asks for one; hr gets its rule back below. */
+    border-width: 0;
+    border-style: solid;
+    border-color: #e8e2d5; /* beige — the design's hairline colour */
+  }
+  hr {
+    height: 0;
+    color: inherit;
+    border-top-width: 1px;
+  }
+  /* Preflight's button reset, re-applied: every bare <button> (the landing
+     preview's mode toggle, the video facade, the guide's icon buttons, the
+     support centre's e-mail chip…) wore the user-agent chrome — grey fill,
+     2 px outset border, system font — under whatever the template styled.
+     Material's own buttons set all of this themselves and are unaffected. */
+  button {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: default;
+  }
   ul,
   ol {
     list-style: none;
@@ -862,6 +905,11 @@ a {
 .font-display {
   font-family: 'Instrument Serif', ui-serif, Georgia, serif;
   letter-spacing: -0.02em;
+  /* The face ships Regular and Italic only. With preflight off the UA keeps
+     `h1–h6 { font-weight: bold }`, so a display heading without `font-normal`
+     (auth-error, action-router, the codemap page…) got a smeared, browser-
+     synthesised bold. Pin the one weight that exists. */
+  font-weight: 400;
 }
 
 /* Section-eyebrow utility — small uppercase tag above headlines. */
@@ -909,6 +957,8 @@ a {
    stays for accents, icons and non-text surfaces. */
 .cta-primary {
   display: inline-flex;
+  max-width: 100%;
+  text-align: center; /* a label that breaks on a phone keeps both lines centred */
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
@@ -945,6 +995,7 @@ a {
 /* Secondary CTA — ink outline, transparent. */
 .cta-secondary {
   display: inline-flex;
+  max-width: 100%;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
@@ -973,6 +1024,15 @@ a {
     0 0 0 2px var(--cio-bg),
     0 0 0 4px rgba(255, 90, 54, 0.55);
 }
+/* Phones only: the two-part label ("Jesteś twórcą? · Aplikuj…") is a pair of
+   no-wrap spans, so the pill could never get narrower than the whole phrase
+   and ran past the column. Let it break at the separator below `sm`; above it
+   the pills sit in a row and keep their one-line shape. */
+@media (max-width: 639.98px) {
+  .cta-secondary {
+    flex-wrap: wrap;
+  }
+}
 
 /* Card hover-lift, used across feature/campaign/pricing surfaces. */
 .lift {
@@ -983,4 +1043,29 @@ a {
 .lift:hover {
   transform: translateY(-3px);
   box-shadow: 0 18px 30px -22px rgba(14, 17, 22, 0.25);
+}
+
+/* Demo guide active (body class set by DemoGuideComponent): the fixed
+   guide panel (bottom-right) and world simulators (bottom-left) cover the
+   last ~18rem of the viewport — reserve it so paginators, footers and the
+   sign-in page's account cards stay reachable by scrolling. */
+/* The strip the guide's panel and the world simulators sit on. The panel writes
+   its own height into `--demo-guide-h` (demo-guide.component), because a flat
+   18rem was seven pixels short of the recap panel and the marketplace paginator
+   underneath came out cut mid-word on the one screen the closing beat asks the
+   visitor to look at. The fallback is the old figure, for the frame before the
+   panel has measured itself. */
+body.demo-guide-active app-layout main,
+body.demo-guide-active app-auth-layout main,
+body.demo-guide-active app-auth-layout form {
+  padding-bottom: calc(var(--demo-guide-h, 18rem) + 4rem);
+}
+
+/* Material tab strips: MDC's 24 px side padding per tab paginated the six
+   settings tabs at 1440 px (1003 px of tabs in an 864 px column) and the
+   three collaboration tabs on every phone. 12 px lets the labels, not the
+   padding, set the width; the strips stay on one line. */
+.mat-mdc-tab-header .mat-mdc-tab.mdc-tab,
+.mat-mdc-tab-header .mat-mdc-tab-link.mdc-tab {
+  padding: 0 12px;
 }

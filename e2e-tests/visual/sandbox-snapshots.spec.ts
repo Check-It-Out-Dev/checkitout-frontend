@@ -6,9 +6,18 @@ import { expect, test } from '@playwright/test';
  * against them. Run with `--update-snapshots` after intentional UI changes
  * to refresh the baselines.
  *
- * Threshold: Playwright defaults — `maxDiffPixelRatio: 0.05` (5%) per the
- * plan target in 11-PLAYWRIGHT-MATRIX. Tighter thresholds catch more
- * regressions but risk flakiness from font rendering / animation.
+ * Threshold: `maxDiffPixels: 8` with `threshold: 0.1` (per-pixel colour
+ * distance). The 5% ratio default let whole-component regressions (a
+ * one-line copy change, a shifted button row) pass as "unchanged" — most
+ * baselines stayed byte-identical while the renders drifted — and even a
+ * 0.2% ratio still swallowed a changed label. Font rendering is made
+ * deterministic below, so an absolute budget of a few pixels holds.
+ *
+ * Fonts: the app declares `font-display: optional` for its text faces (a
+ * CLS fix). Under parallel workers the 100 ms block period is sometimes
+ * missed and the fixture bakes the fallback font into a baseline. The
+ * stylesheet is rewritten in-flight to `font-display: block` for this
+ * tier only, and `document.fonts.ready` then guarantees the real faces.
  *
  * The fixture list is duplicated here (rather than read from
  * SANDBOX_REGISTRY at runtime) so visual diffs are predictable in CI even
@@ -43,6 +52,9 @@ const FIXTURES = [
   'cookie-banner',
   'cookie-banner-expanded',
   'landing',
+  'dashboard-preview-application',
+  'dashboard-preview-production',
+  'dashboard-preview-results',
   'survey-hub',
   'profile-influencer',
   'profile-company',
@@ -124,6 +136,7 @@ const FIXTURES = [
   'company-setup-idle',
   'company-setup-confirmed',
   'delete-confirmation-dialog',
+  'reject-applicant-dialog',
   'delete-blockers-dialog',
   'error-page-404',
   'error-page-500',
@@ -159,11 +172,19 @@ test.describe('Visual snapshots · Sandbox fixtures', () => {
   // baselines onto safari would be ~54 extra files drifting independently
   // for no signal: chromium catches the layout/copy/state regressions
   // we care about; safari render quirks belong in visual-parity.
-  test.beforeEach(({}, testInfo) => {
+  test.beforeEach(async ({ page }, testInfo) => {
     test.skip(
       !['chromium-desktop', 'mobile-chrome'].includes(testInfo.project.name),
       'Sandbox visual snapshots run on chromium engines only — visual-parity covers cross-engine',
     );
+    await page.route(/\/styles[^/?]*\.css(\?.*)?$/, async (route) => {
+      const response = await route.fetch();
+      const css = await response.text();
+      await route.fulfill({
+        response,
+        body: css.replace(/font-display:\s*optional/g, 'font-display: block'),
+      });
+    });
   });
 
   for (const id of FIXTURES) {
@@ -197,7 +218,12 @@ test.describe('Visual snapshots · Sandbox fixtures', () => {
         fullPage: false,
         // Mask any volatile region (none today; reserve hook for later).
         animations: 'disabled',
-        maxDiffPixelRatio: 0.05,
+        // Absolute, not a ratio: 0.2 % of a 1440×900 frame is 2,600 pixels,
+        // enough to hide a changed label or a missing hairline. Renders are
+        // deterministic on one machine (fonts forced, animations off), so
+        // the budget is a handful of pixels.
+        maxDiffPixels: 8,
+        threshold: 0.1,
       });
     });
   }

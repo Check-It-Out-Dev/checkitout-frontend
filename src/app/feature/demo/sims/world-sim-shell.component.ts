@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 /**
  * World-sim shell — the shared backdrop/frame for "outside world" simulators
@@ -18,17 +18,22 @@ import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
   template: `
     <!-- center: the sim IS the scene (backdrop). dock: the sim sits beside the
          app (bottom-left, no backdrop) so dialogs/forms stay usable next to it.
+         Deliberately NOT aria-modal: the tour's own panel and the ring's pill
+         live outside this frame and must stay reachable — claiming modality
+         would tell a screen reader that the only way forward is inert, and
+         nothing here traps or moves focus to back that claim up. The caption
+         names the frame.
          ONE ng-content only — Angular projects content once, so branching the
          slot across two @if trees silently swallows it. -->
     <div
       class="fixed z-[99980]"
       [class]="
-        position === 'center' ? 'inset-0 flex items-center justify-center p-4' : 'bottom-4 left-4'
+        position() === 'center' ? 'inset-0 flex items-center justify-center p-4' : 'bottom-4 left-4'
       "
-      [attr.role]="position === 'center' ? 'dialog' : 'complementary'"
-      [attr.aria-modal]="position === 'center' ? 'true' : null"
+      [attr.role]="position() === 'center' ? 'dialog' : 'complementary'"
+      [attr.aria-label]="caption()"
     >
-      @if (position === 'center') {
+      @if (position() === 'center') {
         <!-- explicit z pair: the filled simPop transform animation promotes the
              card to its own compositor layer, and Chrome then paints the
              z-auto scrim ABOVE the later sibling — integer z-indexes pin the
@@ -43,17 +48,17 @@ import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
         <p
           class="mt-2.5 text-center text-[11px] font-medium"
           [class]="
-            position === 'center'
+            position() === 'center'
               ? 'text-cream/90'
               : 'max-w-[18rem] rounded-lg border border-beige bg-white/95 px-2 py-1 text-slate2 shadow-sm'
           "
         >
-          {{ caption }}
+          {{ caption() }}
         </p>
       </div>
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [
     `
       .sim-pop {
@@ -79,8 +84,8 @@ import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 })
 export class WorldSimShellComponent {
   /** The "symulacja…" honesty line under the frame. */
-  @Input({ required: true }) caption!: string;
+  readonly caption = input.required<string>();
 
   /** center = sole scene with backdrop; dock = beside the app, no backdrop. */
-  @Input() position: 'center' | 'dock' = 'center';
+  readonly position = input<'center' | 'dock'>('center');
 }

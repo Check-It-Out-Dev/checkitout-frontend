@@ -17,7 +17,9 @@
 
     <!-- Step 1: NIP + verify -->
     <div class="flex flex-col gap-2">
-      <div class="flex items-end gap-2">
+      <!-- items-start + a 10 px offset centres the 36 px button on the 56 px
+           input box; items-end had it hanging next to the field's error slot -->
+      <div class="flex items-start gap-2">
         <mat-form-field appearance="outline" class="flex-1">
           <mat-label>{{ 'auth.sign_up.nip' | transloco }}</mat-label>
           <input
@@ -39,7 +41,7 @@
           (click)="verifyNip()"
           [disabled]="looking() || form.controls.nip.invalid"
           data-testid="business-sign-up-verify"
-          class="!mb-[18px]"
+          class="!mt-2.5"
         >
           @if (looking()) {
             <mat-spinner diameter="18"></mat-spinner>

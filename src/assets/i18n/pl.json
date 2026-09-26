@@ -74,7 +74,7 @@
     "subscription": "Plan i płatności",
     "plan_billing": "Plan i płatności",
     "sign_out": "Wyloguj się",
-    "admin_users": "Zarządzanie użytkownikami",
+    "admin_users": "Użytkownicy",
     "admin_dictionary": "Słownik",
     "admin_tickets": "Zgłoszenia wsparcia"
   },
@@ -171,6 +171,10 @@
   "plan_billing": {
     "unknown_plan": "—",
     "price_per_month": "{{price}} PLN / miesiąc",
+    "documents": {
+      "terms": "Regulamin subskrypcji (v1)",
+      "activation_consent": "Zgoda na aktywację subskrypcji"
+    },
     "billing_period": "Okres rozliczeniowy",
     "trial_ends": "Okres próbny kończy się",
     "campaigns_usage": "Wykorzystane kampanie w tym okresie",
@@ -195,6 +199,7 @@
       },
       "consent": {
         "title": "Zgoda subskrypcyjna",
+        "eyebrow": "Okres próbny Enterprise",
         "summary": "Zanim aktywujemy bezpłatny okres próbny, potrzebujemy Twojej wyraźnej zgody na natychmiastowe rozpoczęcie świadczenia usługi subskrypcji.",
         "eu_notice": "Zaznaczając poniższe pole, wyraźnie żądasz rozpoczęcia świadczenia usługi subskrypcji przed upływem 14-dniowego terminu na odstąpienie od umowy i przyjmujesz do wiadomości, że tracisz prawo odstąpienia z chwilą pełnego wykonania usługi (dyrektywa 2011/83/UE, art. 16 lit. m). Zapis tej zgody — wraz ze znacznikiem czasu i dowodem technicznym — jest przechowywany na Twoim koncie.",
         "accept_label": "Zapoznałem(-am) się z dokumentem {{documentName}} i wyraźnie wyrażam zgodę na natychmiastowe rozpoczęcie świadczenia usługi.",
@@ -212,6 +217,7 @@
       "cta": "Obniż do {{plan}}",
       "confirm": {
         "title": "Obniż do planu {{plan}}",
+        "eyebrow": "Obniżenie planu",
         "summary": "Twój plan zmieni się na {{plan}} z końcem bieżącego okresu rozliczeniowego. Do tego czasu zachowujesz obecne uprawnienia.",
         "summary_with_date": "Twój plan zmieni się na {{plan}} dnia {{date}}. Do tego czasu zachowujesz obecne uprawnienia. Możesz anulować obniżenie w dowolnym momencie przed tą datą.",
         "cancel": "Zachowaj obecny plan",
@@ -246,6 +252,7 @@
       "title": "Zarządzaj metodami płatności i fakturami",
       "hint": "Otwiera Stripe Customer Portal w tym oknie — aktualizacja kart, pobieranie faktur, zmiana planu.",
       "action": "Otwórz portal klienta",
+      "demo_unavailable": "W trybie demo portal płatności jest niedostępny — nie ma tu prawdziwego konta Stripe.",
       "errors": {
         "no_url": "Nie udało się otworzyć portalu. Spróbuj ponownie.",
         "no_customer": "Brak aktywnej subskrypcji. Najpierw wybierz plan.",
@@ -256,8 +263,10 @@
     "upgrade": {
       "section_title": "Zmień plan",
       "cta": "Wybierz plan {{plan}} · {{price}}",
+      "current": "Twój obecny plan · {{plan}}",
       "confirm": {
         "title": "Plan {{plan}} · {{price}}",
+        "eyebrow": "Zmiana planu",
         "summary": "Zostaniesz przekierowany do Stripe Checkout, aby dokończyć płatność. Plan zostanie aktywowany po potwierdzeniu płatności.",
         "terms_excerpt": "Klikając Dalej akceptujesz regulamin subskrypcji: rozliczenie miesięczne w PLN, możliwość anulowania przed kolejnym okresem rozliczeniowym, zwroty proporcjonalne zgodnie z polskim prawem konsumenckim.",
         "accept_label": "Przeczytałem(-am) i akceptuję {{documentName}}.",
@@ -293,6 +302,12 @@
         "SENT": "Wysłana",
         "FAILED": "Nieudana",
         "DEAD_LETTER": "Niedostarczona"
+      },
+      "type": {
+        "STANDARD": "Faktura VAT",
+        "SUBSCRIPTION": "Subskrypcja",
+        "CORRECTION": "Korekta",
+        "PROFORMA": "Proforma"
       }
     },
     "error": {
@@ -321,7 +336,10 @@
       },
       "followers": "{{count}} obserwujących",
       "status": {
-        "connected": "Połączone"
+        "connected": "Połączone",
+        "expired": "Wygasłe",
+        "revoked": "Cofnięte",
+        "disconnected": "Rozłączone"
       },
       "disconnect": "Odłącz",
       "connect": {
@@ -759,6 +777,13 @@
       "applied_at": "Wysłano",
       "accept": "Zaakceptuj",
       "reject": "Odrzuć",
+      "reject_confirm": {
+        "title": "Odrzucić aplikację?",
+        "subtitle": "Tej decyzji nie można cofnąć",
+        "body": "{{name}} otrzyma powiadomienie o odrzuceniu. Aplikacja zniknie z listy kandydatów tej kampanii.",
+        "cancel": "Anuluj",
+        "confirm": "Odrzuć aplikację"
+      },
       "review_content": "Sprawdź treści",
       "unknown_user": "Anonimowy aplikant",
       "empty": "Nikt jeszcze nie zaaplikował do tej kampanii.",
@@ -926,6 +951,7 @@
   "step_up": {
     "dialog": {
       "title": "Potwierdź swoją tożsamość",
+      "eyebrow": "Dodatkowe potwierdzenie",
       "email_instruction": "Wysłaliśmy 6-cyfrowy kod na Twój e-mail. Wpisz go poniżej, aby potwierdzić tę zmianę.",
       "email_instruction_with_email": "Wysłaliśmy 6-cyfrowy kod na {{email}}. Wpisz go poniżej, aby potwierdzić tę zmianę.",
       "totp_instruction": "Wpisz 6-cyfrowy kod z aplikacji uwierzytelniającej, aby potwierdzić tę zmianę.",
@@ -1082,6 +1108,16 @@
       }
     },
     "how_it_works": {
+      "mock": {
+        "campaign": {
+          "name_label": "Nazwa kampanii",
+          "name_value": "Letnia karta kawowa — recenzje twórców",
+          "budget_label": "Budżet i twórcy",
+          "budget_value": "1 500–3 000 zł · 3 twórców · Warszawa",
+          "brief_label": "Brief",
+          "brief_value": "Krótki reel z wizyty w kawiarni, dwa zdjęcia produktu i oznaczenie profilu."
+        }
+      },
       "badge": "Proces",
       "title": "Jak to działa",
       "subtitle": "Prosty 4-etapowy proces uruchomienia skutecznych kampanii influencerskich w mniej niż 90 minut",
@@ -1204,6 +1240,96 @@
           "action": "Opublikuj treść"
         }
       },
+      "beats": {
+        "labels": {
+          "applications": "Zgłoszenia",
+          "approved": "Zatwierdzone",
+          "content": "Reel w produkcji",
+          "reach": "Zasięg",
+          "likes": "Polubienia",
+          "comments": "Komentarze",
+          "roi": "Zwrot",
+          "roi_value": "×3,1",
+          "terms": {
+            "title": "Warunki współpracy",
+            "items": [
+              "1 reel i 2 zdjęcia",
+              "Publikacja do 12 września",
+              "Barter o wartości 200 zł"
+            ]
+          }
+        },
+        "campaign_created": {
+          "brand": {
+            "status": "Kampania aktywna",
+            "note": "Ogłoszenie trafiło do influencerów z Warszawy."
+          },
+          "influencer": {
+            "status": "Nowa kampania",
+            "note": "Kampania pojawia się na liście dostępnych współprac."
+          }
+        },
+        "influencer_application": {
+          "brand": {
+            "status": "Nowe zgłoszenie",
+            "note": "Ola Kowalska zgłosiła się do kampanii."
+          },
+          "influencer": {
+            "status": "Zgłoszenie wysłane",
+            "note": "Profil i statystyki trafiły do firmy."
+          }
+        },
+        "review_selection": {
+          "brand": {
+            "status": "Wybór influencera",
+            "note": "Firma porównuje zgłoszenia i wybiera Olę."
+          },
+          "influencer": {
+            "status": "Zaakceptowana",
+            "note": "Ola otrzymuje potwierdzenie wyboru."
+          }
+        },
+        "agreement_planning": {
+          "brand": {
+            "status": "Warunki uzgodnione",
+            "note": "Zakres, termin i wynagrodzenie są zapisane w umowie."
+          },
+          "influencer": {
+            "status": "Warunki przyjęte",
+            "note": "Ola zna zakres materiału i termin publikacji."
+          }
+        },
+        "content_creation": {
+          "brand": {
+            "status": "Oczekiwanie na treść",
+            "note": "Firma śledzi postęp prac nad materiałem."
+          },
+          "influencer": {
+            "status": "Treść w produkcji",
+            "note": "Ola nagrywa reel i przesyła go do akceptacji."
+          }
+        },
+        "content_approval": {
+          "brand": {
+            "status": "Treść zatwierdzona",
+            "note": "Materiał przeszedł kontrolę i czeka na publikację."
+          },
+          "influencer": {
+            "status": "Zatwierdzone",
+            "note": "Ola ma zgodę na publikację materiału."
+          }
+        },
+        "publication_results": {
+          "brand": {
+            "status": "Kampania zamknięta",
+            "note": "Wyniki trafiają do panelu firmy."
+          },
+          "influencer": {
+            "status": "Opublikowano",
+            "note": "Zasięg i reakcje widzą obie strony."
+          }
+        }
+      },
       "success_modal": {
         "title": "Kampania zakończona sukcesem!",
         "description": "Gratulacje! Proces współpracy został pomyślnie ukończony.",
@@ -1262,37 +1388,7 @@
           }
         },
         "progress": {
-          "title": "Proces współpracy",
-          "steps": [
-            {
-              "title": "Aplikacja",
-              "description": "Aplikacja została wysłana"
-            },
-            {
-              "title": "Akceptacja marki",
-              "description": "Firma zaakceptowała Twoją aplikację"
-            },
-            {
-              "title": "Akceptacja influencera",
-              "description": "Influencer zaakceptował aplikację"
-            },
-            {
-              "title": "Tworzenie treści",
-              "description": "Influencer tworzy materiały treści"
-            },
-            {
-              "title": "Zatwierdzenie treści",
-              "description": "Firma sprawdza i zatwierdza treść"
-            },
-            {
-              "title": "Płatność w toku",
-              "description": "Oczekiwanie na zatwierdzenie płatności"
-            },
-            {
-              "title": "Zakończenie",
-              "description": "Współpraca została pomyślnie zakończona"
-            }
-          ]
+          "title": "Proces współpracy"
         }
       }
     },
@@ -1512,7 +1608,7 @@
       "badge": "Cennik",
       "title": "Wybierz plan dopasowany do Ciebie",
       "description": "Plany dla marek, które zamieniają wpływ w rezultaty. Nasza platforma daje infrastrukturę do szybkiego startu, szybszego uczenia się i skalowania tego, co działa.",
-      "quote": "Chcę szybko i efektywnie kosztowo zarządzać swoją kampanią.",
+      "quote": "„Chcę szybko i efektywnie kosztowo zarządzać swoją kampanią.”",
       "billing": {
         "monthly": "Miesięcznie",
         "annual": "Rocznie",
@@ -1566,7 +1662,7 @@
         }
       },
       "hands_free": {
-        "quote": "Chcę rezultaty influencer marketingu bez podnoszenia palca.",
+        "quote": "„Chcę rezultaty influencer marketingu bez podnoszenia palca.”",
         "title": "Współprace Bez Wysiłku",
         "price": "1599",
         "currency": "zł",
@@ -1580,7 +1676,7 @@
         "cta": "Skontaktuj się z nami"
       },
       "enterprise": {
-        "quote": "Potrzebuję systemu do prowadzenia kampanii influencerskich wewnętrznie tylko z własnymi twórcami.",
+        "quote": "„Potrzebuję systemu do prowadzenia kampanii influencerskich wewnętrznie tylko z własnymi twórcami.”",
         "title": "Enterprise SaaS",
         "price_from": "Od",
         "price": "3999",
@@ -2400,19 +2496,37 @@
         },
         "topology": {
           "label": "NavigationMaster · topologia 3-poziomowa",
-          "master": { "desc": "Jeden punkt wejścia. Zapytaj go o cokolwiek w systemie." },
-          "navigators": { "desc": "Piętnaście obszarów domenowych, przez które kieruje master." },
-          "impls": { "desc": "Serwisy, kontrolery, komponenty, crony — realny kod." },
+          "master": {
+            "desc": "Jeden punkt wejścia. Zapytaj go o cokolwiek w systemie."
+          },
+          "navigators": {
+            "desc": "Piętnaście obszarów domenowych, przez które kieruje master."
+          },
+          "impls": {
+            "desc": "Serwisy, kontrolery, komponenty, crony — realny kod."
+          },
           "caption": "Trzy poziomy, 146 węzłów, 8 typów krawędzi — przechodzone w O(k) przeskokach, nie czytane od góry do dołu."
         },
         "roles": {
           "label": "Sześcioelementowy pryzmat behawioralny",
-          "controller": { "look": "Endpointy REST, komponenty Angulara, handlery webhooków." },
-          "configuration": { "look": "application.yml, @ConfigurationProperties, environment.ts." },
-          "security": { "look": "Filtry auth, HMAC, @PreAuthorize, guardy tras." },
-          "implementation": { "look": "Serwisy, encje, repozytoria, logika biznesowa." },
-          "diagnostics": { "look": "Handlery wyjątków, logi strukturalne, metryki." },
-          "lifecycle": { "look": "Crony, migracje, zdarzenia, przejścia stanów." }
+          "controller": {
+            "look": "Endpointy REST, komponenty Angulara, handlery webhooków."
+          },
+          "configuration": {
+            "look": "application.yml, @ConfigurationProperties, environment.ts."
+          },
+          "security": {
+            "look": "Filtry auth, HMAC, @PreAuthorize, guardy tras."
+          },
+          "implementation": {
+            "look": "Serwisy, encje, repozytoria, logika biznesowa."
+          },
+          "diagnostics": {
+            "look": "Handlery wyjątków, logi strukturalne, metryki."
+          },
+          "lifecycle": {
+            "look": "Crony, migracje, zdarzenia, przejścia stanów."
+          }
         },
         "query": {
           "label": "Jedno zapytanie → kształt całego systemu",
@@ -2445,9 +2559,18 @@
         },
         "chain": {
           "label": "Łańcuch producenta — jedyne źródło prawdy",
-          "be": { "t": "Silnie typowany backend", "d": "@Schema / @Operation na DTO Springa" },
-          "spec": { "t": "openapi.json", "d": "generowany testem integracyjnym, commitowany" },
-          "client": { "t": "Wygenerowany klient TS", "d": "216 modeli · 74 serwisy · zero ręcznych zmian" }
+          "be": {
+            "t": "Silnie typowany backend",
+            "d": "@Schema / @Operation na DTO Springa"
+          },
+          "spec": {
+            "t": "openapi.json",
+            "d": "generowany testem integracyjnym, commitowany"
+          },
+          "client": {
+            "t": "Wygenerowany klient TS",
+            "d": "216 modeli · 74 serwisy · zero ręcznych zmian"
+          }
         },
         "branch": "ten sam wygenerowany import · trzej konsumenci",
         "consumers": {
@@ -2903,7 +3026,7 @@
           "social": "social-connections.json"
         },
         "exportBtn": "Pobierz .zip",
-     "exportDone": "Pobrano",
+        "exportDone": "Pobrano",
         "codeCaption": "Z legal/, user/UserAccountOrchestrator i admin/cascade. Okno karencji jest sterowane konfiguracją (38 dni domyślnie). Tylko dane demo — żadne realne konto nie jest ruszane."
       },
       "zerotrust": {
@@ -3027,6 +3150,7 @@
     },
     "auth": {
       "sign_in": "Zaloguj się",
+      "open_app": "Przejdź do aplikacji",
       "sign_up": "Zarejestruj się",
       "sign_in_after_release": "Logowanie dostępne po premierze aplikacji",
       "sign_up_after_release": "Rejestracja dostępna po premierze aplikacji"
@@ -3424,7 +3548,7 @@
       "terms_and_conditions": "Warunkami korzystania z usługi",
       "complete_registration_button": "Dokończ rejestrację",
       "return_to": "Wróć do",
-      "sign_in": "Logowania",
+      "sign_in": "logowania",
       "platforms": {
         "instagram": {
           "name": "Instagram",
@@ -3468,9 +3592,9 @@
       "sign_up_business": "Firma",
       "sign_up_using": "Zarejestruj się przez",
       "sign_up_using_form": "Zarejestruj się używając formularza",
-      "or_sign_up_as": "lub zarejestruj się jako",
+      "or_sign_up_as": "Zarejestruj się jako",
       "or_with_email": "Lub przez e-mail",
-      "continue_with_instagram": "Kontynuuj z Instagram",
+      "continue_with_instagram": "Kontynuuj z Instagramem",
       "unsupported_provider": "Ten dostawca rejestracji nie jest aktywny. Skorzystaj z e-maila i hasła.",
       "connect_instagram_after": "Będziesz mógł połączyć swoje konto Instagram po rejestracji.",
       "instagram_connecting": "Łączenie...",
@@ -3556,7 +3680,7 @@
       "redirecting_plural": "Przekierowanie za {{count}} sekund",
       "being_redirected": "Trwa przekierowanie!",
       "go_to": "Przejdź do",
-      "sign_in_link": "Logowania"
+      "sign_in_link": "logowania"
     },
     "social_callback": {
       "processing": "Łączymy Twoje konto…",
@@ -3565,7 +3689,7 @@
         "unsupported_platform": "Ten dostawca logowania nie jest jeszcze obsługiwany.",
         "cancelled": "Logowanie Instagram zostało anulowane.",
         "provider_failed": "Autoryzacja Instagram nie powiodła się. Spróbuj ponownie.",
-        "no_code": "Autoryzacja nie zwróciła pomyślnie. Spróbuj ponownie.",
+        "no_code": "Autoryzacja nie powiodła się. Spróbuj ponownie.",
         "csrf_failed": "Nie mogliśmy zweryfikować, że próba logowania pochodzi z Twojej przeglądarki. Rozpocznij od ekranu logowania."
       }
     },
@@ -3584,7 +3708,7 @@
       "email_invalid": "Wprowadź poprawny adres email",
       "submit": "Wyślij link resetujący",
       "return_to": "Wróć do",
-      "sign_in_link": "Logowania",
+      "sign_in_link": "logowania",
       "success_message": "Jeśli Twoje konto email istnieje w naszym systemie, wysłaliśmy email do potwierdzenia lub resetu hasła. Jeśli Twój email nie jest jeszcze potwierdzony, proszę najpierw potwierdź go używając linku w emailu, a następnie kliknij 'Reset hasła' ponownie gdy email będzie już potwierdzony.",
       "rate_limited": "Zbyt wiele żądań. Proszę chwilę poczekać przed ponowną próbą.",
       "error": "Wystąpił błąd. Spróbuj ponownie później."
@@ -3594,7 +3718,7 @@
       "message": "Email z instrukcjami potwierdzenia został wysłany na Twój adres email. Postępuj zgodnie z instrukcjami, aby potwierdzić adres email i aktywować konto.",
       "after_confirmation": "Po potwierdzeniu adresu email wróć do aplikacji i odśwież stronę.",
       "return_to": "Wróć do",
-      "sign_in_link": "Logowania"
+      "sign_in_link": "logowania"
     },
     "action": {
       "unknown_mode_title": "Nieprawidłowy link",
@@ -3632,12 +3756,14 @@
       "success_with_password_message": "Twój email został zweryfikowany, a hasło zostało ustawione. Możesz teraz logować się za pomocą adresu email i hasła."
     },
     "two_factor_verify": {
-      "title": "Uwierzytelnianie dwuskładnikowe",
+      "title": "Potwierdź logowanie",
+      "eyebrow": "Uwierzytelnianie dwuskładnikowe",
       "description": "Wprowadź 6-cyfrowy kod z aplikacji uwierzytelniającej, aby dokończyć logowanie.",
       "code_label": "Kod 6-cyfrowy",
       "submit": "Weryfikuj",
       "cancel": "Anuluj",
       "invalid_code": "Kod nie pasuje. Spróbuj ponownie.",
+      "expired_code": "Kod wygasł. Wygeneruj nowy i spróbuj ponownie.",
       "rate_limited": "Zbyt wiele prób. Poczekaj chwilę i spróbuj ponownie.",
       "service_unavailable": "Usługa jest chwilowo niedostępna. Spróbuj ponownie później.",
       "failed": "Weryfikacja nie powiodła się. Spróbuj ponownie."
@@ -5391,6 +5517,15 @@
       "email_copied": "Email skopiowany do schowka",
       "copy_failed": "Nie udało się skopiować do schowka",
       "click_to_copy": "Kliknij aby skopiować"
+    },
+    "paginator": {
+      "items_per_page": "Wierszy na stronie:",
+      "next_page": "Następna strona",
+      "previous_page": "Poprzednia strona",
+      "first_page": "Pierwsza strona",
+      "last_page": "Ostatnia strona",
+      "range": "{{start}}–{{end}} z {{total}}",
+      "range_empty": "0 z {{total}}"
     }
   },
   "deleteConfirmation": {
@@ -5497,13 +5632,13 @@
       "title": "404 - Strona nie znaleziona",
       "description": "Przepraszamy, strona której szukasz nie została znaleziona."
     },
-    "503": {
-      "title": "503 - Usługa niedostępna",
-      "description": "Serwis jest obecnie niedostępny. Prosimy spróbować ponownie później."
-    },
     "500": {
       "title": "500 - Błąd serwera",
       "description": "Coś poszło nie tak po naszej stronie. Spróbuj ponownie za chwilę."
+    },
+    "503": {
+      "title": "503 - Usługa niedostępna",
+      "description": "Serwis jest obecnie niedostępny. Prosimy spróbować ponownie później."
     },
     "site_title": "Check It Out",
     "site_description": "Łączymy lokalne firmy z influencerami, umożliwiając skuteczne kampanie marketingowe oparte na zaufaniu, transparentności i realnych wynikach.",
@@ -6222,6 +6357,12 @@
     "delete": "Usuń wpis"
   },
   "notifications": {
+    "category": {
+      "PARTNERSHIP": "Współpraca",
+      "ACCOUNT": "Konto",
+      "SUPPORT": "Wsparcie",
+      "SYSTEM": "System"
+    },
     "title": "Powiadomienia",
     "mark_all_read": "Oznacz wszystkie jako przeczytane",
     "mark_read": "Oznacz jako przeczytane",
@@ -6238,6 +6379,12 @@
       "later": "Później",
       "accept": "Akceptuję wszystkie",
       "error": "Nie udało się zapisać zgód. Spróbuj ponownie."
+    },
+    "files": {
+      "privacy": "/assets/docs/privacy_policy_v2_PL.pdf",
+      "terms": "/assets/docs/terms_conditions_v2_PL.pdf",
+      "cookies": "/assets/docs/cookie_policy_v2_PL.pdf",
+      "data_retention": "/assets/docs/data_retention_policy_v2_PL.pdf"
     }
   },
   "demo": {
@@ -6261,7 +6408,7 @@
       "totp": {
         "title": "Authenticator",
         "hintIdle": "Brak kodu — wygeneruj pierwszy",
-        "hintStale": "Ten kod właśnie wygasł — wygeneruj świeży",
+        "hintStale": "Kod jest ważny tylko kilka sekund",
         "hintFresh": "Świeży kod — przepisz go do aplikacji",
         "generate": "Wygeneruj kod",
         "regenerate": "Wygeneruj nowy kod",
@@ -6285,7 +6432,7 @@
         "buyer": "Nabywca",
         "amount": "Kwota",
         "plan": "Plan Business · miesięcznie",
-     "planEnterprise": "Plan Enterprise · miesięcznie",
+        "planEnterprise": "Plan Enterprise · miesięcznie",
         "sendKsef": "Wyślij do KSeF",
         "sentDone": "Wysłana do KSeF",
         "caption": "Symulacja — produkcyjne faktury tworzy saga rozliczeń w Fakturowni; KSeF to jedna flaga w tym samym wywołaniu API."
@@ -6313,7 +6460,13 @@
       "nextSandbox": "Następny sandbox",
       "openSurvey": "Jak to działa w środku",
       "backToHub": "Wszystkie sandboxy",
-      "sandboxHint": "Tryb sandbox — kroki przechodzisz przyciskiem Dalej"
+      "sandboxHint": "Kliknij podświetlony element — wykona ten krok w aplikacji",
+      "readHint": "Obejrzyj ten ekran i kliknij Dalej",
+      "lookHint": "Przeczytaj podświetlony fragment, a potem kliknij Dalej",
+      "fillHint": "Wpisz to w podświetlone pole albo pozwól przewodnikowi to zrobić",
+      "clickHere": "Kliknij tutaj",
+      "retry": "Krok nie został potwierdzony — sprawdź dane i spróbuj ponownie.",
+      "performing": "Wykonuję…"
     },
     "sandboxes": {
       "admin-2fa": {
@@ -6322,8 +6475,10 @@
         "proves": "Admini mają obowiązkowe TOTP; samo skradzione hasło jest bezużyteczne.",
         "steps": {
           "login": "Jesteś adminem — to standardowy ekran logowania. W sandboksie nie musisz nic wpisywać; przejdźmy do kodów.",
-          "first-code": "Serwer chce kod TOTP. W rogu masz telefon admina — wygeneruj kod i przyjrzyj mu się uważnie.",
-          "fresh-code": "Pierwszy kod wygasł, zanim zdążył zadziałać — tak działa prawdziwe TOTP: okno to sekundy. Wygeneruj świeży i admin jest w środku."
+          "first-code": "Serwer chce kod TOTP. W rogu masz telefon admina — wygeneruj pierwszy kod.",
+          "first-code-refused": "Kod jest na telefonie. Przyjrzyj mu się, a potem wyślij go na serwer — i zobacz, co wróci.",
+          "fresh-code": "Pierwszy kod wygasł, zanim zdążył zadziałać — tak działa prawdziwe TOTP: okno to sekundy. Wygeneruj świeży.",
+          "signed-in": "Ten jest aktualny. Wyślij go — okno się zamyka i admin jest w środku."
         },
         "recap": {
           "f1": "Admini nie mają wyboru: TOTP 2FA jest obowiązkowe, wymuszane po stronie serwera.",
@@ -6338,7 +6493,7 @@
         "steps": {
           "change-email": "To ustawienia konta firmy. Wpisz dowolny nowy adres e-mail i wyślij e-mail weryfikacyjny.",
           "enter-code": "Platforma nie ufa samej sesji — jednorazowy kod poszedł na zweryfikowany adres. Zajrzyj do skrzynki w rogu i przepisz go.",
-          "saved": "Po zapisie zmiana działa od razu. A oto decyzja produktowa: firmy współdzielą konta, więc codzienne akcje wymagają tylko logowania — ale wrażliwe żądają świeżego dowodu. To nasza odpowiedź na 2FA dla wspólnych kont."
+          "saved": "Kod przeszedł, więc zmiana ruszyła: na nowy adres poszedł link potwierdzający i to on ją domknie. A oto decyzja produktowa: firmy współdzielą konta, więc codzienne akcje wymagają tylko logowania — ale wrażliwe żądają świeżego dowodu. To nasza odpowiedź na 2FA dla wspólnych kont."
         },
         "recap": {
           "f1": "Wrażliwe akcje uwierzytelniają ponownie: świeży kod, jednorazowy, TTL liczony w minutach.",
@@ -6351,7 +6506,9 @@
         "tagline": "Utwórz kampanię, zobacz zgłoszenie influencera i zdecyduj — cały cykl z fotela firmy.",
         "proves": "Rdzeń marketplace'u: prawdziwe formularze, prawdziwe stany, jeden spójny flow.",
         "steps": {
-          "create-campaign": "To prawdziwy formularz kampanii. Wypełnij to, co dla Ciebie ważne — nazwę, platformę, typ contentu — i opublikuj.",
+          "create-campaign": "Brief kampanii to jeden formularz. Wypełnij go — nazwę wewnętrzną, tytuł publiczny, adres spotkania i to, czego oczekujesz od twórcy.",
+          "publish-campaign": "Formularz jest kompletny, więc przycisk publikacji ożył. Opublikuj — kampania dostaje własną stronę.",
+          "campaign-live": "To jest opublikowana kampania: tytuł publiczny, lokalizacja i brief, dokładnie tak, jak zobaczy ją twórca.",
           "decide-applicant": "Po publikacji kampania od razu zbiera zgłoszenia. To kandydatury Twojej kampanii: zdecyduj o zgłoszeniu Oli — przyjmij je albo odrzuć.",
           "lifecycle": "Zaakceptowana — współpraca przeszła do W trakcie. Każdy stan, przez który właśnie przeszedłeś, to ta sama maszyna, którą rysuje survey."
         },
@@ -6368,6 +6525,7 @@
         "steps": {
           "browse": "Jesteś teraz Olą — twórczynią. To prawdziwe kampanie firm. Otwórz tę, która Ci pasuje.",
           "apply": "Coś dla Ciebie? Aplikuj ze strony kampanii — możesz dorzucić notkę.",
+          "applied": "Aplikacja poszła. Firma widzi ją od razu na swojej liście kandydatów, a Ty masz potwierdzenie na tej stronie.",
           "accepted": "Dobre wieści szybko chodzą: firma właśnie Cię zaakceptowała. To Twój widok zgłoszeń — status już świeci na zielono."
         },
         "recap": {
@@ -6385,7 +6543,9 @@
           "company-confirmed": "Wszystko przyszło z rejestrów samo — GUS, status VAT, PKD, nawet konto bankowe. Potwierdź dane.",
           "verify-mail": "Została jedna rzecz: dowód, że e-mail jest Twój. Brandowany mail właśnie wylądował — otwórz skrzynkę i kliknij.",
           "activated": "Ten klik automatycznie aktywował konto — bez człowieka w pętli. Jesteś na stronie planu: zobacz limity kampanii per plan.",
-          "upgrade": "Potrzeba więcej miejsca? Zrób upgrade planu. Zakładamy, że karta testowa jest już podpięta — kliknij i patrz.",
+          "upgrade": "Potrzeba więcej miejsca? Otwórz zmianę planu — pokażemy cenę i regulamin, zanim cokolwiek potwierdzisz.",
+          "upgrade-terms": "Zanim zapłacisz — regulamin subskrypcji i zgoda. Zaznacz ją; bez tego przycisk płatności zostaje wyłączony.",
+          "upgrade-confirm": "Cena, regulamin i zgoda w jednym oknie. Karta testowa jest już podpięta — potwierdź, a płatność i aktywacja pójdą same.",
           "invoice-sent": "Płatność przeszła, więc saga rozliczeń już wystawiła fakturę w Fakturowni. Odeślij ją do KSeF — jeden klik, jedna flaga.",
           "ksef-done": "I jest — zarejestrowana w krajowym systemie e-faktur, z numerem KSeF."
         },
@@ -6401,6 +6561,7 @@
         "proves": "Support to zbudowany flow z numerami referencyjnymi i mailami — nie czarna dziura w skrzynce.",
         "steps": {
           "ticket-created": "Coś nie gra? Opisz to i wyślij — numer referencyjny dostaniesz od ręki.",
+          "reference-issued": "To jest numer referencyjny zgłoszenia — zapisz go. W produkcji ten sam numer wychodzi mailem, więc rozmowa ma jeden identyfikator po obu stronach.",
           "read-response": "Support już odpowiedział. To Twój widok ticketów — otwórz i przeczytaj odpowiedź. Na produkcji ląduje też mail, z tym samym numerem."
         },
         "recap": {
@@ -6414,13 +6575,16 @@
         "tagline": "Przychodzi ticket; odpowiedz i przeprowadź pełną kasację kaskadową RODO — jak należy.",
         "proves": "Moderacja i prawo do bycia zapomnianym to działające flow, nie strona z polityką.",
         "steps": {
-          "admin-respond": "To kolejka admina. Otwórz ticket i odpowiedz użytkownikowi — Twoja odpowiedź wątku się natychmiast.",
-          "cascade-delete": "Teraz poważna sprawa: wniosek RODO o usunięcie danych. Jesteś na kampanii, której dotyczy — otwórz usunięcie kaskadowe, przejrzyj preview (dokładne liczby per system, jednorazowy kod) i wykonaj.",
+          "admin-respond": "To kolejka admina. Otwórz ticket i odpowiedz użytkownikowi — Twoja odpowiedź trafia do wątku natychmiast.",
+          "reply-threaded": "Odpowiedź jest już w wątku — pod wiadomością klienta, z podpisem i datą. W produkcji w tej samej chwili wychodzi mail z tym samym numerem referencyjnym.",
+          "cascade-delete": "Teraz poważna sprawa: wniosek RODO o usunięcie danych. Jesteś na kampanii, której dotyczy — otwórz usunięcie kaskadowe.",
+          "cascade-confirm": "Liczby w preview to realny stan bazy, nie szacunek: rekordy per system i ostrzeżenie o tym, czego cofnąć się nie da. Potwierdź — kaskada pójdzie przez wszystkie warstwy.",
+          "cascade-receipt": "Tyle rekordów, ile zapowiadał preview — i wpis w archiwum audytowym, którego nikt nie skasuje. Przeczytaj potwierdzenie, zanim je zamkniesz.",
           "by-the-book": "Kaskada przeszła przez Postgres, Firestore i Storage w jednym zorkiestrowanym flow — kampania zniknęła z marketplace'u, a ślad audytowy został. To RODO jako inżynieria."
         },
         "recap": {
           "f1": "Odpowiedzi admina wątkują się na ticketach i powiadamiają użytkownika mailem.",
-          "f2": "Usunięcie to kaskada z preview — dokładne liczby per system i jednorazowy kod, zero ślepych DELETE-ów.",
+          "f2": "Usunięcie to kaskada z preview — dokładne liczby per system, a samo usunięcie musi odesłać jednorazowy kod z tego preview, więc żaden ślepy DELETE nie przejdzie.",
           "f3": "Każda kasacja zostawia zamaskowany ślad audytowy; dane znikają, dowód zostaje."
         }
       }

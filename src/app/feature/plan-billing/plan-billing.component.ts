@@ -1,4 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { LocalizedDatePipe } from '../../core/i18n/localized-date.pipe';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
@@ -19,6 +20,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@ngneat/transloco';
 import { groupedDecimal } from '../../core/i18n/number-format';
+import { isDemoMode } from '../../core/demo/demo-mode';
 import { PublicConfigApiService } from '../../core/config/public-config.service';
 import { firstValueFrom, forkJoin } from 'rxjs';
 import type { InvoiceRecordDtoOut } from '../../core/api-frozen/hidden-models';
@@ -64,19 +66,20 @@ type PortalState = 'idle' | 'opening' | 'error';
  * downgrade, cancel-downgrade, Stripe Portal, consent) on top of this view.
  */
 @Component({
-    selector: 'app-plan-billing',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        CommonModule,
-        RouterLink,
-        MatButtonModule,
-        MatDialogModule,
-        MatDividerModule,
-        MatIconModule,
-        MatProgressSpinnerModule,
-        TranslocoModule,
-    ],
-    templateUrl: './plan-billing.component.html'
+  selector: 'app-plan-billing',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    LocalizedDatePipe,
+    RouterLink,
+    MatButtonModule,
+    MatDialogModule,
+    MatDividerModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    TranslocoModule,
+  ],
+  templateUrl: './plan-billing.component.html',
 })
 export class PlanBillingComponent implements OnInit {
   private readonly api = inject(SubscriptionApiService);
@@ -100,15 +103,28 @@ export class PlanBillingComponent implements OnInit {
    */
   readonly UPGRADE_PLANS: ReadonlyArray<{
     readonly target: UpgradeRequestDtoInTargetPlanEnum;
-    readonly priceDisplay: string;
+    readonly price: number;
   }> = [
     // Prices mirror the BE subscription_plan seed (22-03-2026-subscription-tables.sql:
     // BUSINESS 29 PLN, ENTERPRISE 99 PLN) and the landing tiers (0/29/99). There is
     // no BE plans-list endpoint to source these live; the current plan's price does
     // come live from /status (s.currentPlanPrice). Keep in sync with that seed.
-    { target: UpgradeRequestDtoInTargetPlanEnum.BUSINESS, priceDisplay: '29 PLN / mo' },
-    { target: UpgradeRequestDtoInTargetPlanEnum.ENTERPRISE, priceDisplay: '99 PLN / mo' },
+    { target: UpgradeRequestDtoInTargetPlanEnum.BUSINESS, price: 29 },
+    { target: UpgradeRequestDtoInTargetPlanEnum.ENTERPRISE, price: 99 },
   ];
+
+  /** "29 PLN / miesiąc" — the month word used to be hard-coded English ("/ mo"). */
+  /** Invoice kinds are free-form strings on the BE (`STANDARD` by default);
+   * known ones get a label, unknown ones show as sent rather than as a key. */
+  invoiceTypeLabel(type: string): string {
+    const key = `plan_billing.invoices.type.${type}`;
+    const label = this.transloco.translate(key);
+    return label === key ? type : label;
+  }
+
+  priceLabel(price: number): string {
+    return this.transloco.translate('plan_billing.price_per_month', { price });
+  }
 
   readonly state = signal<LoadState>('loading');
   readonly status = signal<SubscriptionStatusDtoOut | null>(null);
@@ -121,6 +137,8 @@ export class PlanBillingComponent implements OnInit {
   readonly cancelDowngradeErrorKey = signal<string | null>(null);
   readonly portalState = signal<PortalState>('idle');
   readonly portalErrorKey = signal<string | null>(null);
+  /** Neutral notice next to the portal button (demo build only). */
+  readonly portalNoticeKey = signal<string | null>(null);
   readonly cancellingTrial = signal(false);
 
   /**
@@ -143,6 +161,22 @@ export class PlanBillingComponent implements OnInit {
       return [DowngradeRequestDtoInTargetPlanEnum.FREE];
     }
     return [];
+  });
+
+  /**
+   * The upgrade buttons with the current plan marked: a Business subscriber
+   * was offered "Wybierz plan BUSINESS" as if it were an upgrade. The plan
+   * is known only from the status enum (no plans endpoint); Enterprise
+   * subscribers never see the section at all.
+   */
+  readonly upgradeOptions = computed(() => {
+    const current = this.status()?.status;
+    return this.UPGRADE_PLANS.map((plan) => ({
+      ...plan,
+      isCurrent:
+        current === SubscriptionStatus.BUSINESS_ACTIVE &&
+        plan.target === UpgradeRequestDtoInTargetPlanEnum.BUSINESS,
+    }));
   });
 
   readonly statusBadgeClass = computed(() => statusBadgeClass(this.status()?.status));
@@ -217,6 +251,7 @@ export class PlanBillingComponent implements OnInit {
 
     const data: TrialConsentDialogData = {
       documentName: 'Subscription Activation Consent',
+      documentLabel: this.transloco.translate('plan_billing.documents.activation_consent'),
       documentHash: '',
     };
     const ref = this.dialog.open<
@@ -273,8 +308,11 @@ export class PlanBillingComponent implements OnInit {
 
     const data: UpgradeConfirmDialogData = {
       targetPlan: target,
-      priceDisplay: this.UPGRADE_PLANS.find((p) => p.target === target)?.priceDisplay ?? '',
+      priceDisplay: this.priceLabel(
+        this.UPGRADE_PLANS.find((p) => p.target === target)?.price ?? 0,
+      ),
       documentName: 'Subscription Terms v1',
+      documentLabel: this.transloco.translate('plan_billing.documents.terms'),
       documentHash: '',
     };
     const ref = this.dialog.open<
@@ -403,6 +441,12 @@ export class PlanBillingComponent implements OnInit {
    */
   openCustomerPortal(): void {
     if (this.portalState() === 'opening') return;
+    // The demo has no Stripe customer: the portal button used to redirect
+    // to the same page, i.e. do nothing visible. Say so instead.
+    if (isDemoMode()) {
+      this.portalNoticeKey.set('plan_billing.portal.demo_unavailable');
+      return;
+    }
     this.portalState.set('opening');
     this.portalErrorKey.set(null);
 

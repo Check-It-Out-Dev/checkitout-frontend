@@ -106,7 +106,7 @@ describe('SignInComponent', () => {
     expect(fixture.componentInstance.loading()).toBe(false);
   });
 
-  it('signs in via cookies-only chain (login → exchange-token → /users/me) and navigates to /', fakeAsync(() => {
+  it('signs in via cookies-only chain (login → exchange-token → /users/me) and navigates into the app', fakeAsync(() => {
     const api = new FakeAuthApi();
     const { fixture, session } = createComponent(api);
     const router = TestBed.inject(Router);
@@ -122,7 +122,7 @@ describe('SignInComponent', () => {
 
     expect(api.exchangeCalls).toBe(1);
     expect(session.probeCalls).toBe(1);
-    expect(navSpy).toHaveBeenCalledWith(['/']);
+    expect(navSpy).toHaveBeenCalledWith(['/collaborations/list']);
     expect(fixture.componentInstance.loading()).toBe(false);
     expect(fixture.componentInstance.errorKey()).toBeNull();
   }));
@@ -201,7 +201,7 @@ describe('SignInComponent', () => {
     // Two exchanges: partial (post-login) + full (post-TOTP).
     expect(api.exchangeCalls).toBe(2);
     expect(session.probeCalls).toBe(1);
-    expect(navSpy).toHaveBeenCalledWith(['/']);
+    expect(navSpy).toHaveBeenCalledWith(['/collaborations/list']);
   }));
 
   it('signs out + shows two_factor_cancelled when ADMIN cancels TOTP dialog', fakeAsync(() => {

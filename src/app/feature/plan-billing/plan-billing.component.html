@@ -117,7 +117,7 @@
                     | transloco
                       : {
                           targetPlan: s.targetPlanName,
-                          date: (s.billingPeriodEnd | date: 'mediumDate'),
+                          date: (s.billingPeriodEnd | localizedDate: 'mediumDate'),
                         }
                 }}
               </span>
@@ -221,19 +221,24 @@
                 {{ 'plan_billing.upgrade.section_title' | transloco }}
               </p>
               <div class="flex flex-wrap gap-2">
-                @for (plan of UPGRADE_PLANS; track plan.target) {
+                @for (plan of upgradeOptions(); track plan.target) {
                   <button
                     mat-stroked-button
                     color="primary"
                     type="button"
-                    [disabled]="upgrading() !== null"
+                    class="w-full !h-auto !whitespace-normal !py-2 !leading-snug sm:w-auto"
+                    [disabled]="plan.isCurrent || upgrading() !== null"
                     (click)="startUpgrade(plan.target)"
                     [attr.data-testid]="'plan-billing-upgrade-' + plan.target.toLowerCase()"
                   >
-                    {{
-                      'plan_billing.upgrade.cta'
-                        | transloco: { plan: plan.target, price: plan.priceDisplay }
-                    }}
+                    @if (plan.isCurrent) {
+                      {{ 'plan_billing.upgrade.current' | transloco: { plan: plan.target } }}
+                    } @else {
+                      {{
+                        'plan_billing.upgrade.cta'
+                          | transloco: { plan: plan.target, price: priceLabel(plan.price) }
+                      }}
+                    }
                   </button>
                 }
               </div>
@@ -310,6 +315,15 @@
                     {{ ek | transloco }}
                   </p>
                 }
+                @if (portalNoticeKey(); as nk) {
+                  <p
+                    role="status"
+                    class="mt-1 text-sm font-medium text-ink"
+                    data-testid="plan-billing-portal-notice"
+                  >
+                    {{ nk | transloco }}
+                  </p>
+                }
               </div>
               <button
                 mat-stroked-button
@@ -337,8 +351,8 @@
                   {{ 'plan_billing.billing_period' | transloco }}
                 </dt>
                 <dd data-testid="plan-billing-period" class="mt-1 font-medium text-ink">
-                  {{ s.billingPeriodStart | date: 'mediumDate' }} —
-                  {{ s.billingPeriodEnd | date: 'mediumDate' }}
+                  {{ s.billingPeriodStart | localizedDate: 'mediumDate' }} —
+                  {{ s.billingPeriodEnd | localizedDate: 'mediumDate' }}
                 </dd>
               </div>
             }
@@ -348,7 +362,7 @@
                   {{ 'plan_billing.trial_ends' | transloco }}
                 </dt>
                 <dd class="mt-1 font-medium text-ink">
-                  {{ s.trialEndDate | date: 'mediumDate' }}
+                  {{ s.trialEndDate | localizedDate: 'mediumDate' }}
                 </dd>
               </div>
             }
@@ -395,12 +409,12 @@
                 >
                   <div class="flex flex-col">
                     <span class="font-medium text-ink">
-                      {{ inv.createdTime | date: 'mediumDate' }}
+                      {{ inv.createdTime | localizedDate: 'mediumDate' }}
                       @if (inv.invoiceType) {
                         <span
                           class="ml-2 font-mono text-[10px] uppercase tracking-[0.18em] text-slate2"
                         >
-                          {{ inv.invoiceType }}
+                          {{ invoiceTypeLabel(inv.invoiceType) }}
                         </span>
                       }
                     </span>
@@ -410,7 +424,7 @@
                   </div>
                   <div class="flex items-center gap-3">
                     <span class="font-mono text-ink">
-                      {{ inv.amountPln ?? 0 | number: '1.2-2' }} PLN
+                      {{ formatPrice(inv.amountPln ?? 0) }} PLN
                     </span>
                     @if (inv.status) {
                       <span

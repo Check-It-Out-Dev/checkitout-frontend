@@ -1,17 +1,21 @@
 <header
-  class="sticky top-0 z-30 w-full border-b border-beige/60 bg-cream/85 backdrop-blur supports-[backdrop-filter]:bg-cream/70"
+  class="sticky top-0 z-30 w-full border-b border-beige/60 bg-cream"
   data-testid="marketing-toolbar"
 >
-  <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4 lg:px-8">
-    <!-- Brand mark -->
+  <div
+    class="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:gap-4 sm:px-6 sm:py-4 lg:px-8"
+  >
+    <!-- Brand mark — one line at every width (the wordmark used to wrap on phones) -->
     <a
       routerLink="/"
-      class="flex items-center gap-2"
+      class="flex shrink-0 items-center gap-2"
       data-testid="marketing-toolbar-brand"
       aria-label="Check It Out home"
     >
       <img src="assets/brand/c-mark.svg" alt="" class="h-7 w-7" />
-      <span class="font-display text-2xl tracking-tight text-ink">Check It Out</span>
+      <span class="whitespace-nowrap font-display text-xl tracking-tight text-ink sm:text-2xl">
+        Check It Out
+      </span>
     </a>
 
     <!-- Desktop nav (hidden on mobile) -->
@@ -26,8 +30,12 @@
             {{ item.key | transloco }}
           </a>
         } @else {
+          <!-- routerLink + fragment, not href="#…": a bare hash only works on
+               "/", and every marketing page (grants, support, codemap, the
+               survey) renders this toolbar. -->
           <a
-            [href]="'#' + item.anchor"
+            routerLink="/"
+            [fragment]="item.anchor"
             class="text-sm font-medium text-slate2 transition hover:text-coral-500"
             [attr.data-testid]="'marketing-toolbar-nav-' + item.anchor"
           >
@@ -38,7 +46,7 @@
     </nav>
 
     <!-- Right cluster: language switcher + Sign in + Join for free + mobile menu -->
-    <div class="flex items-center gap-3">
+    <div class="flex items-center gap-1.5 sm:gap-3">
       <!-- Language switcher — mono code, dropdown shows full names -->
       <button
         type="button"
@@ -58,7 +66,18 @@
           (click)="setLang('en')"
           data-testid="marketing-toolbar-lang-en"
         >
-          <span class="mr-2 text-lg">🇬🇧</span>
+          <!-- inline SVG flags: regional-indicator emoji render as "GB"/"PL" letters on Windows -->
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 60 30"
+            class="mr-2 inline-block h-3 w-[18px] rounded-[2px] ring-1 ring-ink/10"
+          >
+            <rect width="60" height="30" fill="#012169" />
+            <path d="M0 0l60 30M60 0L0 30" stroke="#fff" stroke-width="6" />
+            <path d="M0 0l60 30M60 0L0 30" stroke="#c8102e" stroke-width="2" />
+            <path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10" />
+            <path d="M30 0v30M0 15h60" stroke="#c8102e" stroke-width="6" />
+          </svg>
           <span>English</span>
           @if (activeLang() === 'en') {
             <mat-icon class="!ml-auto !text-coral-500">check</mat-icon>
@@ -70,7 +89,14 @@
           (click)="setLang('pl')"
           data-testid="marketing-toolbar-lang-pl"
         >
-          <span class="mr-2 text-lg">🇵🇱</span>
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 16 10"
+            class="mr-2 inline-block h-3 w-[18px] rounded-[2px] ring-1 ring-ink/10"
+          >
+            <rect width="16" height="5" fill="#fff" />
+            <rect y="5" width="16" height="5" fill="#dc143c" />
+          </svg>
           <span>Polski</span>
           @if (activeLang() === 'pl') {
             <mat-icon class="!ml-auto !text-coral-500">check</mat-icon>
@@ -78,24 +104,36 @@
         </button>
       </mat-menu>
 
-      <!-- Sign in (text link, desktop only) -->
-      <a
-        routerLink="/auth/sign-in"
-        class="hidden text-sm font-medium text-ink transition hover:text-coral-500 md:inline-block"
-        data-testid="marketing-toolbar-sign-in"
-      >
-        {{ 'header.auth.sign_in' | transloco }}
-      </a>
+      @if (signedIn()) {
+        <!-- Signed in (support centre, grants, codemap…): the way back into the app -->
+        <a
+          routerLink="/collaborations/list"
+          class="hidden items-center gap-1.5 whitespace-nowrap rounded-full bg-coral-700 px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-px hover:bg-coral-800 sm:inline-flex"
+          data-testid="marketing-toolbar-open-app"
+        >
+          {{ 'header.auth.open_app' | transloco }}
+          <mat-icon class="!h-4 !w-4 !text-base">arrow_forward</mat-icon>
+        </a>
+      } @else {
+        <!-- Sign in (text link, desktop only) -->
+        <a
+          routerLink="/auth/sign-in"
+          class="hidden text-sm font-medium text-ink transition hover:text-coral-500 md:inline-block"
+          data-testid="marketing-toolbar-sign-in"
+        >
+          {{ 'header.auth.sign_in' | transloco }}
+        </a>
 
-      <!-- Join for free (primary CTA — coral pill) -->
-      <a
-        routerLink="/auth/sign-up"
-        class="inline-flex items-center gap-1.5 rounded-full bg-coral-700 px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-px hover:bg-coral-800"
-        data-testid="marketing-toolbar-join"
-      >
-        {{ 'landing.buttons.join_for_free' | transloco }}
-        <mat-icon class="!h-4 !w-4 !text-base">arrow_forward</mat-icon>
-      </a>
+        <!-- Join for free (primary CTA — coral pill) -->
+        <a
+          routerLink="/auth/sign-up"
+          class="hidden items-center gap-1.5 whitespace-nowrap rounded-full bg-coral-700 px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-px hover:bg-coral-800 sm:inline-flex"
+          data-testid="marketing-toolbar-join"
+        >
+          {{ 'landing.buttons.join_for_free' | transloco }}
+          <mat-icon class="!h-4 !w-4 !text-base">arrow_forward</mat-icon>
+        </a>
+      }
 
       <!-- Mobile hamburger (md:hidden) -->
       <button
@@ -121,16 +159,33 @@
           } @else {
             <a
               mat-menu-item
-              [href]="'#' + item.anchor"
+              routerLink="/"
+              [fragment]="item.anchor"
               [attr.data-testid]="'marketing-toolbar-mnav-' + item.anchor"
             >
               {{ item.key | transloco }}
             </a>
           }
         }
-        <a mat-menu-item routerLink="/auth/sign-in" data-testid="marketing-toolbar-mnav-sign-in">
-          {{ 'header.auth.sign_in' | transloco }}
-        </a>
+        @if (signedIn()) {
+          <a
+            mat-menu-item
+            routerLink="/collaborations/list"
+            data-testid="marketing-toolbar-mnav-open-app"
+          >
+            {{ 'header.auth.open_app' | transloco }}
+          </a>
+        } @else {
+          <a mat-menu-item routerLink="/auth/sign-in" data-testid="marketing-toolbar-mnav-sign-in">
+            {{ 'header.auth.sign_in' | transloco }}
+          </a>
+          <!-- The coral pill leaves the bar below `sm` (it cannot fit next to
+               the wordmark, language and burger on a 390 px phone); the menu
+               carries it instead, and the hero repeats the CTA anyway. -->
+          <a mat-menu-item routerLink="/auth/sign-up" data-testid="marketing-toolbar-mnav-join">
+            {{ 'landing.buttons.join_for_free' | transloco }}
+          </a>
+        }
       </mat-menu>
     </div>
   </div>

@@ -85,6 +85,7 @@ export const RECONSENT_FIXTURES: readonly SandboxFixture[] = [
     id: 'reconsent-dialog-default',
     label: 'Reconsent dialog · 3-doc clickwrap + days remaining',
     component: ReconsentDialogComponent,
+    frame: 'dialog',
     providers: [
       { provide: ShellStatusService, useClass: StubStatusBlocked },
       { provide: LegalApiService, useClass: StubLegalApi },

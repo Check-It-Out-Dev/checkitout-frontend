@@ -1,4 +1,5 @@
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { LocalizedDatePipe } from '../../core/i18n/localized-date.pipe';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,6 +9,7 @@ import {
   signal,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -15,6 +17,10 @@ import { TranslocoModule } from '@ngneat/transloco';
 import type { AppliedOpportunityDtoOut } from '../../api/model/applied-opportunity-dto-out';
 import { OpportunityStatus } from '../../api/model/opportunity-status';
 import { AppliedOpportunityApiService } from '../../core/applied-opportunities/applied-opportunity.service';
+import {
+  RejectApplicantDialogComponent,
+  type RejectApplicantDialogData,
+} from './reject-applicant-dialog.component';
 
 type LoadState = 'loading' | 'loaded' | 'empty' | 'error' | 'not-found';
 
@@ -32,21 +38,22 @@ type LoadState = 'loading' | 'loaded' | 'empty' | 'error' | 'not-found';
  * portfolio) to E7b — this slice is the minimal triage view.
  */
 @Component({
-    selector: 'app-campaign-applicants',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        CommonModule,
-        DatePipe,
-        RouterLink,
-        MatButtonModule,
-        MatIconModule,
-        MatProgressSpinnerModule,
-        TranslocoModule,
-    ],
-    templateUrl: './campaign-applicants.component.html'
+  selector: 'app-campaign-applicants',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    LocalizedDatePipe,
+    RouterLink,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    TranslocoModule,
+  ],
+  templateUrl: './campaign-applicants.component.html',
 })
 export class CampaignApplicantsComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
+  private readonly dialog = inject(MatDialog);
   private readonly api = inject(AppliedOpportunityApiService);
 
   readonly campaignId = signal<number | null>(null);
@@ -79,6 +86,28 @@ export class CampaignApplicantsComponent implements OnInit {
       },
       error: () => this.state.set('error'),
     });
+  }
+
+  /**
+   * One confirmation before turning an applicant down. Rejecting used to
+   * happen on a single click, next to the accept button, with no undo.
+   */
+  reject(row: AppliedOpportunityDtoOut): void {
+    const id = row.id;
+    if (id == null || this.pendingDecisions().has(id)) return;
+    this.dialog
+      .open<RejectApplicantDialogComponent, RejectApplicantDialogData, boolean>(
+        RejectApplicantDialogComponent,
+        {
+          width: '520px',
+          autoFocus: 'first-tabbable',
+          data: { influencerName: this.influencerDisplayName(row) },
+        },
+      )
+      .afterClosed()
+      .subscribe((confirmed) => {
+        if (confirmed) this.decide(id, false);
+      });
   }
 
   decide(applicantId: number, accept: boolean): void {

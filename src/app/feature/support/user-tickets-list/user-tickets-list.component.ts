@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { LocalizedDatePipe } from '../../../core/i18n/localized-date.pipe';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -49,21 +50,22 @@ const STORAGE_KEY = 'user-tickets-filters';
  * with the ticket's own reference+email pair.
  */
 @Component({
-    selector: 'app-user-tickets-list',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        TranslocoModule,
-        MatButtonModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        MatPaginatorModule,
-        MatProgressSpinnerModule,
-        MatSelectModule,
-    ],
-    templateUrl: './user-tickets-list.component.html'
+  selector: 'app-user-tickets-list',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    LocalizedDatePipe,
+    ReactiveFormsModule,
+    TranslocoModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatPaginatorModule,
+    MatProgressSpinnerModule,
+    MatSelectModule,
+  ],
+  templateUrl: './user-tickets-list.component.html',
 })
 export class UserTicketsListComponent implements OnInit {
   private readonly fb = inject(NonNullableFormBuilder);

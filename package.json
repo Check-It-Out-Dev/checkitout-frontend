@@ -33,6 +33,7 @@
     "check:contract-coverage": "node tools/check-contract-coverage.mjs",
     "test:sandbox": "playwright test e2e-tests/sandbox",
     "test:msw": "playwright test e2e-tests/msw",
+    "test:perf": "node tools/run-perf.mjs",
     "test:visual": "playwright test e2e-tests/visual/",
     "test:visual:update": "playwright test e2e-tests/visual/ --update-snapshots && node tools/write-regen-tag.mjs",
     "test:integration": "playwright test e2e-tests/integration --project=chromium-desktop --retries=2 --workers=1",
@@ -55,7 +56,8 @@
     "serve:ssr:checkitout-frontend": "node dist/check-it-out-fe-greenfield/server/server.mjs",
     "check:icon-subset": "node tools/subset-material-icons.mjs --check",
     "start:demo": "ng serve --configuration demo --ssl",
-    "build:demo": "ng build --configuration demo"
+    "build:demo": "ng build --configuration demo",
+    "serve:demo": "node tools/serve-demo.mjs"
   },
   "private": true,
   "dependencies": {

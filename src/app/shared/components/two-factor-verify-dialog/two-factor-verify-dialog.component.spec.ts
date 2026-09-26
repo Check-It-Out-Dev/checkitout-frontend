@@ -93,6 +93,20 @@ describe('TwoFactorVerifyDialogComponent', () => {
       expect(component.errorKey()).toBeNull();
     });
 
+    it('on success=false with message "expired": says the code expired', () => {
+      // A code that is wrong and a code that is merely late are different
+      // refusals, and the difference is the whole lesson of the 2FA tour: the
+      // dialog used to say "does not match" over a code the visitor had just
+      // watched appear, while the narration explained that the window is
+      // seconds.
+      twoFactor.verify.mockReturnValue(of({ success: false, message: 'expired' }));
+      component.code.setValue('123456');
+
+      component.verify();
+
+      expect(component.errorKey()).toBe('auth.two_factor_verify.expired_code');
+    });
+
     it('on success=false: sets errorKey, does NOT close dialog', () => {
       twoFactor.verify.mockReturnValue(of({ success: false }));
       component.code.setValue('123456');
@@ -103,6 +117,48 @@ describe('TwoFactorVerifyDialogComponent', () => {
       expect(component.errorKey()).toBe('auth.two_factor_verify.invalid_code');
       expect(component.verifying()).toBe(false);
       expect(component.code.enabled).toBe(true);
+    });
+
+    it('on a refused code: hands the caret back with the digits selected', async () => {
+      twoFactor.verify.mockReturnValue(of({ success: false }));
+      component.code.setValue('123456');
+      fixture.detectChanges();
+      const input = (fixture.nativeElement as HTMLElement).querySelector<HTMLInputElement>(
+        '[data-testid="two-factor-verify-code"]',
+      )!;
+      input.blur();
+
+      component.verify();
+      fixture.detectChanges();
+      // the focus is restored after Angular re-enables the control
+      await new Promise((resolve) => setTimeout(resolve));
+
+      expect(document.activeElement).toBe(input);
+      expect(input.selectionStart).toBe(0);
+      expect(input.selectionEnd).toBe('123456'.length);
+    });
+
+    it('on an expired code: empties the field but keeps the reason', async () => {
+      // A code that does not match may be a typo worth correcting; one that has
+      // expired is worth nothing, and leaving it in the field made the demo ring
+      // a control holding exactly the code it had just called dead. The banner
+      // explaining why has to survive the clearing, which is why the value is
+      // set without an event.
+      twoFactor.verify.mockReturnValue(of({ success: false, message: 'expired' }));
+      component.code.setValue('123456');
+      fixture.detectChanges();
+      const input = (fixture.nativeElement as HTMLElement).querySelector<HTMLInputElement>(
+        '[data-testid="two-factor-verify-code"]',
+      )!;
+      input.blur();
+
+      component.verify();
+      fixture.detectChanges();
+      await new Promise((resolve) => setTimeout(resolve));
+
+      expect(component.code.value).toBe('');
+      expect(component.errorKey()).toBe('auth.two_factor_verify.expired_code');
+      expect(document.activeElement).toBe(input);
     });
 
     it('clears prior errorKey on a new verify() attempt', () => {
@@ -178,5 +234,17 @@ describe('TwoFactorVerifyDialogComponent', () => {
       component.cancel();
       expect(dialogRef.close).not.toHaveBeenCalled();
     });
+  });
+
+  it('drops the refusal as soon as the visitor types a different code', () => {
+    // The error belongs to the code that was sent. Left up, the dialog goes on
+    // saying the code did not match while a new one is being typed — and in the
+    // filmed demo it was still saying it over a code that was about to be
+    // accepted.
+    component.errorKey.set('auth.two_factor_verify.invalid_code');
+
+    component.code.setValue('123456');
+
+    expect(component.errorKey()).toBeNull();
   });
 });

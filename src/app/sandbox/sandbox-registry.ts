@@ -1,5 +1,6 @@
 import { Provider, Type } from '@angular/core';
 import { ACCOUNT_DELETION_FIXTURES } from './fixtures/account-deletion.fixture';
+import { REJECT_APPLICANT_FIXTURES } from './fixtures/reject-applicant.fixture';
 import { ACTION_ROUTER_FIXTURES } from './fixtures/action-router.fixture';
 import { ADDRESSES_FIXTURES } from './fixtures/addresses.fixture';
 import { ADMIN_TICKET_DETAIL_FIXTURES } from './fixtures/admin-ticket-detail.fixture';
@@ -73,8 +74,17 @@ export interface SandboxFixture {
   readonly inputs?: Readonly<Record<string, unknown>>;
   /** Optional component-level providers (DI overrides for stubbing services). */
   readonly providers?: readonly Provider[];
-  /** Optional fixed dimensions for snapshot stability (e.g. mobile width). */
+  /** Optional fixed dimensions for snapshot stability (e.g. mobile width).
+   * The host clamps the width to the device viewport (`min(width, 100%)`),
+   * so a desktop-wide fixture lays out at phone width on the mobile project
+   * instead of being clipped. For `frame: 'dialog'` the width becomes the
+   * dialog's `width` (Material's default `maxWidth` still applies). */
   readonly viewport?: { readonly width: number; readonly height: number };
+  /** `'dialog'` opens the component through the real `MatDialog` (surface,
+   * padding, backdrop, `mat-dialog-*` styles) instead of rendering it bare
+   * in the host outlet. `MAT_DIALOG_DATA` is read from `providers` and passed
+   * as the dialog's `data`; the dialog's own `MatDialogRef` replaces any stub. */
+  readonly frame?: 'dialog';
 }
 
 /**
@@ -129,6 +139,7 @@ export const SANDBOX_REGISTRY: readonly SandboxFixture[] = [
   ...COLLABORATION_DASHBOARD_FIXTURES,
   ...COMPANY_SETUP_FIXTURES,
   ...ACCOUNT_DELETION_FIXTURES,
+  ...REJECT_APPLICANT_FIXTURES,
   ...ERROR_PAGE_FIXTURES,
   ...TEAM_FIXTURES,
   ...GRANTS_FIXTURES,

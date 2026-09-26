@@ -1,5 +1,25 @@
 import type { HttpParams } from '@angular/common/http';
+import type { AppliedOpportunityContentDtoOut } from '../../api/model/applied-opportunity-content-dto-out';
 import type { AppliedOpportunityStatisticsDto } from '../../api/model/applied-opportunity-statistics-dto';
+import { ContentApprovalStatus } from '../../api/model/content-approval-status';
+import type { DictionaryEntry } from '../../api/model/dictionary-entry';
+import type { LegalDocumentDtoOut } from '../../api/model/legal-document-dto-out';
+import { LegalDocumentType } from '../../api/model/legal-document-type';
+import type { TotpSetupResponse } from '../api-frozen/hidden-models';
+import type { AddressDtoOut } from '../../api/model/address-dto-out';
+import type { CompanyDataConfirmResponse } from '../../api/model/company-data-confirm-response';
+import { CompanyDataConfirmResponseAccountStatusEnum } from '../../api/model/company-data-confirm-response';
+import { ConnectionStatus } from '../../api/model/connection-status';
+import type { DeletionBlocker } from '../../api/model/deletion-blocker';
+import { DeletionBlockerCategory } from '../../api/model/deletion-blocker-category';
+import type { DeletionEligibilityDto } from '../../api/model/deletion-eligibility-dto';
+import { DeletionEligibilityDtoUserTypeEnum } from '../../api/model/deletion-eligibility-dto';
+import type { UserPreferencesDtoOut } from '../../api/model/user-preferences-dto-out';
+import {
+  UserPreferencesDtoOutCommunicationFrequencyEnum,
+  UserPreferencesDtoOutLanguageEnum,
+} from '../../api/model/user-preferences-dto-out';
+import type { UserSocialConnectionDtoOut } from '../../api/model/user-social-connection-dto-out';
 import {
   buildAddress,
   buildApplication,
@@ -22,7 +42,13 @@ import { TicketCategory } from '../../api/model/ticket-category';
 import { TicketStatus } from '../../api/model/ticket-status';
 import type { UserDtoOut } from '../../api/model/user-dto-out';
 import { readLangChoice } from '../i18n/lang-preference';
-import { currentDemoRole, type DemoRole } from './demo-mode';
+import {
+  currentDemoRole,
+  isDemoSignedIn,
+  setDemoRole,
+  setDemoSignedIn,
+  type DemoRole,
+} from './demo-mode';
 
 /**
  * In-memory demo fixtures (ported from the legacy demo build, REBUILT on
@@ -78,6 +104,167 @@ const DEMO_USERS: Record<DemoRole, UserDtoOut> = {
   ADMIN: DEMO_ADMIN,
 };
 
+// ── Editable profile satellites ──────────────────────────────────────────────
+// The profile card, the address list and the preferences form each replace
+// their state with the response of their save call, so an unmapped PATCH
+// (the interceptor's `{}`) blanked the profile after "Zapisz" and reset the
+// preferences form after every save. These stores are what the responses
+// read from; a guided tour reset puts the seeds back.
+const EDITABLE_PROFILE_FIELDS = ['firstName', 'lastName', 'name', 'phoneNumber'] as const;
+let PROFILE_EDITS: Partial<Record<DemoRole, Partial<UserDtoOut>>> = {};
+
+const SEED_ADDRESSES: readonly AddressDtoOut[] = [
+  buildAddress({ id: 41, userId: 101, addressType: 'MAIN', primary: true }),
+  buildAddress({
+    id: 42,
+    userId: 101,
+    addressType: 'BILLING',
+    primary: false,
+    street: 'ul. Długa 3/5',
+    postalCode: '31-147',
+    additionalInfo: 'Dział księgowości',
+    createdTime: '2026-02-14T11:20:00',
+    lastUpdateTime: '2026-02-14T11:20:00',
+  }),
+];
+let ADDRESSES: AddressDtoOut[] = SEED_ADDRESSES.map((a) => ({ ...a }));
+let nextAddressId = 43;
+
+const SEED_PREFERENCES: UserPreferencesDtoOut = {
+  id: 9001,
+  userId: 101,
+  language: UserPreferencesDtoOutLanguageEnum.PL,
+  timezone: 'Europe/Warsaw',
+  communicationFrequency: UserPreferencesDtoOutCommunicationFrequencyEnum.WEEKLY_DIGEST,
+  darkModeEnabled: false,
+  notificationEmailEnabled: true,
+  notificationPushEnabled: true,
+  notificationSmsEnabled: false,
+  notificationPartnershipEnabled: true,
+  notificationSupportEnabled: true,
+  notificationSystemEnabled: true,
+  notificationEmailPartnershipEnabled: true,
+  notificationEmailSupportEnabled: false,
+  gdprMarketingConsent: false,
+  sharePhoneForPayments: false,
+  twoFactorAuthenticationEnabled: false,
+  createdTime: '2026-01-10T08:05:00Z',
+  lastUpdateTime: '2026-06-01T09:00:00Z',
+};
+let PREFERENCES: UserPreferencesDtoOut = { ...SEED_PREFERENCES };
+
+// Ola's Instagram — the creator persona has a connected account, so the
+// "Połączone konta" tab shows the connected row and the disconnect beat
+// instead of an eternal empty state (the brand persona has none to show).
+const SEED_SOCIAL: readonly UserSocialConnectionDtoOut[] = [
+  {
+    id: 7001,
+    userId: 501,
+    socialUserId: '17841400000001',
+    displayName: 'ola.kowalska',
+    profileUrl: 'https://www.instagram.com/ola.kowalska',
+    followersCount: 12000,
+    isPrimary: true,
+    connectionStatus: ConnectionStatus.CONNECTED,
+    platform: { id: 1, name: 'Instagram', active: true, contentTypes: [] as never },
+    createdTime: '2026-05-02T09:12:00Z',
+    lastSyncTime: '2026-06-15T07:30:00Z',
+    lastUpdateTime: '2026-06-15T07:30:00Z',
+  },
+];
+let SOCIAL: UserSocialConnectionDtoOut[] = SEED_SOCIAL.map((c) => ({ ...c }));
+
+/** `/x/{ids}` — the generated batch deletes put a comma list in the path. */
+function idsFromPath(path: string): number[] {
+  return (path.split('/').pop() ?? '')
+    .split(',')
+    .map(Number)
+    .filter((n) => !Number.isNaN(n));
+}
+
+/**
+ * RODO Art. 17 pre-check. Every persona may deactivate; the brand and the
+ * creator cannot be erased while a campaign or a collaboration is live, and
+ * the admin is the last one standing — which exercises the blockers dialog.
+ */
+function deletionEligibility(): DeletionEligibilityDto {
+  const user = currentDemoUser();
+  const role = currentDemoRole();
+  const pl = (readLangChoice() ?? 'pl') === 'pl';
+  // The blockers dialog prints `reason` as the row title and `description`
+  // as the line under it — a short label and a sentence, never the same text.
+  const blocker = (
+    category: DeletionBlockerCategory,
+    entityType: string,
+    entityIds: number[],
+    reason: [pl: string, en: string],
+    description: [pl: string, en: string],
+  ): DeletionBlocker => ({
+    category,
+    count: entityIds.length,
+    entityType,
+    entityIds,
+    reason: pl ? reason[0] : reason[1],
+    description: pl ? description[0] : description[1],
+  });
+  const permanent =
+    role === 'ADMIN'
+      ? [
+          blocker(
+            DeletionBlockerCategory.LAST_ADMIN,
+            'User',
+            [1],
+            ['Jedyne konto administratora', 'The only administrator account'],
+            [
+              'Najpierw nadaj uprawnienia administratora innej osobie.',
+              'Grant the administrator role to someone else first.',
+            ],
+          ),
+        ]
+      : role === 'INFLUENCER'
+        ? [
+            blocker(
+              DeletionBlockerCategory.ACTIVE_PARTNERSHIP_OPPORTUNITIES,
+              'AppliedOpportunity',
+              [8102],
+              ['Trwająca współpraca', 'A collaboration in progress'],
+              [
+                'Współpraca z FitFuel jest w toku — zakończ ją lub zrezygnuj przed usunięciem konta.',
+                'The FitFuel collaboration is under way — finish or withdraw from it first.',
+              ],
+            ),
+          ]
+        : [
+            blocker(
+              DeletionBlockerCategory.ACTIVE_PARTNERSHIP_OPPORTUNITIES,
+              'PartnershipOpportunity',
+              [501, 502, 503],
+              ['Aktywne kampanie', 'Active campaigns'],
+              [
+                'Trzy kampanie mają otwarte zgłoszenia — zamknij je przed usunięciem konta.',
+                'Three campaigns have open applications — close them before deleting the account.',
+              ],
+            ),
+          ];
+  const soft = role === 'ADMIN' ? permanent : [];
+  return {
+    userId: user.id,
+    userEmail: user.email,
+    userType: DeletionEligibilityDtoUserTypeEnum[role],
+    canSoftDelete: soft.length === 0,
+    canPermanentDelete: false,
+    softDeleteBlockers: soft,
+    permanentDeleteBlockers: permanent,
+    summary: pl
+      ? soft.length === 0
+        ? 'Konto można dezaktywować. Trwałe usunięcie wymaga wcześniejszego zamknięcia aktywnych spraw.'
+        : 'Konta nie można teraz usunąć.'
+      : soft.length === 0
+        ? 'The account can be deactivated. Permanent deletion needs the open items closed first.'
+        : 'The account cannot be deleted right now.',
+  };
+}
+
 /**
  * Enum labels the profile page renders verbatim. The real backend
  * localises them per Accept-Language; the fixtures do the same from the
@@ -90,16 +277,22 @@ const ENUM_LABELS: Record<'en' | 'pl', Record<string, string>> = {
 };
 
 export function currentDemoUser(): UserDtoOut {
-  const user = DEMO_USERS[currentDemoRole()];
+  const role = currentDemoRole();
+  const user = DEMO_USERS[role];
   const labels = ENUM_LABELS[readLangChoice() ?? 'pl'];
-  return mergeDto(user, {
-    userType: user.userType?.value
-      ? { label: labels[user.userType.value] ?? user.userType.label }
-      : undefined,
-    accountStatus: user.accountStatus?.value
-      ? { label: labels[user.accountStatus.value] ?? user.accountStatus.label }
-      : undefined,
-  });
+  return {
+    ...mergeDto(user, {
+      ...PROFILE_EDITS[role],
+      userType: user.userType?.value
+        ? { label: labels[user.userType.value] ?? user.userType.label }
+        : undefined,
+      accountStatus: user.accountStatus?.value
+        ? { label: labels[user.accountStatus.value] ?? user.accountStatus.label }
+        : undefined,
+    }),
+    // The addresses tab reads the list off the user, not off /address.
+    addresses: ADDRESSES.map((a) => ({ ...a })),
+  };
 }
 
 // ── Campaign world (three campaigns, one application mid-lifecycle) ─────────
@@ -169,6 +362,21 @@ const APPLICATION_ACTIVE = buildApplication({
 });
 
 const APPLICATIONS = [APPLICATION_OLA, APPLICATION_ACTIVE];
+/** Seed statuses — the company's accept/decline mutates a row in place so
+ * the dashboard tabs and counters follow; a new tour puts them back. */
+const SEED_APPLICATION_STATUS = new Map(
+  APPLICATIONS.map((a) => [a.id, a.opportunityStatus] as const),
+);
+const IN_PROGRESS_STATUSES: ReadonlySet<string> = new Set([
+  OpportunityStatus.ACCEPTED_BY_COMPANY,
+  OpportunityStatus.ACCEPTED_BY_INFLUENCER,
+  OpportunityStatus.CONTENT_SEND_TO_ACCEPT,
+  OpportunityStatus.CONTENT_APPROVED,
+  OpportunityStatus.CONTENT_REJECTED,
+  OpportunityStatus.CONTENT_POSTED,
+  OpportunityStatus.CONTENT_POSTED_REJECTED,
+  OpportunityStatus.TO_BE_PAID,
+]);
 
 // ── Classification dictionaries (the campaign form's selects) ───────────────
 // PL-market rows, id+name is all the form binds; the guided campaign tour
@@ -216,6 +424,319 @@ const DELETED_CAMPAIGN_IDS = new Set<number>();
  */
 export function resetDemoTourStores(): void {
   DELETED_CAMPAIGN_IDS.clear();
+  CONTENT_ROWS = SEED_CONTENT.map((row) => ({ ...row }));
+  DICTIONARY = SEED_DICTIONARY.map((entry) => ({ ...entry }));
+  PROFILE_EDITS = {};
+  ADDRESSES = SEED_ADDRESSES.map((a) => ({ ...a }));
+  nextAddressId = 43;
+  PREFERENCES = { ...SEED_PREFERENCES };
+  SOCIAL = SEED_SOCIAL.map((c) => ({ ...c }));
+  CREATED_TICKETS = [];
+  nextTicketNo = 190;
+  totpSubmissions = 0;
+  companyMailVerified = false;
+  // The application the influencer tour makes is not seed data; a fresh tour
+  // starts without it.
+  for (let i = APPLICATIONS.length - 1; i >= 0; i--) {
+    if (!SEED_APPLICATION_STATUS.has(APPLICATIONS[i].id ?? -1)) APPLICATIONS.splice(i, 1);
+  }
+  for (const a of APPLICATIONS) {
+    const seed = SEED_APPLICATION_STATUS.get(a.id);
+    if (seed) a.opportunityStatus = seed;
+  }
+}
+
+// ── Submitted content (the review/submission screens of a collaboration) ────
+// Ola's accepted FitFuel collab (application 8102) already carries three
+// rows — one per decision state — so the company's "Sprawdź treści" review
+// has a pending decision to make; her fresh coffee application (8101) has
+// nothing submitted yet. Approve/reject/submit mutate this store so the
+// review, the influencer's submission history and the badge counts agree.
+const SEED_CONTENT: readonly AppliedOpportunityContentDtoOut[] = [
+  {
+    id: 8301,
+    appliedOpportunityId: 8102,
+    contentTypeId: 2,
+    contentTypeName: 'Reel',
+    contentCount: 1,
+    socialMediaLink: 'https://instagram.com/reel/fitfuel-launch',
+    description: 'Rolka premierowa — trening + przekąska po sesji.',
+    approvalStatus: ContentApprovalStatus.PENDING,
+    createdTime: '2026-06-24T10:00:00Z',
+    submissionDate: '2026-06-24T10:00:00Z',
+  },
+  {
+    id: 8302,
+    appliedOpportunityId: 8102,
+    contentTypeId: 1,
+    contentTypeName: 'Post',
+    contentCount: 2,
+    socialMediaLink: 'https://instagram.com/p/fitfuel-teaser',
+    description: 'Dwa posty zapowiadające premierę linii proteinowej.',
+    approvalStatus: ContentApprovalStatus.APPROVED,
+    createdTime: '2026-06-20T14:30:00Z',
+    submissionDate: '2026-06-20T14:30:00Z',
+    likesCount: 1520,
+    commentsCount: 248,
+    viewsCount: 11400,
+    sharesCount: 77,
+  },
+  {
+    id: 8303,
+    appliedOpportunityId: 8102,
+    contentTypeId: 3,
+    contentTypeName: 'Story',
+    contentCount: 3,
+    description: 'Zestaw stories — kadry robocze.',
+    approvalStatus: ContentApprovalStatus.REJECTED,
+    approvalNotes: 'Logo zasłonięte w kadrach 2–3 — poproszę o powtórkę.',
+    createdTime: '2026-06-18T09:15:00Z',
+    submissionDate: '2026-06-18T09:15:00Z',
+  },
+];
+let CONTENT_ROWS: AppliedOpportunityContentDtoOut[] = SEED_CONTENT.map((row) => ({ ...row }));
+
+function contentRowsFor(path: string): AppliedOpportunityContentDtoOut[] {
+  const id = Number(path.match(/applied-opportunity\/(\d+)/)?.[1]);
+  return CONTENT_ROWS.filter((row) => row.appliedOpportunityId === id);
+}
+
+function contentRowById(path: string): AppliedOpportunityContentDtoOut | undefined {
+  const id = Number(path.match(/content\/(\d+)/)?.[1]);
+  return CONTENT_ROWS.find((row) => row.id === id);
+}
+
+function decideContent(
+  path: string,
+  status: ContentApprovalStatus,
+  approvalNotes?: string,
+): AppliedOpportunityContentDtoOut {
+  const row = contentRowById(path) ?? CONTENT_ROWS[0];
+  row.approvalStatus = status;
+  row.lastUpdateTime = new Date().toISOString();
+  if (approvalNotes) row.approvalNotes = approvalNotes;
+  return { ...row };
+}
+
+function storeSubmittedContent(body: unknown): AppliedOpportunityContentDtoOut {
+  const dto = (body ?? {}) as {
+    appliedOpportunityId?: number;
+    contentTypeId?: number;
+    contentCount?: number;
+    socialMediaLink?: string;
+    description?: string;
+    tags?: string;
+  };
+  const type = CONTENT_TYPES.find((t) => t.id === Number(dto.contentTypeId));
+  const row: AppliedOpportunityContentDtoOut = {
+    id: 8300 + CONTENT_ROWS.length + 1,
+    appliedOpportunityId: Number(dto.appliedOpportunityId) || 8102,
+    contentTypeId: dto.contentTypeId,
+    contentTypeName: type?.name ?? 'Post',
+    contentCount: dto.contentCount ?? 1,
+    socialMediaLink: dto.socialMediaLink,
+    description: dto.description,
+    tags: dto.tags,
+    approvalStatus: ContentApprovalStatus.PENDING,
+    createdTime: new Date().toISOString(),
+    submissionDate: new Date().toISOString(),
+  };
+  CONTENT_ROWS = [row, ...CONTENT_ROWS];
+  return { ...row };
+}
+
+// ── Dictionary (the admin's translation editor) ─────────────────────────────
+const SEED_DICTIONARY: readonly DictionaryEntry[] = [
+  {
+    id: 'd1',
+    key: 'service_type.restaurant',
+    value: 'Restauracja',
+    languageCode: 'pl',
+    category: 'service_type',
+  },
+  {
+    id: 'd2',
+    key: 'service_type.restaurant',
+    value: 'Restaurant',
+    languageCode: 'en',
+    category: 'service_type',
+  },
+  {
+    id: 'd3',
+    key: 'service_type.cafe',
+    value: 'Kawiarnia',
+    languageCode: 'pl',
+    category: 'service_type',
+  },
+  {
+    id: 'd4',
+    key: 'content_type.photo',
+    value: 'Zdjęcie',
+    languageCode: 'pl',
+    category: 'content_type',
+  },
+  {
+    id: 'd5',
+    key: 'content_type.reel',
+    value: 'Rolka',
+    languageCode: 'pl',
+    category: 'content_type',
+  },
+  {
+    id: 'd6',
+    key: 'platform.instagram',
+    value: 'Instagram',
+    languageCode: 'pl',
+    category: 'platform',
+  },
+  { id: 'd7', key: 'platform.tiktok', value: 'TikTok', languageCode: 'pl', category: 'platform' },
+];
+let DICTIONARY: DictionaryEntry[] = SEED_DICTIONARY.map((entry) => ({ ...entry }));
+
+function dictionaryCategories(): string[] {
+  return [...new Set(DICTIONARY.map((e) => e.category).filter((c): c is string => !!c))];
+}
+
+// ── Legal documents (sign-up clickwrap + reconsent dialog) ──────────────────
+// The clickwrap refuses to render unless all three required types arrive;
+// links point at the real policy PDFs shipped under assets/docs.
+const LEGAL_DOCS: readonly LegalDocumentDtoOut[] = [
+  {
+    type: LegalDocumentType.TERMS_OF_SERVICE,
+    version: 2,
+    contentHash: 'demo-tos-v2',
+    effectiveFrom: '2026-06-01',
+    downloadUrl: '/assets/docs/terms_conditions_v2_EN.pdf',
+  },
+  {
+    type: LegalDocumentType.PRIVACY_POLICY,
+    version: 2,
+    contentHash: 'demo-pp-v2',
+    effectiveFrom: '2026-06-01',
+    downloadUrl: '/assets/docs/privacy_policy_v2_EN.pdf',
+  },
+  {
+    type: LegalDocumentType.COOKIE_POLICY,
+    version: 2,
+    contentHash: 'demo-cp-v2',
+    effectiveFrom: '2026-06-01',
+    downloadUrl: '/assets/docs/cookie_policy_v2_EN.pdf',
+  },
+];
+
+// ── TOTP enrolment (/auth/2fa-setup) ────────────────────────────────────────
+// A deterministic secret + an inline SVG "QR" — the screen only needs a
+// data URL it can put in an <img>; nothing here is scannable on purpose.
+const TOTP_SETUP: TotpSetupResponse = {
+  secret: 'JBSWY3DPEHPK3PXP',
+  secretFormatted: 'JBSW Y3DP EHPK 3PXP',
+  issuer: 'CheckItOut',
+  email: 'admin@checkitout.app',
+  qrCodeImage:
+    'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNjAiIGhlaWdodD0iMTYwIiB2aWV3Qm94PSIwIDAgMTYgMTYiIHNoYXBlLXJlbmRlcmluZz0iY3Jpc3BFZGdlcyI+PHJlY3Qgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2IiBmaWxsPSIjZmZmIi8+PHBhdGggZmlsbD0iIzBlMTExNiIgZD0iTTEgMWg1djVIMXptMSAxdjNoM1Yyem03LTFoNXY1SDl6bTEgMXYzaDNWMnpNMSA5aDV2NUgxem0xIDF2M2gzdi0zem03LTFoMXYxSDl6bTIgMGgxdjJoLTF6bTIgMGgxdjFoLTF6bS0yIDJoMXYxaC0xem0yIDBoMnYxaC0yem0tNCAyaDF2MWgtMXptMiAwaDF2MmgtMXptMiAxaDF2MWgtMXpNOCA4aDF2MUg4em0wLTZoMXYxSDh6bTAgMmgxdjJIOHptLTUgNGgxdjFIM3ptMiAwaDF2MUg1em0yIDBoMXYxSDd6Ii8+PC9zdmc+',
+  backupCodes: [
+    '1111-2222',
+    '3333-4444',
+    '5555-6666',
+    '7777-8888',
+    '9999-0000',
+    '1212-3434',
+    '5656-7878',
+    '9090-1212',
+  ],
+};
+
+/** The key of the guided scenario currently running (SandboxDirector's `demoSandbox`). */
+function activeSandboxKey(): string | null {
+  try {
+    const raw =
+      typeof sessionStorage === 'undefined' ? null : sessionStorage.getItem('demoSandbox');
+    return raw ? ((JSON.parse(raw) as { key?: string }).key ?? null) : null;
+  } catch {
+    return null;
+  }
+}
+
+/** admin@… plays the admin, a creator-flavoured address plays Ola, anything else the brand. */
+function personaForEmail(email: string | undefined): DemoRole {
+  const e = (email ?? '').trim().toLowerCase();
+  if (e.startsWith('admin')) return 'ADMIN';
+  if (/^(ola|creator|influencer|tworca|twórca)/.test(e) || e.includes('influencer')) {
+    return 'INFLUENCER';
+  }
+  return 'COMPANY';
+}
+
+function demoSignIn(body: unknown): Record<string, unknown> {
+  const email = (body as { email?: string } | undefined)?.email;
+  const role = personaForEmail(email);
+  setDemoRole(role);
+  setDemoSignedIn(true);
+  // The TOTP beat only plays inside the admin-2fa sandbox, where the phone
+  // simulator is on screen to hand out codes; a plain admin sign-in
+  // elsewhere would otherwise strand the visitor in the code dialog.
+  const requires2FA = role === 'ADMIN' && activeSandboxKey() === 'admin-2fa';
+  return {
+    email,
+    displayName: DEMO_USERS[role].name,
+    registered: true,
+    emailVerified: true,
+    requires2FA,
+    requires2FASetup: false,
+  };
+}
+
+function demoRegister(body: unknown): Record<string, unknown> {
+  const email = (body as { email?: string } | undefined)?.email;
+  const path = typeof window === 'undefined' ? '' : window.location.pathname;
+  const role: DemoRole = path.includes('business') ? 'COMPANY' : 'INFLUENCER';
+  setDemoRole(role);
+  setDemoSignedIn(true);
+  return {
+    email,
+    registered: true,
+    emailVerified: true,
+    requires2FA: false,
+    requires2FASetup: false,
+  };
+}
+
+/**
+ * Whether the visitor has clicked the link in the simulated welcome mail.
+ *
+ * The company onboarding beat and the e-mail beat are two beats, and the second
+ * one is only a story if the first has not already told it.
+ */
+let companyMailVerified = false;
+
+/** The inbox simulator's verify link, pressed. */
+export function markCompanyMailVerified(): void {
+  companyMailVerified = true;
+}
+
+/**
+ * How many codes have been *submitted* to /twofactor/verify this run.
+ *
+ * The refusal the tour narrates is keyed on this rather than on how many codes
+ * the phone has produced. A real server never learns how many codes your phone
+ * displayed; it only sees what you send it — and counting generations meant a
+ * visitor who pressed "Wygeneruj kod" themselves, which is exactly what the
+ * ring is telling them to do, burned the refusal. The guide's own code then
+ * became the second one, was accepted, and the admin was signed in on the beat
+ * that exists to show a refusal — after which the tour asked for a code from
+ * inside the app they had just been let into.
+ */
+let totpSubmissions = 0;
+
+/** The phone simulator's state — see PhoneTotpSimComponent (`demoTotp`). */
+function demoTotpAttempt(): { attempt: number; code: string } | null {
+  try {
+    const raw =
+      typeof sessionStorage === 'undefined' ? null : sessionStorage.getItem(DEMO_TOTP_KEY);
+    return raw ? (JSON.parse(raw) as { attempt: number; code: string }) : null;
+  } catch {
+    return null;
+  }
 }
 
 /** All campaigns the demo serves — user-created rows first, then seeds. */
@@ -307,6 +828,19 @@ const NOTIFICATIONS = [
 ];
 
 // ── Support ticket (one answered thread — feeds the support + admin tours) ──
+// Tickets the visitor creates in this session. Creating one used to echo the
+// answered seed (same reference CIO-2026-0189, same answer), so every new
+// ticket looked already handled; a created ticket now gets its own number
+// and starts open and unanswered, and the seeded thread keeps the "read the
+// answer" beat of the support tour.
+let CREATED_TICKETS: SupportTicketDtoOut[] = [];
+let nextTicketNo = 190;
+const allTickets = (): SupportTicketDtoOut[] => [...CREATED_TICKETS, TICKET];
+const ticketByPathId = (path: string): SupportTicketDtoOut | undefined => {
+  const id = Number(path.split('/').pop());
+  return allTickets().find((t) => t.id === id);
+};
+
 const TICKET: SupportTicketDtoOut = {
   id: 9001,
   contactEmail: 'demo@checkitout.app',
@@ -348,6 +882,8 @@ const TICKET: SupportTicketDtoOut = {
 export const DEMO_PLAN_KEY = 'demoPlan';
 /** Session key for the step-up tour's one-time e-mail code. */
 export const DEMO_STEP_UP_KEY = 'demoStepUpCode';
+/** Session key for the phone simulator's TOTP attempt — see PhoneTotpSimComponent. */
+export const DEMO_TOTP_KEY = 'demoTotp';
 const PLAN_PRESETS = {
   BUSINESS: { name: 'Business', price: 29, limit: 5, status: SubscriptionStatus.BUSINESS_ACTIVE },
   ENTERPRISE: {
@@ -373,40 +909,154 @@ interface DemoRule {
 }
 
 const RULES: DemoRule[] = [
-  // Identity + session — the whole app keys off /users/me.
-  { method: 'GET', match: /\/users\/me$/, respond: () => currentDemoUser() },
+  // Identity + session — the whole app keys off /users/me. A signed-out
+  // persona answers `null` (SessionState caches "anonymous" without an
+  // error, so public pages never bounce); sign-in, sign-up and the guided
+  // scenarios flip the flag. Any credentials work — the e-mail picks the
+  // persona, a sign-up takes the role from the form it came from.
+  {
+    method: 'GET',
+    match: /\/users\/me$/,
+    respond: () => (isDemoSignedIn() ? currentDemoUser() : null),
+  },
+  { method: 'POST', match: /\/auth\/firebase\/login$/, respond: (_p, body) => demoSignIn(body) },
+  {
+    method: 'POST',
+    match: /\/auth\/firebase\/register$/,
+    respond: (_p, body) => demoRegister(body),
+  },
   { method: 'POST', match: /\/auth\/exchange-token$/, respond: () => ({ status: 'ok' }) },
-  { method: 'POST', match: /\/auth\/sign-out$/, respond: () => ({}) },
-  // AdminGuard admits the admin persona (2FA "already configured" in demo).
+  {
+    method: 'POST',
+    match: /\/auth\/sign-out$/,
+    respond: () => {
+      setDemoSignedIn(false);
+      return {};
+    },
+  },
+  // Profile edit round-trips (the card re-renders from the response).
+  {
+    method: 'GET',
+    match: /\/users\/me\/deletion-eligibility$/,
+    respond: () => deletionEligibility(),
+  },
+  { method: 'GET', match: /\/users\/\d+$/, respond: () => currentDemoUser() },
+  {
+    method: 'PATCH',
+    match: /\/users\/\d+$/,
+    respond: (_p, body) => {
+      const dto = (body ?? {}) as Record<string, unknown>;
+      const role = currentDemoRole();
+      const edits: Record<string, unknown> = { ...PROFILE_EDITS[role] };
+      for (const key of EDITABLE_PROFILE_FIELDS) {
+        if (typeof dto[key] === 'string') edits[key] = dto[key];
+      }
+      PROFILE_EDITS[role] = edits as Partial<UserDtoOut>;
+      return currentDemoUser();
+    },
+  },
+  // Account deletion (soft): the screen signs out right after, and the
+  // persona simply comes back on the next visit — nothing here is real.
+  { method: 'DELETE', match: /\/users\/[\d,]+$/, respond: () => ({}) },
+  // 2FA — the admin persona is enrolled; enrolment itself (/auth/2fa-setup)
+  // and the admin-2fa sandbox's verify beat are served from the same
+  // deterministic secret. The FIRST code the phone simulator generates is
+  // recorded as already expired (the teaching beat); the second is good.
   {
     method: 'GET',
     match: /\/twofactor\/status$/,
-    respond: () => ({ enabled: currentDemoRole() === 'ADMIN', configured: true }),
+    respond: () => {
+      const admin = currentDemoRole() === 'ADMIN';
+      // Generated TwoFactorStatusResponse fields + the legacy `enabled`/
+      // `configured` pair some callers still read.
+      return {
+        role: admin ? 'ADMIN' : currentDemoRole(),
+        has2FA: admin,
+        requires2FASetup: false,
+        canAccessAdmin: admin,
+        enabled: admin,
+        configured: true,
+      };
+    },
   },
+  { method: 'POST', match: /\/twofactor\/setup$/, respond: () => ({ ...TOTP_SETUP }) },
+  {
+    method: 'POST',
+    match: /\/twofactor\/verify-setup$/,
+    respond: () => ({
+      success: true,
+      verified: true,
+      newRole: 'ADMIN',
+      canAccessAdmin: true,
+      autoLoggedIn: true,
+    }),
+  },
+  {
+    method: 'POST',
+    match: /\/twofactor\/verify$/,
+    respond: (_p, body) => {
+      const sent = (body as { code?: string } | undefined)?.code;
+      const totp = demoTotpAttempt();
+      totpSubmissions += 1;
+      // The first code sent is always too old; any later one is accepted if it
+      // is the code the phone is showing now.
+      const fresh = !!totp && totpSubmissions >= 2 && sent === totp.code;
+      return fresh
+        ? { success: true, verified: true, twoFactorVerified: true, canAccessAdmin: true }
+        : { success: false, verified: false, message: 'expired' };
+    },
+  },
+  {
+    method: 'POST',
+    match: /\/twofactor\/backup-codes$/,
+    respond: () => ({ success: true, backupCodes: TOTP_SETUP.backupCodes }),
+  },
+  { method: 'POST', match: /\/twofactor\/disable$/, respond: () => ({ success: true }) },
 
-  // Legal — consents all accepted; the clickwrap never nags in the demo.
+  // Legal — consents all accepted (the reconsent dialog never nags); the
+  // sign-up clickwrap still needs the three current documents to render.
   {
     method: 'GET',
     match: /\/legal\/current$/,
-    respond: () => [],
+    respond: () => LEGAL_DOCS.map((doc) => ({ ...doc })),
   },
   { method: 'GET', match: /\/legal\/consent\/status$/, respond: () => ({ upToDate: true }) },
 
   // Notifications.
   {
     method: 'GET',
-    match: /\/notification\/unread-count$/,
+    match: /\/notifications\/unread\/count$/,
     respond: () => ({ count: NOTIFICATIONS.filter((n) => !n.isRead).length }),
   },
-  { method: 'GET', match: /\/notification(\/paged)?$/, respond: () => buildPage(NOTIFICATIONS) },
-  { method: 'PATCH', match: /\/notification\/.+/, respond: () => ({}) },
+  // The generated client speaks `/notifications` (plural): the paged list,
+  // `/unread/count` for the bell badge, `/read-all` (POST) and `/{id}/read`
+  // (PATCH). Marking read mutates the seed so the badge and the list agree.
+  { method: 'GET', match: /\/notifications$/, respond: () => buildPage(NOTIFICATIONS) },
+  {
+    method: 'POST',
+    match: /\/notifications\/read-all$/,
+    respond: () => {
+      NOTIFICATIONS.forEach((n) => (n.isRead = true));
+      return {};
+    },
+  },
+  {
+    method: 'PATCH',
+    match: /\/notifications\/\d+\/read$/,
+    respond: (p) => {
+      const id = Number(p.match(/notifications\/(\d+)/)?.[1]);
+      const hit = NOTIFICATIONS.find((n) => n.id === id);
+      if (hit) hit.isRead = true;
+      return {};
+    },
+  },
 
   // Campaigns — reads serve created rows first (the meta card's promise),
   // writes land in the in-memory store so create → detail → list all agree.
   {
     method: 'GET',
     match: /\/partnership-opportunity\/\d+$/,
-    respond: (p) => byId(allCampaigns(), p),
+    respond: (p) => byIdStrict(allCampaigns(), p) ?? DEMO_NOT_FOUND,
   },
   {
     method: 'GET',
@@ -456,6 +1106,50 @@ const RULES: DemoRule[] = [
   },
   { method: 'POST', match: /\/upload\/confirm\//, respond: () => ({ status: 'CONFIRMED' }) },
 
+  // Submitted content — review (company) + submission history (influencer).
+  {
+    method: 'GET',
+    match: /\/applied-opportunity\/content\/applied-opportunity\/\d+\/paged$/,
+    respond: (p) => buildPage(contentRowsFor(p)),
+  },
+  {
+    method: 'GET',
+    match: /\/applied-opportunity\/content\/applied-opportunity\/\d+$/,
+    respond: (p) => contentRowsFor(p).map((row) => ({ ...row })),
+  },
+  {
+    method: 'GET',
+    match: /\/applied-opportunity\/content\/pending-approval$/,
+    respond: () => CONTENT_ROWS.filter((r) => r.approvalStatus === ContentApprovalStatus.PENDING),
+  },
+  {
+    method: 'GET',
+    match: /\/applied-opportunity\/content\/\d+$/,
+    respond: (p) => contentRowById(p) ?? null,
+  },
+  {
+    method: 'POST',
+    match: /\/applied-opportunity\/content$/,
+    respond: (_p, body) => storeSubmittedContent(body),
+  },
+  {
+    method: 'PATCH',
+    match: /\/applied-opportunity\/content\/\d+\/approve$/,
+    respond: (p) => decideContent(p, ContentApprovalStatus.APPROVED),
+  },
+  {
+    method: 'PATCH',
+    match: /\/applied-opportunity\/content\/\d+\/reject$/,
+    respond: (p, body, params) =>
+      decideContent(
+        p,
+        ContentApprovalStatus.REJECTED,
+        (body as { approvalNotes?: string } | undefined)?.approvalNotes ??
+          params?.get('approvalNotes') ??
+          undefined,
+      ),
+  },
+
   // Deciding an application (accept/decline) echoes the row with the new
   // status — the detail page re-renders from the response.
   {
@@ -467,16 +1161,42 @@ const RULES: DemoRule[] = [
     },
   },
 
-  // Influencer apply — echoes a fresh application for the chosen campaign.
+  // Influencer apply — records a fresh application for the chosen campaign.
+  //
+  // It used to read `partnershipOpportunityId` from the request, and the client
+  // sends `partnershipOpportunity`, so the lookup never matched and every
+  // application came back as the builder's default: campaign 501, "Letnia
+  // kampania specjałów kawowych", with a note the visitor had not written. The
+  // influencer tour applies to 503 and its closing beat then showed a different
+  // campaign entirely — a reviewer walking it by hand put it plainly, that the
+  // campaign at the end is not the campaign the visitor chose.
+  //
+  // And the echo was only an echo: nothing was stored, so the collaborations
+  // list could only ever show the seeded rows. The tour's last beat promises the
+  // company has just accepted you, so the row goes in accepted, where the
+  // narration says it is.
   {
     method: 'POST',
     match: /\/applied-opportunity$/,
     respond: (_p, body) => {
-      const dto = (body ?? {}) as { partnershipOpportunityId?: number; note?: string };
-      const campaign = allCampaigns().find((c) => c.id === dto.partnershipOpportunityId);
-      return buildApplication({
+      const dto = (body ?? {}) as {
+        partnershipOpportunity?: number;
+        partnershipOpportunityId?: number;
+        note?: string;
+      };
+      const wanted = dto.partnershipOpportunity ?? dto.partnershipOpportunityId;
+      const campaign = allCampaigns().find((c) => c.id === wanted);
+      const made = buildApplication({
         id: 8200,
+        opportunityStatus: buildOpportunityStatus(OpportunityStatus.ACCEPTED_BY_COMPANY),
         note: dto.note,
+        influencer: {
+          id: 501,
+          name: 'Ola Kowalska',
+          firstName: 'Ola',
+          lastName: 'Kowalska',
+          email: 'ola.kowalska@example.com',
+        } as never,
         partnershipOpportunity: campaign
           ? {
               id: campaign.id,
@@ -486,6 +1206,10 @@ const RULES: DemoRule[] = [
             }
           : undefined,
       });
+      const at = APPLICATIONS.findIndex((x) => x.id === made.id);
+      if (at >= 0) APPLICATIONS.splice(at, 1, made);
+      else APPLICATIONS.push(made);
+      return made;
     },
   },
 
@@ -493,13 +1217,17 @@ const RULES: DemoRule[] = [
   {
     method: 'GET',
     match: /\/applied-opportunity\/statistics$/,
-    respond: () =>
-      ({
-        total: 2,
-        newOpportunities: 1,
-        inProgress: 1,
-        done: 0,
-      }) satisfies AppliedOpportunityStatisticsDto,
+    // Counted from the store so an accepted applicant moves the tab badges.
+    respond: () => {
+      const status = (a: (typeof APPLICATIONS)[number]): string => a.opportunityStatus?.value ?? '';
+      return {
+        total: APPLICATIONS.length,
+        newOpportunities: APPLICATIONS.filter((a) => status(a) === OpportunityStatus.APPLIED)
+          .length,
+        inProgress: APPLICATIONS.filter((a) => IN_PROGRESS_STATUSES.has(status(a))).length,
+        done: APPLICATIONS.filter((a) => status(a) === OpportunityStatus.DONE).length,
+      } satisfies AppliedOpportunityStatisticsDto;
+    },
   },
   {
     // The service contract is a BARE array (not a page) — a page-shaped
@@ -517,7 +1245,11 @@ const RULES: DemoRule[] = [
       },
     ],
   },
-  { method: 'GET', match: /\/applied-opportunity\/\d+$/, respond: (p) => byId(APPLICATIONS, p) },
+  {
+    method: 'GET',
+    match: /\/applied-opportunity\/\d+$/,
+    respond: (p) => byIdStrict(APPLICATIONS, p) ?? DEMO_NOT_FOUND,
+  },
   {
     // The campaign-applicants page filters by partnershipOpportunity.id —
     // honour it so campaign 501's applicants view shows only Ola's row.
@@ -525,9 +1257,14 @@ const RULES: DemoRule[] = [
     match: /\/applied-opportunity(\/paged)?$/,
     respond: (_p, _b, params) => {
       const campaignId = params?.get('filters.partnershipOpportunity.id');
-      const rows = campaignId
+      // The collaboration dashboard asks per tab: `opportunityStatus=A,B,C`.
+      const statuses = params?.get('filters.opportunityStatus')?.split(',').filter(Boolean);
+      let rows = campaignId
         ? APPLICATIONS.filter((a) => String(a.partnershipOpportunity?.id) === campaignId)
         : APPLICATIONS;
+      if (statuses?.length) {
+        rows = rows.filter((a) => statuses.includes(a.opportunityStatus?.value ?? ''));
+      }
       return buildPage(rows);
     },
   },
@@ -550,13 +1287,19 @@ const RULES: DemoRule[] = [
         : influencerTurn
           ? OpportunityStatus.REJECTED_BY_INFLUENCER
           : OpportunityStatus.REJECTED_BY_COMPANY;
-      return mergeDto(existing, { opportunityStatus: buildOpportunityStatus(next) } as never);
+      // Persist: the applicants page updates in place from the echo, but the
+      // dashboard's "W trakcie" tab and its counters re-read the store.
+      existing.opportunityStatus = buildOpportunityStatus(next);
+      return mergeDto(existing, {} as never);
     },
   },
   {
     method: 'GET',
     match: /\/activecoop\/inprogress$/,
-    respond: () => buildPage([APPLICATION_ACTIVE]),
+    respond: () =>
+      buildPage(
+        APPLICATIONS.filter((a) => IN_PROGRESS_STATUSES.has(a.opportunityStatus?.value ?? '')),
+      ),
   },
 
   // Step-up re-auth — the change-email / sensitive-action sandboxes drive
@@ -602,13 +1345,128 @@ const RULES: DemoRule[] = [
   // address object — the shell computes the "profile incomplete" banner
   // from it, and an empty or list-shaped body reads as "no primary
   // address", contradicting the persona's complete profile.
-  { method: 'GET', match: /\/address\/user\/\d+\/primary$/, respond: () => buildAddress() },
-  { method: 'GET', match: /\/address\/user\/\d+$/, respond: () => [buildAddress()] },
   {
     method: 'GET',
-    match: /\/user-preferences\/user\/\d+$/,
-    respond: () => ({ darkMode: false, communicationFrequency: 'WEEKLY' }),
+    match: /\/address\/user\/\d+\/primary$/,
+    respond: () => ({ ...(ADDRESSES.find((a) => a.primary) ?? ADDRESSES[0] ?? buildAddress()) }),
   },
+  {
+    method: 'GET',
+    match: /\/address\/user\/\d+$/,
+    respond: () => ADDRESSES.map((a) => ({ ...a })),
+  },
+  {
+    method: 'POST',
+    match: /\/address\/user\/\d+$/,
+    respond: (_p, body) => {
+      const dto = (body ?? {}) as Partial<AddressDtoOut>;
+      const now = new Date().toISOString();
+      const primary = dto.primary === true || ADDRESSES.length === 0;
+      if (primary) ADDRESSES.forEach((a) => (a.primary = false));
+      const created = buildAddress({
+        id: nextAddressId++,
+        userId: currentDemoUser().id,
+        street: dto.street ?? '',
+        city: dto.city ?? '',
+        postalCode: dto.postalCode ?? '',
+        country: dto.country ?? 'Polska',
+        state: dto.state ?? '',
+        additionalInfo: dto.additionalInfo ?? '',
+        addressType: dto.addressType ?? 'MAIN',
+        primary,
+        createdTime: now,
+        lastUpdateTime: now,
+      });
+      ADDRESSES.push(created);
+      return { ...created };
+    },
+  },
+  {
+    method: 'PATCH',
+    match: /\/address\/\d+$/,
+    respond: (path, body) => {
+      const id = Number(path.split('/').pop());
+      const current = ADDRESSES.find((a) => a.id === id);
+      if (!current) return {};
+      const dto = (body ?? {}) as Partial<AddressDtoOut>;
+      if (dto.primary === true) ADDRESSES.forEach((a) => (a.primary = a.id === id));
+      Object.assign(current, dto, { id, lastUpdateTime: new Date().toISOString() });
+      return { ...current };
+    },
+  },
+  {
+    method: 'DELETE',
+    match: /\/address\/[\d,]+$/,
+    respond: (path) => {
+      const ids = idsFromPath(path);
+      ADDRESSES = ADDRESSES.filter((a) => !ids.includes(a.id ?? -1));
+      return {};
+    },
+  },
+  {
+    method: 'GET',
+    match: /\/user-preferences\/(me|user\/\d+)$/,
+    respond: () => ({ ...PREFERENCES }),
+  },
+  {
+    method: 'PATCH',
+    match: /\/user-preferences\/me$/,
+    respond: (_p, body) => {
+      PREFERENCES = {
+        ...PREFERENCES,
+        ...((body ?? {}) as Partial<UserPreferencesDtoOut>),
+        lastUpdateTime: new Date().toISOString(),
+      };
+      return { ...PREFERENCES };
+    },
+  },
+  {
+    method: 'GET',
+    match: /\/user-social-connection(\/paged)?$/,
+    respond: () =>
+      buildPage(currentDemoRole() === 'INFLUENCER' ? SOCIAL.map((c) => ({ ...c })) : []),
+  },
+  {
+    method: 'DELETE',
+    match: /\/user-social-connection\/[\d,]+$/,
+    respond: (path) => {
+      const ids = idsFromPath(path);
+      SOCIAL = SOCIAL.filter((c) => !ids.includes(c.id ?? -1));
+      return {};
+    },
+  },
+  // Company onboarding's last beat — confirming the registry data leaves the
+  // account waiting on the e-mail, which is the beat the tour narrates next.
+  //
+  // It used to answer ACTIVE straight away, so the screen behind the inbox card
+  // read "Twoje konto jest aktywne!" while the guide was asking the visitor to
+  // go and prove the address is theirs. A reviewer walking the tour by hand read
+  // the page through the half-transparent card and reported the tour announcing
+  // the result of the step it was still asking for.
+  {
+    method: 'POST',
+    match: /\/registry\/confirm$/,
+    respond: (_p, body) =>
+      ({
+        activated: companyMailVerified,
+        accountStatus: companyMailVerified
+          ? CompanyDataConfirmResponseAccountStatusEnum.ACTIVE
+          : CompanyDataConfirmResponseAccountStatusEnum.IN_VALIDATION,
+        companyDataId: 1,
+        companyName: 'Demo Brand Sp. z o.o.',
+        nip: (body as { nip?: string } | null)?.nip ?? '5260250995',
+        message:
+          (readLangChoice() ?? 'pl') === 'pl'
+            ? companyMailVerified
+              ? 'Dane firmy potwierdzone — konto jest aktywne.'
+              : 'Dane firmy potwierdzone — zostało potwierdzenie adresu e-mail.'
+            : companyMailVerified
+              ? 'Company data confirmed — the account is active.'
+              : 'Company data confirmed — the e-mail address is still to be verified.',
+      }) satisfies CompanyDataConfirmResponse,
+  },
+  // The 503 page re-probes the backend before it sends the visitor back.
+  { method: 'GET', match: /\/test\/health$/, respond: () => ({ status: 'UP' }) },
 
   // Payments visible but mocked — no real charge can exist here. The status
   // shape is the generated SubscriptionStatusDtoOut; the plan page renders
@@ -718,28 +1576,77 @@ const RULES: DemoRule[] = [
       }) satisfies NipLookupResponse,
   },
 
-  // Support — one answered thread; the user's my-tickets and the admin queue
-  // read the same fixture, so both tour beats show a real conversation.
-  // Creating a ticket echoes the same reference the answered thread carries —
-  // the "watch the answer arrive" beat rides one coherent story.
+  // Support — one answered seed thread plus whatever the visitor creates;
+  // my-tickets, the admin queue and the by-reference lookup read the same
+  // store, so a created ticket shows up everywhere under its own number.
   {
     method: 'POST',
     match: /\/support\/ticket$/,
     respond: (_p, body) => {
-      const dto = (body ?? {}) as { subject?: string; description?: string };
-      return {
-        ...TICKET,
+      const dto = (body ?? {}) as {
+        subject?: string;
+        description?: string;
+        contactEmail?: string;
+        category?: TicketCategory;
+      };
+      const now = '2026-09-02T09:15:00';
+      const created: SupportTicketDtoOut = {
+        id: 9002 + CREATED_TICKETS.length,
+        contactEmail: dto.contactEmail ?? TICKET.contactEmail,
         subject: dto.subject ?? TICKET.subject,
         description: dto.description ?? TICKET.description,
+        status: TicketStatus.OPEN,
+        statusDisplay: 'Otwarty',
+        category: dto.category ?? TICKET.category,
+        categoryDisplay:
+          !dto.category || dto.category === TICKET.category ? TICKET.categoryDisplay : undefined,
+        ticketReference: `CIO-2026-${String(nextTicketNo++).padStart(4, '0')}`,
+        createdTime: now,
+        lastUpdateTime: now,
+        // The tour's next beat says "Support juz odpowiedzial" and asks the
+        // visitor to open the ticket and read the answer. It used to ring the
+        // SEEDED ticket, because that was the only one carrying a reply — so the
+        // beat sent the visitor to a different ticket from the one they had just
+        // filed, under a reference they had just been given. A reviewer reading
+        // frames put it exactly that way. The answer belongs to the ticket that
+        // was raised.
+        responses: [
+          {
+            id: 1,
+            ticketId: 9002 + CREATED_TICKETS.length,
+            content:
+              (readLangChoice() ?? 'pl') === 'pl'
+                ? 'Dzień dobry! Faktury za dany miesiąc wystawiamy pierwszego dnia następnego ' +
+                  'miesiąca i wysyłamy na adres rozliczeniowy firmy. Wszystkie znajdziesz też w ' +
+                  'zakładce Rozliczenia — z numerem KSeF, jeśli był nadany.'
+                : 'Hello! Invoices for a given month are issued on the first day of the next one ' +
+                  'and sent to the company billing address. They are all in the Billing tab as ' +
+                  'well, with the KSeF number where one was assigned.',
+            fromAdmin: true,
+            adminName: 'Zespół checkItOut',
+            createdTime: now,
+          },
+        ],
       };
+      CREATED_TICKETS = [created, ...CREATED_TICKETS];
+      return { ...created };
     },
   },
-  { method: 'GET', match: /\/support\/ticket\/my-tickets$/, respond: () => buildPage([TICKET]) },
-  { method: 'GET', match: /\/support\/ticket\/\d+$/, respond: () => TICKET },
-  { method: 'GET', match: /\/support\/ticket$/, respond: () => buildPage([TICKET]) },
+  {
+    method: 'GET',
+    match: /\/support\/ticket\/my-tickets$/,
+    respond: () => buildPage(allTickets()),
+  },
+  { method: 'GET', match: /\/support\/ticket\/\d+$/, respond: (p) => ticketByPathId(p) ?? TICKET },
+  { method: 'GET', match: /\/support\/ticket$/, respond: () => buildPage(allTickets()) },
   // By-reference lookup — the "check your ticket" page (works logged-out on
   // prod; the my-tickets rows deep-link here with ref + email).
-  { method: 'GET', match: /\/support\/ticket\/status$/, respond: () => TICKET },
+  {
+    method: 'GET',
+    match: /\/support\/ticket\/status$/,
+    respond: (_p, _b, params) =>
+      allTickets().find((t) => t.ticketReference === params?.get('reference')) ?? TICKET,
+  },
   // Customer reply — threads onto the same TICKET the status page re-reads.
   {
     method: 'POST',
@@ -799,7 +1706,30 @@ const RULES: DemoRule[] = [
   // Reference data.
   { method: 'GET', match: /\/faq-category/, respond: () => buildPage([]) },
   { method: 'GET', match: /\/faq/, respond: () => buildPage([]) },
-  { method: 'GET', match: /\/dictionary\/categories$/, respond: () => [] },
+  // Admin dictionary — in-memory editor: list, categories, add, remove.
+  { method: 'GET', match: /\/dictionary\/all$/, respond: () => DICTIONARY.map((e) => ({ ...e })) },
+  { method: 'GET', match: /\/dictionary\/categories$/, respond: () => dictionaryCategories() },
+  {
+    method: 'POST',
+    match: /\/dictionary\/entry$/,
+    respond: (_p, body) => {
+      const entry = {
+        ...((body ?? {}) as DictionaryEntry),
+        id: `d${DICTIONARY.length + 1}-${Date.now()}`,
+      };
+      DICTIONARY = [entry, ...DICTIONARY];
+      return { ...entry };
+    },
+  },
+  {
+    method: 'DELETE',
+    match: /\/dictionary\/entry$/,
+    respond: (_p, _body, params) => {
+      const id = params?.get('id');
+      DICTIONARY = DICTIONARY.filter((e) => e.id !== id);
+      return {};
+    },
+  },
   {
     method: 'GET',
     match: /\/upload\/limits$/,
@@ -892,6 +1822,20 @@ function byId<T extends { id?: number }>(list: readonly T[], path: string): T | 
   const id = Number(path.split('/').pop());
   return list.find((x) => x.id === id) ?? list[0];
 }
+
+/** Like byId without the first-row fallback — for GET-by-id, where a wrong id must 404. */
+function byIdStrict<T extends { id?: number }>(list: readonly T[], path: string): T | undefined {
+  const id = Number(path.split('/').pop());
+  return list.find((x) => x.id === id);
+}
+
+/**
+ * A rule returns this to make the interceptor answer 404. Until now
+ * /collaborations/999999 rendered the first seeded campaign (and a
+ * cascade-deleted campaign came back as the next one), because byId()
+ * fell back to list[0]; the detail screens already own a not-found state.
+ */
+export const DEMO_NOT_FOUND: unique symbol = Symbol('demo-404');
 
 /**
  * Resolve a demo response. `undefined` = unmapped (interceptor answers

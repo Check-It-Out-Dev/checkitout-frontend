@@ -43,6 +43,7 @@ export const ACCOUNT_DELETION_FIXTURES: readonly SandboxFixture[] = [
     id: 'delete-confirmation-dialog',
     label: 'Account deletion · RODO confirmation (iter-51 P0 #4)',
     component: DeleteConfirmationDialogComponent,
+    frame: 'dialog',
     viewport: { width: 560, height: 520 },
     providers: [{ provide: MatDialogRef, useValue: CONFIRM_REF_STUB }],
   },
@@ -50,6 +51,7 @@ export const ACCOUNT_DELETION_FIXTURES: readonly SandboxFixture[] = [
     id: 'delete-blockers-dialog',
     label: 'Account deletion · blockers list (iter-51 P0 #4)',
     component: DeleteBlockersDialogComponent,
+    frame: 'dialog',
     viewport: { width: 560, height: 560 },
     providers: [
       { provide: MatDialogRef, useValue: BLOCKERS_REF_STUB },

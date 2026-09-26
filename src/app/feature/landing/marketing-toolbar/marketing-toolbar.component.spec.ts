@@ -1,5 +1,7 @@
 import { provideHttpClient, withXhr } from '@angular/common/http';
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { SessionStateService } from '../../../core/auth/session-state.service';
 import { provideRouter } from '@angular/router';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideTransloco, TranslocoService } from '@ngneat/transloco';
@@ -11,6 +13,33 @@ class FakeTranslocoLoader {
     return of({});
   }
 }
+
+describe('MarketingToolbarComponent (signed-in session cache)', () => {
+  it('swaps "Zaloguj się / Dołącz za darmo" for "Przejdź do aplikacji" in the bar and the mobile menu', async () => {
+    await TestBed.configureTestingModule({
+      imports: [MarketingToolbarComponent],
+      providers: [
+        provideRouter([]),
+        provideNoopAnimations(),
+        provideTransloco({
+          config: { availableLangs: ['en', 'pl'], defaultLang: 'en' },
+          loader: FakeTranslocoLoader,
+        }),
+        {
+          provide: SessionStateService,
+          useValue: { probed: signal(true), isAuthenticated: signal(true) },
+        },
+      ],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(MarketingToolbarComponent);
+    fixture.detectChanges();
+    const el: HTMLElement = fixture.nativeElement;
+    const openApp = el.querySelector('[data-testid="marketing-toolbar-open-app"]');
+    expect(openApp?.getAttribute('href')).toBe('/collaborations/list');
+    expect(el.querySelector('[data-testid="marketing-toolbar-sign-in"]')).toBeNull();
+    expect(el.querySelector('[data-testid="marketing-toolbar-join"]')).toBeNull();
+  });
+});
 
 describe('MarketingToolbarComponent', () => {
   let fixture: ComponentFixture<MarketingToolbarComponent>;
@@ -65,7 +94,16 @@ describe('MarketingToolbarComponent', () => {
     expect(nav.length).toBe(6);
     const hrefs = Array.from(nav).map((a) => (a as HTMLAnchorElement).getAttribute('href'));
     // CodeMap (/codemap) and Grants (/grants) are real routes, not in-page anchors.
-    expect(hrefs).toEqual(['#how-it-works', '#pricing', '#faq', '/codemap', '/grants', '#contact']);
+    // Section links carry the landing route + fragment so they work from
+    // every marketing page, not only from "/".
+    expect(hrefs).toEqual([
+      '/#how-it-works',
+      '/#pricing',
+      '/#faq',
+      '/codemap',
+      '/grants',
+      '/#contact',
+    ]);
   });
 
   it('renders the language switcher trigger with active locale code', () => {
@@ -88,8 +126,10 @@ describe('MarketingToolbarComponent', () => {
     expect(trigger.getAttribute('aria-label')).toContain('PL');
   });
 
-  it('flag(lang) returns 🇬🇧 for en and 🇵🇱 for pl', () => {
-    expect(component.flag('en')).toBe('🇬🇧');
-    expect(component.flag('pl')).toBe('🇵🇱');
+  it('draws the language flags as inline SVGs (emoji flags render as "GB"/"PL" letters on Windows)', () => {
+    fixture.nativeElement.querySelector('[data-testid="marketing-toolbar-lang"]').click();
+    fixture.detectChanges();
+    const items = document.querySelectorAll('.cdk-overlay-container [mat-menu-item] svg');
+    expect(items.length).toBe(2);
   });
 });

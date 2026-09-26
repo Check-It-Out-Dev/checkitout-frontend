@@ -3,6 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { TranslocoModule } from '@ngneat/transloco';
 import { ConsentService } from '../../../core/consent/consent.service';
+import { SandboxDirectorService } from '../../../core/demo/sandbox-director.service';
 
 /**
  * Sticky bottom banner shown until the user makes an explicit consent
@@ -25,7 +26,7 @@ import { ConsentService } from '../../../core/consent/consent.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatButtonModule, MatSlideToggleModule, TranslocoModule],
   template: `
-    @if (consent.needsDecision()) {
+    @if (consent.needsDecision() && !director.active()) {
       <aside
         role="region"
         [attr.aria-label]="'consent.banner.title' | transloco"
@@ -150,6 +151,9 @@ import { ConsentService } from '../../../core/consent/consent.service';
 })
 export class CookieBannerComponent {
   readonly consent = inject(ConsentService);
+  /** A running guided demo owns the bottom edge (guide + simulators) — the
+   *  banner waits until the tour ends; outside the demo build it is never active. */
+  readonly director = inject(SandboxDirectorService);
 
   /** Disclosure state of the customize panel. */
   readonly expanded = signal(false);

@@ -50,20 +50,29 @@
           class="h-6 w-6"
           data-testid="brand-mark-toolbar"
         />
-        <span class="font-display text-lg tracking-tight text-ink">Check It Out</span>
+        <!-- Below `sm` the mark stands alone: the wordmark wrapped into two
+             lines between the burger and the right cluster on a 390 px phone. -->
+        <span
+          class="hidden whitespace-nowrap font-display text-lg tracking-tight text-ink sm:inline"
+        >
+          Check It Out
+        </span>
       }
 
       <span class="flex-1"></span>
 
-      <button
-        type="button"
-        mat-icon-button
-        [attr.aria-label]="'layout.a11y.toggle_theme' | transloco"
-        (click)="toggleTheme()"
-        class="!text-slate2 hover:!text-ink"
-      >
-        <mat-icon>{{ themeMode() === 'dark' ? 'light_mode' : 'dark_mode' }}</mat-icon>
-      </button>
+      @if (themeToggleEnabled) {
+        <button
+          type="button"
+          mat-icon-button
+          [attr.aria-label]="'layout.a11y.toggle_theme' | transloco"
+          (click)="toggleTheme()"
+          class="!text-slate2 hover:!text-ink"
+          data-testid="theme-toggle"
+        >
+          <mat-icon>{{ themeMode() === 'dark' ? 'light_mode' : 'dark_mode' }}</mat-icon>
+        </button>
+      }
 
       <button
         type="button"

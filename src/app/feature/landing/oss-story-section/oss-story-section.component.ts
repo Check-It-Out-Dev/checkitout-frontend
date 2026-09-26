@@ -185,10 +185,10 @@ interface TeamMember {
                       {{ c.emoji }}
                     </span>
                     <span class="min-w-0 flex-grow">
-                      <span class="block truncate text-sm font-semibold text-ink">
+                      <span class="block text-sm font-semibold text-ink sm:truncate">
                         {{ 'landing.survey.chapters.' + c.key + '.name' | transloco }}
                       </span>
-                      <span class="block truncate text-xs text-slate2">
+                      <span class="block text-xs text-slate2 sm:truncate">
                         {{ 'landing.survey.chapters.' + c.key + '.question' | transloco }}
                       </span>
                     </span>
@@ -256,7 +256,7 @@ interface TeamMember {
                       {{ s.emoji }}
                     </span>
                     <span class="min-w-0 flex-grow">
-                      <span class="block truncate text-sm font-semibold text-ink">
+                      <span class="block text-sm font-semibold text-ink sm:truncate">
                         {{ 'demo.sandboxes.' + s.key + '.title' | transloco }}
                       </span>
                     </span>

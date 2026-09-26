@@ -19,7 +19,7 @@ import { SandboxDirectorService } from '../../../core/demo/sandbox-director.serv
 @Component({
   selector: 'app-ksef-sim',
   imports: [MatIconModule, TranslocoPipe, WorldSimShellComponent],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <app-world-sim-shell [caption]="'demo.sims.ksef.caption' | transloco">
       <div
@@ -27,8 +27,15 @@ import { SandboxDirectorService } from '../../../core/demo/sandbox-director.serv
       >
         <!-- gov chrome -->
         <div class="border-b border-beige">
+          <!-- The flag has to read as a flag. Its white half on a white card is
+               invisible, so what a viewer sees is a red bar covering the right
+               half of the top edge with a hard cut down the middle — two
+               reviewers, on two different films, reported exactly that as a
+               fault before anyone told them it was meant to be the Polish
+               flag. Cream for the upper half, which is the card's own family
+               and still plainly not white. -->
           <div class="flex h-1.5">
-            <span class="w-1/2 bg-white"></span>
+            <span class="w-1/2 bg-cream"></span>
             <span class="w-1/2 bg-red-600"></span>
           </div>
           <div class="flex items-center gap-2 px-4 py-2.5">
@@ -83,6 +90,7 @@ import { SandboxDirectorService } from '../../../core/demo/sandbox-director.serv
           <button
             type="button"
             (click)="finish()"
+            data-testid="ksef-sim-done"
             class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-navy-900 px-4 py-2.5 text-sm font-semibold text-cream transition-colors hover:bg-navy-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-400"
           >
             {{ 'demo.sims.ksef.done' | transloco }}

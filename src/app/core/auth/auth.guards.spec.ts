@@ -9,7 +9,7 @@ import {
 } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import type { UserDtoOut } from '../../api/model/user-dto-out';
-import { authGuard, noAuthGuard } from './auth.guards';
+import { adminGuard, authGuard, noAuthGuard } from './auth.guards';
 import { SessionStateService } from './session-state.service';
 
 const FAKE_ROUTE = {} as ActivatedRouteSnapshot;
@@ -118,6 +118,47 @@ describe('authGuard', () => {
     tick();
     expect(result).toBeInstanceOf(UrlTree);
     expect(TestBed.inject(Router).serializeUrl(result as UrlTree)).toBe('/auth/sign-in');
+  }));
+});
+
+describe('adminGuard', () => {
+  const ADMIN_USER = {
+    ...FAKE_USER,
+    userType: { value: 'ADMIN', label: 'Administrator' },
+  } as unknown as UserDtoOut;
+
+  it('allows an ADMIN synchronously when the session is already probed', () => {
+    const session = new FakeSession();
+    session.setUser(ADMIN_USER);
+    configureWith(session);
+    expect(runGuardSync(adminGuard)).toBe(true);
+  });
+
+  it('sends a signed-in non-admin back to the dashboard', () => {
+    const session = new FakeSession();
+    session.setUser(FAKE_USER); // COMPANY
+    configureWith(session);
+    const result = runGuardSync(adminGuard) as UrlTree;
+    expect(result).toBeInstanceOf(UrlTree);
+    expect(TestBed.inject(Router).serializeUrl(result)).toBe('/collaborations/list');
+  });
+
+  it('sends an anonymous visitor to sign-in', () => {
+    const session = new FakeSession();
+    session.clear();
+    configureWith(session);
+    const result = runGuardSync(adminGuard) as UrlTree;
+    expect(TestBed.inject(Router).serializeUrl(result)).toBe('/auth/sign-in');
+  });
+
+  it('probes once on a cold session and decides on the answer', fakeAsync(() => {
+    const session = new FakeSession();
+    session.probeReturn = ADMIN_USER;
+    configureWith(session);
+    let result: true | UrlTree | undefined;
+    (runGuardSync(adminGuard) as Observable<true | UrlTree>).subscribe((r) => (result = r));
+    tick();
+    expect(result).toBe(true);
   }));
 });
 

@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard, noAuthGuard } from './core/auth/auth.guards';
+import { adminGuard, authGuard, noAuthGuard } from './core/auth/auth.guards';
 import { errorTitleKey } from './core/i18n/seo-title.strategy';
 
 /**
@@ -312,10 +312,11 @@ export const routes: Routes = [
         ],
       },
       {
-        // BE enforces the ADMIN role (403); FE has no role guard — legacy parity.
+        // BE enforces the ADMIN role (403); adminGuard keeps non-admins from
+        // opening the queue with every data call failing.
         path: 'admin/tickets',
-        canActivate: [authGuard],
-        canActivateChild: [authGuard],
+        canActivate: [authGuard, adminGuard],
+        canActivateChild: [authGuard, adminGuard],
         children: [
           {
             path: '',
@@ -356,6 +357,7 @@ export const routes: Routes = [
       // admin (lazy)
       {
         path: 'admin',
+        canActivate: [adminGuard],
         children: [
           {
             // Admin lookup-value editor (BE authorizes ADMIN on mutations).
@@ -489,6 +491,7 @@ export const routes: Routes = [
           {
             // Journey 8 — admin user-management table (BE authorizes ADMIN).
             path: 'list',
+            canActivate: [adminGuard],
             title: 'admin_users.title',
             loadComponent: () =>
               import('./feature/admin/user-list.component').then((m) => m.AdminUserListComponent),

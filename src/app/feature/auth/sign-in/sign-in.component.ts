@@ -14,6 +14,7 @@ import { EMPTY, catchError, of, switchMap } from 'rxjs';
 import { AuthApiService } from '../../../core/auth/auth-api.service';
 import { SessionStateService } from '../../../core/auth/session-state.service';
 import { SocialAuthService } from '../../../core/auth/social-auth.service';
+import { currentDemoRole, isDemoMode } from '../../../core/demo/demo-mode';
 import { TwoFactorVerifyDialogComponent } from '../../../shared/components/two-factor-verify-dialog/two-factor-verify-dialog.component';
 
 interface SignInForm {
@@ -83,6 +84,22 @@ export class SignInComponent {
     }),
     rememberMe: new FormControl(false, { nonNullable: true }),
   });
+
+  constructor() {
+    // Demo build: any credentials sign the persona in, so the form comes
+    // prefilled with the persona the guided tour (or the last visit) chose —
+    // one click and the visitor is inside; the admin-2fa sandbox narrates
+    // "you don't need to type anything" on this screen and its admin
+    // address is what triggers the TOTP beat.
+    if (isDemoMode()) {
+      const email = {
+        ADMIN: 'admin@checkitout.app',
+        INFLUENCER: 'ola.kowalska@example.com',
+        COMPANY: 'demo@checkitout.app',
+      }[currentDemoRole()];
+      this.form.patchValue({ email, password: 'demo-checkitout' });
+    }
+  }
 
   togglePasswordVisibility(): void {
     this.passwordVisible.update((v) => !v);
@@ -161,7 +178,9 @@ export class SignInComponent {
             this.errorKey.set('auth.sign_in.login_failed');
             return;
           }
-          void this.router.navigate(['/']);
+          // Straight into the app — the same target noAuthGuard uses for an
+          // already-authenticated visitor; "/" is the marketing landing.
+          void this.router.navigate(['/collaborations/list']);
         },
         error: (err: unknown) => {
           this.loading.set(false);

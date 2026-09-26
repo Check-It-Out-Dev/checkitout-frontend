@@ -22,7 +22,11 @@
       <mat-select [formControl]="userType" data-testid="admin-user-list-type">
         @for (option of typeOptions; track option) {
           <mat-option [value]="option">
-            {{ option || ('admin_users.filters.all' | transloco) }}
+            {{
+              option
+                ? ('user.profile.user_type.' + option | transloco)
+                : ('admin_users.filters.all' | transloco)
+            }}
           </mat-option>
         }
       </mat-select>
@@ -32,7 +36,11 @@
       <mat-select [formControl]="accountStatus" data-testid="admin-user-list-status">
         @for (option of statusOptions; track option) {
           <mat-option [value]="option">
-            {{ option || ('admin_users.filters.all' | transloco) }}
+            {{
+              option
+                ? ('ADMIN.USERS.ACCOUNT_STATUS.' + option | transloco)
+                : ('admin_users.filters.all' | transloco)
+            }}
           </mat-option>
         }
       </mat-select>
@@ -97,14 +105,22 @@
                 [ngClass]="typeChipClass($safeNavigationMigration(user.userType?.value))"
                 data-testid="admin-user-list-type-chip"
               >
-                {{ user.userType?.label || user.userType?.value }}
+                {{
+                  user.userType?.value
+                    ? ('user.profile.user_type.' + user.userType?.value | transloco)
+                    : user.userType?.label || '—'
+                }}
               </span>
               <span
                 class="rounded-full px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em]"
                 [ngClass]="statusChipClass($safeNavigationMigration(user.accountStatus?.value))"
                 data-testid="admin-user-list-status-chip"
               >
-                {{ user.accountStatus?.label || user.accountStatus?.value }}
+                {{
+                  user.accountStatus?.value
+                    ? ('ADMIN.USERS.ACCOUNT_STATUS.' + user.accountStatus?.value | transloco)
+                    : user.accountStatus?.label || '—'
+                }}
               </span>
             </div>
           </li>

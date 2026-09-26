@@ -13,21 +13,23 @@
     data-testid="applied-opportunities-tabs"
   >
     <mat-tab>
+      <!-- Counts hide below `sm`: with them the three labels need ~470 px and
+           the strip paginates with chevrons on every phone. -->
       <ng-template mat-tab-label>
         {{ 'applied_opportunities.list.tabs.in_progress' | transloco }}
-        ({{ inProgressCount() }})
+        <span class="hidden sm:inline">({{ inProgressCount() }})</span>
       </ng-template>
     </mat-tab>
     <mat-tab>
       <ng-template mat-tab-label>
         {{ 'applied_opportunities.list.tabs.applications' | transloco }}
-        ({{ applicationsCount() }})
+        <span class="hidden sm:inline">({{ applicationsCount() }})</span>
       </ng-template>
     </mat-tab>
     <mat-tab>
       <ng-template mat-tab-label>
         {{ 'applied_opportunities.list.tabs.completed' | transloco }}
-        ({{ completedCount() }})
+        <span class="hidden sm:inline">({{ completedCount() }})</span>
       </ng-template>
     </mat-tab>
   </mat-tab-group>
@@ -103,12 +105,12 @@
                   </h2>
                   <p class="mt-1 font-mono text-[11px] uppercase tracking-[0.18em] text-slate2">
                     {{ 'applied_opportunities.list.applied_on' | transloco }}
-                    {{ a.createdTime | date: 'mediumDate' }}
+                    {{ a.createdTime | localizedDate: 'mediumDate' }}
                     @if (a.executionDate) {
                       <span class="ml-2">
                         ·
                         {{ 'applied_opportunities.list.execution_date' | transloco }}
-                        {{ a.executionDate | date: 'mediumDate' }}
+                        {{ a.executionDate | localizedDate: 'mediumDate' }}
                       </span>
                     }
                   </p>
@@ -138,15 +140,23 @@
           }
         </ul>
 
-        <mat-paginator
-          class="mt-4 !bg-transparent"
-          [length]="totalElements()"
-          [pageIndex]="pageIndex()"
-          [pageSize]="pageSize()"
-          [pageSizeOptions]="[10, 20, 50]"
-          (page)="onPage($event)"
-          data-testid="applied-opportunities-list-paginator"
-        />
+        <!-- Only when there is more than one page of results.
+             The tabs filter what was fetched, client-side, so on a single page
+             the paginator was reporting the unfiltered set underneath a filtered
+             list: "W trakcie (1)", one card, and "1-2 z 2" immediately below it.
+             A reviewer reading a filmed frame called it a page contradicting
+             itself inside one viewport, which it was. -->
+        @if (totalElements() > pageSize()) {
+          <mat-paginator
+            class="mt-4 !bg-transparent"
+            [length]="totalElements()"
+            [pageIndex]="pageIndex()"
+            [pageSize]="pageSize()"
+            [pageSizeOptions]="[10, 20, 50]"
+            (page)="onPage($event)"
+            data-testid="applied-opportunities-list-paginator"
+          />
+        }
       }
     }
   }

@@ -66,8 +66,10 @@ export class AuthSuccessComponent implements OnInit {
             return;
           }
           // Default landing — same as legacy: /collaborations/list. The
-          // shell will surface profile-completion banners if needed.
-          void this.router.navigate(['/']);
+          // shell will surface profile-completion banners if needed. ('/'
+          // is the marketing page, which greets a signed-in user with
+          // "Zaloguj się".)
+          void this.router.navigate(['/collaborations/list']);
         },
         error: () => {
           this.errorKey.set('auth.success.errors.exchange_failed');

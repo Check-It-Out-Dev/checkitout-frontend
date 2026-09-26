@@ -83,7 +83,7 @@
             }
             <p class="mt-1 font-mono text-[11px] uppercase tracking-[0.18em] text-slate2">
               {{ 'opportunities.applicants.applied_at' | transloco }}
-              {{ row.createdTime ? (row.createdTime | date: 'mediumDate') : '—' }}
+              {{ row.createdTime ? (row.createdTime | localizedDate: 'mediumDate') : '—' }}
             </p>
           </div>
           @if (isAwaitingDecision(row)) {
@@ -102,7 +102,7 @@
                 mat-stroked-button
                 color="warn"
                 [disabled]="row.id == null || pendingDecisions().has(row.id)"
-                (click)="row.id != null && decide(row.id, false)"
+                (click)="row.id != null && reject(row)"
                 [attr.data-testid]="'applicant-reject-' + row.id"
               >
                 <mat-icon>close</mat-icon>

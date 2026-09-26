@@ -62,16 +62,16 @@ import { HubOverviewMapComponent } from './ui/hub-overview-map.component';
           <div
             class="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-medium text-slate2"
           >
-            <span class="inline-flex items-center gap-2 tabular-nums">
-              <span class="h-1.5 w-1.5 rounded-full bg-coral-500"></span>
+            <span class="inline-flex max-w-full items-start gap-2 text-left tabular-nums">
+              <span class="mt-[0.45em] h-1.5 w-1.5 shrink-0 rounded-full bg-coral-500"></span>
               {{ 'landing.survey.trust.tests' | transloco }}
             </span>
-            <span class="inline-flex items-center gap-2 tabular-nums">
-              <span class="h-1.5 w-1.5 rounded-full bg-coral-500"></span>
+            <span class="inline-flex max-w-full items-start gap-2 text-left tabular-nums">
+              <span class="mt-[0.45em] h-1.5 w-1.5 shrink-0 rounded-full bg-coral-500"></span>
               {{ 'landing.survey.trust.staging' | transloco }}
             </span>
-            <span class="inline-flex items-center gap-2 tabular-nums">
-              <span class="h-1.5 w-1.5 rounded-full bg-coral-500"></span>
+            <span class="inline-flex max-w-full items-start gap-2 text-left tabular-nums">
+              <span class="mt-[0.45em] h-1.5 w-1.5 shrink-0 rounded-full bg-coral-500"></span>
               {{ 'landing.survey.trust.provider' | transloco }}
             </span>
           </div>
