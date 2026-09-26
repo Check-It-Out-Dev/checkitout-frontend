@@ -1,1 +1,0 @@
-{"id":"4f5ff0b2da0bf3bc3084e035b452abea","fullName":"integration/flows/profile-validation.spec.ts › @profile @validation-edge-cases — port of validation-edge-cases.feature › @firstName valid 2-char boundary returns 200","name":"@firstName valid 2-char boundary returns 200","status":"passed","testResultsByEnv":{"default":"92d6d2dc0b45de433dc7e46f1010639a"}}

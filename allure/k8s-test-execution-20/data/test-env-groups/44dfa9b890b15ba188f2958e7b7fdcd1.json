@@ -1,0 +1,1 @@
+{"id":"44dfa9b890b15ba188f2958e7b7fdcd1","fullName":"integration/flows/profile-validation.spec.ts › @profile @validation-edge-cases — port of validation-edge-cases.feature › @preferences timezone too long (> 50 chars) returns 400","name":"@preferences timezone too long (> 50 chars) returns 400","status":"passed","testResultsByEnv":{"default":"2cc974f6c701a86c1d1e1e87b9911a4c"}}

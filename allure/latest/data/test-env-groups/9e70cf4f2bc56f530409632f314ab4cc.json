@@ -1,1 +1,0 @@
-{"id":"9e70cf4f2bc56f530409632f314ab4cc","fullName":"integration/auth/security-unauth.spec.ts › @security-suite @401-unauthenticated — port of security-unauthenticated-access.feature › admin endpoints reject unauthenticated requests","name":"admin endpoints reject unauthenticated requests","status":"passed","testResultsByEnv":{"default":"fe4afa19ea0a8bdcca1973c369dfb20c"}}
