@@ -1,1 +1,0 @@
-{"id":"75fa401ee755dcbb53bf0f3288812f97","fullName":"integration/flows/admin-geoip-analysis.spec.ts › @admin-geoip-analysis — port of admin-geoip-analysis.feature › @scenario-4 @validation negative minutes returns 400","name":"@scenario-4 @validation negative minutes returns 400","status":"passed","testResultsByEnv":{"default":"11e5ced024ee2e83b06dd874ef41ec46"}}

@@ -6,22 +6,22 @@
     "id": 36225906745,
     "sha": "ac7220a",
     "branch": "main",
-    "workflow": "k8s-test-execution",
+    "workflow": "browser-tiers",
     "startedAt": "2026-09-26T07:09:15Z",
-    "durationSec": 585,
+    "durationSec": 1179,
     "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/36225906745",
     "status": "green"
   },
   "tests": {
-    "total": 1591,
-    "passed": 1483,
+    "total": 1890,
+    "passed": 1737,
     "failed": 0,
     "flaky": 0,
-    "skipped": 108,
+    "skipped": 153,
     "passRate": 1,
     "flakyRate": 0,
-    "durationMeanSec": 0.21,
-    "durationP95Sec": 0.82,
+    "durationMeanSec": 1.45,
+    "durationP95Sec": 1.84,
     "tiers": {
       "jest": {
         "total": 1306,
@@ -31,29 +31,53 @@
         "skipped": 74,
         "durationSec": 83
       },
-      "integration": {
-        "total": 215,
-        "passed": 183,
+      "visual": {
+        "total": 284,
+        "passed": 283,
         "failed": 0,
         "flaky": 0,
-        "skipped": 32,
-        "durationSec": 152
+        "skipped": 1,
+        "durationSec": 341
       },
-      "sandbox": {
-        "total": 64,
-        "passed": 62,
+      "visual-parity": {
+        "total": 82,
+        "passed": 28,
         "failed": 0,
         "flaky": 0,
-        "skipped": 2,
-        "durationSec": 65
+        "skipped": 54,
+        "durationSec": 75
       },
-      "scenarios": {
+      "published-reports": {
         "total": 6,
         "passed": 6,
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
-        "durationSec": 9
+        "durationSec": 8
+      },
+      "msw": {
+        "total": 2,
+        "passed": 0,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 2,
+        "durationSec": 0
+      },
+      "sandbox": {
+        "total": 128,
+        "passed": 106,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 22,
+        "durationSec": 126
+      },
+      "perf": {
+        "total": 82,
+        "passed": 82,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "durationSec": 1953
       }
     }
   },
@@ -63,40 +87,12 @@
     "branches": 69.52,
     "functions": 66.79
   },
-  "perf": {
-    "k6": {
-      "profile": "load",
-      "requests": 201,
-      "failedRate": 0,
-      "p95Ms": 164.25,
-      "thresholdsOk": true,
-      "journeys": {
-        "browse": {
-          "p95Ms": 79.35,
-          "p99Ms": 89.32,
-          "budgetMs": 800,
-          "ok": true
-        },
-        "apply": {
-          "p95Ms": 290.65,
-          "p99Ms": 345.95,
-          "budgetMs": 1500,
-          "ok": true
-        }
-      }
-    }
-  },
   "lighthouse": {
     "url": "/",
     "performance": 98,
     "accessibility": 100,
     "bestPractices": 100,
     "seo": 92
-  },
-  "kubernetes": {
-    "shards": 4,
-    "wallSec": 94,
-    "k6Runners": 2
   },
   "mutation": {
     "score": 72.43,
@@ -116,31 +112,9 @@
     },
     "scans": 2
   },
-  "flaky": [
-    {
-      "title": "@registry — port of registry-company-flow.feature error-path subset › @get-data get company data without prior confirm returns 200 + empty body [chromium-desktop]",
-      "file": "integration/flows/registry-company-flow.spec.ts",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 7,
-      "lastSeen": 17,
-      "history": [
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "fail",
-        "absent",
-        "absent",
-        "absent"
-      ]
-    }
-  ],
+  "flaky": [],
   "reports": {
-    "playwright": "playwright/k8s-test-execution-20/",
-    "k6": "k6/k8s-test-execution-20/",
-    "allure": "allure/k8s-test-execution-20/"
+    "playwright": "playwright/browser-tiers-20/",
+    "allure": "allure/browser-tiers-20/"
   }
 }

@@ -1,1 +1,0 @@
-{"id":"cab07494069c48fab7260d6585cf44b7","fullName":"integration/auth/consent.spec.ts › @consent — port of consent-module.feature (subset) › @registration-validation register without consent cookies returns 400","name":"@registration-validation register without consent cookies returns 400","status":"passed","testResultsByEnv":{"default":"242b6ffc2af392113e537836cca4c13f"}}

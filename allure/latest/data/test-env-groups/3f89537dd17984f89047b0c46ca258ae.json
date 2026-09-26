@@ -1,1 +1,0 @@
-{"id":"3f89537dd17984f89047b0c46ca258ae","fullName":"integration/flows/registry-company-flow.spec.ts › @registry — port of registry-company-flow.feature error-path subset › @lookup JDG lookup returns company data with owner name","name":"@lookup JDG lookup returns company data with owner name","status":"passed","testResultsByEnv":{"default":"db1d02be4f626f47b45feba1b6cd3dad"}}
