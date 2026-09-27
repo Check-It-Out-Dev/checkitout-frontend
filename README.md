@@ -12,10 +12,10 @@ it is ever a bug. Every tier above that re-proves the same truth at a higher lev
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178c6.svg)](https://www.typescriptlang.org/)
 [![Tests](https://img.shields.io/badge/tests-1816-15c213.svg)](#-the-test-pyramid)
 [![Coverage](https://img.shields.io/badge/lines_covered-77.7%25-yellow.svg)](#coverage-size-and-vitals)
+[![CI](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/ci-tests.yml/badge.svg)](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/ci-tests.yml)
 
 <sub>The two count badges are static, measured 2026-09-12, and reproduced by
-<code>npm test&nbsp;--&nbsp;--coverage</code>. There is no build-status badge because this repository has no
-remote yet; when it has one, that badge will be the workflow's own.</sub>
+<code>npm test&nbsp;--&nbsp;--coverage</code>. The CI badge is the workflow's own and is live.</sub>
 
 ### ▶ [**checkitout.app**](https://checkitout.app) — the live demo
 
