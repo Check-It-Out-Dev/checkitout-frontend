@@ -558,6 +558,9 @@ Three repositories and a running site, and each answers the question the previou
 
 ## 📚 Documentation
 
+Start at **[docs/README.md](docs/README.md)** — it splits the reading by what you are here
+for: evaluating the engineering, or taking a piece of it and using it.
+
 | Document                                                                  | What it is                                                          |
 | :------------------------------------------------------------------------ | :------------------------------------------------------------------ |
 | [LAYERED-TEST-ARCHITECTURE.md](docs/testing/LAYERED-TEST-ARCHITECTURE.md) | Why the tiers are connected rather than parallel                    |
