@@ -1,1 +1,0 @@
-{"id":"c9cb33d76a2daee6d79db2d8dadfa7ab","fullName":"integration/auth/security-unauth.spec.ts › @security-suite @401-unauthenticated — port of security-unauthenticated-access.feature › 2fa endpoints reject unauthenticated requests","name":"2fa endpoints reject unauthenticated requests","status":"passed","testResultsByEnv":{"default":"8398ca7ff1164ccaa8769a21432965ca"}}

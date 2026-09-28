@@ -1,1 +1,0 @@
-{"id":"3e1a8f3eb6ea4c4cd8b1bf05ff030357","fullName":"../.features-gen/e2e-tests/bdd/features/rate-limiting.feature.spec.js › API Rate Limiting Protection › Company user receives 429 when exceeding the STANDARD rate limit","name":"Company user receives 429 when exceeding the STANDARD rate limit","status":"passed","testResultsByEnv":{"default":"0132379cf2eae2913bbb3577714f3051"}}
