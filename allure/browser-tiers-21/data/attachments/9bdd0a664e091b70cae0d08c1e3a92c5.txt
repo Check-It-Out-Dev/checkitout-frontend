@@ -1,1 +1,0 @@
-  support-ticket hand: 974 frames over 53.6s → qa-film/2026-09-27/support-ticket-hand

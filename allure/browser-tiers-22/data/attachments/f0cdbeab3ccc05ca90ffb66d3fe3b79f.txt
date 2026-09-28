@@ -1,0 +1,1 @@
+  admin-ops: admin-open: 8028 ms · admin-draft: 2697 ms · admin-send: 2585 ms · to-campaigns: 10538 ms · cascade-delete: 2135 ms · cascade-confirm: 2200 ms · cascade-receipt: nothing on screen to hold (storage or absence) · by-the-book: nothing on screen to hold (no done)
