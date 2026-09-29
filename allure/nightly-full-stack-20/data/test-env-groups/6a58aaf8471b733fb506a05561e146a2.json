@@ -1,1 +1,0 @@
-{"id":"6a58aaf8471b733fb506a05561e146a2","fullName":"integration/flows/profile-validation.spec.ts › @profile @validation-edge-cases — port of validation-edge-cases.feature › @phone too short (< 7 chars) returns 400","name":"@phone too short (< 7 chars) returns 400","status":"passed","testResultsByEnv":{"default":"2d8e482fc3edd0665345c5936a7b3f3c"}}

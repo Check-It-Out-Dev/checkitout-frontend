@@ -1,1 +1,0 @@
-{"id":"8b22649a6179f8faac41e81086ae0c35","fullName":"integration/flows/profile-validation.spec.ts › @profile @validation-edge-cases — port of validation-edge-cases.feature › @phone too long (> 25 chars) returns 400","name":"@phone too long (> 25 chars) returns 400","status":"passed","testResultsByEnv":{"default":"290e7f5d775cc37ca221f7a107695a36"}}

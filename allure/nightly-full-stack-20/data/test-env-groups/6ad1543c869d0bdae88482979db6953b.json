@@ -1,1 +1,0 @@
-{"id":"6ad1543c869d0bdae88482979db6953b","fullName":"../.features-gen/e2e-tests/bdd/features/registry-company-flow.feature.spec.js › Registry Company Flow › Duplicate NIP on confirm returns 409","name":"Duplicate NIP on confirm returns 409","status":"passed","testResultsByEnv":{"default":"28ecca85e33fa4724fe3e13cc5f2aa1e"}}
