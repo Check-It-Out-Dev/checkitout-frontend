@@ -1,0 +1,24 @@
+
+  2FA coexistence — 1623 frames, 12 distinct states
+
+        t     ms  st  work  shld   way  sim   phone  dlg   typed  busy  err  scrim  recap  panel  done           path
+       28      8   0     Y     Y  none    ·       ·    Y       ·     ·    ·      0      ·      Y     ·  /auth/sign-in
+       36     22   1     ·     ·  none    Y       ·    Y       ·     ·    ·      0      ·      Y     ·  /auth/sign-in
+       58    183   1     ·     ·  none    Y       ·    Y       ·     ·    ·      1      ·      Y     ·  /auth/sign-in
+      241   4800   1     ·     ·  pill    Y       ·    Y       ·     ·    ·      1      ·      Y     ·  /auth/sign-in
+     5041     16   1     Y     Y  none    Y  705677    Y       ·     ·    ·      1      ·      Y     ·  /auth/sign-in
+     5057     17   1     Y     Y  none    Y  705677    Y  705677     ·    ·      1      ·      Y     ·  /auth/sign-in
+     5074    133   2     ·     ·  none    Y  705677    Y  705677     ·    ·      1      ·      Y     ·  /auth/sign-in
+     5207   4834   2     ·     ·  pill    Y  705677    Y  705677     ·    ·      1      ·      Y     ·  /auth/sign-in
+    10041     16   2     Y     Y  none    Y  705677    Y  705677     ·    ·      1      ·      Y     ·  /auth/sign-in
+    10057     17   2     Y     Y  none    Y  705677    Y       ·     ·    Y      1      ·      Y     ·  /auth/sign-in
+    10074    116   3     ·     ·  none    Y  705677    Y       ·     ·    Y      1      ·      Y     ·  /auth/sign-in
+    10190  16850   3     ·     ·  pill    Y  705677    Y       ·     ·    Y      1      ·      Y     ·  /auth/sign-in
+
+  "Working…" total 74 ms, longest single run 17 ms
+  dialog under a scrim:      0 interval(s), 0 ms
+  two dimming layers at once: 0 interval(s), 0 ms
+  phone and dialog show different codes: 0 interval(s), 0 ms
+  a way forward offered while "Working…": 0 interval(s), 0 ms
+  no way forward and nothing running (>400ms): 0 interval(s), 0 ms
+
