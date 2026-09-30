@@ -1,1 +1,0 @@
-{"id":"ec8213f6775280fbbafc7094f987420d","fullName":"integration/flows/profile-validation.spec.ts › @profile @validation-edge-cases — port of validation-edge-cases.feature › @firstName too short (< 2 chars) returns 400","name":"@firstName too short (< 2 chars) returns 400","status":"passed","testResultsByEnv":{"default":"4a3409504f162342da6e5af71f46141b"}}

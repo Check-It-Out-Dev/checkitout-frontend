@@ -1,0 +1,1 @@
+{"id":"857bd2610f165a89c85b1df2d479d2c6","fullName":"integration/flows/registry-company-flow.spec.ts › @registry — port of registry-company-flow.feature error-path subset › @lookup invalid NIP format returns 400","name":"@lookup invalid NIP format returns 400","status":"passed","testResultsByEnv":{"default":"4d2374c4dd7eda28d2db2fd4d162c042"}}
