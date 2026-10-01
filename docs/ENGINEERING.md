@@ -219,8 +219,8 @@ cutover unit per route.
 The backend owns the truth; the frontend never restates it.
 
 ```mermaid
-flowchart LR
-    BE["Backend boots<br/>under Testcontainers"] --> SPEC["openapi.json<br/>keys sorted, committed in both repositories"]
+flowchart TB
+    BE["Backend boots<br/>under Testcontainers"] --> SPEC[("openapi.json<br/>keys sorted, committed in both repositories")]
     SPEC --> GEN["Codegen<br/>205 models · 40 services"]
     GEN --> WRAP["One wrapper per domain<br/>the only code that imports the client"]
     WRAP --> L0{"Wrapper signature<br/>= generated model?"}
@@ -333,7 +333,7 @@ dispatchable on its own while you work on it, never firing by itself — and eac
 line that says whether the answer is yes.
 
 ```mermaid
-flowchart LR
+flowchart TB
     subgraph PR["pr.yml · every pull request · ~10 min"]
         direction TB
         W["Gate wall<br/>static gates · typechecks · ng build · Jest"] --> B1["Browser tiers, fast half<br/>sandbox + MSW · four shards"]
@@ -347,8 +347,8 @@ flowchart LR
         K8 --> Q["Lighthouse · contract · mutation · security"]
         Q --> V2(["One table, one word"])
     end
-    V1 --> DASH["Quality dashboard<br/>Allure · trends · flaky list"]
-    V2 --> DASH
+    PR --> DASH["Quality dashboard<br/>Allure · trends · flaky list"]
+    NIGHT --> DASH
 ```
 
 | Pipeline                                          | Trigger                      | What it calls                                                                                                              | Budget              |
