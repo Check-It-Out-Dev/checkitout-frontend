@@ -84,7 +84,7 @@ journey
     See dashboard: 5: Influencer
 ```
 
-**BE Cucumber:** [`features/influencer-verification/`](../checkitout-backend/src/test/resources/features/) (RunInfluencerVerificationIT)
+**BE Cucumber:** [`features/influencer-verification/`](https://github.com/Check-It-Out-Dev/checkitout-backend/tree/main/src/test/resources/features/) (RunInfluencerVerificationIT)
 **Routes:** `/auth/sign-up/influencer`, `/auth/verify`, `/auth/sign-in`, `/dashboard`, `/onboarding/social`
 
 - [x] Landing page (public — hero + 3 feature cards + footer sign-in link; pricing / FAQ / dashboard preview deferred)
@@ -118,7 +118,7 @@ journey
     Land on company dashboard: 5: Company
 ```
 
-**BE Cucumber:** [`features/registry/`](../checkitout-backend/src/test/resources/features/) (RunRegistryIT, GUS/CEIDG/BiałaLista flows)
+**BE Cucumber:** [`features/registry/`](https://github.com/Check-It-Out-Dev/checkitout-backend/tree/main/src/test/resources/features/) (RunRegistryIT, GUS/CEIDG/BiałaLista flows)
 **Routes:** `/auth/sign-up/company`, `/auth/verify`, `/dashboard/company`
 
 - [x] Company registration form (NIP + email/password/ToS basics; multi-step + step3 confirmation deferred to Stage 2)
@@ -154,7 +154,7 @@ journey
     Submit posted link: 4: Influencer
 ```
 
-**BE Cucumber:** [`features/partnership/partnership-flow.feature`](../checkitout-backend/src/test/resources/features/partnership/partnership-flow.feature) (RunPartnershipFlowIT)
+**BE Cucumber:** [`features/partnership/partnership-flow.feature`](https://github.com/Check-It-Out-Dev/checkitout-backend/blob/main/src/test/resources/features/partnership/partnership-flow.feature) (RunPartnershipFlowIT)
 **Routes:** `/discover`, `/opportunities/:id`, `/my/applications`, `/my/applications/:id`
 
 - [x] Opportunity discovery list (paginated) — `opportunities-list.component.ts` (MatPaginator + signals)
@@ -214,7 +214,7 @@ journey
     Influencer sees positive count update: 5: Influencer
 ```
 
-**BE Cucumber:** [`features/active-cooperation/`](../checkitout-backend/src/test/resources/features/) (rating endpoints)
+**BE Cucumber:** [`features/active-cooperation/`](https://github.com/Check-It-Out-Dev/checkitout-backend/tree/main/src/test/resources/features/) (rating endpoints)
 **Routes:** `/active/inprogress`, `/active/rate/:id`, `/active/done`
 
 - [x] Active cooperations list — `collaboration-dashboard.component.ts` (role-driven in-progress/finished tabs via route data)
@@ -246,7 +246,7 @@ journey
     Switch language: 5: User
 ```
 
-**BE Cucumber:** [`features/step-up-auth/`](../checkitout-backend/src/test/resources/features/) (RunStepUpAuthIT) + user-preferences integration tests
+**BE Cucumber:** [`features/step-up-auth/`](https://github.com/Check-It-Out-Dev/checkitout-backend/tree/main/src/test/resources/features/) (RunStepUpAuthIT) + user-preferences integration tests
 **Routes:** `/profile`, `/profile/edit`, `/profile/addresses`, `/preferences`
 
 - [x] Profile read (reworded: own view shipped — `profile-view.component.ts` C1. A public-profile PAGE never existed in legacy: zero consumers of the public-profile endpoints in the legacy FE (grep-verified iter-100); not a parity item)
@@ -285,7 +285,7 @@ journey
     Land back on Free: 5: Company
 ```
 
-**BE Cucumber:** [`features/subscription/subscription-e2e.feature`](../checkitout-backend/src/test/resources/features/subscription/subscription-e2e.feature) (RunSubscriptionIT)
+**BE Cucumber:** [`features/subscription/subscription-e2e.feature`](https://github.com/Check-It-Out-Dev/checkitout-backend/blob/main/src/test/resources/features/subscription/subscription-e2e.feature) (RunSubscriptionIT)
 **Routes:** `/subscription`, `/subscription/upgrade`, `/subscription/invoices`
 
 - [x] Subscription status display (current plan, usage, limits) — `plan-billing.component.ts` + `subscription-lifecycle.spec.ts`
@@ -317,7 +317,7 @@ journey
     Confirm + observe progress: 4: Admin
 ```
 
-**BE Cucumber:** [`features/notifications/`](../checkitout-backend/src/test/resources/features/) (RunNotificationIT) + admin features
+**BE Cucumber:** [`features/notifications/`](https://github.com/Check-It-Out-Dev/checkitout-backend/tree/main/src/test/resources/features/) (RunNotificationIT) + admin features
 **Routes:** `/notifications`, `/admin/*`
 
 - [x] Notification bell + unread count — `layout/notification-bell/` + `core/notifications/notification-center.service.ts` (30s poll gated on session, legacy parity) — `07312ff`
@@ -351,7 +351,7 @@ journey
     Read-only access until accept: 1: User
 ```
 
-**BE Cucumber:** [`features/consent/`](../checkitout-backend/src/test/resources/features/) (RunConsentIT, 35 scenarios)
+**BE Cucumber:** [`features/consent/`](https://github.com/Check-It-Out-Dev/checkitout-backend/tree/main/src/test/resources/features/) (RunConsentIT, 35 scenarios)
 **Routes:** every route guards on consent state
 
 - [x] Cookie banner (localStorage-only persistence; BE record + re-consent modal deferred)
