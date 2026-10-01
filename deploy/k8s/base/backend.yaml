@@ -74,6 +74,10 @@ spec:
             - { name: SPRING_DATA_REDIS_PORT, value: "6379" }
             - { name: SPRING_LIQUIBASE_CONTEXTS, value: "dev,local,dev-lite" }
             - { name: SERVER_PORT, value: "8080" }
+            # The notification e-mail job is parked on a date that never comes, as in the backend's own
+            # end-to-end profile: the scenarios flush the queue themselves, and a quarter-hour tick in
+            # the middle of a run is a second actor (nightly-full-stack.yml has the same line and why).
+            - { name: NOTIFICATION_EMAIL_CRON, value: "0 0 3 29 2 *" }
             # The image already sets G1 and MaxRAMPercentage=70 in JAVA_OPTS; a 2 Gi limit gives ~1.4 Gi of heap.
             # Do not add a second collector through JAVA_TOOL_OPTIONS: the JVM refuses to start.
           # Liquibase seeds ~26 campaigns on first boot: five minutes before liveness counts.
