@@ -1,1 +1,0 @@
-  admin-2fa guided: 565 frames over 33.0s → qa-film/2026-09-30/admin-2fa-guided
