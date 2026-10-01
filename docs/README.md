@@ -1,8 +1,11 @@
 # Documentation
 
-The [README](../README.md) argues the case. This is the reading behind it, for two
-different people: someone deciding whether the engineering here is any good, and someone
-who wants to take a piece of it and use it.
+The [README](../README.md) says what this is and how to run it. This is the reading behind
+it, for two different people: someone deciding whether the engineering here is any good, and
+someone who wants to take a piece of it and use it.
+
+**Start with [ENGINEERING.md](ENGINEERING.md)** — the test tiers and what each proves, the
+contract pipeline, the gates, the two CI pipelines and what is still under way, on one page.
 
 ## If you are evaluating
 
@@ -11,7 +14,7 @@ who wants to take a piece of it and use it.
 | **[testing/LAYERED-TEST-ARCHITECTURE.md](testing/LAYERED-TEST-ARCHITECTURE.md)**     | Why the tiers are _connected_ rather than parallel — a contract change detonates at compile time in L0, and every runtime tier above re-proves the same truth at a higher level of integration. Start here; the rest assumes it.                                                                                                                                                                                                                                                                                                                                                                                                    |
 | **[testing/BROWSER-QA-METHODOLOGY.md](testing/BROWSER-QA-METHODOLOGY.md)**           | The error-class register: nine classes, the instrument that sweeps each across all seven guided tours, and the rule that no class counts as closed until its instrument has been made to fail against a deliberately planted defect. Also the tool laws — each one cost a failed run to learn — and the full run log.                                                                                                                                                                                                                                                                                                               |
 | **[testing/SANDBOX-TODO.md](testing/SANDBOX-TODO.md)**                               | What is closed, what is open _by decision_ rather than by neglect, and the measurement each decision was made against.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| **[openapi/openapi.json](openapi/openapi.json)**                                     | The contract itself. Generated from a backend that actually booted, and meant to be byte-identical to the copy in the [backend repository](https://github.com/Check-It-Out-Dev/checkitout-backend) — `sha256sum` it in both. As of 2026-09-12 it is not: this copy is seven contract commits behind, because the sync runs only when a person runs it. That is the worked example in [ci/GOVERNING-MACHINE-WRITTEN-CHANGE.md](ci/GOVERNING-MACHINE-WRITTEN-CHANGE.md) §10, and the gate that will make it impossible is the slice after it.                                                                                         |
+| **[openapi/openapi.json](openapi/openapi.json)**                                     | The contract itself. Generated from a backend that actually booted, and meant to be byte-identical to the copy in the [backend repository](https://github.com/Check-It-Out-Dev/checkitout-backend) — `git show HEAD:docs/openapi/openapi.json                                                                                                                                                                                                                                                                                                                                                                                       | sha256sum` in both. It drifted once: on 2026-09-12 this copy was seven contract commits behind, because the sync ran only when a person ran it — the worked example in [ci/GOVERNING-MACHINE-WRITTEN-CHANGE.md](ci/GOVERNING-MACHINE-WRITTEN-CHANGE.md) §10. It caught up on 2026-09-24, and a nightly job now compares a live backend's document with this copy. |
 | **[ci/GOVERNING-MACHINE-WRITTEN-CHANGE.md](ci/GOVERNING-MACHINE-WRITTEN-CHANGE.md)** | What changes when an agent writes both the code and the tests, and the guarantee you were relying on — that whoever wrote the passing test did not also write the bug — stops holding. A catalogue of mechanisms with their industrial precedents, their machine checks and their honest status, worked through three measured examples from this estate: a contract that drifted, 509 alerts closed by one control, and a state machine that exists in three disagreeing places. §14 is the first instance built on it: the test population under invariants, decided in [ci/ADR-test-subsumption.md](ci/ADR-test-subsumption.md). |
 
 ## If you want to use something here
@@ -31,7 +34,7 @@ your time. These are the parts that transplant with the least effort, roughly in
 
 The demo build, the 1306 Jest tests and the gate wall run on a clean clone with nothing
 installed but npm packages. Everything that talks to a real backend does not, and the
-[README explains why](../README.md#-getting-it-running) — in short, this is a commercial
+[engineering page explains why](ENGINEERING.md#run-it) — in short, this is a commercial
 product, no secret is committed, and the live tiers need a Google Cloud Storage bucket, a
 VPS, Grafana and Loki, and credentials for Meta, MaxMind, Fakturownia, Stripe and the
 Polish public registries.

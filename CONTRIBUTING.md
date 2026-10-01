@@ -13,11 +13,10 @@ Please read this guide before opening a PR.
 ```bash
 git clone https://github.com/Check-It-Out-Dev/checkitout-frontend
 cd checkitout-frontend
-# Node ^22.22.3 || ^24.15.0 — `.nvmrc` pins 24.15.0 (Node 23 breaks the
-# dev-server; see README → Toolchain notes)
+# Node ^22.22.3 || ^24.15.0 — `.nvmrc` pins 24.15.0 (Node 23 breaks the dev-server)
 npm ci
-# Backend must be running for integration tests:
-# see ../checkitout-backend/README.md for BE setup
+# The integration tiers need a running backend. One command, from the backend repository:
+#   node tools/dev-lite.mjs      (https://github.com/Check-It-Out-Dev/checkitout-backend)
 npm run check:full   # the full gate wall — must be green to commit
 ```
 
@@ -25,12 +24,12 @@ npm run check:full   # the full gate wall — must be green to commit
 
 Every commit runs the full gate wall (`npm run check:full`) via husky.
 **All gates must be green to commit.** The canonical, always-current
-G1..G14 table — legacy-UI ban, wrapper discipline, i18n parity, fixture
+G1..G15 table — legacy-UI ban, wrapper discipline, i18n parity, fixture
 coverage, baseline freshness, Cucumber citations, BDD-corpus
 completeness, component-pair sync, contract coverage, icon subset,
 i18n cache-buster, strict typecheck (app + e2e), `ng build` template
 check, unit tests — lives in
-[README.md → Gates](./README.md#gates-codified). This file
+[docs/ENGINEERING.md → Quality gates](docs/ENGINEERING.md#quality-gates). This file
 deliberately doesn't duplicate the table; duplicated tables drift.
 
 **If a gate fails, fix the cause — never bypass.** Skipping `build:check`
