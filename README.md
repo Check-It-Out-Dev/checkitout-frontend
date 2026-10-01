@@ -33,11 +33,12 @@ which every run on <code>main</code> republishes.</sub>
   compiler, and a nightly job compares a live backend's document with the committed copy.
 - **End-to-end tests on the same contract** — the backend's Cucumber scenarios are ported and
   re-proven through the real screens against a live backend, with real sign-in and several actors.
-- **2,018 tests across nine tiers**, each proving something the others cannot — unit, component,
-  BDD, live-backend integration, visual, experience. The runners do the counting
+- **2,018 tests across nine tiers**, each with a stated job and a stated blind spot — unit,
+  component, BDD, live-backend integration, visual, experience. The runners do the counting
   (`npm run measure:counts`, `npx playwright test --list`), and a gate fails the build when a
   published number drifts from the code.
-- **Fifteen gates before a commit lands** — each one written after a specific defect got through.
+- **Fifteen gates before a commit lands** — the [gate table](docs/ENGINEERING.md#quality-gates)
+  names, row by row, the defect each one was written after.
 - **A demo that needs nothing** — one build flag answers every `/api` call in the browser from the
   same typed fixtures the tests use. It is what [checkitout.app](https://checkitout.app) serves.
 
@@ -64,7 +65,9 @@ npm ci
 npm start              # https://localhost:4201 — expects the backend on https://localhost:8080
 ```
 
-The first start generates a self-signed development certificate; nothing is committed.
+The first start generates a self-signed development certificate; nothing is committed. The backend
+is expected on HTTPS: its one-command wizard starts it that way, and a backend started by hand on
+plain HTTP needs `BE_PROXY_TARGET=http://localhost:8080`.
 
 | You want                                             | Run                                                                                                                                                               |
 | :--------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------- |

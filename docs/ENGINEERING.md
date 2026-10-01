@@ -526,7 +526,7 @@ An agent may propose anything; the invariants dispose; a person merges. Two plan
 person:
 
 ```mermaid
-flowchart LR
+flowchart TB
   subgraph model["Model plane · agents"]
     direction LR
     P["▣ Proposer<br/>applies CONFIRMED only"] --> PR["Pull request<br/>tracked round file"]
