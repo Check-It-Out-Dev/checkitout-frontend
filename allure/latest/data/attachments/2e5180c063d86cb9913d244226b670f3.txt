@@ -1,1 +1,0 @@
-  stepup-email hand: 1024 frames over 76.6s → qa-film/2026-10-01/stepup-email-hand
