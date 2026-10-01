@@ -72,16 +72,36 @@ function asRequest(source: RequestLike | Page | BrowserContext): APIRequestConte
  *
  * Idempotent — the cron's per-notification dedup (email_sent=true)
  * still applies.
+ *
+ * The answer is read, not assumed. `flushed: false` means the backend did
+ * not run the queue, and an empty inbox after that is not a finding about
+ * the product — so it is an error here, with the reason in the message.
+ * A backend that answers without counts is accepted as it is.
  */
+export interface FlushResult {
+  flushed?: boolean;
+  sent?: number;
+  failed?: number;
+  skipped?: number;
+}
+
 export async function flushPendingEmails(
   source: RequestLike | Page | BrowserContext,
   origin: string,
-): Promise<void> {
+): Promise<FlushResult> {
   const req = asRequest(source);
   const res = await req.post(`${origin}/api/test/email/flush`, { ignoreHTTPSErrors: true });
   if (!res.ok()) {
     throw new Error(`flushPendingEmails failed: ${res.status()} ${await res.text()}`);
   }
+  const body = ((await res.json().catch(() => ({}))) ?? {}) as FlushResult;
+  if (body.flushed === false) {
+    throw new Error(
+      'flushPendingEmails: the backend did not run the e-mail queue (flushed: false) — ' +
+        'the queue is switched off (notification.email.enabled) or the backend skipped the call',
+    );
+  }
+  return body;
 }
 
 /**
