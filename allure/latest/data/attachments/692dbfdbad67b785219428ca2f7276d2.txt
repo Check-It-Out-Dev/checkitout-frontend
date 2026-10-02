@@ -1,0 +1,4 @@
+  company-campaign
+    pill: 0@/collaborations/create → 1@/collaborations/create → 2@/collaborations/create → 3@/collaborations/90001 → 4@/collaborations/applicants → 5@/collaborations/in-progress → 5@/collaborations/in-progress → done
+    hand: 0@/collaborations/create → 1@/collaborations/create → 2@/collaborations/create → 3@/collaborations/90001 → 4@/collaborations/applicants → 5@/collaborations/in-progress → 5@/collaborations/in-progress → done
+    a visitor can do steps [2, 4] unaided; the guide finishes [0, 3]; [1] ring a field you type into

@@ -1,0 +1,18 @@
+
+  2FA impatient — 393 frames, 11 distinct states
+
+      t    ms  st  work  shld   way  sim   phone  dlg   typed  busy  err  scrim  recap  panel  done           path
+      7    40   0     ·     ·  pill    ·       ·    ·       ·     ·    ·      0      ·      Y     ·  /auth/sign-in
+     47     8   0     Y     Y  none    ·       ·    Y       ·     ·    ·      0      ·      Y     ·  /auth/sign-in
+     55    19   1     ·     ·  none    Y       ·    Y       ·     ·    ·      0      ·      Y     ·  /auth/sign-in
+     74   183   1     ·     ·  none    Y       ·    Y       ·     ·    ·      1      ·      Y     ·  /auth/sign-in
+    257    16   1     Y     Y  none    Y  489670    Y       ·     ·    ·      1      ·      Y     ·  /auth/sign-in
+    273    17   1     Y     Y  none    Y  489670    Y  489670     ·    ·      1      ·      Y     ·  /auth/sign-in
+    290   134   2     ·     ·  none    Y  489670    Y  489670     ·    ·      1      ·      Y     ·  /auth/sign-in
+    424    16   2     Y     Y  none    Y  489670    Y  489670     ·    ·      1      ·      Y     ·  /auth/sign-in
+    440    16   2     Y     Y  none    Y  489670    Y       ·     ·    Y      1      ·      Y     ·  /auth/sign-in
+    456   117   3     ·     ·  none    Y  489670    Y       ·     ·    Y      1      ·      Y     ·  /auth/sign-in
+    573  5966   3     ·     ·  pill    Y  489670    Y       ·     ·    Y      1      ·      Y     ·  /auth/sign-in
+
+  "Working…" total 73 ms, longest single run 17 ms
+

@@ -2,26 +2,26 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 194,
-    "id": 36977783783,
-    "sha": "86c552e",
-    "branch": "main",
+    "number": 27,
+    "id": 36975884577,
+    "sha": "be5337d",
+    "branch": "fix/email-flush-reports-truth",
     "workflow": "browser-tiers",
-    "startedAt": "2026-10-02T07:17:25Z",
-    "durationSec": 212,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/36977783783",
+    "startedAt": "2026-10-02T06:55:12Z",
+    "durationSec": 1180,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/36975884577",
     "status": "green"
   },
   "tests": {
-    "total": 1442,
-    "passed": 1344,
+    "total": 1890,
+    "passed": 1737,
     "failed": 0,
     "flaky": 0,
-    "skipped": 98,
+    "skipped": 153,
     "passRate": 1,
     "flakyRate": 0,
-    "durationMeanSec": 0.17,
-    "durationP95Sec": 0.97,
+    "durationMeanSec": 1.51,
+    "durationP95Sec": 1.81,
     "tiers": {
       "jest": {
         "total": 1306,
@@ -31,13 +31,29 @@
         "skipped": 74,
         "durationSec": 83
       },
+      "visual": {
+        "total": 284,
+        "passed": 283,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "durationSec": 443
+      },
+      "visual-parity": {
+        "total": 82,
+        "passed": 28,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 54,
+        "durationSec": 84
+      },
       "published-reports": {
         "total": 6,
         "passed": 6,
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
-        "durationSec": 8
+        "durationSec": 7
       },
       "msw": {
         "total": 2,
@@ -53,7 +69,15 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 22,
-        "durationSec": 134
+        "durationSec": 132
+      },
+      "perf": {
+        "total": 82,
+        "passed": 82,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "durationSec": 1956
       }
     }
   },
@@ -90,7 +114,7 @@
   },
   "flaky": [],
   "reports": {
-    "playwright": "playwright/browser-tiers-194/",
-    "allure": "allure/browser-tiers-194/"
+    "playwright": "playwright/browser-tiers-27/",
+    "allure": "allure/browser-tiers-27/"
   }
 }
