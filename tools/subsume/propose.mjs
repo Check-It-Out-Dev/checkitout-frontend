@@ -279,15 +279,20 @@ if (isMain) {
     inputs,
     timeLimit: Number(arg('time-limit', 120)),
     gap: Number(arg('gap', 0.005)),
-  }).then((report) => {
-    mkdirSync(out, { recursive: true });
-    writeFileSync(join(out, 'subsume-report.json'), JSON.stringify(report, null, 1));
-    writeFileSync(join(out, 'subsume-report.md'), toMarkdown(report));
-    writeFileSync(join(out, 'diagram.md'), diagram(report));
-    const s = report.summary;
-    const v = report.solver;
-    console.log(
-      `propose: ${s.confirmed} CONFIRMED, ${s.suspected} SUSPECTED of ${s.tests} tests; PR tier ${s.prTierSeconds.before} s -> ${s.prTierSeconds.after} s; probes ${s.probes.carriedAfter}/${s.probes.total}, kills ${s.kills.carriedAfter}/${s.kills.total}; core by ${v.method} (${v.status}, ${v.columns} columns, ${v.distinctRows} rows, ${v.forced} forced, ${v.dominatedDropped} dominated, gap ${v.gapPct ?? '—'} %, ${v.seconds} s) -> ${out}`,
-    );
-  });
+  })
+    .then((report) => {
+      mkdirSync(out, { recursive: true });
+      writeFileSync(join(out, 'subsume-report.json'), JSON.stringify(report, null, 1));
+      writeFileSync(join(out, 'subsume-report.md'), toMarkdown(report));
+      writeFileSync(join(out, 'diagram.md'), diagram(report));
+      const s = report.summary;
+      const v = report.solver;
+      console.log(
+        `propose: ${s.confirmed} CONFIRMED, ${s.suspected} SUSPECTED of ${s.tests} tests; PR tier ${s.prTierSeconds.before} s -> ${s.prTierSeconds.after} s; probes ${s.probes.carriedAfter}/${s.probes.total}, kills ${s.kills.carriedAfter}/${s.kills.total}; core by ${v.method} (${v.status}, ${v.columns} columns, ${v.distinctRows} rows, ${v.forced} forced, ${v.dominatedDropped} dominated, gap ${v.gapPct ?? '—'} %, ${v.seconds} s) -> ${out}`,
+      );
+    })
+    .catch((err) => {
+      console.error(err);
+      process.exitCode = 1;
+    });
 }

@@ -450,7 +450,7 @@ export class OpportunityFormComponent implements OnInit {
     // ErdosPrimarch bug-hunt fork 2026-05-11.
     const currentUser = this.session.user();
     if (!currentUser || currentUser.id == null) {
-      this.router.navigate(['/auth/sign-in'], {
+      void this.router.navigate(['/auth/sign-in'], {
         queryParams: { reason: 'session-expired', returnTo: this.router.url },
       });
       return;
@@ -551,9 +551,9 @@ export class OpportunityFormComponent implements OnInit {
         this.state.set('ready');
         const targetId = result.id ?? editId;
         if (targetId != null) {
-          this.router.navigate(['/collaborations', targetId]);
+          void this.router.navigate(['/collaborations', targetId]);
         } else {
-          this.router.navigate(['/collaborations/list']);
+          void this.router.navigate(['/collaborations/list']);
         }
       },
       error: (err: { status?: number }) => {
@@ -562,7 +562,7 @@ export class OpportunityFormComponent implements OnInit {
         // session got recycled mid-request) to the session-expired path
         // instead of the generic save-failed toast.
         if (err?.status === 404) {
-          this.router.navigate(['/auth/sign-in'], {
+          void this.router.navigate(['/auth/sign-in'], {
             queryParams: { reason: 'session-expired', returnTo: this.router.url },
           });
           return;
