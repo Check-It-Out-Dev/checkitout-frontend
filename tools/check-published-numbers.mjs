@@ -264,11 +264,12 @@ claim(
   [jest, p.bdd, t.integration, t.visual, p.perf],
 );
 claim(DEPTH, 'offline subset', /\*\*([\d,]+) of the ([\d,]+) tests\*\*/, [m.offline, m.total]);
-claim(DEPTH, 'pyramid arithmetic', /([\d,]+) Jest \+ ([\d,]+) Playwright = ([\d,]+) tests/, [
-  jest,
-  distinct,
-  m.total,
-]);
+claim(
+  DEPTH,
+  'pyramid arithmetic',
+  /([\d,]{1,12}) Jest \+ ([\d,]{1,12}) Playwright = ([\d,]{1,12}) tests/,
+  [jest, distinct, m.total],
+);
 claim(DEPTH, 'npm test line', /npm test\s+# ([\d,]+) Jest unit/, jest);
 claim(
   DEPTH,
