@@ -155,6 +155,25 @@ describe('test-email helpers', () => {
       });
     });
 
+    it('refuses an answer where every send failed', async () => {
+      const post = jest
+        .fn()
+        .mockResolvedValue(ok({ flushed: true, sent: 0, failed: 3, skipped: 0 }));
+      await expect(flushPendingEmails(fakeReq({ post }), ORIGIN)).rejects.toThrow(
+        /could not send any.*failed: 3/,
+      );
+    });
+
+    it('accepts an answer where some sends failed and some went out', async () => {
+      const post = jest
+        .fn()
+        .mockResolvedValue(ok({ flushed: true, sent: 2, failed: 1, skipped: 0 }));
+      await expect(flushPendingEmails(fakeReq({ post }), ORIGIN)).resolves.toMatchObject({
+        sent: 2,
+        failed: 1,
+      });
+    });
+
     it('throws with the status and body when the endpoint fails', async () => {
       const post = jest
         .fn()

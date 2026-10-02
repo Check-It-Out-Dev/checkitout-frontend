@@ -153,7 +153,7 @@ jobs:
           # scenarios flush the queue themselves. A tick in the middle of a run is a second actor
           # nobody asked for: on 2026-10-01 it held the scheduler lock for the minute in which a
           # scenario flushed three times, and the night went red on an empty inbox. The backend's own
-          # end-to-end profile parks the job on a date that never comes; so does this one.
+          # end-to-end profile parks the job on 29 February; so does this one.
           NOTIFICATION_EMAIL_CRON: "0 0 3 29 2 *"
         ports: ["8080:8080"]
         options: >-

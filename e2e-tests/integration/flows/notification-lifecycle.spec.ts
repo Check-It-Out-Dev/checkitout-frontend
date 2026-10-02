@@ -467,9 +467,8 @@ test.describe('@notification-lifecycle — port of notification-e2e.feature', ()
     }
 
     // Push the notification-email queue through synchronously. Production
-    // code emits the same dispatch via EmailCronJob.processEmailQueue every
-    // 15 minutes; tests can't wait, so /test/email/flush invokes the same
-    // method inline.
+    // code runs the same dispatch from EmailCronJob every 15 minutes; tests
+    // can't wait, so /test/email/flush runs the same work inline.
     await flushPendingEmails(page, GREENFIELD_URL);
 
     // Email landed in GreenMail; assert envelope + [CheckItOut] subject
