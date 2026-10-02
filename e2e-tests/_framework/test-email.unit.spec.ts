@@ -119,6 +119,69 @@ describe('test-email helpers', () => {
     });
   });
 
+  // The backend's flush used to answer `flushed: true` while its scheduler lock was skipping the
+  // call: ShedLock holds the lock for a minute after every scheduled run, and a flush inside that
+  // minute sent nothing. Nightly run 36836281292 asked 43 s after the 08:30 tick, three times, and
+  // read three empty inboxes as a product defect. The backend now runs the queue outside that lock
+  // and says what it did; this helper refuses the one answer that means "nothing was done".
+  describe('flushPendingEmails', () => {
+    const ok = (json: unknown) => ({ ok: () => true, status: () => 200, json: async () => json });
+
+    it('returns what the backend says it sent', async () => {
+      const post = jest
+        .fn()
+        .mockResolvedValue(ok({ flushed: true, sent: 2, failed: 0, skipped: 1 }));
+      await expect(flushPendingEmails(fakeReq({ post }), ORIGIN)).resolves.toEqual({
+        flushed: true,
+        sent: 2,
+        failed: 0,
+        skipped: 1,
+      });
+    });
+
+    it('refuses an answer that says the queue did not run', async () => {
+      const post = jest
+        .fn()
+        .mockResolvedValue(ok({ flushed: false, sent: 0, failed: 0, skipped: 0 }));
+      await expect(flushPendingEmails(fakeReq({ post }), ORIGIN)).rejects.toThrow(
+        /did not run the e-mail queue/,
+      );
+    });
+
+    it('accepts the answer of a backend that reports no counts', async () => {
+      const post = jest.fn().mockResolvedValue(ok({ flushed: true }));
+      await expect(flushPendingEmails(fakeReq({ post }), ORIGIN)).resolves.toEqual({
+        flushed: true,
+      });
+    });
+
+    it('refuses an answer where every send failed', async () => {
+      const post = jest
+        .fn()
+        .mockResolvedValue(ok({ flushed: true, sent: 0, failed: 3, skipped: 0 }));
+      await expect(flushPendingEmails(fakeReq({ post }), ORIGIN)).rejects.toThrow(
+        /could not send any.*failed: 3/,
+      );
+    });
+
+    it('accepts an answer where some sends failed and some went out', async () => {
+      const post = jest
+        .fn()
+        .mockResolvedValue(ok({ flushed: true, sent: 2, failed: 1, skipped: 0 }));
+      await expect(flushPendingEmails(fakeReq({ post }), ORIGIN)).resolves.toMatchObject({
+        sent: 2,
+        failed: 1,
+      });
+    });
+
+    it('throws with the status and body when the endpoint fails', async () => {
+      const post = jest
+        .fn()
+        .mockResolvedValue({ ok: () => false, status: () => 500, text: async () => 'boom' });
+      await expect(flushPendingEmails(fakeReq({ post }), ORIGIN)).rejects.toThrow(/500 boom/);
+    });
+  });
+
   describe('clearInbox', () => {
     it('returns purgedCount on success', async () => {
       const del = jest.fn().mockResolvedValue({

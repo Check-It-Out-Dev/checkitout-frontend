@@ -61,27 +61,56 @@ function asRequest(source: RequestLike | Page | BrowserContext): APIRequestConte
   return source as APIRequestContext;
 }
 
+/** What the backend says one pass over its e-mail queue did. */
+export interface FlushResult {
+  flushed?: boolean;
+  sent?: number;
+  failed?: number;
+  skipped?: number;
+}
+
 /**
  * Synchronously flush the BE's pending-notification-emails queue.
  *
- * The notification subsystem dispatches emails via a 15-minute cron
- * (`EmailCronJob.processEmailQueue`). Tests can't wait that long;
- * this endpoint invokes the same code path inline. After it returns,
- * any pending notifications have been pushed to GreenMail and can be
- * read by `latestEmail` / `waitForEmail`.
+ * The notification subsystem dispatches emails via a 15-minute job
+ * (`EmailCronJob`). Tests can't wait that long; this endpoint runs the
+ * same work inline (`processPendingEmails`, outside the job's scheduler
+ * lock). After it returns, any pending notifications have been pushed to
+ * GreenMail and can be read by `latestEmail` / `waitForEmail`.
  *
- * Idempotent — the cron's per-notification dedup (email_sent=true)
+ * Idempotent — the job's per-notification dedup (email_sent=true)
  * still applies.
+ *
+ * The answer is read, not assumed. Two answers mean an empty inbox would
+ * say nothing about the product, so both are errors here, with the reason
+ * in the message: `flushed: false` (the backend did not run the queue),
+ * and a pass in which every send failed. A backend that answers without
+ * counts is accepted as it is.
  */
 export async function flushPendingEmails(
   source: RequestLike | Page | BrowserContext,
   origin: string,
-): Promise<void> {
+): Promise<FlushResult> {
   const req = asRequest(source);
   const res = await req.post(`${origin}/api/test/email/flush`, { ignoreHTTPSErrors: true });
   if (!res.ok()) {
     throw new Error(`flushPendingEmails failed: ${res.status()} ${await res.text()}`);
   }
+  const body = ((await res.json().catch(() => ({}))) ?? {}) as FlushResult;
+  if (body.flushed === false) {
+    throw new Error(
+      'flushPendingEmails: the backend did not run the e-mail queue (flushed: false) — ' +
+        'the queue is switched off (notification.email.enabled) or the pass could not be completed; see the backend log',
+    );
+  }
+  const failed = body.failed ?? 0;
+  if (failed > 0 && (body.sent ?? 0) === 0) {
+    throw new Error(
+      `flushPendingEmails: the backend could not send any pending e-mail (sent: 0, failed: ${failed}) — ` +
+        'look at its mail configuration and its log before reading the inbox',
+    );
+  }
+  return body;
 }
 
 /**
