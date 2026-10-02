@@ -2,50 +2,34 @@
   "schema": 1,
   "repo": "Check-It-Out-Dev/checkitout-frontend",
   "run": {
-    "number": 27,
-    "id": 36975884577,
-    "sha": "be5337d",
-    "branch": "fix/email-flush-reports-truth",
+    "number": 196,
+    "id": 36978688387,
+    "sha": "8add1cf",
+    "branch": "main",
     "workflow": "browser-tiers",
-    "startedAt": "2026-10-02T06:55:12Z",
-    "durationSec": 1180,
-    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/36975884577",
+    "startedAt": "2026-10-02T07:27:54Z",
+    "durationSec": 232,
+    "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/36978688387",
     "status": "green"
   },
   "tests": {
-    "total": 1890,
-    "passed": 1737,
+    "total": 1448,
+    "passed": 1350,
     "failed": 0,
     "flaky": 0,
-    "skipped": 153,
+    "skipped": 98,
     "passRate": 1,
     "flakyRate": 0,
-    "durationMeanSec": 1.51,
-    "durationP95Sec": 1.81,
+    "durationMeanSec": 0.15,
+    "durationP95Sec": 0.97,
     "tiers": {
       "jest": {
-        "total": 1306,
-        "passed": 1232,
+        "total": 1312,
+        "passed": 1238,
         "failed": 0,
         "flaky": 0,
         "skipped": 74,
-        "durationSec": 83
-      },
-      "visual": {
-        "total": 284,
-        "passed": 283,
-        "failed": 0,
-        "flaky": 0,
-        "skipped": 1,
-        "durationSec": 443
-      },
-      "visual-parity": {
-        "total": 82,
-        "passed": 28,
-        "failed": 0,
-        "flaky": 0,
-        "skipped": 54,
-        "durationSec": 84
+        "durationSec": 59
       },
       "published-reports": {
         "total": 6,
@@ -69,15 +53,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 22,
-        "durationSec": 132
-      },
-      "perf": {
-        "total": 82,
-        "passed": 82,
-        "failed": 0,
-        "flaky": 0,
-        "skipped": 0,
-        "durationSec": 1956
+        "durationSec": 136
       }
     }
   },
@@ -114,7 +90,7 @@
   },
   "flaky": [],
   "reports": {
-    "playwright": "playwright/browser-tiers-27/",
-    "allure": "allure/browser-tiers-27/"
+    "playwright": "playwright/browser-tiers-196/",
+    "allure": "allure/browser-tiers-196/"
   }
 }
