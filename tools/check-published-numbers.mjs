@@ -250,62 +250,53 @@ function claimJsonDate(file, path, expected) {
   } else checked.push(`${file} · ${path} (date)`);
 }
 
-// ── README.md ───────────────────────────────────────────────────────────────
+// ── README.md and the page behind it ────────────────────────────────────────
+// The README is short on purpose; the depth it used to carry -- the pyramid, the coverage table, the
+// gate table, the CI tables -- lives in docs/ENGINEERING.md. Each claim names the file its sentence
+// is in. A figure is published in ONE of the two, so there is no second copy to drift.
+const DEPTH = 'docs/ENGINEERING.md';
 claim('README.md', 'tests badge', /badge\/tests-(\d+)-/, m.total);
 claim('README.md', 'headline total', /\*\*([\d,]+) tests across nine tiers/, m.total);
 claim(
-  'README.md',
+  DEPTH,
   'headline breakdown',
   /([\d,]+) Jest · ([\d,]+) BDD scenarios · ([\d,]+) live-backend integration · ([\d,]+) visual · ([\d,]+) experience/,
   [jest, p.bdd, t.integration, t.visual, p.perf],
 );
-claim('README.md', 'offline subset', /\*\*([\d,]+) of the ([\d,]+) tests\*\*/, [
-  m.offline,
-  m.total,
-]);
-claim('README.md', 'pyramid arithmetic', /([\d,]+) Jest \+ ([\d,]+) Playwright = ([\d,]+) tests/, [
+claim(DEPTH, 'offline subset', /\*\*([\d,]+) of the ([\d,]+) tests\*\*/, [m.offline, m.total]);
+claim(DEPTH, 'pyramid arithmetic', /([\d,]+) Jest \+ ([\d,]+) Playwright = ([\d,]+) tests/, [
   jest,
   distinct,
   m.total,
 ]);
-claim('README.md', 'npm test line', /npm test\s+# ([\d,]+) Jest unit/, jest);
+claim(DEPTH, 'npm test line', /npm test\s+# ([\d,]+) Jest unit/, jest);
 claim(
-  'README.md',
+  DEPTH,
   'integration line',
   /npm run test:integration\s+# ([\d,]+) live-backend/,
   t.integration,
 );
 
-// The four remaining literal copies in the README. They are prose rather than a
+// The four remaining literal copies on the page. They are prose rather than a
 // table, which is exactly why they were the ones left behind the last time.
-claim('README.md', 'prose total', /\*\*([\d,]+) tests\.\*\* Five layers/, m.total);
+claim(DEPTH, 'prose total', /\*\*([\d,]+) tests\.\*\* Five layers/, m.total);
 claim(
-  'README.md',
+  DEPTH,
   'in-progress · integration row',
   /\| ([\d,]+) live-backend integration tests/,
   t.integration,
 );
 claim(
-  'README.md',
+  DEPTH,
   'in-progress · visual row',
   /\| ([\d,]+) visual snapshots over ([\d,]+) fixtures \+ ([\d,]+) parity diffs/,
   [t.visual, m.gates.visualFixtures, t.visualParity],
 );
-claim(
-  'README.md',
-  'in-progress · experience row',
-  /Experience tier — ([\d,]+) measurements/,
-  p.perf,
-);
-claim('README.md', 'roadmap row', /\| ([\d,]+) Jest unit \+ component tests/, jest);
-claim(
-  'README.md',
-  'sandbox line',
-  /npm run test:sandbox\s+# ([\d,]+) component-sandbox/,
-  t.sandbox,
-);
-claim('README.md', 'perf line', /npm run test:perf\s+# ([\d,]+) experience/, p.perf);
-claim('README.md', 'pyramid suites', /│ {2,}(\d+) suites/, m.jest.suites);
+claim(DEPTH, 'in-progress · experience row', /Experience tier — ([\d,]+) measurements/, p.perf);
+claim(DEPTH, 'roadmap row', /\| ([\d,]+) Jest unit \+ component tests/, jest);
+claim(DEPTH, 'sandbox line', /npm run test:sandbox\s+# ([\d,]+) component-sandbox/, t.sandbox);
+claim(DEPTH, 'perf line', /npm run test:perf\s+# ([\d,]+) experience/, p.perf);
+claim(DEPTH, 'pyramid suites', /│ {2,}(\d+) suites/, m.jest.suites);
 // Two figures this gate was standing next to without checking. The badge-note total was even
 // written into this file's own pattern as a literal, so it would have reported "the measurement
 // date is gone" the first time the count moved -- a gate that stops guarding and blames the
@@ -317,7 +308,7 @@ claim(
   /the test count is static — ([\d,]+) across every tier/,
   m.total,
 );
-claim('README.md', 'pyramid · L2 component', /never HTTP {2,}│ {2,}([\d,]+) tests/, jest);
+claim(DEPTH, 'pyramid · L2 component', /never HTTP {2,}│ {2,}([\d,]+) tests/, jest);
 // The docs index repeats one figure; it was the one place G15 did not look, and it was stale.
 claim('docs/README.md', 'docs index Jest', /the ([\d,]+) Jest tests and the gate wall/, jest);
 // The CI table's measured duration — asked of GitHub by measure:counts, kept with its own date.
@@ -325,7 +316,7 @@ if (m.ci?.prRun) {
   // The CI/CD table rounds to the nearest ten seconds - a median that moves by four seconds is not a
   // change anyone should have to edit a README for - so the gate rounds the measured value the same way.
   claim(
-    'README.md',
+    DEPTH,
     'PR run duration',
     /\|\s*~(\d+) s\s*\|/,
     String(Math.round(m.ci.prRun.medianSeconds / 10) * 10),
@@ -375,7 +366,7 @@ for (const [row, key] of [
   ['Functions', 'functions'],
 ]) {
   claim(
-    'README.md',
+    DEPTH,
     `coverage row · ${row}`,
     new RegExp(String.raw`\*\*${row}\*\*\s*\|[^|]*?\*\*([\d.]+) %\*\* \((\d+) / (\d+)\)`),
     [c[key].pct.toFixed(2), c[key].covered, c[key].total],
@@ -384,26 +375,27 @@ for (const [row, key] of [
 
 // ── The date the page claims its numbers were measured on. A stale date is a
 //    quieter lie than a stale number and outlives it. ───────────────────────
-for (const [label, pattern] of [
+for (const [file, label, pattern] of [
   [
+    'README.md',
     'badge note',
     /the test count is static — [\d,]+ across every tier, measured (\d{4}-\d{2}-\d{2})/,
   ],
-  ['page note', /was measured on \*\*(\d{4}-\d{2}-\d{2})\*\*/],
-  ['coverage note', /Measured (\d{4}-\d{2}-\d{2})\. Coverage excludes/],
+  [DEPTH, 'page note', /was measured on \*\*(\d{4}-\d{2}-\d{2})\*\*/],
+  [DEPTH, 'coverage note', /Measured (\d{4}-\d{2}-\d{2})\. Coverage excludes/],
 ]) {
-  const found = read('README.md').match(pattern);
-  if (!found) failures.push({ file: 'README.md', label, detail: 'the measurement date is gone' });
+  const found = read(file).match(pattern);
+  if (!found) failures.push({ file, label, detail: 'the measurement date is gone' });
   else if (found[1] !== m.measuredAt) {
-    const rewritten = FIX ? replaceGroup(read('README.md'), pattern, 1, m.measuredAt) : null;
+    const rewritten = FIX ? replaceGroup(read(file), pattern, 1, m.measuredAt) : null;
     if (rewritten != null) {
-      write('README.md', rewritten);
-      fixes.push(`README.md · ${label}: ${found[1]} -> ${m.measuredAt}`);
-      checked.push(`README.md · ${label}`);
+      write(file, rewritten);
+      fixes.push(`${file} · ${label}: ${found[1]} -> ${m.measuredAt}`);
+      checked.push(`${file} · ${label}`);
     } else {
-      failures.push({ file: 'README.md', label, got: found[1], want: m.measuredAt });
+      failures.push({ file, label, got: found[1], want: m.measuredAt });
     }
-  } else checked.push(`README.md · ${label}`);
+  } else checked.push(`${file} · ${label}`);
 }
 
 // ── The gate table. Each row quotes its gate's headline number, and every one
@@ -411,30 +403,19 @@ for (const [label, pattern] of [
 //    i18n one was already wrong by six keys before this check existed. ───────
 const g = m.gates;
 claim(
-  'README.md',
+  DEPTH,
   'G3 · i18n keys and templates',
   /different key sets — (\d+) keys and (\d+) templates/,
   [g.i18nKeys, g.i18nTemplates],
 );
-claim(
-  'README.md',
-  'G4 · registered fixtures',
-  /— (\d+)\/\d+ registered and captured/,
-  g.visualFixtures,
-);
-claim(
-  'README.md',
-  'G6 · specs citing a feature',
-  /— (\d+)\/\d+ cite theirs/,
-  g.integrationSpecsCiting,
-);
-claim(
-  'README.md',
-  'G7 · corpus completeness',
-  /— (\d+) accounted for, (\d+) ported, (\d+) waived/,
-  [g.bdd.beFeatures, g.bdd.ported, g.bdd.waived],
-);
-claim('README.md', 'G9 · contract coverage', /— (\d+)\/(\d+) proven, (\d+) waived with reasons/, [
+claim(DEPTH, 'G4 · registered fixtures', /— (\d+)\/\d+ registered and captured/, g.visualFixtures);
+claim(DEPTH, 'G6 · specs citing a feature', /— (\d+)\/\d+ cite theirs/, g.integrationSpecsCiting);
+claim(DEPTH, 'G7 · corpus completeness', /— (\d+) accounted for, (\d+) ported, (\d+) waived/, [
+  g.bdd.beFeatures,
+  g.bdd.ported,
+  g.bdd.waived,
+]);
+claim(DEPTH, 'G9 · contract coverage', /— (\d+)\/(\d+) proven, (\d+) waived with reasons/, [
   g.contractCoverage.proven,
   g.contractCoverage.wrappers,
   g.contractCoverage.waived,
@@ -452,15 +433,15 @@ claim(
 //    someone adds a claim — which is exactly when the row should be rewritten,
 //    and exactly when this fails. ───────────────────────────────────────────
 {
-  // +1 for this row itself, so the number the README states and the number the
+  // +1 for this row itself, so the number the gate table states and the number the
   // success line prints are the same number. A count that excluded itself would
   // be off by one against the summary two lines below, which is precisely the
   // kind of small disagreement this whole gate exists to make impossible.
   const asserted = checked.length + failures.length + 1;
-  const found = read('README.md').match(/disagreeing with the measured one — (\d+) figures/);
+  const found = read(DEPTH).match(/disagreeing with the measured one — (\d+) figures/);
   if (!found) {
     failures.push({
-      file: 'README.md',
+      file: DEPTH,
       label: 'G15 · figures this gate checks',
       detail: 'the row no longer states a count',
     });
@@ -469,27 +450,22 @@ claim(
     // rather than whenever the code changes, so leaving it out would make every new claim a
     // two-step edit and, the second time, an ignored red line.
     const rewritten = FIX
-      ? replaceGroup(
-          read('README.md'),
-          /disagreeing with the measured one — (\d+) figures/,
-          1,
-          asserted,
-        )
+      ? replaceGroup(read(DEPTH), /disagreeing with the measured one — (\d+) figures/, 1, asserted)
       : null;
     if (rewritten != null) {
-      write('README.md', rewritten);
-      fixes.push(`README.md · G15 · figures this gate checks: ${found[1]} -> ${asserted}`);
-      checked.push('README.md · G15 · figures this gate checks');
+      write(DEPTH, rewritten);
+      fixes.push(`${DEPTH} · G15 · figures this gate checks: ${found[1]} -> ${asserted}`);
+      checked.push(`${DEPTH} · G15 · figures this gate checks`);
     } else {
       failures.push({
-        file: 'README.md',
+        file: DEPTH,
         label: 'G15 · figures this gate checks',
         got: found[1],
         want: asserted,
       });
     }
   } else {
-    checked.push('README.md · G15 · figures this gate checks');
+    checked.push(`${DEPTH} · G15 · figures this gate checks`);
   }
 }
 
