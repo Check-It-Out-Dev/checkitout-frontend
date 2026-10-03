@@ -6,22 +6,22 @@
     "id": 37107265144,
     "sha": "ceffd05",
     "branch": "main",
-    "workflow": "nightly-full-stack",
+    "workflow": "k8s-test-execution",
     "startedAt": "2026-10-03T07:43:02Z",
-    "durationSec": 363,
+    "durationSec": 567,
     "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/37107265144",
     "status": "green"
   },
   "tests": {
-    "total": 1745,
-    "passed": 1634,
+    "total": 1597,
+    "passed": 1489,
     "failed": 0,
     "flaky": 0,
-    "skipped": 111,
+    "skipped": 108,
     "passRate": 1,
     "flakyRate": 0,
-    "durationMeanSec": 0.18,
-    "durationP95Sec": 0.67,
+    "durationMeanSec": 0.23,
+    "durationP95Sec": 1,
     "tiers": {
       "jest": {
         "total": 1312,
@@ -31,13 +31,13 @@
         "skipped": 74,
         "durationSec": 78
       },
-      "bdd": {
-        "total": 148,
-        "passed": 140,
+      "integration": {
+        "total": 215,
+        "passed": 183,
         "failed": 0,
         "flaky": 0,
-        "skipped": 8,
-        "durationSec": 42
+        "skipped": 32,
+        "durationSec": 178
       },
       "sandbox": {
         "total": 64,
@@ -45,7 +45,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 2,
-        "durationSec": 56
+        "durationSec": 77
       },
       "scenarios": {
         "total": 6,
@@ -53,15 +53,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
-        "durationSec": 12
-      },
-      "integration": {
-        "total": 215,
-        "passed": 188,
-        "failed": 0,
-        "flaky": 0,
-        "skipped": 27,
-        "durationSec": 103
+        "durationSec": 10
       }
     }
   },
@@ -71,12 +63,40 @@
     "branches": 69.52,
     "functions": 66.79
   },
+  "perf": {
+    "k6": {
+      "profile": "load",
+      "requests": 197,
+      "failedRate": 0,
+      "p95Ms": 162.67,
+      "thresholdsOk": true,
+      "journeys": {
+        "apply": {
+          "p95Ms": 325.57,
+          "p99Ms": 359.88,
+          "budgetMs": 1500,
+          "ok": true
+        },
+        "browse": {
+          "p95Ms": 89.61,
+          "p99Ms": 96.02,
+          "budgetMs": 800,
+          "ok": true
+        }
+      }
+    }
+  },
   "lighthouse": {
     "url": "/",
     "performance": 99,
     "accessibility": 100,
     "bestPractices": 100,
     "seo": 92
+  },
+  "kubernetes": {
+    "shards": 4,
+    "wallSec": 107,
+    "k6Runners": 2
   },
   "mutation": {
     "score": 72.22,
@@ -96,30 +116,10 @@
     },
     "scans": 2
   },
-  "flaky": [
-    {
-      "title": "Notification System E2E with Real Email Delivery › Full notification lifecycle with email delivery, archive, and cross-user isolation [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/notification-e2e.feature.spec.js",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 25,
-      "history": [
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "fail",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass"
-      ]
-    }
-  ],
+  "flaky": [],
   "reports": {
-    "playwright": "playwright/nightly-full-stack-30/",
-    "allure": "allure/nightly-full-stack-30/"
+    "playwright": "playwright/k8s-test-execution-30/",
+    "k6": "k6/k8s-test-execution-30/",
+    "allure": "allure/k8s-test-execution-30/"
   }
 }

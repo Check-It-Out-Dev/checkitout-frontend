@@ -1,0 +1,1 @@
+{"id":"bc9050a5bc42446316b499f0f0687584","fullName":"integration/flows/profile-validation.spec.ts › @profile @validation-edge-cases — port of validation-edge-cases.feature › @phone invalid format returns 400","name":"@phone invalid format returns 400","status":"passed","testResultsByEnv":{"default":"a300defc3e0b3bd450191ba45da60193"}}
