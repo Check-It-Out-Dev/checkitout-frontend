@@ -1,1 +1,0 @@
-{"id":"9f699461304d74550f1988174a4fef85","fullName":"integration/flows/registry-company-flow.spec.ts › @registry — port of registry-company-flow.feature error-path subset › @permissions unauthenticated registry lookup returns 401","name":"@permissions unauthenticated registry lookup returns 401","status":"passed","testResultsByEnv":{"default":"ee85925e76e148424d3d7c1c2d65ac03"}}
