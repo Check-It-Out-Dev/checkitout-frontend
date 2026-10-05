@@ -1,0 +1,1 @@
+  nip-to-ksef guided: 1257 frames over 67.8s → qa-film/2026-10-05/nip-to-ksef-guided
