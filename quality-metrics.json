@@ -6,22 +6,22 @@
     "id": 37437606189,
     "sha": "ceffd05",
     "branch": "main",
-    "workflow": "nightly-full-stack",
+    "workflow": "browser-tiers",
     "startedAt": "2026-10-06T08:39:47Z",
-    "durationSec": 346,
+    "durationSec": 1156,
     "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/37437606189",
     "status": "green"
   },
   "tests": {
-    "total": 1745,
-    "passed": 1634,
+    "total": 1896,
+    "passed": 1742,
     "failed": 0,
-    "flaky": 0,
-    "skipped": 111,
-    "passRate": 1,
-    "flakyRate": 0,
-    "durationMeanSec": 0.18,
-    "durationP95Sec": 0.66,
+    "flaky": 1,
+    "skipped": 153,
+    "passRate": 0.9994,
+    "flakyRate": 0.0006,
+    "durationMeanSec": 1.47,
+    "durationP95Sec": 1.68,
     "tiers": {
       "jest": {
         "total": 1312,
@@ -31,37 +31,53 @@
         "skipped": 74,
         "durationSec": 78
       },
-      "bdd": {
-        "total": 148,
-        "passed": 140,
+      "visual": {
+        "total": 284,
+        "passed": 283,
         "failed": 0,
         "flaky": 0,
-        "skipped": 8,
-        "durationSec": 54
+        "skipped": 1,
+        "durationSec": 365
       },
-      "sandbox": {
-        "total": 64,
-        "passed": 62,
+      "visual-parity": {
+        "total": 82,
+        "passed": 28,
         "failed": 0,
         "flaky": 0,
-        "skipped": 2,
-        "durationSec": 54
+        "skipped": 54,
+        "durationSec": 77
       },
-      "scenarios": {
+      "published-reports": {
         "total": 6,
         "passed": 6,
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
-        "durationSec": 11
+        "durationSec": 7
       },
-      "integration": {
-        "total": 215,
-        "passed": 188,
+      "msw": {
+        "total": 2,
+        "passed": 0,
         "failed": 0,
         "flaky": 0,
-        "skipped": 27,
-        "durationSec": 105
+        "skipped": 2,
+        "durationSec": 0
+      },
+      "sandbox": {
+        "total": 128,
+        "passed": 106,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 22,
+        "durationSec": 127
+      },
+      "perf": {
+        "total": 82,
+        "passed": 81,
+        "failed": 0,
+        "flaky": 1,
+        "skipped": 0,
+        "durationSec": 1977
       }
     }
   },
@@ -79,10 +95,10 @@
     "seo": 92
   },
   "mutation": {
-    "score": 72.22,
-    "coveredScore": 82.59,
+    "score": 72.43,
+    "coveredScore": 82.82,
     "mutants": 486,
-    "survived": 74,
+    "survived": 73,
     "floor": 70
   },
   "security": {
@@ -96,30 +112,9 @@
     },
     "scans": 2
   },
-  "flaky": [
-    {
-      "title": "Notification System E2E with Real Email Delivery › Full notification lifecycle with email delivery, archive, and cross-user isolation [bdd]",
-      "file": "../.features-gen/e2e-tests/bdd/features/notification-e2e.feature.spec.js",
-      "window": 10,
-      "runsFlaky": 0,
-      "runsFailed": 1,
-      "lastSeen": 25,
-      "history": [
-        "pass",
-        "fail",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass",
-        "pass"
-      ]
-    }
-  ],
+  "flaky": [],
   "reports": {
-    "playwright": "playwright/nightly-full-stack-33/",
-    "allure": "allure/nightly-full-stack-33/"
+    "playwright": "playwright/browser-tiers-33/",
+    "allure": "allure/browser-tiers-33/"
   }
 }
