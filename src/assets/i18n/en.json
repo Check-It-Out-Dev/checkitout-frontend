@@ -1965,7 +1965,7 @@
               "d": "provable consent · real erasure"
             },
             "tests": {
-              "t": "12,190 tests",
+              "t": "10,724 tests",
               "d": "unit · integration · E2E"
             },
             "graph": {
@@ -2031,7 +2031,7 @@
       },
       "testing": {
         "title": "Two test pyramids and a wall of gates",
-        "subtitle": "11,129 unit, 886 integration and 175 E2E scenarios guard the backend; 949 unit specs, 261 visual snapshots, 42 live-backend specs and 27 BDD features guard the rewrite — standing on 18 compile-time contract pins and a fourteen-step pre-commit gate. Nothing merges on vibes.",
+        "subtitle": "8,012 unit, 853 integration and 277 E2E scenarios guard the backend; 1,141 unit specs, 138 visual snapshots, 222 live-backend specs and 27 BDD features guard the rewrite — standing on 18 compile-time contract pins and a fourteen-step pre-commit gate. Nothing merges on vibes.",
         "pyramidLabel": "The backend pyramid",
         "pyramidLabelFe": "The rewrite pyramid — standing on the contract",
         "feTiers": {
@@ -2041,17 +2041,17 @@
             "detail": "Ported 1:1 from the backend Cucumber corpus — the same business language, typed against the generated client"
           },
           "integration": {
-            "count": "42",
+            "count": "222",
             "name": "Live-backend specs",
             "detail": "Trace equivalence against the running backend — catches the drift the type system can't see"
           },
           "visual": {
-            "count": "261",
+            "count": "138",
             "name": "Visual snapshots",
             "detail": "131 sandbox fixtures on 2 chromium engines — committed baselines, reviewed as images in the diff"
           },
           "unit": {
-            "count": "949",
+            "count": "1,141",
             "name": "Unit specs",
             "detail": "Jest, one suite per component and service — runs last in the gate, --bail"
           }
@@ -2062,17 +2062,17 @@
         },
         "tiers": {
           "unit": {
-            "count": "11,129",
+            "count": "8,012",
             "name": "Unit tests",
             "detail": "one reused JVM · embedded Redis · clocks pinned to UTC"
           },
           "it": {
-            "count": "886",
+            "count": "853",
             "name": "Integration tests",
             "detail": "71 suites on real PostgreSQL 15 + Redis 7 via Testcontainers — H2 deliberately removed"
           },
           "e2e": {
-            "count": "175",
+            "count": "277",
             "name": "E2E scenarios",
             "detail": "34 Cucumber features · 15 isolated runners · real Firebase + GreenMail SMTP"
           }
@@ -2087,7 +2087,7 @@
           "human": "Cucumber scenarios are the business logic written in human language — an AI steps into the user's skin and learns what the product does, not just what the code says."
         },
         "snippetCaption": "Real E2E state machinery — deterministic scenarios against a real stack.",
-        "caveat": "Honest numbers: 11,129 counts @Test annotations (parameterized cases expand further); rewrite counts are a live snapshot and grow with every commit; the rewrite's gates run locally by design — no CI theatre."
+        "caveat": "Honest numbers, re-measured 2026-09-30: the backend figures count @Test and @ParameterizedTest methods in the source, and 277 is the Cucumber corpus after Examples expansion. The frontend figures are what its runners report — jest and `playwright test --list` — skipped and fixme included. Every one is a command away, and the READMEs say which command."
       },
       "velocity": {
         "title": "Speed is a feedback loop",
@@ -2102,7 +2102,7 @@
           "suite": {
             "t": "Gate",
             "latency": "minutes",
-            "d": "The pre-commit gate: the fourteen-step check:full — ten audit scripts, both typechecks, ng build strictTemplates, 949 unit specs. What the compiler can't see — envelope translation, i18n parity, fixture coverage — dies here, still before a commit exists."
+            "d": "The pre-commit gate: the fourteen-step check:full — eleven audit scripts, both typechecks, ng build strictTemplates, 1,141 unit specs. What the compiler can't see — envelope translation, i18n parity, fixture coverage — dies here, still before a commit exists."
           },
           "runtime": {
             "t": "Runtime",
@@ -2140,7 +2140,7 @@
           "pullQuote": "Feedback only catches what the verifier can see — so we made the verifier see everything."
         },
         "dogfoodLabel": "Dogfood — one fresh boot of this repo, one afternoon",
-        "dogfood": "2026-09-02: one afternoon, every tier re-run — 11,129 BE unit + 886 BE integration green · rewrite 921 unit + 261 visual + 24 scenario + 135 BDD + 195 trace-equivalence green · a campaign created through the real UI landed on the first try.",
+        "dogfood": "2026-09-30: every tier re-measured by its own runner — 8,908 backend test methods across 34 Cucumber features (277 scenarios expanded) · the rewrite at 1,141 unit + 138 visual + 222 live-backend + 148 BDD + 78 experience = 1,816 · coverage measured for the first time and gated at 77.7 % lines.",
         "caveat": "Honest: types catch contract bugs, not logic bugs — the misses are why the BDD corpus and trace-equivalence exist. And agent output over a weak verifier still needs manual fixes most of the time (2025 studies) — the loop, not the model, is the product."
       },
       "rewrite": {
@@ -2154,7 +2154,7 @@
           },
           "gen": {
             "t": "Codegen 7.10.0",
-            "d": "216 models · 74 services · string enums"
+            "d": "181 models · 41 services · string enums"
           },
           "post": {
             "t": "Post-processor",
@@ -2192,7 +2192,7 @@
           "blocks": {
             "types": {
               "t": "Types all the way down",
-              "d": "Strong Java types on the backend compile into an OpenAPI 3 contract — 74 services, 216 models, real string enums — that generates the TypeScript Angular client. Feature code is forbidden from touching that client directly (gate G2); it goes through strict-mode wrapper services instead. The same generated types flow into both the Angular service layer and the Cucumber step definitions, so a changed backend field stops the frontend compiling — Gherkin included — long before it reaches a user."
+              "d": "Strong Java types on the backend compile into an OpenAPI 3 contract — 41 services, 181 models, real string enums — that generates the TypeScript Angular client. Feature code is forbidden from touching that client directly (gate G2); it goes through strict-mode wrapper services instead. The same generated types flow into both the Angular service layer and the Cucumber step definitions, so a changed backend field stops the frontend compiling — Gherkin included — long before it reaches a user."
             },
             "pyramid": {
               "t": "Both sides of the wire",
@@ -2406,7 +2406,7 @@
       },
       "badge": "Startup in the box · built by three",
       "trust": {
-        "tests": "11,129 unit · 886 integration · 175 E2E scenarios",
+        "tests": "8,908 backend test methods · 277 E2E scenarios · 1,816 frontend tests",
         "staging": "Live in production — logs flowing, crons and gates on schedule",
         "provider": "Meta Tech Provider · GDPR-compliant"
       },
@@ -2576,7 +2576,7 @@
           },
           "client": {
             "t": "Generated TS client",
-            "d": "216 models · 74 services · zero hand edits"
+            "d": "181 models · 41 services · zero hand edits"
           }
         },
         "branch": "the same generated import · three consumers",
@@ -2601,7 +2601,7 @@
           "staleFail": "Tests import the same generated types as production, so a test cannot pass against a stale shape — the \"passes in CI, fails in prod\" gap closes at the type level.",
           "runtime": "What classic consumer-driven contracts add — verifying the running provider — is covered by the live-BE trace-equivalence tier and backend Testcontainers suites against real PostgreSQL and Redis. Best of both, not a shortcut."
         },
-        "sources": "Sources: Gao, Bird & Barr, ICSE 2017 · Postman State of the API 2024 · Hatfield-Dodds & Dygalo, arXiv 2112.10328 · DORA 2021. Repo counts are live: 216 generated models, 74 services, 21 typed wrappers, 27 ported features, 18 L0 pins, 42 integration specs."
+        "sources": "Sources: Gao, Bird & Barr, ICSE 2017 · Postman State of the API 2024 · Hatfield-Dodds & Dygalo, arXiv 2112.10328 · DORA 2021. Repo counts, re-measured 2026-09-30: 181 generated models, 41 services, 31 typed wrappers, 27 ported features, 18 L0 pins, 222 integration tests."
       },
       "techstack": {
         "whyHint": "Click a layer to see why we chose it.",
@@ -3136,7 +3136,7 @@
         },
         {
           "title": "Test depth",
-          "blurb": "11,129 unit, 886 integration (Testcontainers) and 175 E2E (Cucumber) tests.",
+          "blurb": "8,012 unit, 853 integration (Testcontainers) and 277 E2E scenarios (Cucumber).",
           "tag": "process"
         }
       ],

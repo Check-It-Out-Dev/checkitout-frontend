@@ -1965,7 +1965,7 @@
               "d": "weryfikowalna zgoda · prawdziwe usuwanie"
             },
             "tests": {
-              "t": "12 190 testów",
+              "t": "10 724 testów",
               "d": "jednostkowe · integracyjne · E2E"
             },
             "graph": {
@@ -2031,7 +2031,7 @@
       },
       "testing": {
         "title": "Dwie piramidy testów i mur bramek",
-        "subtitle": "11 129 testów jednostkowych, 886 integracyjnych i 175 scenariuszy E2E pilnuje backendu; 949 specyfikacji jednostkowych, 261 migawek wizualnych, 42 specyfikacje na żywym backendzie i 27 plików BDD pilnuje rewrite'u — a wszystko stoi na 18 kotwicach kontraktu z czasu kompilacji i czternastostopniowej bramce pre-commit. Nic nie merguje się na czuja.",
+        "subtitle": "8 012 testów jednostkowych, 853 integracyjne i 277 scenariuszy E2E pilnuje backendu; 1 141 specyfikacji jednostkowych, 138 migawek wizualnych, 222 specyfikacje na żywym backendzie i 27 plików BDD pilnuje rewrite'u — a wszystko stoi na 18 kotwicach kontraktu z czasu kompilacji i czternastostopniowej bramce pre-commit. Nic nie merguje się na czuja.",
         "pyramidLabel": "Piramida backendu",
         "pyramidLabelFe": "Piramida rewrite'u — stojąca na kontrakcie",
         "feTiers": {
@@ -2041,17 +2041,17 @@
             "detail": "Przeniesione 1:1 z korpusu Cucumbera backendu — ten sam język biznesowy, typowany względem wygenerowanego klienta"
           },
           "integration": {
-            "count": "42",
+            "count": "222",
             "name": "Specyfikacje na żywym backendzie",
             "detail": "Równoważność śladów na działającym backendzie — łapie rozjazdy, których system typów nie widzi"
           },
           "visual": {
-            "count": "261",
+            "count": "138",
             "name": "Migawki wizualne",
             "detail": "131 fixture'ów sandboksa na 2 silnikach chromium — baseliny commitowane i przeglądane jako obrazy w diffie"
           },
           "unit": {
-            "count": "949",
+            "count": "1 141",
             "name": "Specyfikacje jednostkowe",
             "detail": "Jest, jedna suita na komponent i serwis — działa na końcu bramki, z --bail"
           }
@@ -2062,17 +2062,17 @@
         },
         "tiers": {
           "unit": {
-            "count": "11 129",
+            "count": "8 012",
             "name": "Testy jednostkowe",
             "detail": "jeden reużywany JVM · embedded Redis · zegary przypięte do UTC"
           },
           "it": {
-            "count": "886",
+            "count": "853",
             "name": "Testy integracyjne",
             "detail": "71 suite'ów na prawdziwym PostgreSQL 15 + Redis 7 przez Testcontainers — H2 celowo usunięte"
           },
           "e2e": {
-            "count": "175",
+            "count": "277",
             "name": "Scenariusze E2E",
             "detail": "34 feature'y Cucumbera · 15 izolowanych runnerów · prawdziwy Firebase + GreenMail SMTP"
           }
@@ -2087,7 +2087,7 @@
           "human": "Scenariusze Cucumbera to logika biznesowa zapisana ludzkim językiem — AI wchodzi w skórę użytkownika i uczy się, co robi produkt, a nie tylko co mówi kod."
         },
         "snippetCaption": "Prawdziwa maszyneria stanu E2E — deterministyczne scenariusze na prawdziwym stacku.",
-        "caveat": "Uczciwe liczby: 11 129 to adnotacje @Test (testy parametryzowane rozwijają się dalej); liczby rewrite'u to migawka na żywo — rosną z każdym commitem; bramki rewrite'u działają lokalnie z założenia — zero teatru CI."
+        "caveat": "Uczciwe liczby, zmierzone ponownie 2026-09-30: liczby backendu to metody @Test i @ParameterizedTest w źródłach, a 277 to korpus Cucumbera po rozwinięciu Examples. Liczby frontendu to wynik jego własnych runnerów — jest i `playwright test --list` — wliczając pominięte i fixme. Każdą z nich dzieli od czytelnika jedno polecenie, a README mówi które."
       },
       "velocity": {
         "title": "Szybkość to pętla sprzężenia zwrotnego",
@@ -2102,7 +2102,7 @@
           "suite": {
             "t": "Bramka",
             "latency": "minuty",
-            "d": "Bramka pre-commit: czternastostopniowy check:full — dziesięć skryptów audytowych, oba typechecki, ng build strictTemplates, 949 specyfikacji unit. Czego kompilator nie widzi — tłumaczenie envelope, parytet i18n, pokrycie fixture — umiera tutaj, jeszcze zanim powstanie commit."
+            "d": "Bramka pre-commit: czternastostopniowy check:full — jedenaście skryptów audytowych, oba typechecki, ng build strictTemplates, 1 141 specyfikacji unit. Czego kompilator nie widzi — tłumaczenie envelope, parytet i18n, pokrycie fixture — umiera tutaj, jeszcze zanim powstanie commit."
           },
           "runtime": {
             "t": "Runtime",
@@ -2140,7 +2140,7 @@
           "pullQuote": "Feedback łapie tylko to, co widzi weryfikator — więc zbudowaliśmy weryfikator, który widzi wszystko."
         },
         "dogfoodLabel": "Dogfood — jeden zimny start tego repo, jedno popołudnie",
-        "dogfood": "2026-09-02: jedno popołudnie, wszystkie poziomy przegonione od nowa — 11 129 unit BE + 886 integracyjnych BE na zielono · rewrite 921 unit + 261 visual + 24 scenario + 135 BDD + 195 trace-equivalence na zielono · kampania utworzona przez prawdziwe UI weszła za pierwszym razem.",
+        "dogfood": "2026-09-30: każdy poziom zmierzony ponownie przez własny runner — 8 908 metod testowych backendu i 34 pliki Cucumbera (277 scenariuszy po rozwinięciu) · rewrite: 1 141 unit + 138 visual + 222 na żywym backendzie + 148 BDD + 78 doświadczenia = 1 816 · pokrycie zmierzone po raz pierwszy i zabramkowane na 77,7 % linii.",
         "caveat": "Uczciwie: typy łapią błędy kontraktu, nie logiki — dlatego istnieją korpus BDD i trace-equivalence. A output agenta nad słabym weryfikatorem i tak wymaga ręcznych poprawek w większości przypadków (badania 2025) — produktem jest pętla, nie model."
       },
       "rewrite": {
@@ -2154,7 +2154,7 @@
           },
           "gen": {
             "t": "Codegen 7.10.0",
-            "d": "216 modeli · 74 serwisy · string enums"
+            "d": "181 modeli · 41 serwisów · realne enumy"
           },
           "post": {
             "t": "Post-procesor",
@@ -2192,7 +2192,7 @@
           "blocks": {
             "types": {
               "t": "Typy aż do samego dołu",
-              "d": "Mocne typy Javy na backendzie kompilują się do kontraktu OpenAPI 3 — 74 serwisy, 216 modeli, prawdziwe string enumy — z którego generujemy klienta TypeScript dla Angulara. Kod feature'ów nie może dotykać tego klienta bezpośrednio (bramka G2); przechodzi przez serwisy-wrappery w trybie strict. Te same wygenerowane typy trafiają zarówno do warstwy serwisów Angulara, jak i do kroków Cucumbera, więc zmiana pola na backendzie zatrzymuje kompilację frontendu — razem z Gherkinem — na długo zanim dotrze do użytkownika."
+              "d": "Mocne typy Javy na backendzie kompilują się do kontraktu OpenAPI 3 — 41 serwisów, 181 modeli, prawdziwe string enumy — z którego generujemy klienta TypeScript dla Angulara. Kod feature'ów nie może dotykać tego klienta bezpośrednio (bramka G2); przechodzi przez serwisy-wrappery w trybie strict. Te same wygenerowane typy trafiają zarówno do warstwy serwisów Angulara, jak i do kroków Cucumbera, więc zmiana pola na backendzie zatrzymuje kompilację frontendu — razem z Gherkinem — na długo zanim dotrze do użytkownika."
             },
             "pyramid": {
               "t": "Obie strony styku",
@@ -2406,7 +2406,7 @@
       },
       "badge": "Startup in the box · zbudowany przez trzy osoby",
       "trust": {
-        "tests": "11 129 jednostkowych · 886 integracyjnych · 175 scenariuszy E2E",
+        "tests": "8 908 metod testowych backendu · 277 scenariuszy E2E · 1 816 testów frontendu",
         "staging": "Działa na produkcji — logi płyną, crony i bramki zgodnie z harmonogramem",
         "provider": "Meta Tech Provider · zgodność z RODO"
       },
@@ -2576,7 +2576,7 @@
           },
           "client": {
             "t": "Wygenerowany klient TS",
-            "d": "216 modeli · 74 serwisy · zero ręcznych zmian"
+            "d": "181 modeli · 41 serwisów · zero ręcznych poprawek"
           }
         },
         "branch": "ten sam wygenerowany import · trzej konsumenci",
@@ -2601,7 +2601,7 @@
           "staleFail": "Testy importują te same wygenerowane typy co produkcja, więc test nie przejdzie na nieaktualnym kształcie — luka „przechodzi w CI, pada na produkcji” zamyka się na poziomie typów.",
           "runtime": "To, co dodają klasyczne kontrakty konsumenckie — weryfikację działającego dostawcy — pokrywa warstwa równoważności śladów na żywym backendzie oraz testy integracyjne Testcontainers na rzeczywistych PostgreSQL i Redis. Najlepsze z obu podejść, nie skrót."
         },
-        "sources": "Źródła: Gao, Bird & Barr, ICSE 2017 · Postman State of the API 2024 · Hatfield-Dodds & Dygalo, arXiv 2112.10328 · DORA 2021. Liczby z repozytorium są aktualne: 216 wygenerowanych modeli, 74 serwisy, 21 typowanych wrapperów, 27 przeniesionych plików feature, 18 kotwic L0, 42 specyfikacje integracyjne."
+        "sources": "Źródła: Gao, Bird & Barr, ICSE 2017 · Postman State of the API 2024 · Hatfield-Dodds & Dygalo, arXiv 2112.10328 · DORA 2021. Liczby z repozytorium, zmierzone ponownie 2026-09-30: 181 wygenerowanych modeli, 41 serwisów, 31 typowanych wrapperów, 27 przeniesionych plików feature, 18 kotwic L0, 222 testy integracyjne."
       },
       "techstack": {
         "whyHint": "Kliknij warstwę, by zobaczyć, czemu ją wybraliśmy.",
@@ -3136,7 +3136,7 @@
         },
         {
           "title": "Głębia testów",
-          "blurb": "11 129 testów jednostkowych, 886 integracyjnych (Testcontainers) i 175 E2E (Cucumber).",
+          "blurb": "8 012 testów jednostkowych, 853 integracyjne (Testcontainers) i 277 scenariuszy E2E (Cucumber).",
           "tag": "process"
         }
       ],
