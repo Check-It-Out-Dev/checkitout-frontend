@@ -963,6 +963,37 @@
                 {{ 'footer.nav.faq' | transloco }}
               </a>
             </li>
+            <!-- The engineering pages. They were reachable from one card below
+                 the fold and from nowhere else; a footer is where a reader who
+                 has finished the page goes looking. Labels are the header's, so
+                 the same page is never called two different things. -->
+            <li>
+              <a
+                routerLink="/technical-survey"
+                class="text-cream/60 transition hover:text-white"
+                data-testid="landing-footer-survey"
+              >
+                {{ 'header.nav.survey' | transloco }}
+              </a>
+            </li>
+            <li>
+              <a
+                routerLink="/codemap"
+                class="text-cream/60 transition hover:text-white"
+                data-testid="landing-footer-codemap"
+              >
+                {{ 'header.nav.codemap' | transloco }}
+              </a>
+            </li>
+            <li>
+              <a
+                routerLink="/team"
+                class="text-cream/60 transition hover:text-white"
+                data-testid="landing-footer-team"
+              >
+                {{ 'header.nav.team' | transloco }}
+              </a>
+            </li>
             <li>
               <a
                 routerLink="/grants"

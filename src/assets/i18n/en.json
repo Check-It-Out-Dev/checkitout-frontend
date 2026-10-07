@@ -3153,7 +3153,8 @@
       "team": "Team",
       "codemap": "CodeMap & AI",
       "grants": "Grants",
-      "contact": "Contact"
+      "contact": "Contact",
+      "survey": "How it is built"
     },
     "auth": {
       "sign_in": "Log in",

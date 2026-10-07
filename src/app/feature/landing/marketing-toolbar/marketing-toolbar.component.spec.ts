@@ -89,21 +89,36 @@ describe('MarketingToolbarComponent', () => {
     expect(join.getAttribute('href')).toBe('/auth/sign-up');
   });
 
-  it('renders six desktop nav items — three landing anchors + CodeMap, Grants routes + contact', () => {
+  it('renders six desktop nav items, in the order the bar argues in', () => {
     const nav = fixture.nativeElement.querySelectorAll('nav a');
     expect(nav.length).toBe(6);
     const hrefs = Array.from(nav).map((a) => (a as HTMLAnchorElement).getAttribute('href'));
-    // CodeMap (/codemap) and Grants (/grants) are real routes, not in-page anchors.
-    // Section links carry the landing route + fragment so they work from
-    // every marketing page, not only from "/".
+    // The order is the argument: what the product does, what it costs, how it
+    // was built, the tooling that built it, then the answers and the way to
+    // ask. `/technical-survey` and `/codemap` are real routes, as is `/grants`
+    // — which now sits in the menu and the footer rather than the bar. Section
+    // links carry the landing route + fragment so they work from every
+    // marketing page, not only from "/".
     expect(hrefs).toEqual([
       '/#how-it-works',
       '/#pricing',
-      '/#faq',
+      '/technical-survey',
       '/codemap',
-      '/grants',
+      '/#faq',
       '/#contact',
     ]);
+  });
+
+  it('keeps the demoted pages in the menu — the bar is a subset, never a filter', () => {
+    const menu = fixture.nativeElement.querySelectorAll('.mat-mdc-menu-content a, nav a');
+    // The menu is rendered lazily by MatMenu, so assert on the source of truth
+    // the template iterates: everything in the bar, plus grants and team.
+    expect(component.menuItems.map((i) => i.id)).toEqual([
+      ...component.navItems.map((i) => i.id),
+      'grants',
+      'team',
+    ]);
+    expect(menu.length).toBeGreaterThanOrEqual(component.navItems.length);
   });
 
   it('renders the language switcher trigger with active locale code', () => {

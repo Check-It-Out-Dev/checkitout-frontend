@@ -18,14 +18,20 @@
       </span>
     </a>
 
-    <!-- Desktop nav (hidden on mobile) -->
-    <nav class="hidden items-center gap-7 md:flex" aria-label="Main navigation">
-      @for (item of navItems; track item.key) {
+    <!-- Desktop nav. `whitespace-nowrap` is load-bearing, not cosmetic: without
+         it "Jak to zbudowano" and "Jak to działa" break over two lines and the
+         bar grows to two rows at 1440 px. The breakpoint moved from `md`
+         (960 px here — this config uses Material's scale, not Tailwind's
+         defaults) to `lg` (1280 px), because at 960 px six Polish labels plus
+         the brand, the language switcher and two calls to action have nowhere
+         to go. Between the two the hamburger carries the list. -->
+    <nav class="hidden items-center gap-4 lg:flex" aria-label="Main navigation">
+      @for (item of navItems; track item.id) {
         @if (item.route) {
           <a
             [routerLink]="item.route"
-            class="text-sm font-medium text-slate2 transition hover:text-coral-500"
-            [attr.data-testid]="'marketing-toolbar-nav-' + item.key"
+            class="whitespace-nowrap text-sm font-medium text-slate2 transition hover:text-coral-500"
+            [attr.data-testid]="'marketing-toolbar-nav-' + item.id"
           >
             {{ item.key | transloco }}
           </a>
@@ -36,8 +42,8 @@
           <a
             routerLink="/"
             [fragment]="item.anchor"
-            class="text-sm font-medium text-slate2 transition hover:text-coral-500"
-            [attr.data-testid]="'marketing-toolbar-nav-' + item.anchor"
+            class="whitespace-nowrap text-sm font-medium text-slate2 transition hover:text-coral-500"
+            [attr.data-testid]="'marketing-toolbar-nav-' + item.id"
           >
             {{ item.key | transloco }}
           </a>
@@ -118,7 +124,7 @@
         <!-- Sign in (text link, desktop only) -->
         <a
           routerLink="/auth/sign-in"
-          class="hidden text-sm font-medium text-ink transition hover:text-coral-500 md:inline-block"
+          class="hidden whitespace-nowrap text-sm font-medium text-ink transition hover:text-coral-500 lg:inline-block"
           data-testid="marketing-toolbar-sign-in"
         >
           {{ 'header.auth.sign_in' | transloco }}
@@ -135,24 +141,24 @@
         </a>
       }
 
-      <!-- Mobile hamburger (md:hidden) -->
+      <!-- Mobile and tablet hamburger — see the nav breakpoint note above. -->
       <button
         type="button"
         mat-icon-button
         [matMenuTriggerFor]="mobileMenu"
-        class="md:!hidden"
+        class="lg:!hidden"
         aria-label="Open menu"
         data-testid="marketing-toolbar-hamburger"
       >
         <mat-icon>menu</mat-icon>
       </button>
       <mat-menu #mobileMenu="matMenu">
-        @for (item of navItems; track item.key) {
+        @for (item of menuItems; track item.id) {
           @if (item.route) {
             <a
               mat-menu-item
               [routerLink]="item.route"
-              [attr.data-testid]="'marketing-toolbar-mnav-' + item.key"
+              [attr.data-testid]="'marketing-toolbar-mnav-' + item.id"
             >
               {{ item.key | transloco }}
             </a>
@@ -161,7 +167,7 @@
               mat-menu-item
               routerLink="/"
               [fragment]="item.anchor"
-              [attr.data-testid]="'marketing-toolbar-mnav-' + item.anchor"
+              [attr.data-testid]="'marketing-toolbar-mnav-' + item.id"
             >
               {{ item.key | transloco }}
             </a>
