@@ -1965,7 +1965,7 @@
               "d": "provable consent · real erasure"
             },
             "tests": {
-              "t": "10,724 tests",
+              "t": "10,728 tests",
               "d": "unit · integration · E2E"
             },
             "graph": {
@@ -2051,7 +2051,7 @@
             "detail": "131 sandbox fixtures on 2 chromium engines — committed baselines, reviewed as images in the diff"
           },
           "unit": {
-            "count": "1,141",
+            "count": "1,142",
             "name": "Unit specs",
             "detail": "Jest, one suite per component and service — runs last in the gate, --bail"
           }

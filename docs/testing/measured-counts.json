@@ -1,0 +1,57 @@
+{
+  "$comment": "Written by tools/measure-test-counts.mjs. Do not hand-edit — run `npm run measure:counts`. check-published-numbers.mjs asserts every published figure against this file.",
+  "measuredAt": "2026-10-08",
+  "jest": {
+    "tests": 1142,
+    "suites": 131
+  },
+  "playwright": {
+    "projects": {
+      "bdd": 148,
+      "chromium-desktop": 452,
+      "mobile-chrome": 452,
+      "perf": 78,
+      "mobile-safari": 41,
+      "tablet-safari": 41
+    },
+    "tiers": {
+      "integration": 222,
+      "visualParity": 41,
+      "sandbox": 44,
+      "scenarios": 6,
+      "msw": 1,
+      "visual": 138
+    },
+    "distinct": 678
+  },
+  "total": 1820,
+  "offline": 1403,
+  "generatedClient": {
+    "models": 181,
+    "services": 41
+  },
+  "gates": {
+    "i18nKeys": 4478,
+    "i18nTemplates": 51,
+    "visualFixtures": 140,
+    "integrationSpecsCiting": 67,
+    "bdd": {
+      "beFeatures": 34,
+      "ported": 26,
+      "waived": 8
+    },
+    "contractCoverage": {
+      "proven": 19,
+      "wrappers": 31,
+      "waived": 12
+    }
+  },
+  "siblings": {
+    "backend": {
+      "repo": "https://github.com/Check-It-Out-Dev/checkitout-backend",
+      "testMethods": 8908,
+      "measuredAt": "2026-09-26",
+      "command": "grep -rhE '^\\s*@Test$' src/test --include='*.java' | wc -l; and the same for @ParameterizedTest"
+    }
+  }
+}

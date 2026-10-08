@@ -68,6 +68,15 @@ npm run check:contract-coverage || exit 1
 #     regenerated font + manifest.
 npm run check:icon-subset || exit 1
 
+# 1h. Hard rule (G15) — every number this repository publishes about itself,
+#     against `docs/testing/measured-counts.json`. Cheap enough to belong here
+#     rather than only in CI: it fires the moment you add a test, which is the
+#     moment the README and both locales go stale. The site once said 216
+#     generated models against a directory holding 181, and 949 Jest tests
+#     against 1,141, and no gate could see either. Fix when this fires:
+#     `npm run measure:counts`, then update the surfaces it names.
+npm run check:published-numbers || exit 1
+
 # 2. Run prettier on the staged files (auto-formats + re-stages).
 npx lint-staged || exit 1
 
