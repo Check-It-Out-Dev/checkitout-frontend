@@ -1,0 +1,1 @@
+  stepup-email: fault-injected 2 ringed step(s) — [data-testid="email-change-start"], [data-testid="step-up-verify"]
