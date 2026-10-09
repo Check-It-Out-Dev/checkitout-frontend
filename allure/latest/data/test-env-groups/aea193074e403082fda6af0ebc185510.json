@@ -1,1 +1,0 @@
-{"id":"aea193074e403082fda6af0ebc185510","fullName":"../.features-gen/e2e-tests/bdd/features/consent-module.feature.spec.js › Consent Module › Blocked user gets 403 when creating new commitment (POST)","name":"Blocked user gets 403 when creating new commitment (POST)","status":"passed","testResultsByEnv":{"default":"19c52281c2e64cd1095a9a73e7c4ad5c"}}
