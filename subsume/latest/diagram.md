@@ -60,32 +60,32 @@ flowchart LR
   end
   subgraph n35["shell-status.service"]
     direction LR
-    n36["ShellStatusService initial state starts with no…"]:::demoted
-    n37["ShellStatusService trialOffer the nudge is not…"]
-    n36 -- "22 probes · 8 kills" --> n37
-    n38["ShellStatusService noteResponseHeaders does not…"]:::demoted
-    n39["ShellStatusService noteResponseHeaders does not…"]
-    n38 -- "21 probes · 3 kills" --> n39
-    n40["ShellStatusService noteResponseHeaders flips em…"]:::demoted
-    n40 -- "22 probes · 7 kills" --> n41
-    n42["ShellStatusService noteResponseHeaders is stick…"]:::demoted
-    n43["ShellStatusService clearConsent / clearEmailVer…"]
-    n42 -- "23 probes · 5 kills" --> n43
-    n44["… 2 more"]:::demoted
+    n36["ShellStatusService clearConsent / clearEmailVer…"]:::demoted
+    n36 -- "27 probes · 8 kills" --> n37
+    n38["ShellStatusService initial state starts with no…"]:::demoted
+    n39["ShellStatusService trialOffer the nudge is not…"]
+    n38 -- "22 probes · 8 kills" --> n39
+    n40["ShellStatusService noteResponseHeaders does not…"]:::demoted
+    n41["ShellStatusService noteResponseHeaders does not…"]
+    n40 -- "21 probes · 3 kills" --> n41
+    n42["ShellStatusService noteResponseHeaders flips em…"]:::demoted
+    n42 -- "22 probes · 7 kills" --> n43
+    n44["… 3 more"]:::demoted
   end
   subgraph n45["shell-headers.interceptor"]
     direction LR
     n46["shellHeadersInterceptor does NOT update the ser…"]:::demoted
-    n46 -- "22 probes · 3 kills" --> n41
+    n46 -- "22 probes · 3 kills" --> n43
     n47["shellHeadersInterceptor forwards X-Consent-Requ…"]:::demoted
-    n47 -- "30 probes · 13 kills" --> n41
+    n47 -- "30 probes · 13 kills" --> n43
     n48["shellHeadersInterceptor honours sticky semantic…"]:::demoted
-    n48 -- "31 probes · 12 kills" --> n41
+    n48 -- "31 probes · 12 kills" --> n43
     n49["shellHeadersInterceptor leaves the service unto…"]:::demoted
-    n49 -- "29 probes · 8 kills" --> n41
+    n49 -- "29 probes · 8 kills" --> n43
   end
   n33["demo-fixtures.account :: demo fixtures — accoun…"]
-  n41["shell-headers.interceptor :: shellHeadersInterc…"]
+  n37["shell-banners.component :: ShellBannersComponen…"]
+  n43["shell-headers.interceptor :: shellHeadersInterc…"]
   classDef demoted stroke-dasharray: 4 3
 ```
 
@@ -94,7 +94,7 @@ flowchart LR
 | `step-up-context` | 4 | 1 tests |
 | `theme.service` | 4 | 4 tests |
 | `consent.service` | 3 | 5 tests |
-| `seo-title.strategy` | 3 | 2 tests |
+| `seo-title.strategy` | 3 | 3 tests |
 | `rate-limit-cache.interceptor` | 3 | 3 tests |
 | `set-to-array.interceptor` | 3 | 1 tests |
 | `step-up.interceptor` | 3 | 1 tests |

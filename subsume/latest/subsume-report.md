@@ -1,20 +1,20 @@
 # Subsumption proposal — frontend @ ceffd054ff47f82589617c02f333916c644922f0
 
-133 of 1312 tests may leave the pull-request tier: 8574 of 8574 probes and 1890 of 1890 kills stay carried by the 1179 that remain; PR tier 66.7 s → 66.1 s. 300 more are coverage-carried but outside the kill matrix's scope or sole killers inside the flaky window, and are not proposed. 645 of 1312 tests touch only units the kill matrix covers; 241 load nothing the instrument sees and are never candidates.
+134 of 1312 tests may leave the pull-request tier: 8574 of 8574 probes and 1890 of 1890 kills stay carried by the 1178 that remain; PR tier 83 s → 82.1 s. 300 more are coverage-carried but outside the kill matrix's scope or sole killers inside the flaky window, and are not proposed. 645 of 1312 tests touch only units the kill matrix covers; 241 load nothing the instrument sees and are never candidates.
 
 | Class | Demoted | Carried by |
 | --- | --- | --- |
 | `src/app/core/demo/guide-hint.spec.ts` | 39 | `guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step admin-2fa/0: the footer matches what the beat can actually do`, `guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step stepup-email/6: the footer matches what the beat can actually do`, `guide-hint.spec.ts :: E-PROMISE — what the guide may promise about a step nip-to-ksef/24: the footer matches what the beat can actually do` +1 |
 | `src/app/core/demo/sandbox-director.service.spec.ts` | 17 | `sandbox-director.service.spec.ts :: SandboxDirectorService a full load on the landing page with a stored tour drops it at construction`, `sandbox-director.service.spec.ts :: SandboxDirectorService a tour ends when the visitor leaves the app area the hub without a start link ends it; a start link and app routes keep it`, `sandbox-director.service.spec.ts :: SandboxDirectorService next() — "Dalej" performs the step for the visitor advances a step without a recipe straight away` +16 |
-| `src/app/core/interceptors/error.interceptor.spec.ts` | 8 | `error.interceptor.spec.ts :: errorInterceptor on 401 from a /assets/ static file — does NOT refresh, clear, or redirect`, `error.interceptor.spec.ts :: errorInterceptor on 419 with no signed-in user — clears session + routes to /auth/sign-in (no refresh)`, `error.interceptor.spec.ts :: errorInterceptor on authenticated 401 — refreshes once and retries the original request` +2 |
+| `src/app/core/interceptors/error.interceptor.spec.ts` | 8 | `error.interceptor.spec.ts :: errorInterceptor on 401 from a /assets/ static file — does NOT refresh, clear, or redirect`, `error.interceptor.spec.ts :: errorInterceptor on 419 with no signed-in user — clears session + routes to /auth/sign-in (no refresh)`, `error.interceptor.spec.ts :: errorInterceptor on authenticated 419 (tokenVersion mismatch) — refreshes once and retries the original request` +2 |
 | `src/app/core/demo/demo-fixtures.spec.ts` | 7 | `demo-fixtures.spec.ts :: demo fixtures plays the whole upgrade beat — consent, a checkout to pay in, then the plan flip`, `demo-fixtures.spec.ts :: demo fixtures sign-up takes the role from the form and signs in; sign-out signs out`, `demo-fixtures.spec.ts :: demo fixtures company accept/decline round-trip moves the accepted application into the in-progress tab and its counter` +5 |
-| `src/app/core/shell/shell-status.service.spec.ts` | 6 | `shell-status.service.spec.ts :: ShellStatusService trialOffer the nudge is not an obligation — hasAnyBanner stays false`, `shell-status.service.spec.ts :: ShellStatusService noteResponseHeaders does not flip on absent headers`, `shell-headers.interceptor.spec.ts :: shellHeadersInterceptor forwards X-Email-Verification-Required to the shell-status service` +3 |
-| `src/app/core/interceptors/shell-headers.interceptor.spec.ts` | 4 | `shell-headers.interceptor.spec.ts :: shellHeadersInterceptor forwards X-Email-Verification-Required to the shell-status service`, `shell-status.service.spec.ts :: ShellStatusService noteResponseHeaders does not flip on absent headers`, `shell-status.service.spec.ts :: ShellStatusService clearConsent / clearEmailVerification clearConsent flips consentRequired back to false` |
+| `src/app/core/shell/shell-status.service.spec.ts` | 7 | `shell-banners.component.spec.ts :: ShellBannersComponent clearConsent hides the consent banner without affecting the others`, `shell-status.service.spec.ts :: ShellStatusService trialOffer the nudge is not an obligation — hasAnyBanner stays false`, `shell-status.service.spec.ts :: ShellStatusService noteResponseHeaders does not flip on absent headers` +4 |
+| `src/app/core/interceptors/shell-headers.interceptor.spec.ts` | 4 | `shell-headers.interceptor.spec.ts :: shellHeadersInterceptor forwards X-Email-Verification-Required to the shell-status service`, `shell-status.service.spec.ts :: ShellStatusService noteResponseHeaders does not flip on absent headers`, `shell-status.service.spec.ts :: ShellStatusService noteResponseHeaders flips consentRequired when X-Consent-Required is "1"` |
 | `src/app/core/step-up/step-up-context.spec.ts` | 4 | `step-up.interceptor.spec.ts :: stepUpInterceptor does not leak the token across subsequent requests` |
 | `src/app/core/theme/theme.service.spec.ts` | 4 | `theme.service.spec.ts :: ThemeService toggle() flips between light and dark`, `layout.component.spec.ts :: LayoutComponent nav surface exposes 5 standard nav entries in the expected order`, `theme.service.spec.ts :: ThemeService persists the mode to localStorage on every change` +1 |
 | `src/app/core/consent/consent.service.spec.ts` | 3 | `consent.service.spec.ts :: ConsentService acceptCustom persists the mixed choice and mirrors it per-category to the BE`, `consent.service.spec.ts :: ConsentService acceptAll persists analytics+marketing and flips needsDecision`, `consent.service.spec.ts :: ConsentService acceptNecessary opts out of analytics+marketing` +2 |
-| `src/app/core/i18n/seo-title.strategy.spec.ts` | 3 | `seo-title.strategy.spec.ts :: SeoTitleStrategy titles /error/:type through the resolver end to end`, `seo-title.strategy.spec.ts :: SeoTitleStrategy removes the description when the next page declares none` |
-| `src/app/core/interceptors/rate-limit-cache.interceptor.spec.ts` | 3 | `rate-limit-cache.interceptor.spec.ts :: rateLimitInterceptor re-throws the 429 unchanged (preserves status + body for downstream handlers)`, `rate-limit-cache.interceptor.spec.ts :: rateLimitInterceptor notifies with null when the 429 omits Retry-After`, `rate-limit-cache.interceptor.spec.ts :: rateLimitInterceptor does NOT notify on non-429 errors (5xx, 401, etc.)` |
+| `src/app/core/i18n/seo-title.strategy.spec.ts` | 3 | `seo-title.strategy.spec.ts :: SeoTitleStrategy titles a routed page as "<page> | <site>"`, `seo-title.strategy.spec.ts :: SeoTitleStrategy removes the description when the next page declares none`, `seo-title.strategy.spec.ts :: SeoTitleStrategy errorTitleKey maps known types and coerces the rest to 404` |
+| `src/app/core/interceptors/rate-limit-cache.interceptor.spec.ts` | 3 | `rate-limit-cache.interceptor.spec.ts :: rateLimitInterceptor notifies with null when the 429 omits Retry-After`, `rate-limit-cache.interceptor.spec.ts :: rateLimitInterceptor does NOT notify on non-429 errors (5xx, 401, etc.)`, `rate-limit-cache.interceptor.spec.ts :: rateLimitInterceptor notifies the rate-limit state with the parsed Retry-After on 429` |
 | `src/app/core/interceptors/set-to-array.interceptor.spec.ts` | 3 | `set-to-array.interceptor.spec.ts :: setToArrayInterceptor keeps body identity when no Set is present (no clone)` |
 | `src/app/core/interceptors/step-up.interceptor.spec.ts` | 3 | `step-up.interceptor.spec.ts :: stepUpInterceptor does not leak the token across subsequent requests` |
 | `src/app/core/applied-opportunities/applied-opportunity.service.spec.ts` | 2 | `applied-opportunity.service.spec.ts :: AppliedOpportunityApiService apply(id, "") treats empty-string note as falsy → omits the key`, `applied-opportunity.service.spec.ts :: AppliedOpportunityApiService apply(id, note) includes note in the dto when truthy`, `applied-opportunity.service.spec.ts :: AppliedOpportunityApiService list() builds pageable + filters envelope with defaults` |
@@ -46,35 +46,35 @@ Not applied: 300 suspected candidates (3 the kill matrix never ran against a mut
 
 | | Before | After |
 | --- | --- | --- |
-| Tests in the tier | 1312 | 1179 (−10.1 %) |
-| Tier seconds | 66.69 | 66.145 (−0.8 %) |
+| Tests in the tier | 1312 | 1178 (−10.2 %) |
+| Tier seconds | 83.011 | 82.106 (−1.1 %) |
 | Probes carried | 8574 | 8574 (0 lost) |
 | Mutants killed | 1890 | 1890 (0 lost) |
 | Dominator score | 0.0527 | 0.0527 (271 dominators) |
 
-Individually redundant against the rest of the suite — each test on its own, not a count of what can go together: 87.5 % of tier time, 755 tests fully; 230 sole killers, 0 flaky. Removable together, which is what the cover decides: 133 tests, 0.5 s. Core chosen by mip (optimal; 38 columns × 40 rows after 621 forced and 653 dominated; gap 0 %).
+Individually redundant against the rest of the suite — each test on its own, not a count of what can go together: 88.8 % of tier time, 755 tests fully; 230 sole killers, 0 flaky. Removable together, which is what the cover decides: 134 tests, 0.9 s. Core chosen by mip (optimal; 41 columns × 38 rows after 622 forced and 649 dominated; gap 0 %).
 
 ## Slowest tests per unique unit
 
 | Test | s | unique units | s per unit |
 | --- | --- | --- | --- |
-| `guide-spotlight.component.spec.ts :: GuideSpotlightComponent reports whether the control is on screen, so the panel can take over` | 1.46 | 0 | — |
-| `guide-spotlight.component.spec.ts :: GuideSpotlightComponent waits for a control that has not been mounted yet instead of flashing a Next` | 1.197 | 0 | — |
-| `landing.component.spec.ts :: LandingComponent renders three campaign example cards` | 0.927 | 0 | — |
-| `engineering-chapter.component.spec.ts :: EngineeringChapterComponent renders all ten showcase cards behind their stable deep-link anchors, the estate first` | 0.901 | 0 | — |
+| `platform-chapter.component.spec.ts :: PlatformChapterComponent renders all five showcase cards behind their stable deep-link anchors` | 2.103 | 0 | — |
+| `guide-spotlight.component.spec.ts :: GuideSpotlightComponent reports whether the control is on screen, so the panel can take over` | 1.47 | 0 | — |
+| `guide-spotlight.component.spec.ts :: GuideSpotlightComponent waits for a control that has not been mounted yet instead of flashing a Next` | 1.194 | 0 | — |
+| `engineering-chapter.component.spec.ts :: EngineeringChapterComponent renders all ten showcase cards behind their stable deep-link anchors, the estate first` | 1.128 | 0 | — |
+| `landing.component.spec.ts :: LandingComponent renders three campaign example cards` | 1.088 | 0 | — |
+| `engineering-chapter.component.spec.ts :: EngineeringChapterComponent velocity card renders the three latency-ordered loops with growing bars` | 0.899 | 0 | — |
 | `guide-spotlight.component.spec.ts :: GuideSpotlightComponent says the pill has gone the moment it goes, grace or no grace` | 0.794 | 0 | — |
-| `engineering-chapter.component.spec.ts :: EngineeringChapterComponent velocity card renders the three latency-ordered loops with growing bars` | 0.607 | 0 | — |
-| `guide-spotlight.component.spec.ts :: GuideSpotlightComponent rings the control and carries the tour’s next control on it` | 0.514 | 0 | — |
-| `graph-topology-showcase.component.spec.ts :: GraphTopologyShowcaseComponent the drawing lays every domain out with a span, in category order, and no two marks on top of each other` | 0.443 | 0 | — |
-| `plan-billing.component.spec.ts :: PlanBillingComponent marks the current plan and keeps only the real upgrade clickable` | 0.441 | 0 | — |
-| `content-submission.component.spec.ts :: ContentSubmissionComponent loads existing submissions and content types on init` | 0.439 | 0 | — |
-| `platform-chapter.component.spec.ts :: PlatformChapterComponent renders all five showcase cards behind their stable deep-link anchors` | 0.425 | 0 | — |
-| `graph-topology-showcase.component.spec.ts :: GraphTopologyShowcaseComponent the generated graph is the CheckItOutSystem namespace: 1 master, 15 domains, 130 components, 22 typed relationships` | 0.417 | 0 | — |
-| `operations-chapter.component.spec.ts :: OperationsChapterComponent renders all five showcase cards behind their stable deep-link anchors` | 0.417 | 0 | — |
-| `solve.unit.spec.ts :: exact cover never loses a probe or a kill, and keeps every flaky test without counting it` | 0.409 | 0 | — |
-| `landing.component.spec.ts :: LandingComponent shows the legacy price truth on the tier cards (0 / 29 / 99 PLN)` | 0.407 | 0 | — |
-| `engineering-chapter.component.spec.ts :: EngineeringChapterComponent testing card renders both pyramids narrow→wide and the real twenty-step gate chain` | 0.399 | 0 | — |
-| `codemap-page.component.spec.ts :: CodemapPageComponent renders hero with the real research-repo link` | 0.398 | 0 | — |
-| `interactive-dashboard-preview.component.spec.ts :: InteractiveDashboardPreviewComponent starts in the static overview with every step settled` | 0.397 | 0 | — |
-| `solve.unit.spec.ts :: exact cover finds the minimum where greedy does not, and certifies it` | 0.393 | 0 | — |
-| `engineering-chapter.component.spec.ts :: EngineeringChapterComponent velocity card cites the research stats and cross-references the contract card` | 0.363 | 0 | — |
+| `plan-billing.component.spec.ts :: PlanBillingComponent marks the current plan and keeps only the real upgrade clickable` | 0.748 | 0 | — |
+| `graph-topology-showcase.component.spec.ts :: GraphTopologyShowcaseComponent the generated graph is the CheckItOutSystem namespace: 1 master, 15 domains, 130 components, 22 typed relationships` | 0.694 | 0 | — |
+| `opportunity-form.component.spec.ts :: OpportunityFormComponent full DtoIn surface (audit P1 #35a) uploading a photo appends it with CAMPAIGN_MEDIA; first photo is the cover` | 0.626 | 0 | — |
+| `graph-topology-showcase.component.spec.ts :: GraphTopologyShowcaseComponent the drawing lays every domain out with a span, in category order, and no two marks on top of each other` | 0.591 | 0 | — |
+| `engineering-chapter.component.spec.ts :: EngineeringChapterComponent contract card encodes the producer chain, the three same-type consumers and the research stats` | 0.562 | 0 | — |
+| `engineering-chapter.component.spec.ts :: EngineeringChapterComponent velocity card cites the research stats and cross-references the contract card` | 0.544 | 0 | — |
+| `guide-spotlight.component.spec.ts :: GuideSpotlightComponent rings the control and carries the tour’s next control on it` | 0.535 | 0 | — |
+| `engineering-chapter.component.spec.ts :: EngineeringChapterComponent testing card renders both pyramids narrow→wide and the real twenty-step gate chain` | 0.535 | 0 | — |
+| `content-submission.component.spec.ts :: ContentSubmissionComponent loads existing submissions and content types on init` | 0.515 | 0 | — |
+| `operations-chapter.component.spec.ts :: OperationsChapterComponent renders all five showcase cards behind their stable deep-link anchors` | 0.508 | 0 | — |
+| `interactive-dashboard-preview.component.spec.ts :: InteractiveDashboardPreviewComponent starts in the static overview with every step settled` | 0.478 | 0 | — |
+| `engineering-chapter.component.spec.ts :: EngineeringChapterComponent mounts the graph map with the real namespace behind it (1→15→130) and the 6-entity lens` | 0.475 | 0 | — |
+| `create-ticket.component.spec.ts :: CreateTicketComponent renders the anonymous form with an editable email and the guidance card` | 0.467 | 0 | — |

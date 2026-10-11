@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Test governance · frontend · run 5</title>
+<title>Test governance · frontend · run 6</title>
 <style>
   :root { color-scheme: light dark; --ink: #1c211e; --ink-2: #4b534e; --ink-3: #7b847e; --paper: #f4f5f2; --paper-2: #eaece6; --rule: #d3d8d1; --accent: #1f5f4a; }
   @media (prefers-color-scheme: dark) { :root { --ink: #e5e8e2; --ink-2: #b4bcb5; --ink-3: #8a938c; --paper: #151917; --paper-2: #1d2320; --rule: #333b36; --accent: #7fc4a6; } }
@@ -31,16 +31,16 @@
 <body>
 <main>
   <p class="eyebrow">▮ Invariants — replay plane · no model · I1–I5</p>
-  <h1>Test governance · frontend · run 5</h1>
-  <p class="lede">What the proposal run measured, what the pack would take this round, and who carries whom. Every number on this page is read from the run’s reports; the gzipped artefacts beside it are what the pull-request jobs consume. <a href="https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/37193862084">this run</a>.</p>
+  <h1>Test governance · frontend · run 6</h1>
+  <p class="lede">What the proposal run measured, what the pack would take this round, and who carries whom. Every number on this page is read from the run’s reports; the gzipped artefacts beside it are what the pull-request jobs consume. <a href="https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/38131082037">this run</a>.</p>
 
   
 
   <h2>The proposal</h2>
-  <div class="wrap"><table><tbody><tr><th scope="row">Tests in the pull-request tier</th><td class="num">1,312</td><td class="note">the population the proposal judged</td></tr><tr><th scope="row">CONFIRMED · SUSPECTED</th><td class="num">133 · 300</td><td class="note">both instruments agree · coverage only, never acted on</td></tr><tr><th scope="row">Tier seconds, before → after the exact cover</th><td class="num">66.7 s → 66.1 s</td><td class="note">sum of the tests’ own seconds</td></tr><tr><th scope="row">Dominator mutation score</th><td class="num">0.0527 %</td><td class="note">killed dominators over dominators plus unkilled mutants — the de-inflated score</td></tr><tr><th scope="row">Redundancy share of tier time</th><td class="num">87.5 %</td><td class="note">each test against the rest; not what can leave together</td></tr><tr><th scope="row">Removable together</th><td class="num">133 tests · 0.5 s</td><td class="note">the confirmed cover’s complement</td></tr><tr><th scope="row">Cover</th><td class="num">mip · optimal · gap 0 %</td><td class="note">the cheapest set that keeps every probe and kill, with its certificate</td></tr></tbody></table></div>
+  <div class="wrap"><table><tbody><tr><th scope="row">Tests in the pull-request tier</th><td class="num">1,312</td><td class="note">the population the proposal judged</td></tr><tr><th scope="row">CONFIRMED · SUSPECTED</th><td class="num">134 · 300</td><td class="note">both instruments agree · coverage only, never acted on</td></tr><tr><th scope="row">Tier seconds, before → after the exact cover</th><td class="num">83 s → 82.1 s</td><td class="note">sum of the tests’ own seconds</td></tr><tr><th scope="row">Dominator mutation score</th><td class="num">0.0527 %</td><td class="note">killed dominators over dominators plus unkilled mutants — the de-inflated score</td></tr><tr><th scope="row">Redundancy share of tier time</th><td class="num">88.8 %</td><td class="note">each test against the rest; not what can leave together</td></tr><tr><th scope="row">Removable together</th><td class="num">134 tests · 0.9 s</td><td class="note">the confirmed cover’s complement</td></tr><tr><th scope="row">Cover</th><td class="num">mip · optimal · gap 0 %</td><td class="note">the cheapest set that keeps every probe and kill, with its certificate</td></tr></tbody></table></div>
 
   <h2>The pack, surest tier first</h2>
-  <div class="wrap"><table><thead><tr><th>Tier</th><th>Taken</th><th>Available</th><th>Seconds</th></tr></thead><tbody><tr><th scope="row">A</th><td class="num">35</td><td class="num">40</td><td class="num">0.1 s</td></tr><tr><th scope="row">B</th><td class="num">3</td><td class="num">3</td><td class="num">0 s</td></tr><tr><th scope="row">C</th><td class="num">57</td><td class="num">72</td><td class="num">0.3 s</td></tr><tr><th scope="row">D</th><td class="num">0</td><td class="num">1</td><td class="num">0 s</td></tr></tbody></table></div>
+  <div class="wrap"><table><thead><tr><th>Tier</th><th>Taken</th><th>Available</th><th>Seconds</th></tr></thead><tbody><tr><th scope="row">A</th><td class="num">36</td><td class="num">41</td><td class="num">0.2 s</td></tr><tr><th scope="row">B</th><td class="num">3</td><td class="num">3</td><td class="num">0 s</td></tr><tr><th scope="row">C</th><td class="num">56</td><td class="num">71</td><td class="num">0.6 s</td></tr><tr><th scope="row">D</th><td class="num">0</td><td class="num">1</td><td class="num">0 s</td></tr></tbody></table></div>
   <p class="lede">A: an exact duplicate of a kept test in the same class · B: two or more carriers · C: one carrier · D: kills nothing, never taken while A–C are non-empty. Determinism measured. 1 more round(s) to saturation at this budget.</p>
 
   <h2>Who carries whom</h2><pre class="mermaid">flowchart LR
@@ -104,35 +104,35 @@
   end
   subgraph n35[&quot;shell-status.service&quot;]
     direction LR
-    n36[&quot;ShellStatusService initial state starts with no…&quot;]:::demoted
-    n37[&quot;ShellStatusService trialOffer the nudge is not…&quot;]
-    n36 -- &quot;22 probes · 8 kills&quot; --&gt; n37
-    n38[&quot;ShellStatusService noteResponseHeaders does not…&quot;]:::demoted
-    n39[&quot;ShellStatusService noteResponseHeaders does not…&quot;]
-    n38 -- &quot;21 probes · 3 kills&quot; --&gt; n39
-    n40[&quot;ShellStatusService noteResponseHeaders flips em…&quot;]:::demoted
-    n40 -- &quot;22 probes · 7 kills&quot; --&gt; n41
-    n42[&quot;ShellStatusService noteResponseHeaders is stick…&quot;]:::demoted
-    n43[&quot;ShellStatusService clearConsent / clearEmailVer…&quot;]
-    n42 -- &quot;23 probes · 5 kills&quot; --&gt; n43
-    n44[&quot;… 2 more&quot;]:::demoted
+    n36[&quot;ShellStatusService clearConsent / clearEmailVer…&quot;]:::demoted
+    n36 -- &quot;27 probes · 8 kills&quot; --&gt; n37
+    n38[&quot;ShellStatusService initial state starts with no…&quot;]:::demoted
+    n39[&quot;ShellStatusService trialOffer the nudge is not…&quot;]
+    n38 -- &quot;22 probes · 8 kills&quot; --&gt; n39
+    n40[&quot;ShellStatusService noteResponseHeaders does not…&quot;]:::demoted
+    n41[&quot;ShellStatusService noteResponseHeaders does not…&quot;]
+    n40 -- &quot;21 probes · 3 kills&quot; --&gt; n41
+    n42[&quot;ShellStatusService noteResponseHeaders flips em…&quot;]:::demoted
+    n42 -- &quot;22 probes · 7 kills&quot; --&gt; n43
+    n44[&quot;… 3 more&quot;]:::demoted
   end
   subgraph n45[&quot;shell-headers.interceptor&quot;]
     direction LR
     n46[&quot;shellHeadersInterceptor does NOT update the ser…&quot;]:::demoted
-    n46 -- &quot;22 probes · 3 kills&quot; --&gt; n41
+    n46 -- &quot;22 probes · 3 kills&quot; --&gt; n43
     n47[&quot;shellHeadersInterceptor forwards X-Consent-Requ…&quot;]:::demoted
-    n47 -- &quot;30 probes · 13 kills&quot; --&gt; n41
+    n47 -- &quot;30 probes · 13 kills&quot; --&gt; n43
     n48[&quot;shellHeadersInterceptor honours sticky semantic…&quot;]:::demoted
-    n48 -- &quot;31 probes · 12 kills&quot; --&gt; n41
+    n48 -- &quot;31 probes · 12 kills&quot; --&gt; n43
     n49[&quot;shellHeadersInterceptor leaves the service unto…&quot;]:::demoted
-    n49 -- &quot;29 probes · 8 kills&quot; --&gt; n41
+    n49 -- &quot;29 probes · 8 kills&quot; --&gt; n43
   end
   n33[&quot;demo-fixtures.account :: demo fixtures — accoun…&quot;]
-  n41[&quot;shell-headers.interceptor :: shellHeadersInterc…&quot;]
+  n37[&quot;shell-banners.component :: ShellBannersComponen…&quot;]
+  n43[&quot;shell-headers.interceptor :: shellHeadersInterc…&quot;]
   classDef demoted stroke-dasharray: 4 3</pre><p class="lede">Dashed leaves the pull-request tier; the edge says what the carrier also reaches. At most six classes and four rows each are drawn; the rest are in the report.</p>
 
-  <h2>Look twice (10) — waiting for a person</h2><p class="lede">Their names carry a scenario word; nothing happens to them until <code>docs/testing/governance/cleared.json</code> says so.</p><ul><li><code>src/app/core/consent/consent.service.spec.ts :: ConsentService starts with needsDecision=true and record=null when storage is empty</code></li><li><code>src/app/core/demo/demo-fixtures.spec.ts :: demo fixtures answers /users/me with null while the persona is signed out (no bounce, no error)</code></li><li><code>src/app/core/interceptors/rate-limit-cache.interceptor.spec.ts :: rateLimitInterceptor notifies the rate-limit state with the parsed Retry-After on 429</code></li><li><code>src/app/core/interceptors/rate-limit-cache.interceptor.spec.ts :: rateLimitInterceptor notifies with null when Retry-After is an HTTP-date (not delta-seconds)</code></li><li><code>src/app/core/interceptors/rate-limit-cache.interceptor.spec.ts :: rateLimitInterceptor passes successful responses through unchanged (no rate-limit notify)</code></li><li><code>src/app/core/interceptors/step-up.interceptor.spec.ts :: stepUpInterceptor treats an explicit null context value as &quot;no token&quot; (default behavior)</code></li><li><code>src/app/core/rate-limit/rate-limit-state.service.spec.ts :: RateLimitStateService activates with the given Retry-After and auto-dismisses after the window</code></li><li><code>src/app/core/rate-limit/rate-limit-state.service.spec.ts :: RateLimitStateService caps an oversized Retry-After so the banner cannot be pinned forever</code></li><li><code>src/app/core/shell/shell-status.service.spec.ts :: ShellStatusService setProfileMissing clears banners when set to empty array</code></li><li><code>src/app/core/user/user.service.spec.ts :: UserApiService treats empty-string stepUpToken as truthy → builds context</code></li></ul>
+  <h2>Look twice (10) — waiting for a person</h2><p class="lede">Their names carry a scenario word; nothing happens to them until <code>docs/testing/governance/cleared.json</code> says so.</p><ul><li><code>src/app/core/consent/consent.service.spec.ts :: ConsentService starts with needsDecision=true and record=null when storage is empty</code></li><li><code>src/app/core/demo/demo-fixtures.spec.ts :: demo fixtures answers /users/me with null while the persona is signed out (no bounce, no error)</code></li><li><code>src/app/core/interceptors/rate-limit-cache.interceptor.spec.ts :: rateLimitInterceptor notifies with null when Retry-After is an HTTP-date (not delta-seconds)</code></li><li><code>src/app/core/interceptors/rate-limit-cache.interceptor.spec.ts :: rateLimitInterceptor passes successful responses through unchanged (no rate-limit notify)</code></li><li><code>src/app/core/interceptors/rate-limit-cache.interceptor.spec.ts :: rateLimitInterceptor re-throws the 429 unchanged (preserves status + body for downstream handlers)</code></li><li><code>src/app/core/interceptors/step-up.interceptor.spec.ts :: stepUpInterceptor treats an explicit null context value as &quot;no token&quot; (default behavior)</code></li><li><code>src/app/core/rate-limit/rate-limit-state.service.spec.ts :: RateLimitStateService activates with the given Retry-After and auto-dismisses after the window</code></li><li><code>src/app/core/rate-limit/rate-limit-state.service.spec.ts :: RateLimitStateService caps an oversized Retry-After so the banner cannot be pinned forever</code></li><li><code>src/app/core/shell/shell-status.service.spec.ts :: ShellStatusService setProfileMissing clears banners when set to empty array</code></li><li><code>src/app/core/user/user.service.spec.ts :: UserApiService treats empty-string stepUpToken as truthy → builds context</code></li></ul>
 
   <footer>Generated by <code>tools/subsume/site.mjs</code> from the run’s reports. The method: the frontend’s <code>tools/subsume/README.md</code> and <code>docs/testing/ai-in-the-loop.md</code>.</footer>
 </main>
