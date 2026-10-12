@@ -1,1 +1,0 @@
-  nip-to-ksef hand: 1696 frames over 89.5s → qa-film/2026-10-11/nip-to-ksef-hand

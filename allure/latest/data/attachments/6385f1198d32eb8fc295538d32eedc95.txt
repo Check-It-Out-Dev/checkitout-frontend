@@ -1,1 +1,0 @@
-  admin-ops guided: 937 frames over 60.5s → qa-film/2026-10-11/admin-ops-guided
