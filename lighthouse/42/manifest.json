@@ -1,0 +1,110 @@
+[
+  {
+    "url": "http://localhost:4300/",
+    "isRepresentativeRun": false,
+    "htmlPath": "/home/runner/work/checkitout-frontend/checkitout-frontend/lhci-report/-2026_10_15_07_05_19.html",
+    "jsonPath": "/home/runner/work/checkitout-frontend/checkitout-frontend/lhci-report/-2026_10_15_07_05_19.json",
+    "summary": {
+      "performance": 0.98,
+      "accessibility": 1,
+      "best-practices": 1,
+      "seo": 0.92
+    }
+  },
+  {
+    "url": "http://localhost:4300/",
+    "isRepresentativeRun": false,
+    "htmlPath": "/home/runner/work/checkitout-frontend/checkitout-frontend/lhci-report/-2026_10_15_07_05_33.html",
+    "jsonPath": "/home/runner/work/checkitout-frontend/checkitout-frontend/lhci-report/-2026_10_15_07_05_33.json",
+    "summary": {
+      "performance": 0.99,
+      "accessibility": 1,
+      "best-practices": 1,
+      "seo": 0.92
+    }
+  },
+  {
+    "url": "http://localhost:4300/technical-survey/engineering",
+    "isRepresentativeRun": false,
+    "htmlPath": "/home/runner/work/checkitout-frontend/checkitout-frontend/lhci-report/technical_survey_engineering-2026_10_15_07_06_01.html",
+    "jsonPath": "/home/runner/work/checkitout-frontend/checkitout-frontend/lhci-report/technical_survey_engineering-2026_10_15_07_06_01.json",
+    "summary": {
+      "performance": 0.95,
+      "accessibility": 1,
+      "best-practices": 1,
+      "seo": 1
+    }
+  },
+  {
+    "url": "http://localhost:4300/technical-survey/engineering",
+    "isRepresentativeRun": false,
+    "htmlPath": "/home/runner/work/checkitout-frontend/checkitout-frontend/lhci-report/technical_survey_engineering-2026_10_15_07_06_30.html",
+    "jsonPath": "/home/runner/work/checkitout-frontend/checkitout-frontend/lhci-report/technical_survey_engineering-2026_10_15_07_06_30.json",
+    "summary": {
+      "performance": 0.95,
+      "accessibility": 1,
+      "best-practices": 1,
+      "seo": 1
+    }
+  },
+  {
+    "url": "http://localhost:4300/auth/sign-in",
+    "isRepresentativeRun": false,
+    "htmlPath": "/home/runner/work/checkitout-frontend/checkitout-frontend/lhci-report/auth_sign_in-2026_10_15_07_06_44.html",
+    "jsonPath": "/home/runner/work/checkitout-frontend/checkitout-frontend/lhci-report/auth_sign_in-2026_10_15_07_06_44.json",
+    "summary": {
+      "performance": 0.95,
+      "accessibility": 1,
+      "best-practices": 1,
+      "seo": 0.92
+    }
+  },
+  {
+    "url": "http://localhost:4300/auth/sign-in",
+    "isRepresentativeRun": false,
+    "htmlPath": "/home/runner/work/checkitout-frontend/checkitout-frontend/lhci-report/auth_sign_in-2026_10_15_07_06_56.html",
+    "jsonPath": "/home/runner/work/checkitout-frontend/checkitout-frontend/lhci-report/auth_sign_in-2026_10_15_07_06_56.json",
+    "summary": {
+      "performance": 0.95,
+      "accessibility": 1,
+      "best-practices": 1,
+      "seo": 0.92
+    }
+  },
+  {
+    "url": "http://localhost:4300/",
+    "isRepresentativeRun": true,
+    "htmlPath": "/home/runner/work/checkitout-frontend/checkitout-frontend/lhci-report/-2026_10_15_07_05_47.html",
+    "jsonPath": "/home/runner/work/checkitout-frontend/checkitout-frontend/lhci-report/-2026_10_15_07_05_47.json",
+    "summary": {
+      "performance": 0.98,
+      "accessibility": 1,
+      "best-practices": 1,
+      "seo": 0.92
+    }
+  },
+  {
+    "url": "http://localhost:4300/technical-survey/engineering",
+    "isRepresentativeRun": true,
+    "htmlPath": "/home/runner/work/checkitout-frontend/checkitout-frontend/lhci-report/technical_survey_engineering-2026_10_15_07_06_16.html",
+    "jsonPath": "/home/runner/work/checkitout-frontend/checkitout-frontend/lhci-report/technical_survey_engineering-2026_10_15_07_06_16.json",
+    "summary": {
+      "performance": 0.95,
+      "accessibility": 1,
+      "best-practices": 1,
+      "seo": 1
+    }
+  },
+  {
+    "url": "http://localhost:4300/auth/sign-in",
+    "isRepresentativeRun": true,
+    "htmlPath": "/home/runner/work/checkitout-frontend/checkitout-frontend/lhci-report/auth_sign_in-2026_10_15_07_07_08.html",
+    "jsonPath": "/home/runner/work/checkitout-frontend/checkitout-frontend/lhci-report/auth_sign_in-2026_10_15_07_07_08.json",
+    "summary": {
+      "performance": 0.95,
+      "accessibility": 1,
+      "best-practices": 1,
+      "seo": 0.92
+    }
+  }
+]
