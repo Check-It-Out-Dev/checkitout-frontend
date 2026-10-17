@@ -1,0 +1,1 @@
+{"id":"561e1b5dd2be010d07dc157726d296b8","fullName":"integration/auth/login-errors.spec.ts › @authentication @login @negative — port of login-errors.feature › @admin existing email + wrong password surfaces error UI","name":"@admin existing email + wrong password surfaces error UI","status":"passed","testResultsByEnv":{"default":"e6a5680a3a9b076a21466fb2e32c740b"}}

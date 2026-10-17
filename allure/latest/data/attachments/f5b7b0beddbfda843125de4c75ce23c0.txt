@@ -1,1 +1,0 @@
-  hover → inspector: 72 ms (includes the driver round-trips)
