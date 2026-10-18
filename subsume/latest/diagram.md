@@ -18,12 +18,12 @@ flowchart LR
     n8["SandboxDirectorService a full load on an app ro…"]:::demoted
     n9["SandboxDirectorService a full load on the landi…"]
     n8 -- "70 probes · 19 kills" --> n9
-    n10["SandboxDirectorService advance() walks every st…"]:::demoted
-    n11["SandboxDirectorService next() — #quot;Dalej#quot; perform…"]
-    n10 -- "195 probes · 40 kills" --> n11
-    n12["SandboxDirectorService exit() closes any dialog…"]:::demoted
-    n13["SandboxDirectorService exit() clears state, sig…"]
-    n12 -- "179 probes · 10 kills" --> n13
+    n10["SandboxDirectorService a tour ends when the vis…"]:::demoted
+    n11["SandboxDirectorService a tour ends when the vis…"]
+    n10 -- "181 probes · 40 kills" --> n11
+    n12["SandboxDirectorService advance() walks every st…"]:::demoted
+    n13["SandboxDirectorService next() — #quot;Dalej#quot; perform…"]
+    n12 -- "195 probes · 40 kills" --> n13
     n14["SandboxDirectorService next() — #quot;Dalej#quot; perform…"]:::demoted
     n15["SandboxDirectorService next() — #quot;Dalej#quot; perform…"]
     n14 -- "244 probes · 67 kills" --> n15
@@ -31,13 +31,13 @@ flowchart LR
   end
   subgraph n17["error.interceptor"]
     direction LR
-    n18["errorInterceptor on 401 from /auth/firebase/log…"]:::demoted
-    n19["errorInterceptor on 401 from a /assets/ static…"]
-    n18 -- "24 probes · 11 kills" --> n19
-    n20["errorInterceptor on 401 from /auth/refresh-sess…"]:::demoted
-    n20 -- "24 probes · 7 kills" --> n19
-    n21["errorInterceptor on 401 from /support/ticket/ac…"]:::demoted
-    n21 -- "24 probes · 10 kills" --> n19
+    n18["errorInterceptor on 401 from /auth/refresh-sess…"]:::demoted
+    n19["errorInterceptor on 401 from /auth/firebase/log…"]
+    n18 -- "24 probes · 7 kills" --> n19
+    n20["errorInterceptor on 401 from /support/ticket/ac…"]:::demoted
+    n20 -- "24 probes · 10 kills" --> n19
+    n21["errorInterceptor on 401 from a /assets/ static…"]:::demoted
+    n21 -- "24 probes · 11 kills" --> n19
     n22["errorInterceptor on 401 with no signed-in user…"]:::demoted
     n23["errorInterceptor on 419 with no signed-in user…"]
     n22 -- "30 probes · 21 kills" --> n23
@@ -60,32 +60,32 @@ flowchart LR
   end
   subgraph n35["shell-status.service"]
     direction LR
-    n36["ShellStatusService clearConsent / clearEmailVer…"]:::demoted
-    n36 -- "27 probes · 8 kills" --> n37
-    n38["ShellStatusService initial state starts with no…"]:::demoted
-    n39["ShellStatusService trialOffer the nudge is not…"]
-    n38 -- "22 probes · 8 kills" --> n39
-    n40["ShellStatusService noteResponseHeaders does not…"]:::demoted
-    n41["ShellStatusService noteResponseHeaders does not…"]
-    n40 -- "21 probes · 3 kills" --> n41
-    n42["ShellStatusService noteResponseHeaders flips em…"]:::demoted
-    n42 -- "22 probes · 7 kills" --> n43
-    n44["… 3 more"]:::demoted
+    n36["ShellStatusService initial state starts with no…"]:::demoted
+    n37["ShellStatusService trialOffer the nudge is not…"]
+    n36 -- "22 probes · 8 kills" --> n37
+    n38["ShellStatusService noteResponseHeaders does not…"]:::demoted
+    n39["ShellStatusService noteResponseHeaders does not…"]
+    n38 -- "21 probes · 3 kills" --> n39
+    n40["ShellStatusService noteResponseHeaders flips em…"]:::demoted
+    n40 -- "22 probes · 7 kills" --> n41
+    n42["ShellStatusService noteResponseHeaders is stick…"]:::demoted
+    n43["ShellStatusService clearConsent / clearEmailVer…"]
+    n42 -- "23 probes · 5 kills" --> n43
+    n44["… 2 more"]:::demoted
   end
   subgraph n45["shell-headers.interceptor"]
     direction LR
     n46["shellHeadersInterceptor does NOT update the ser…"]:::demoted
-    n46 -- "22 probes · 3 kills" --> n43
+    n46 -- "22 probes · 3 kills" --> n41
     n47["shellHeadersInterceptor forwards X-Consent-Requ…"]:::demoted
-    n47 -- "30 probes · 13 kills" --> n43
+    n47 -- "30 probes · 13 kills" --> n41
     n48["shellHeadersInterceptor honours sticky semantic…"]:::demoted
-    n48 -- "31 probes · 12 kills" --> n43
+    n48 -- "31 probes · 12 kills" --> n41
     n49["shellHeadersInterceptor leaves the service unto…"]:::demoted
-    n49 -- "29 probes · 8 kills" --> n43
+    n49 -- "29 probes · 8 kills" --> n41
   end
   n33["demo-fixtures.account :: demo fixtures — accoun…"]
-  n37["shell-banners.component :: ShellBannersComponen…"]
-  n43["shell-headers.interceptor :: shellHeadersInterc…"]
+  n41["shell-headers.interceptor :: shellHeadersInterc…"]
   classDef demoted stroke-dasharray: 4 3
 ```
 
