@@ -1,11 +1,11 @@
 {
- "total": 7,
- "error": 4,
- "warning": 3,
+ "total": 10,
+ "error": 6,
+ "warning": 4,
  "note": 0,
  "tools": {
   "Semgrep OSS": 2,
-  "Trivy": 5
+  "Trivy": 8
  },
  "scans": 2
 }
