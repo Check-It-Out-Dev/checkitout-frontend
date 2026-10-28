@@ -1,1 +1,0 @@
-{"id":"f24b3eb149ba00630a13b7354ee83308","fullName":"integration/flows/magic-link-errors.spec.ts › @magic-link-errors — port of magic-link-errors.feature › @tier-1 confirm-password-reset rejects missing newPassword (400)","name":"@tier-1 confirm-password-reset rejects missing newPassword (400)","status":"passed","testResultsByEnv":{"default":"e6c7c13da31b6f59b5fc52ae1195a1aa"}}
