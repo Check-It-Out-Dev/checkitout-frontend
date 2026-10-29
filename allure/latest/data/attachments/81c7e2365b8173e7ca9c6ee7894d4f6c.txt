@@ -1,4 +1,0 @@
-  nip-to-ksef
-    pill: 0@/company/setup → 1@/company/setup → 2@/company/setup → 3@/company/setup → 4@/user/settings/plan-billing → 5@/user/settings/plan-billing → 6@/user/settings/plan-billing → 7@/user/settings/plan-billing → 8@/user/settings/plan-billing → 9@/user/settings/plan-billing → 9@/user/settings/plan-billing → done
-    hand: 0@/company/setup → 1@/company/setup → 2@/company/setup → 3@/company/setup → 4@/user/settings/plan-billing → 5@/user/settings/plan-billing → 6@/user/settings/plan-billing → 7@/user/settings/plan-billing → 8@/user/settings/plan-billing → 9@/user/settings/plan-billing → 9@/user/settings/plan-billing → done
-    a visitor can do steps [1, 2, 3, 4, 6, 7, 8, 9] unaided; the guide finishes []; [0, 5] ring a field you type into
