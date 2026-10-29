@@ -1,10 +1,10 @@
 {
- "mutationScore": 72.43,
- "coveredScore": 82.82,
+ "mutationScore": 72.22,
+ "coveredScore": 82.59,
  "mutants": {
   "total": 486,
-  "Killed": 349,
-  "Survived": 73,
+  "Killed": 348,
+  "Survived": 74,
   "NoCoverage": 61,
   "Timeout": 3,
   "CompileError": 0,
@@ -51,9 +51,9 @@
   },
   {
    "file": "src/app/core/auth/social-platform-config.service.ts",
-   "score": 72.5,
-   "killed": 58,
-   "survived": 20,
+   "score": 71.25,
+   "killed": 57,
+   "survived": 21,
    "noCoverage": 2
   },
   {
