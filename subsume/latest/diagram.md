@@ -31,72 +31,71 @@ flowchart LR
   end
   subgraph n17["error.interceptor"]
     direction LR
-    n18["errorInterceptor on 401 from /auth/refresh-sess…"]:::demoted
-    n19["errorInterceptor on 401 from /auth/firebase/log…"]
-    n18 -- "24 probes · 7 kills" --> n19
-    n20["errorInterceptor on 401 from /support/ticket/ac…"]:::demoted
-    n20 -- "24 probes · 10 kills" --> n19
+    n18["errorInterceptor on 401 from /auth/firebase/log…"]:::demoted
+    n19["errorInterceptor on 401 from /support/ticket/ac…"]
+    n18 -- "24 probes · 11 kills" --> n19
+    n20["errorInterceptor on 401 from /auth/refresh-sess…"]:::demoted
+    n20 -- "24 probes · 7 kills" --> n19
     n21["errorInterceptor on 401 from a /assets/ static…"]:::demoted
     n21 -- "24 probes · 11 kills" --> n19
-    n22["errorInterceptor on 401 with no signed-in user…"]:::demoted
-    n23["errorInterceptor on 419 with no signed-in user…"]
-    n22 -- "30 probes · 21 kills" --> n23
-    n24["… 4 more"]:::demoted
+    n22["errorInterceptor on 419 from /auth/refresh-sess…"]:::demoted
+    n22 -- "24 probes · 7 kills" --> n19
+    n23["… 4 more"]:::demoted
   end
-  subgraph n25["shell-status.service"]
+  subgraph n24["demo-fixtures"]
     direction LR
-    n26["ShellStatusService clearConsent / clearEmailVer…"]:::demoted
-    n26 -- "27 probes · 8 kills" --> n27
-    n28["ShellStatusService initial state starts with no…"]:::demoted
-    n29["ShellStatusService trialOffer the nudge is not…"]
-    n28 -- "22 probes · 8 kills" --> n29
-    n30["ShellStatusService noteResponseHeaders does not…"]:::demoted
-    n30 -- "21 probes · 6 kills" --> n31
-    n32["ShellStatusService noteResponseHeaders does not…"]:::demoted
-    n32 -- "21 probes · 3 kills" --> n31
-    n33["… 4 more"]:::demoted
+    n25["demo fixtures answers /subscription/status with…"]:::demoted
+    n26["demo fixtures plays the whole upgrade beat — co…"]
+    n25 -- "56 probes · 15 kills" --> n26
+    n27["demo fixtures answers /users/me with null while…"]:::demoted
+    n28["demo fixtures sign-up takes the role from the f…"]
+    n27 -- "54 probes · 9 kills" --> n28
+    n29["demo fixtures company accept/decline round-trip…"]:::demoted
+    n30["demo fixtures company accept/decline round-trip…"]
+    n29 -- "99 probes · 40 kills" --> n30
+    n31["demo fixtures pages campaigns through the share…"]:::demoted
+    n31 -- "55 probes · 13 kills" --> n32
+    n33["… 3 more"]:::demoted
   end
-  subgraph n34["demo-fixtures"]
+  subgraph n34["shell-status.service"]
     direction LR
-    n35["demo fixtures answers /subscription/status with…"]:::demoted
-    n36["demo fixtures plays the whole upgrade beat — co…"]
-    n35 -- "56 probes · 15 kills" --> n36
-    n37["demo fixtures answers /users/me with null while…"]:::demoted
-    n38["demo fixtures sign-up takes the role from the f…"]
-    n37 -- "54 probes · 9 kills" --> n38
-    n39["demo fixtures company accept/decline round-trip…"]:::demoted
-    n40["demo fixtures company accept/decline round-trip…"]
-    n39 -- "99 probes · 40 kills" --> n40
-    n41["demo fixtures pages campaigns through the share…"]:::demoted
-    n41 -- "55 probes · 13 kills" --> n42
+    n35["ShellStatusService clearConsent / clearEmailVer…"]:::demoted
+    n35 -- "27 probes · 8 kills" --> n36
+    n37["ShellStatusService initial state starts with no…"]:::demoted
+    n38["ShellStatusService trialOffer the nudge is not…"]
+    n37 -- "22 probes · 8 kills" --> n38
+    n39["ShellStatusService noteResponseHeaders does not…"]:::demoted
+    n40["ShellStatusService noteResponseHeaders does not…"]
+    n39 -- "21 probes · 3 kills" --> n40
+    n41["ShellStatusService noteResponseHeaders flips em…"]:::demoted
+    n41 -- "22 probes · 7 kills" --> n42
     n43["… 3 more"]:::demoted
   end
-  subgraph n44["step-up-context"]
+  subgraph n44["shell-headers.interceptor"]
     direction LR
-    n45["step-up-context helpers withStepUpToken() accep…"]:::demoted
-    n45 -- "2 probes · 1 kills" --> n46
-    n47["step-up-context helpers withStepUpToken() prese…"]:::demoted
-    n47 -- "2 probes · 1 kills" --> n46
-    n48["step-up-context helpers withStepUpToken() retur…"]:::demoted
-    n48 -- "2 probes · 1 kills" --> n46
-    n49["step-up-context helpers withStepUpToken() retur…"]:::demoted
-    n49 -- "2 probes · 1 kills" --> n46
+    n45["shellHeadersInterceptor does NOT update the ser…"]:::demoted
+    n45 -- "22 probes · 3 kills" --> n42
+    n46["shellHeadersInterceptor forwards X-Consent-Requ…"]:::demoted
+    n46 -- "30 probes · 13 kills" --> n42
+    n47["shellHeadersInterceptor honours sticky semantic…"]:::demoted
+    n47 -- "31 probes · 12 kills" --> n42
+    n48["shellHeadersInterceptor leaves the service unto…"]:::demoted
+    n48 -- "29 probes · 8 kills" --> n42
   end
-  n27["shell-banners.component :: ShellBannersComponen…"]
-  n31["shell-headers.interceptor :: shellHeadersInterc…"]
-  n42["demo-fixtures.account :: demo fixtures — accoun…"]
-  n46["step-up.interceptor :: stepUpInterceptor does n…"]
+  n32["demo-fixtures.account :: demo fixtures — accoun…"]
+  n36["shell-banners.component :: ShellBannersComponen…"]
+  n42["shell-headers.interceptor :: shellHeadersInterc…"]
   classDef demoted stroke-dasharray: 4 3
 ```
 
 | Class | Demoted | Carried by |
 | --- | --- | --- |
+| `step-up-context` | 4 | 1 tests |
 | `theme.service` | 4 | 4 tests |
 | `consent.service` | 3 | 5 tests |
-| `seo-title.strategy` | 3 | 2 tests |
+| `seo-title.strategy` | 3 | 3 tests |
 | `rate-limit-cache.interceptor` | 3 | 3 tests |
 | `set-to-array.interceptor` | 3 | 1 tests |
-| `shell-headers.interceptor` | 3 | 3 tests |
 | `step-up.interceptor` | 3 | 1 tests |
 | `applied-opportunity.service` | 2 | 3 tests |
 | `auth.guards` | 2 | 3 tests |
