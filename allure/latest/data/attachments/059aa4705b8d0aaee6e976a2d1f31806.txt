@@ -1,0 +1,4 @@
+  support-ticket
+    pill: 0@/support/tickets/create → 1@/support/tickets/create → 2@/support/tickets/create → 3@/support/tickets/status → 3@/support/tickets/status → done
+    hand: 0@/support/tickets/create → 1@/support/tickets/create → 2@/support/tickets/create → 3@/support/tickets/status → 3@/support/tickets/status → done
+    a visitor can do steps [1, 2] unaided; the guide finishes []; [0, 3] ring a field you type into
