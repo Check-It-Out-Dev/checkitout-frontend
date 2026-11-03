@@ -6,22 +6,22 @@
     "id": 41608241082,
     "sha": "ceffd05",
     "branch": "main",
-    "workflow": "nightly-full-stack",
+    "workflow": "k8s-test-execution",
     "startedAt": "2026-11-03T09:05:54Z",
-    "durationSec": 371,
+    "durationSec": 537,
     "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/41608241082",
     "status": "green"
   },
   "tests": {
-    "total": 1745,
-    "passed": 1634,
+    "total": 1597,
+    "passed": 1489,
     "failed": 0,
     "flaky": 0,
-    "skipped": 111,
+    "skipped": 108,
     "passRate": 1,
     "flakyRate": 0,
-    "durationMeanSec": 0.18,
-    "durationP95Sec": 0.61,
+    "durationMeanSec": 0.2,
+    "durationP95Sec": 0.85,
     "tiers": {
       "jest": {
         "total": 1312,
@@ -31,13 +31,13 @@
         "skipped": 74,
         "durationSec": 78
       },
-      "bdd": {
-        "total": 148,
-        "passed": 140,
+      "integration": {
+        "total": 215,
+        "passed": 183,
         "failed": 0,
         "flaky": 0,
-        "skipped": 8,
-        "durationSec": 55
+        "skipped": 32,
+        "durationSec": 155
       },
       "sandbox": {
         "total": 64,
@@ -45,7 +45,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 2,
-        "durationSec": 45
+        "durationSec": 63
       },
       "scenarios": {
         "total": 6,
@@ -53,15 +53,7 @@
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
-        "durationSec": 10
-      },
-      "integration": {
-        "total": 215,
-        "passed": 188,
-        "failed": 0,
-        "flaky": 0,
-        "skipped": 27,
-        "durationSec": 109
+        "durationSec": 9
       }
     }
   },
@@ -71,12 +63,40 @@
     "branches": 69.52,
     "functions": 66.79
   },
+  "perf": {
+    "k6": {
+      "profile": "load",
+      "requests": 197,
+      "failedRate": 0,
+      "p95Ms": 152.56,
+      "thresholdsOk": true,
+      "journeys": {
+        "browse": {
+          "p95Ms": 82.87,
+          "p99Ms": 94.64,
+          "budgetMs": 800,
+          "ok": true
+        },
+        "apply": {
+          "p95Ms": 282.58,
+          "p99Ms": 290.96,
+          "budgetMs": 1500,
+          "ok": true
+        }
+      }
+    }
+  },
   "lighthouse": {
     "url": "/",
     "performance": 98,
     "accessibility": 100,
     "bestPractices": 100,
     "seo": 92
+  },
+  "kubernetes": {
+    "shards": 4,
+    "wallSec": 94,
+    "k6Runners": 2
   },
   "mutation": {
     "score": 72.43,
@@ -98,7 +118,8 @@
   },
   "flaky": [],
   "reports": {
-    "playwright": "playwright/nightly-full-stack-61/",
-    "allure": "allure/nightly-full-stack-61/"
+    "playwright": "playwright/k8s-test-execution-61/",
+    "k6": "k6/k8s-test-execution-61/",
+    "allure": "allure/k8s-test-execution-61/"
   }
 }
