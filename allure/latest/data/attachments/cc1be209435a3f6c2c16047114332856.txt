@@ -1,1 +1,0 @@
-  admin-2fa: login: 8654 ms · first-code: 4282 ms · first-code-refused: 2134 ms · fresh-code: 2300 ms · signed-in: 2049 ms

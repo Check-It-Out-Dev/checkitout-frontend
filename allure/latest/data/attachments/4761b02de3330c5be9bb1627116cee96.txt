@@ -1,1 +1,0 @@
-  admin-ops: fault-injected 5 ringed step(s) — [data-testid^="admin-ticket-row-"], [data-testid="admin-response-submit"], [data-testid="admin-ticket-campaigns"], [data-testid="opportunity-admin-delete"], [data-testid="cascade-confirm"]
