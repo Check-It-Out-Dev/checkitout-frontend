@@ -1,0 +1,1 @@
+  admin-2fa hand: 1405 frames over 75.7s → qa-film/2026-11-05/admin-2fa-hand
