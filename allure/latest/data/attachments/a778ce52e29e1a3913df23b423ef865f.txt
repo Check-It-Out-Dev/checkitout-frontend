@@ -1,1 +1,0 @@
-  support-ticket guided: 532 frames over 30.8s → qa-film/2026-11-04/support-ticket-guided
