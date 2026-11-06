@@ -1,1 +1,0 @@
-  support-ticket: fault-injected 2 ringed step(s) — [data-testid="create-ticket-submit"], [data-testid="create-ticket-view-status"]
