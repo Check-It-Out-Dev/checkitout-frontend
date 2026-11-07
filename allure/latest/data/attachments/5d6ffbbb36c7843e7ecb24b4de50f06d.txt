@@ -1,4 +1,0 @@
-  influencer-collab
-    pill: 0@/collaborations/list → 1@/collaborations/503 → 2@/collaborations/503 → 3@/collaborations/registrations → 3@/collaborations/registrations → done
-    hand: 0@/collaborations/list → 1@/collaborations/503 → 2@/collaborations/503 → 3@/collaborations/registrations → 3@/collaborations/registrations → done
-    a visitor can do steps [0, 1] unaided; the guide finishes []; [2] ring a field you type into
