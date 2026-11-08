@@ -1,1 +1,0 @@
-{"id":"3ffcfce6ca578ff7b617c6eff18f4da2","fullName":"integration/flows/profile-validation.spec.ts › @profile @validation-edge-cases — port of validation-edge-cases.feature › @companyDescription boundary (1000 chars) returns 200","name":"@companyDescription boundary (1000 chars) returns 200","status":"passed","testResultsByEnv":{"default":"23082c6d60ab3d68f582c1ae1d9d7e4e"}}
