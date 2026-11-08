@@ -1,0 +1,37 @@
+
+=== Route smoke (authed:company1) ===
+ok   | authed  | /                                                | /                                               
+ok   | authed  | /error/404                                       | /error/404                                      
+ok   | authed  | /auth/sign-in                                    | /auth/sign-in                                   
+ok   | authed  | /auth/sign-up                                    | /auth/sign-up                                   
+ok   | authed  | /auth/sign-up/influencer                         | /auth/sign-up/influencer                        
+ok   | authed  | /auth/sign-up/business                           | /auth/sign-up/business                          
+ok   | authed  | /auth/forgot-password                            | /auth/forgot-password                           
+ok   | authed  | /auth/confirmation-required                      | /auth/confirmation-required                     
+ok   | authed  | /auth/verify-email                               | /auth/verify-email                              
+ok   | authed  | /auth/reset-password                             | /auth/reset-password                            
+ok   | authed  | /auth/auth/error                                 | /error/404                                      
+ok   | authed  | /auth/error                                      | /auth/error                                     
+ok   | authed  | /auth/2fa-setup                                  | /auth/2fa-setup                                 
+ok   | authed  | /auth/action                                     | /auth/action                                    
+ok   | authed  | /collaborations/list                             | /collaborations/list                            
+ok   | authed  | /collaborations/my-campaigns                     | /collaborations/my-campaigns                    
+ok   | authed  | /collaborations/create                           | /collaborations/create                          
+ok   | authed  | /collaborations/dashboard                        | /collaborations/in-progress                     
+ok   | authed  | /collaborations/in-progress                      | /collaborations/in-progress                     
+ok   | authed  | /collaborations/registrations                    | /collaborations/registrations                   
+ok   | authed  | /collaborations/finished                         | /collaborations/finished                        
+ok   | authed  | /user/settings/account                           | /user/settings/account                          
+ok   | authed  | /user/settings/preferences                       | /user/settings/preferences                      
+ok   | authed  | /user/settings/addresses                         | /user/settings/addresses                        
+ok   | authed  | /user/settings/plan-billing                      | /user/settings/plan-billing                     
+ok   | authed  | /user/list                                       | /collaborations/list                            
+ok   | authed  | /company/setup                                   | /company/setup                                  
+ok   | authed  | /team                                            | /team                                           
+ok   | authed  | /grants                                          | /grants                                         
+ok   | authed  | /support                                         | /support                                        
+ok   | authed  | /support/tickets/create                          | /support/tickets/create                         
+ok   | authed  | /support/tickets/status                          | /support/tickets/status                         
+ok   | authed  | /support/tickets/my-tickets                      | /support/tickets/my-tickets                     
+ok   | authed  | /support/admin/tickets                           | /collaborations/list                            
+ok   | authed  | /admin/dictionary                                | /collaborations/list                            
