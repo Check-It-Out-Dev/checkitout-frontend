@@ -31,11 +31,11 @@ flowchart LR
   end
   subgraph n17["error.interceptor"]
     direction LR
-    n18["errorInterceptor on 401 from /auth/firebase/log…"]:::demoted
-    n19["errorInterceptor on 401 from /support/ticket/ac…"]
-    n18 -- "24 probes · 11 kills" --> n19
-    n20["errorInterceptor on 401 from /auth/refresh-sess…"]:::demoted
-    n20 -- "24 probes · 7 kills" --> n19
+    n18["errorInterceptor on 401 from /auth/refresh-sess…"]:::demoted
+    n19["errorInterceptor on 401 from /auth/firebase/log…"]
+    n18 -- "24 probes · 7 kills" --> n19
+    n20["errorInterceptor on 401 from /support/ticket/ac…"]:::demoted
+    n20 -- "24 probes · 10 kills" --> n19
     n21["errorInterceptor on 401 from a /assets/ static…"]:::demoted
     n21 -- "24 probes · 11 kills" --> n19
     n22["errorInterceptor on 419 from /auth/refresh-sess…"]:::demoted
@@ -93,7 +93,7 @@ flowchart LR
 | `step-up-context` | 4 | 1 tests |
 | `theme.service` | 4 | 4 tests |
 | `consent.service` | 3 | 5 tests |
-| `seo-title.strategy` | 3 | 3 tests |
+| `seo-title.strategy` | 3 | 2 tests |
 | `rate-limit-cache.interceptor` | 3 | 3 tests |
 | `set-to-array.interceptor` | 3 | 1 tests |
 | `step-up.interceptor` | 3 | 1 tests |
