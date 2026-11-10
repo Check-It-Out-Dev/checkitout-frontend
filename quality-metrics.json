@@ -6,22 +6,22 @@
     "id": 42790188747,
     "sha": "ceffd05",
     "branch": "main",
-    "workflow": "nightly-full-stack",
+    "workflow": "browser-tiers",
     "startedAt": "2026-11-10T09:22:39Z",
-    "durationSec": 531,
+    "durationSec": 1163,
     "url": "https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/runs/42790188747",
     "status": "green"
   },
   "tests": {
-    "total": 1745,
-    "passed": 1634,
+    "total": 1896,
+    "passed": 1742,
     "failed": 0,
-    "flaky": 0,
-    "skipped": 111,
-    "passRate": 1,
-    "flakyRate": 0,
-    "durationMeanSec": 0.18,
-    "durationP95Sec": 0.61,
+    "flaky": 1,
+    "skipped": 153,
+    "passRate": 0.9994,
+    "flakyRate": 0.0006,
+    "durationMeanSec": 1.47,
+    "durationP95Sec": 1.88,
     "tiers": {
       "jest": {
         "total": 1312,
@@ -31,37 +31,53 @@
         "skipped": 74,
         "durationSec": 78
       },
-      "bdd": {
-        "total": 148,
-        "passed": 140,
+      "visual": {
+        "total": 284,
+        "passed": 283,
         "failed": 0,
         "flaky": 0,
-        "skipped": 8,
-        "durationSec": 58
+        "skipped": 1,
+        "durationSec": 380
       },
-      "sandbox": {
-        "total": 64,
-        "passed": 62,
+      "visual-parity": {
+        "total": 82,
+        "passed": 28,
         "failed": 0,
         "flaky": 0,
-        "skipped": 2,
-        "durationSec": 47
+        "skipped": 54,
+        "durationSec": 78
       },
-      "scenarios": {
+      "published-reports": {
         "total": 6,
         "passed": 6,
         "failed": 0,
         "flaky": 0,
         "skipped": 0,
-        "durationSec": 10
+        "durationSec": 8
       },
-      "integration": {
-        "total": 215,
-        "passed": 188,
+      "msw": {
+        "total": 2,
+        "passed": 0,
         "failed": 0,
         "flaky": 0,
-        "skipped": 27,
-        "durationSec": 100
+        "skipped": 2,
+        "durationSec": 0
+      },
+      "sandbox": {
+        "total": 128,
+        "passed": 106,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 22,
+        "durationSec": 135
+      },
+      "perf": {
+        "total": 82,
+        "passed": 81,
+        "failed": 0,
+        "flaky": 1,
+        "skipped": 0,
+        "durationSec": 1964
       }
     }
   },
@@ -98,7 +114,7 @@
   },
   "flaky": [],
   "reports": {
-    "playwright": "playwright/nightly-full-stack-68/",
-    "allure": "allure/nightly-full-stack-68/"
+    "playwright": "playwright/browser-tiers-68/",
+    "allure": "allure/browser-tiers-68/"
   }
 }
