@@ -21,6 +21,17 @@ Angular 22 · TypeScript · Angular Material · Tailwind · Transloco.
 code by a gate. Coverage, Lighthouse and the mutation score are read live from the quality dashboard,
 which every run on <code>main</code> republishes.</sub>
 
+> [!NOTE]
+> **Automation paused on 10 November 2026.** This project is finished and no further changes are
+> planned, so the automation in this repository was switched off: the pull-request and nightly
+> pipelines, the sandbox deployment, Dependabot and CodeQL scanning. They exist to check changes,
+> and there are no changes left to check — another night would only run the same code again. The
+> workflow files are still in [`.github/workflows/`](.github/workflows) and the run history is under
+> [Actions](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions); the badges above and
+> the quality dashboard show the last runs. Dependabot's configuration was removed together with
+> this note and is in the history. Dependency versions are frozen as of that date: check them
+> against current advisories before reusing the code.
+
 ---
 
 ## Highlights
