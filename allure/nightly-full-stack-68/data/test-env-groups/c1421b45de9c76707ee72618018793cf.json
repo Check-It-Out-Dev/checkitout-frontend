@@ -1,0 +1,1 @@
+{"id":"c1421b45de9c76707ee72618018793cf","fullName":"integration/flows/profile-validation.spec.ts › @profile @validation-edge-cases — port of validation-edge-cases.feature › @phone valid international format returns 200","name":"@phone valid international format returns 200","status":"passed","testResultsByEnv":{"default":"f8ad611d4bf278f2ba09bc9d08d946fa"}}
