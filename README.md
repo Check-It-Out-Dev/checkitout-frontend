@@ -14,7 +14,6 @@ Angular 22 · TypeScript · Angular Material · Tailwind · Transloco.
 [![Lighthouse](https://img.shields.io/endpoint?url=https://check-it-out-dev.github.io/checkitout-frontend/badges/lighthouse.json)](https://check-it-out-dev.github.io/checkitout-frontend/lighthouse/latest.json)
 [![Mutation](https://img.shields.io/endpoint?url=https://check-it-out-dev.github.io/checkitout-frontend/badges/mutation.json)](https://check-it-out-dev.github.io/checkitout-frontend/#quality)
 [![pull-request pipeline](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/pr.yml/badge.svg)](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/pr.yml)
-[![nightly pipeline](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/nightly.yml/badge.svg)](https://github.com/Check-It-Out-Dev/checkitout-frontend/actions/workflows/nightly.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-1f6feb.svg)](LICENSE)
 
 <sub>Only the test count is static — 2018 across every tier, measured 2026-09-14 and held to the
